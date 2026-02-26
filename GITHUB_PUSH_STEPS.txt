@@ -1,0 +1,18 @@
+Your push fails because the account "modonty1-rgb" is suspended.
+You must point Git to your NEW GitHub account's repo.
+
+Steps:
+1. On GitHub, log in with your NEW account (not modonty1-rgb).
+2. Create a new repository named "jbrseo" (empty, no README). Copy its URL.
+3. In terminal, in this folder (jbrseo.com), run (replace YOUR_NEW_USERNAME with your real new GitHub username):
+
+   git remote set-url origin https://github.com/YOUR_NEW_USERNAME/jbrseo.git
+   git push -u origin main
+
+4. When Windows asks for login, use your NEW account (or a Personal Access Token from that account).
+
+Example: if your new username is "johndoe", run:
+   git remote set-url origin https://github.com/johndoe/jbrseo.git
+   git push -u origin main
+
+Delete this file after push works.
