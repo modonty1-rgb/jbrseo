@@ -6,7 +6,7 @@ import { ArrowLeftIcon } from "lucide-react";
 
 export default function RedirectButton() {
   const handleRedirect = () => {
-    window.location.href = "https://whitelist.jbrseo.com/";
+    window.location.href = process.env.NEXT_PUBLIC_WHITELIST_URL ?? "https://whitelist.jbrseo.com/";
   };
 
   return (

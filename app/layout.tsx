@@ -14,13 +14,34 @@ const tajawal = Tajawal({
 const LOGO_URL =
   "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg";
 
+const OG_IMAGE = {
+  url: "/og-image.png",
+  width: 1200,
+  height: 630,
+  alt: "JBRSEO | خبراء السيو لنمو أعمالك",
+};
+
 export const metadata: Metadata = {
-  title: "JBRSEO - قريباً",
-  description: "صفحة قريباً لـ JBRSEO - شيء استثنائي قادم",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://jbrseo.com"),
+  title: {
+    default: "JBRSEO | خبراء السيو لنمو أعمالك",
+    template: "%s | JBRSEO",
+  },
+  description: "JBRSEO – وكالة سيو متخصصة تساعدك على الظهور الأول في نتائج البحث وتنمية أعمالك في السعودية ومصر.",
   icons: {
     icon: LOGO_URL,
     shortcut: LOGO_URL,
     apple: LOGO_URL,
+  },
+  openGraph: {
+    type: "website",
+    locale: "ar_SA",
+    siteName: "JBRSEO",
+    images: [OG_IMAGE],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [OG_IMAGE],
   },
 };
 

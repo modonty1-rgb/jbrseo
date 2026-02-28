@@ -164,6 +164,43 @@
   animation-delay: 1s;
 }
 
+/* Section reveal on scroll (landing only); respect reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .section-reveal-in [data-reveal-section] .landing-reveal-eyebrow,
+  .section-reveal-in [data-reveal-section] .landing-reveal-title,
+  .section-reveal-in [data-reveal-section] .landing-reveal-content {
+    animation: fade-in-up 0.6s ease-out forwards;
+  }
+  .section-reveal-in [data-reveal-section] .landing-reveal-eyebrow { animation-delay: 0s; }
+  .section-reveal-in [data-reveal-section] .landing-reveal-title { animation-delay: 0.12s; }
+  .section-reveal-in [data-reveal-section] .landing-reveal-content { animation-delay: 0.24s; }
+  [data-reveal-section] .landing-reveal-eyebrow,
+  [data-reveal-section] .landing-reveal-title,
+  [data-reveal-section] .landing-reveal-content {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .section-reveal-in [data-reveal-section] .landing-reveal-eyebrow,
+  .section-reveal-in [data-reveal-section] .landing-reveal-title,
+  .section-reveal-in [data-reveal-section] .landing-reveal-content {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Subtle grain overlay for landing atmosphere (landing sections only) */
+.landing-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-repeat: repeat;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);

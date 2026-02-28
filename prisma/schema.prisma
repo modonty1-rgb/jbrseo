@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model LandingText {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  country String
+  section String
+  key     String
+  value   String
+
+  @@unique([country, section, key])
+}
+
+model LandingImage {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  country String
+  key     String
+  url     String
+
+  @@unique([country, key])
+}
+
+model PricingPlan {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  country   String
+  sortOrder Int
+  name      String
+  forWho    String
+  price     String?
+  annualPrice String?
+  badge     String?
+  highlight Boolean  @default(false)
+  features  String[]
+
+  @@unique([country, sortOrder])
+  @@index([country])
+  @@map("pricing_plans")
+}
+
+model Subscriber {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  email        String   @unique
+  phone        String
+  businessName String?
+  businessType String?
+  planName     String
+  planIndex    Int?
+  country      String
+  isAnnual     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+
+  @@index([country])
+  @@index([createdAt])
+}

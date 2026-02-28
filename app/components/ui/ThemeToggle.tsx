@@ -2,10 +2,24 @@
 
 import { Moon, Sun } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
-import { useTheme } from "@/app/helpers/useTheme";
+import { useThemeOptional } from "@/app/helpers/useTheme";
 
 export function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
+  const ctx = useThemeOptional();
+  if (!ctx) {
+    return (
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="h-10 w-10 rounded-full border border-border text-foreground/70"
+        aria-label="تفعيل الوضع الداكن"
+      >
+        <Moon className="h-4 w-4" />
+      </Button>
+    );
+  }
+  const { theme, toggleTheme } = ctx;
   return (
     <Button
       type="button"
