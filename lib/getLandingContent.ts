@@ -162,12 +162,15 @@ function buildContentFromRows(
     landingImages: {
       contactAvatar: img("contactAvatar"),
       logoWhite: img("logoWhite"),
-      company: img("company"),
-      pricing_0: img("pricing_0"),
-      pricing_1: img("pricing_1"),
-      testimonial_0: img("testimonial_0"),
-      testimonial_1: img("testimonial_1"),
-      testimonial_2: img("testimonial_2"),
+      logoLight: img("logoLight"),
+    },
+    tracking: {
+      gtmId: by("tracking", "gtmId"),
+      hotjarId: by("tracking", "hotjarId"),
+      fbPixelId: by("tracking", "fbPixelId"),
+    },
+    siteSettings: {
+      showSectionCounter: by("settings", "showSectionCounter") === "true",
     },
     sectionHeadings,
     footer: {
@@ -239,13 +242,10 @@ async function getStaticFallback(): Promise<LandingContent> {
     landingImages: {
       contactAvatar: landingImages.contactAvatar,
       logoWhite: landingImages.logoWhite,
-      company: landingImages.company,
-      pricing_0: landingImages.pricing[0],
-      pricing_1: landingImages.pricing[1],
-      testimonial_0: landingImages.testimonial[0],
-      testimonial_1: landingImages.testimonial[1],
-      testimonial_2: landingImages.testimonial[2],
+      logoLight: landingImages.logoLight,
     },
+    tracking: { gtmId: "", hotjarId: "", fbPixelId: "" },
+    siteSettings: { showSectionCounter: false },
     sectionHeadings: {
       whyNow: { eyebrow: "لماذا الآن", title: "كل شهر تأخير له ثمن" },
       howItWorks: { eyebrow: "الطريقة", title: "كيف نعمل" },

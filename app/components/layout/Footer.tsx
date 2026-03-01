@@ -13,7 +13,8 @@ const DEFAULT_LOGO = "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973
 
 export function Footer({ content }: { content: LandingContent }) {
   const { footer, landingImages } = content;
-  const logoUrl = landingImages.logoWhite || DEFAULT_LOGO;
+  const logoDark = landingImages.logoWhite || DEFAULT_LOGO;
+  const logoLight = landingImages.logoLight || landingImages.logoWhite || DEFAULT_LOGO;
   const socialLinks = [
     { href: process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK_URL, label: "Facebook", Icon: SocialFacebookOutline },
     { href: process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL, label: "Instagram", Icon: Instagram },
@@ -36,13 +37,20 @@ export function Footer({ content }: { content: LandingContent }) {
 
       <div className="relative z-10 mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-10 sm:flex-row sm:justify-between sm:px-6 lg:px-8">
         <div className="flex flex-col items-center gap-2.5 sm:items-start">
-          <Link href="/#hero" aria-label={`${footer.brandName} — الرئيسية`}>
+          <Link href="/#hero" aria-label={`${footer.brandName} — الرئيسية`} className="relative block h-8">
             <Image
-              src={logoUrl}
+              src={logoDark}
               alt={footer.brandName}
               width={100}
               height={32}
-              className="h-8 w-auto transition-opacity hover:opacity-80"
+              className="hidden h-8 w-auto transition-opacity hover:opacity-80 dark:block"
+            />
+            <Image
+              src={logoLight}
+              alt={footer.brandName}
+              width={100}
+              height={32}
+              className="block h-8 w-auto transition-opacity hover:opacity-80 dark:hidden"
             />
           </Link>
           <p className="text-xs text-muted-foreground/70">{footer.copyright}</p>

@@ -52,6 +52,8 @@ export type LandingContent = {
     twitterImage: string;
   };
   landingImages: Record<string, string>;
+  tracking: { gtmId: string; hotjarId: string; fbPixelId: string };
+  siteSettings: { showSectionCounter: boolean };
   sectionHeadings: SectionHeadings;
   footer: { brandName: string; copyright: string };
   pricingPage: { title: string; description: string; h1: string; intro: string };

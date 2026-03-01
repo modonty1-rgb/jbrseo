@@ -5,8 +5,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/app/components/ui/button";
 import { ThemeToggle } from "@/app/components/ui/ThemeToggle";
+import { useThemeOptional } from "@/app/helpers/useTheme";
 import type { LandingContent } from "@/lib/landing-content.types";
 import { PRICING_CTA_LINK } from "@/lib/constants";
+
+const DEFAULT_LOGO = "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg";
 
 const NAV_LINKS = [
   { href: "/#why-now", label: "لماذا الآن" },
@@ -19,9 +22,12 @@ const NAV_LINKS = [
 
 export function LandingHeader({ content }: { content: LandingContent }) {
   const [open, setOpen] = useState(false);
+  const ctx = useThemeOptional();
+  const theme = ctx?.theme ?? "light";
   const logoUrl =
-    content.landingImages.logoWhite ||
-    "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg";
+    theme === "dark"
+      ? (content.landingImages.logoWhite || DEFAULT_LOGO)
+      : (content.landingImages.logoLight || content.landingImages.logoWhite || DEFAULT_LOGO);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/90 backdrop-blur-xl shadow-sm shadow-primary/5">

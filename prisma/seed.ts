@@ -76,12 +76,7 @@ function imageRows(country: string): { country: string; key: string; url: string
   return [
     { country, key: "contactAvatar", url: landingImages.contactAvatar },
     { country, key: "logoWhite", url: landingImages.logoWhite },
-    { country, key: "company", url: landingImages.company },
-    { country, key: "pricing_0", url: landingImages.pricing[0] },
-    { country, key: "pricing_1", url: landingImages.pricing[1] },
-    { country, key: "testimonial_0", url: landingImages.testimonial[0] },
-    { country, key: "testimonial_1", url: landingImages.testimonial[1] },
-    { country, key: "testimonial_2", url: landingImages.testimonial[2] },
+    { country, key: "logoLight", url: landingImages.logoLight },
   ];
 }
 

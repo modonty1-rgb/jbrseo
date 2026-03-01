@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef, useState } from "react";
+import { useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
 import {
   updateSectionTextsFormData,
@@ -13,6 +14,8 @@ import {
   updateSocialProofFormData,
   updatePricingTeaserFormData,
   updateSeoFormData,
+  updateTrackingFormData,
+  updateSiteSettingsFormData,
 } from "@/app/actions/landing";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/components/ui/tabs";
 import { Button } from "@/app/components/ui/button";
@@ -59,15 +62,29 @@ const SECTION_LABELS: Record<string, string> = {
   seo: "SEO",
   footer: "Footer",
   pricingPage: "Pricing Page",
-  images: "Images",
+  images: "Settings",
+};
+
+const IMAGE_KEY_LABELS: Record<string, string> = {
+  logoWhite: "Dark mode logo",
+  logoLight: "Light mode logo",
 };
 
 const SIDEBAR_GROUPS: { label: string; ids: string[] }[] = [
-  { label: "Landing", ids: ["hero", "whyNow", "howItWorks", "outcomes", "socialProof"] },
+  { label: "Sections", ids: ["hero", "whyNow", "howItWorks", "outcomes", "socialProof", "finalCta"] },
   { label: "Pricing", ids: ["pricingFree", "pricingStarter", "pricingProfessional", "pricingEnterprise", "pricingPage"] },
-  { label: "Conversion", ids: ["faq", "finalCta"] },
+  { label: "Conversion", ids: ["faq"] },
   { label: "Site", ids: ["footer", "seo", "images"] },
 ];
+
+function SubmitButton({ children, loadingLabel = "Saving…" }: { children: React.ReactNode; loadingLabel?: string }) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" size="sm" variant="secondary" className="w-fit" disabled={pending}>
+      {pending ? loadingLabel : children}
+    </Button>
+  );
+}
 
 function getSectionHeading(
   sectionId: string,
@@ -201,7 +218,7 @@ function HeroSectionForm({ country, heroImageUrl, benefitsInitial, entries }: He
       <input type="hidden" name="country" value={country} />
       {heroImageUrl !== undefined && (
         <div className="flex flex-col gap-2">
-          <label className={labelClass} htmlFor="hero-image">Hero image (shown next to the headline)</label>
+          <label className={labelClass} htmlFor="hero-image">Hero image (avatar)</label>
           <input
             id="hero-image"
             type="url"
@@ -213,7 +230,7 @@ function HeroSectionForm({ country, heroImageUrl, benefitsInitial, entries }: He
           />
         </div>
       )}
-      <Collapsible defaultOpen className="rounded-md border border-border bg-muted/20">
+      <Collapsible defaultOpen={false} className="rounded-md border border-border bg-muted/20">
         <div className="flex items-center justify-between gap-2 p-2">
           <CollapsibleTrigger
             className="flex flex-1 items-center gap-2 text-left font-medium hover:underline [&[data-state=open]>svg]:rotate-180"
@@ -273,9 +290,7 @@ function HeroSectionForm({ country, heroImageUrl, benefitsInitial, entries }: He
         </div>
       ))}
       </div>
-      <Button type="submit" size="sm" variant="secondary" className="w-fit">
-        Save section
-      </Button>
+      <SubmitButton>Save section</SubmitButton>
     </form>
   );
 }
@@ -309,9 +324,12 @@ function WhyNowSectionForm({ country, linesInitial, heading }: WhyNowSectionForm
         </div>
         <input type="hidden" name="sh_section" value="whyNow" />
       </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between gap-2">
-          <label className={labelClass}>Lines</label>
+      <Collapsible defaultOpen={false} className="rounded-lg border border-border bg-muted/20">
+        <div className="flex items-center justify-between gap-2 p-3">
+          <CollapsibleTrigger className="flex flex-1 items-center gap-2 text-left font-medium hover:underline [&[data-state=open]>svg]:rotate-180">
+            <ChevronDown className="h-4 w-4 shrink-0 transition-transform" aria-hidden />
+            <span>Lines ({lines.length})</span>
+          </CollapsibleTrigger>
           <Button
             type="button"
             variant="outline"
@@ -321,7 +339,7 @@ function WhyNowSectionForm({ country, linesInitial, heading }: WhyNowSectionForm
             Add line
           </Button>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <CollapsibleContent className="px-3 pb-3 pt-0 space-y-3">
           {lines.map((item, i) => (
             <div key={item._id} className="flex flex-col gap-1.5">
               <label className={labelClass} htmlFor={`whynow-line-${item._id}`}>Line {i + 1}</label>
@@ -332,7 +350,7 @@ function WhyNowSectionForm({ country, linesInitial, heading }: WhyNowSectionForm
                   name={`line_${i}`}
                   value={item.value}
                   onChange={(e) => setLines((b) => b.map((x) => x._id === item._id ? { ...x, value: e.target.value } : x))}
-                  className={inputBase}
+                  className={`${inputBase} flex-1 min-w-0`}
                   placeholder={`Line ${i + 1}`}
                 />
                 <Button
@@ -348,12 +366,10 @@ function WhyNowSectionForm({ country, linesInitial, heading }: WhyNowSectionForm
               </div>
             </div>
           ))}
-        </div>
-        <input type="hidden" name="linesCount" value={lines.length} />
-      </div>
-      <Button type="submit" size="sm" variant="secondary" className="w-fit">
-        Save section
-      </Button>
+          <input type="hidden" name="linesCount" value={lines.length} />
+        </CollapsibleContent>
+      </Collapsible>
+      <SubmitButton>Save section</SubmitButton>
     </form>
   );
 }
@@ -387,9 +403,12 @@ function HowItWorksSectionForm({ country, stepsInitial, heading }: HowItWorksSec
         </div>
         <input type="hidden" name="sh_section" value="howItWorks" />
       </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between gap-2">
-          <label className={labelClass}>Steps</label>
+      <Collapsible defaultOpen={false} className="rounded-lg border border-border bg-muted/20">
+        <div className="flex items-center justify-between gap-2 p-3">
+          <CollapsibleTrigger className="flex flex-1 items-center gap-2 text-left font-medium hover:underline [&[data-state=open]>svg]:rotate-180">
+            <ChevronDown className="h-4 w-4 shrink-0 transition-transform" aria-hidden />
+            <span>Steps ({steps.length})</span>
+          </CollapsibleTrigger>
           <Button
             type="button"
             variant="outline"
@@ -399,7 +418,7 @@ function HowItWorksSectionForm({ country, stepsInitial, heading }: HowItWorksSec
             Add step
           </Button>
         </div>
-        <div className="space-y-3">
+        <CollapsibleContent className="px-3 pb-3 pt-0 space-y-3">
           {steps.map((step, i) => (
             <div key={step._id} className="rounded-md border border-border bg-muted/20 p-2.5">
               <div className="mb-1.5 flex items-center justify-between gap-2">
@@ -443,12 +462,10 @@ function HowItWorksSectionForm({ country, stepsInitial, heading }: HowItWorksSec
               </div>
             </div>
           ))}
-        </div>
-        <input type="hidden" name="stepCount" value={steps.length} />
-      </div>
-      <Button type="submit" size="sm" variant="secondary" className="w-fit">
-        Save section
-      </Button>
+          <input type="hidden" name="stepCount" value={steps.length} />
+        </CollapsibleContent>
+      </Collapsible>
+      <SubmitButton>Save section</SubmitButton>
     </form>
   );
 }
@@ -482,9 +499,12 @@ function OutcomesSectionForm({ country, itemsInitial, heading }: OutcomesSection
         </div>
         <input type="hidden" name="sh_section" value="outcomes" />
       </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between gap-2">
-          <label className={labelClass}>Items</label>
+      <Collapsible defaultOpen={false} className="rounded-lg border border-border bg-muted/20">
+        <div className="flex items-center justify-between gap-2 p-3">
+          <CollapsibleTrigger className="flex flex-1 items-center gap-2 text-left font-medium hover:underline [&[data-state=open]>svg]:rotate-180">
+            <ChevronDown className="h-4 w-4 shrink-0 transition-transform" aria-hidden />
+            <span>Items ({items.length})</span>
+          </CollapsibleTrigger>
           <Button
             type="button"
             variant="outline"
@@ -494,7 +514,7 @@ function OutcomesSectionForm({ country, itemsInitial, heading }: OutcomesSection
             Add item
           </Button>
         </div>
-        <div className="space-y-3">
+        <CollapsibleContent className="px-3 pb-3 pt-0 space-y-3">
           {items.map((item, i) => (
             <div key={item._id} className="rounded-md border border-border bg-muted/20 p-2.5">
               <div className="mb-1.5 flex items-center justify-between gap-2">
@@ -538,12 +558,10 @@ function OutcomesSectionForm({ country, itemsInitial, heading }: OutcomesSection
               </div>
             </div>
           ))}
-        </div>
-        <input type="hidden" name="itemCount" value={items.length} />
-      </div>
-      <Button type="submit" size="sm" variant="secondary" className="w-fit">
-        Save section
-      </Button>
+          <input type="hidden" name="itemCount" value={items.length} />
+        </CollapsibleContent>
+      </Collapsible>
+      <SubmitButton>Save section</SubmitButton>
     </form>
   );
 }
@@ -636,9 +654,7 @@ function FaqSectionForm({ country, itemsInitial, heading }: FaqSectionFormProps)
         </div>
         <input type="hidden" name="faqCount" value={items.length} />
       </div>
-      <Button type="submit" size="sm" variant="secondary" className="w-fit">
-        Save section
-      </Button>
+      <SubmitButton>Save section</SubmitButton>
     </form>
   );
 }
@@ -704,9 +720,7 @@ function SeoSectionForm({ country, entries }: SeoSectionFormProps) {
           </div>
         ))}
       </div>
-      <Button type="submit" size="sm" variant="secondary" className="w-fit">
-        Save SEO & social cards
-      </Button>
+      <SubmitButton loadingLabel="Saving…">Save SEO & social cards</SubmitButton>
     </form>
   );
 }
@@ -792,7 +806,7 @@ function SocialProofSectionForm({
         </div>
         <div className="space-y-4">
           {testimonials.map((t, i) => (
-            <Collapsible key={t._id} defaultOpen={i === 0}>
+            <Collapsible key={t._id} defaultOpen={false}>
               <div className="rounded-lg border border-border bg-muted/20">
                 <div className="flex items-center justify-between gap-2 p-3">
                   <CollapsibleTrigger
@@ -889,7 +903,7 @@ function SocialProofSectionForm({
         </div>
         <input type="hidden" name="testimonialCount" value={testimonials.length} />
       </div>
-      <Collapsible defaultOpen>
+      <Collapsible defaultOpen={false}>
         <div className="rounded-lg border border-border bg-muted/20">
           <CollapsibleTrigger
             className="flex w-full items-center justify-between gap-2 p-3 text-left font-medium hover:underline [&[data-state=open]>svg]:rotate-180"
@@ -1050,7 +1064,7 @@ function PricingPlanSingleTabForm({
     <form action={formAction} className="flex flex-col gap-3">
       <input type="hidden" name="country" value={country} />
       <input type="hidden" name="planCount" value={String(PLAN_COUNT)} />
-      <Collapsible defaultOpen className="rounded-lg border border-border bg-primary/10" id="pricing-section-heading">
+      <Collapsible defaultOpen={false} className="rounded-lg border border-border bg-primary/10" id="pricing-section-heading">
         <div className="flex items-center justify-between gap-2 px-3 py-2">
           <CollapsibleTrigger className="flex flex-1 items-center gap-2 text-left text-sm font-semibold hover:underline [&[data-state=open]>svg]:rotate-180">
             <ChevronDown className="h-4 w-4 shrink-0 transition-transform" aria-hidden />
@@ -1538,6 +1552,7 @@ type Props = {
   country: SupportedCountry;
   bySection: Record<string, { key: string; value: string }[]>;
   images: { key: string; url: string }[];
+  imagesForImagesTab: { key: string; url: string }[];
   pricingPlans: PricingPlanRow[];
 };
 
@@ -1586,9 +1601,9 @@ function normalizePricingModelToFour(rows: PricingPlanRow[], cta: string): Prici
   ];
 }
 
-export function AdminDashboardTabs({ country, bySection, images, pricingPlans }: Props) {
+export function AdminDashboardTabs({ country, bySection, images, imagesForImagesTab, pricingPlans }: Props) {
   const sectionIds = TAB_ORDER.filter((id) => {
-    if (id === "images") return images.length > 0;
+    if (id === "images") return imagesForImagesTab.length > 0;
     if (id === "seo") return true;
     if (PRICING_PLAN_TAB_IDS.includes(id as (typeof PRICING_PLAN_TAB_IDS)[number])) return true;
     return (bySection[id]?.length ?? 0) > 0;
@@ -1623,25 +1638,28 @@ export function AdminDashboardTabs({ country, bySection, images, pricingPlans }:
             const visibleIds = group.ids.filter((id) => sectionIds.includes(id));
             if (visibleIds.length === 0) return null;
             return (
-              <div key={group.label} className="flex flex-col gap-0.5">
+              <Collapsible key={group.label} defaultOpen={false} className="flex flex-col gap-0.5">
                 {groupIndex > 0 && (
                   <div className="my-1 border-t border-border/80" aria-hidden />
                 )}
-                <p className="px-2.5 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <CollapsibleTrigger className="flex items-center gap-1.5 rounded-md bg-muted/80 px-2.5 py-1 text-left text-xs font-semibold tracking-wider text-muted-foreground hover:bg-muted hover:text-foreground [&[data-state=open]>svg]:rotate-180">
+                  <ChevronDown className="h-3.5 w-3.5 shrink-0 transition-transform" aria-hidden />
                   {group.label}
-                </p>
-                <TabsList className="flex h-auto w-full flex-col gap-0.5 rounded-md bg-transparent p-0 shadow-none">
-                  {visibleIds.map((id) => (
-                    <TabsTrigger
-                      key={id}
-                      value={id}
-                      className="w-full justify-start rounded-md px-2.5 py-1.5 text-sm data-[state=active]:shadow-sm"
-                    >
-                      {SECTION_LABELS[id] ?? id}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <TabsList className="flex h-auto w-full flex-col gap-0.5 rounded-md bg-transparent p-0 shadow-none">
+                    {visibleIds.map((id) => (
+                      <TabsTrigger
+                        key={id}
+                        value={id}
+                        className="w-full justify-start rounded-md px-2.5 py-1.5 text-sm data-[state=active]:shadow-sm"
+                      >
+                        {SECTION_LABELS[id] ?? id}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </CollapsibleContent>
+              </Collapsible>
             );
           })}
         </div>
@@ -1774,9 +1792,7 @@ export function AdminDashboardTabs({ country, bySection, images, pricingPlans }:
                       </div>
                     ))}
                     </div>
-                    <Button type="submit" size="sm" variant="secondary" className="w-fit">
-                      Save section
-                    </Button>
+                    <SubmitButton>Save section</SubmitButton>
                   </form>
                 ) : null}
               </div>
@@ -1786,15 +1802,15 @@ export function AdminDashboardTabs({ country, bySection, images, pricingPlans }:
 
       <TabsContent value="images" className="mt-0">
         <div className="rounded-lg border border-border bg-card p-3 shadow-sm">
-          <h2 className="mb-3 text-base font-semibold text-foreground">Images</h2>
+          <h2 className="mb-3 text-base font-semibold text-foreground">Settings</h2>
           <form action={updateImagesFormData} className="flex flex-col gap-3">
             <input type="hidden" name="country" value={country} />
-            <input type="hidden" name="keys" value={JSON.stringify(images.map((i) => i.key))} />
+            <input type="hidden" name="keys" value={JSON.stringify(imagesForImagesTab.map((i) => i.key))} />
             <div className="grid grid-cols-2 gap-3">
-            {images.map(({ key, url }) => (
+            {imagesForImagesTab.map(({ key, url }) => (
               <div key={key} className="flex flex-col gap-1.5">
                 <label className={labelClass} htmlFor={`img-${key}`}>
-                  {key}
+                  {IMAGE_KEY_LABELS[key] ?? key}
                 </label>
                 <input
                   id={`img-${key}`}
@@ -1808,10 +1824,55 @@ export function AdminDashboardTabs({ country, bySection, images, pricingPlans }:
               </div>
             ))}
             </div>
-            <Button type="submit" size="sm" variant="secondary" className="w-fit">
-              Save section
-            </Button>
+            <SubmitButton>Save section</SubmitButton>
           </form>
+
+          <div className="mt-4 border-t border-border/60 pt-4">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Tracking codes</h3>
+            <form action={updateTrackingFormData} className="flex flex-col gap-3">
+              <input type="hidden" name="country" value={country} />
+              <div className="grid grid-cols-2 gap-3">
+                {([
+                  { key: "gtmId", label: "Google Tag Manager ID", placeholder: "GTM-XXXXXX" },
+                  { key: "hotjarId", label: "Hotjar site ID", placeholder: "1234567" },
+                  { key: "fbPixelId", label: "Facebook Pixel ID", placeholder: "123456789012345" },
+                ] as const).map(({ key, label, placeholder }) => (
+                  <div key={key} className="flex flex-col gap-1.5">
+                    <label className={labelClass} htmlFor={`tracking-${key}`}>{label}</label>
+                    <input
+                      id={`tracking-${key}`}
+                      type="text"
+                      name={key}
+                      defaultValue={bySection["tracking"]?.find((e) => e.key === key)?.value ?? ""}
+                      placeholder={placeholder}
+                      className={inputBase}
+                      dir="ltr"
+                    />
+                  </div>
+                ))}
+              </div>
+              <SubmitButton>Save tracking</SubmitButton>
+            </form>
+          </div>
+
+          <div className="mt-4 border-t border-border/60 pt-4">
+            <h3 className="mb-3 text-sm font-semibold text-foreground">Section reference</h3>
+            <form action={updateSiteSettingsFormData} className="flex flex-col gap-3">
+              <input type="hidden" name="country" value={country} />
+              <label className="flex cursor-pointer items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="showSectionCounter"
+                  value="true"
+                  defaultChecked={bySection["settings"]?.find((e) => e.key === "showSectionCounter")?.value === "true"}
+                  className="h-4 w-4 rounded border-border"
+                />
+                <span className="text-sm text-foreground">Show section counters on public site (for content reference)</span>
+              </label>
+              <p className="text-xs text-muted-foreground">Uncheck and save to hide the counters from the public site.</p>
+              <SubmitButton>Save</SubmitButton>
+            </form>
+          </div>
         </div>
       </TabsContent>
         </div>

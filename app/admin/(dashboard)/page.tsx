@@ -17,6 +17,12 @@ export default async function AdminDashboardPage({
   const params = await searchParams;
   const country = (params.country === "EG" ? "EG" : "SA") as SupportedCountry;
   const { texts, images, pricingPlans } = await getAdminLandingData(country);
+  const IMAGE_KEYS_IN_IMAGES_TAB = ["logoWhite", "logoLight"] as const;
+  const imagesByKey = Object.fromEntries(images.map((i) => [i.key, i.url]));
+  const imagesForImagesTab = IMAGE_KEYS_IN_IMAGES_TAB.map((key) => ({
+    key,
+    url: imagesByKey[key] ?? "",
+  }));
 
   const bySection = texts.reduce<Record<string, { key: string; value: string }[]>>(
     (acc, { section, key, value }) => {
@@ -69,7 +75,13 @@ export default async function AdminDashboardPage({
         </div>
       </header>
 
-      <AdminDashboardTabs country={country} bySection={bySection} images={images} pricingPlans={pricingPlans} />
+      <AdminDashboardTabs
+        country={country}
+        bySection={bySection}
+        images={images}
+        imagesForImagesTab={imagesForImagesTab}
+        pricingPlans={pricingPlans}
+      />
     </div>
   );
 }

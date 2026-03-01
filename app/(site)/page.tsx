@@ -57,31 +57,32 @@ export default async function Home() {
   const h = await headers();
   const country = getCountryFromHeaders(h);
   const content = await getLandingContent(country);
+  const showSectionCounter = content.siteSettings.showSectionCounter;
   return (
     <>
       <LandingJsonLd content={content} />
-      <SectionReveal>
+      <SectionReveal sectionNumber={1} showSectionCounter={showSectionCounter}>
         <Hero content={content} />
       </SectionReveal>
-      <SectionReveal>
+      <SectionReveal sectionNumber={2} showSectionCounter={showSectionCounter}>
         <WhyNow content={content} />
       </SectionReveal>
-      <SectionReveal>
+      <SectionReveal sectionNumber={3} showSectionCounter={showSectionCounter}>
         <HowItWorks content={content} />
       </SectionReveal>
-      <SectionReveal>
+      <SectionReveal sectionNumber={4} showSectionCounter={showSectionCounter}>
         <Outcomes content={content} />
       </SectionReveal>
-      <SectionReveal>
+      <SectionReveal sectionNumber={5} showSectionCounter={showSectionCounter}>
         <SocialProof content={content} />
       </SectionReveal>
-      <SectionReveal>
+      <SectionReveal sectionNumber={6} showSectionCounter={showSectionCounter}>
         <PricingTeaser content={content} country={country} />
       </SectionReveal>
-      <SectionReveal>
+      <SectionReveal sectionNumber={7} showSectionCounter={showSectionCounter}>
         <FAQ content={content} />
       </SectionReveal>
-      <SectionReveal>
+      <SectionReveal sectionNumber={8} showSectionCounter={showSectionCounter}>
         <FinalCTA content={content} />
       </SectionReveal>
     </>

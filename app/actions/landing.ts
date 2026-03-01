@@ -361,3 +361,25 @@ export async function updateHeroSectionFormData(formData: FormData) {
   await updateLandingText(country, "hero", "proof", (formData.get("v_proof") as string) ?? "");
   revalidatePath("/admin");
 }
+
+export async function updateTrackingFormData(formData: FormData) {
+  if (!(await isAdmin())) return;
+  const country = formData.get("country") as string;
+  if (!country) return;
+  assertCountry(country);
+  for (const key of ["gtmId", "hotjarId", "fbPixelId"] as const) {
+    await updateLandingText(country, "tracking", key, (formData.get(key) as string)?.trim() ?? "");
+  }
+  revalidatePath("/admin");
+}
+
+export async function updateSiteSettingsFormData(formData: FormData) {
+  if (!(await isAdmin())) return;
+  const country = formData.get("country") as string;
+  if (!country) return;
+  assertCountry(country);
+  const showSectionCounter = formData.get("showSectionCounter") === "true";
+  await updateLandingText(country, "settings", "showSectionCounter", showSectionCounter ? "true" : "false");
+  revalidatePath("/admin");
+  revalidatePath("/");
+}
