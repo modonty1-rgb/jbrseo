@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Tajawal } from "next/font/google";
 import Script from "next/script";
 import { ThemeProvider } from "@/app/helpers/useTheme";
+import { RevealObserver } from "@/app/components/shared/RevealObserver";
 import "./globals.css";
 
 const tajawal = Tajawal({
@@ -9,6 +10,7 @@ const tajawal = Tajawal({
   weight: ["300", "400", "500", "700", "800", "900"],
   variable: "--font-tajawal",
   display: "swap",
+  preload: true,
 });
 
 const LOGO_URL =
@@ -58,7 +60,14 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={`${tajawal.className} bg-background text-foreground`}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 focus:z-[9999] focus:bg-accent focus:text-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg"
+        >
+          انتقل للمحتوى الرئيسي
+        </a>
         <ThemeProvider>{children}</ThemeProvider>
+        <RevealObserver />
       </body>
     </html>
   );

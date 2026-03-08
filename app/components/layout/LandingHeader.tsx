@@ -1,140 +1,108 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { Button } from "@/app/components/ui/button";
-import { ThemeToggle } from "@/app/components/ui/ThemeToggle";
-import { useThemeOptional } from "@/app/helpers/useTheme";
+import type { StaticLanding } from "@/app/content/landing/types";
 import type { LandingContent } from "@/lib/landing-content.types";
-import { PRICING_CTA_LINK } from "@/lib/constants";
+import { HeaderLogo } from "./HeaderLogo";
+import HeaderActionsClient from "./HeaderActionsClient";
 
-const DEFAULT_LOGO = "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg";
+function DesktopNav({ navLinks }: { navLinks: StaticLanding["header"]["navLinks"] }) {
+  return (
+    <nav className="hidden items-center gap-1 lg:flex" aria-label="القائمة الرئيسية">
+      {navLinks.map(({ href, label }) => (
+        <Link
+          key={href}
+          href={href}
+          className="
+            relative rounded-lg px-3 py-2
+            text-[13.5px] font-semibold text-muted-foreground
+            transition-colors duration-200
+            hover:bg-muted/60 hover:text-foreground
+            after:absolute after:bottom-1 after:start-3 after:end-3
+            after:h-[2px] after:rounded-full after:bg-accent
+            after:scale-x-0 after:transition-transform after:duration-200
+            hover:after:scale-x-100
+          "
+        >
+          {label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
 
-const NAV_LINKS = [
-  { href: "/#why-now", label: "لماذا الآن" },
-  { href: "/#how-it-works", label: "كيف نعمل" },
-  { href: "/#outcomes", label: "النتائج" },
-  { href: "/#social-proof", label: "الشهادات" },
-  { href: "/#pricing", label: "الأسعار" },
-  { href: "/#faq", label: "الأسئلة" },
-];
+function HeaderActions({ staticLanding }: { staticLanding: StaticLanding }) {
+  const { header, hero } = staticLanding;
+  return (
+    <HeaderActionsClient
+      navLinks={header.navLinks}
+      ctaLabel={header.ctaLabel}
+      pricingHref={hero.ctaLink}
+      seatsTotal={header.seats.total}
+      seatsTaken={header.seats.taken}
+      announcementPrefix={header.announcementPrefix}
+      announcementSuffix={header.announcementSuffix}
+    />
+  );
+}
 
-export function LandingHeader({ content }: { content: LandingContent }) {
-  const [open, setOpen] = useState(false);
-  const ctx = useThemeOptional();
-  const theme = ctx?.theme ?? "light";
-  const logoUrl =
-    theme === "dark"
-      ? (content.landingImages.logoWhite || DEFAULT_LOGO)
-      : (content.landingImages.logoLight || content.landingImages.logoWhite || DEFAULT_LOGO);
+export function LandingHeader({ content, staticLanding }: { content: LandingContent; staticLanding: StaticLanding }) {
+  const { header, hero } = staticLanding;
+  const remaining = header.seats.total - header.seats.taken;
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/90 backdrop-blur-xl shadow-sm shadow-primary/5">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
-        <Link
-          href="/#hero"
-          className="flex shrink-0 items-center gap-2"
-          aria-label="مدونتي — الرئيسية"
-        >
-          <Image
-            src={logoUrl}
-            alt="مدونتي"
-            width={110}
-            height={34}
-            className="h-8 w-auto md:h-9"
-          />
-        </Link>
-
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-5 text-sm font-medium text-muted-foreground sm:flex">
-          {NAV_LINKS.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="relative transition-colors duration-200 hover:text-foreground after:absolute after:bottom-0 after:start-0 after:h-px after:w-0 after:bg-accent after:transition-all after:duration-300 hover:after:w-full"
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          <Button
-            asChild
-            size="default"
-            className="hidden rounded-full px-5 shadow-md shadow-primary/10 transition-all duration-200 hover:scale-[1.03] hover:shadow-lg sm:inline-flex"
-          >
-            <Link href={PRICING_CTA_LINK}>{content.landing.hero.cta}</Link>
-          </Button>
-
-          {/* Mobile hamburger */}
-          <button
-            type="button"
-            onClick={() => setOpen((v) => !v)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border/60 bg-card/60 text-foreground transition-colors hover:bg-muted sm:hidden"
-            aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
-            aria-expanded={open}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="transition-transform duration-200"
-            >
-              {open ? (
-                <>
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </>
-              ) : (
-                <>
-                  <line x1="4" y1="8" x2="20" y2="8" />
-                  <line x1="4" y1="16" x2="20" y2="16" />
-                </>
-              )}
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile drawer */}
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl">
+      {/* ── TOP ANNOUNCEMENT BAR ── */}
       <div
-        className={
-          "overflow-hidden border-t border-border/30 transition-all duration-300 ease-out sm:hidden " +
-          (open ? "max-h-96 opacity-100" : "max-h-0 opacity-0")
-        }
+        className="flex items-center justify-center gap-2.5 px-4 py-2 text-center text-[11.5px] font-bold"
+        style={{
+          background:   "linear-gradient(to left, oklch(0.14 0.13 275), oklch(0.32 0.16 275))",
+          color:        "#fff",
+          letterSpacing: ".01em",
+        }}
       >
-        <nav className="flex flex-col gap-1 px-4 py-3">
-          {NAV_LINKS.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setOpen(false)}
-              className="rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-            >
-              {label}
-            </Link>
-          ))}
-          <div className="mt-2 border-t border-border/30 pt-3">
-            <Button
-              asChild
-              className="w-full rounded-lg shadow-md shadow-primary/10"
-            >
-              <Link href={PRICING_CTA_LINK} onClick={() => setOpen(false)}>
-                {content.landing.hero.cta}
-              </Link>
-            </Button>
-          </div>
-        </nav>
+        <span
+          className="inline-block h-1.5 w-1.5 rounded-full"
+          style={{ background: "oklch(0.65 0.18 142)", animation: "pulse-hdr 1.8s ease infinite" }}
+          aria-hidden
+        />
+        {header.announcementPrefix}
+        <span
+          className="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[11px] font-black"
+          style={{ background: "oklch(0.65 0.18 142)", color: "#fff", minWidth: 22 }}
+        >
+          {remaining}
+        </span>
+        {header.announcementSuffix} {header.seats.total}
+        <span className="mx-1 opacity-40">·</span>
+        <Link
+          href={hero.ctaLink}
+          className="underline underline-offset-2 opacity-80 hover:opacity-100 transition-opacity"
+        >
+          {header.bookCta}
+        </Link>
       </div>
+
+      {/* ── MAIN NAV ── */}
+      <div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between px-5 py-3 sm:px-8 lg:px-10">
+
+        {/* LOGO */}
+        <HeaderLogo landingImages={content.landingImages} />
+
+        {/* DESKTOP NAV */}
+        <DesktopNav navLinks={header.navLinks} />
+
+        {/* RIGHT ACTIONS (client) */}
+        <HeaderActions staticLanding={staticLanding} />
+      </div>
+
+      <style>{`
+        @keyframes pulse-hdr {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50%       { opacity: .5; transform: scale(1.5); }
+        }
+      `}</style>
     </header>
   );
 }
+

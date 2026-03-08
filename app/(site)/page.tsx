@@ -1,17 +1,26 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import Hero from "@/app/components/landing/Hero";
-import WhyNow from "@/app/components/landing/WhyNow";
-import HowItWorks from "@/app/components/landing/HowItWorks";
-import Outcomes from "@/app/components/landing/Outcomes";
-import SocialProof from "@/app/components/landing/SocialProof";
-import PricingTeaser from "@/app/components/landing/PricingTeaser";
-import FAQ from "@/app/components/landing/FAQ";
-import FinalCTA from "@/app/components/landing/FinalCTA";
-import LandingJsonLd from "@/app/components/landing/LandingJsonLd";
-import { SectionReveal } from "@/app/components/landing/SectionReveal";
+import dynamic from "next/dynamic";
+import Hero from "@/app/components/landing/hero/Hero";
+import WhyNow from "@/app/components/landing/WhyNow/WhyNow";
+import HowItWorks from "@/app/components/landing/HowItWorks/HowItWorks";
+import Outcomes from "@/app/components/landing/Outcomes/Outcomes";
+import LandingJsonLd from "@/app/components/shared/LandingJsonLd";
+import { SectionReveal } from "@/app/components/shared/SectionReveal";
+import { getStaticLanding } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getLandingContent } from "@/lib/getLandingContent";
+
+const SocialProof = dynamic(
+  () => import("@/app/components/landing/SocialProof/SocialProof")
+);
+const ModontyPricing = dynamic(
+  () => import("@/app/components/landing/price-section/price-section")
+);
+const FAQ = dynamic(() => import("@/app/components/landing/FAQ/FAQ"));
+const FinalCTA = dynamic(
+  () => import("@/app/components/landing/FinalCTA/FinalCTA")
+);
 
 function toAbsoluteUrl(pathOrUrl: string): string {
   if (!pathOrUrl) return "";
@@ -56,34 +65,53 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const h = await headers();
   const country = getCountryFromHeaders(h);
-  const content = await getLandingContent(country);
+  const [content, staticLanding] = await Promise.all([
+    getLandingContent(country),
+    Promise.resolve(getStaticLanding(country)),
+  ]);
+  const si = content.sectionImages;
+  const mergedStaticLanding = {
+    ...staticLanding,
+    hero: { ...staticLanding.hero, sectionImage: si?.hero ?? staticLanding.hero.sectionImage ?? "" },
+    whyNow: { ...staticLanding.whyNow, sectionImage: si?.whyNow ?? staticLanding.whyNow.sectionImage ?? "" },
+    howItWorks: { ...staticLanding.howItWorks, sectionImage: si?.howItWorks ?? staticLanding.howItWorks.sectionImage ?? "" },
+    outcomes: { ...staticLanding.outcomes, sectionImage: si?.outcomes ?? staticLanding.outcomes.sectionImage ?? "" },
+    socialProof: { ...staticLanding.socialProof, sectionImage: si?.socialProof ?? staticLanding.socialProof.sectionImage ?? "" },
+    faq: { ...staticLanding.faq, sectionImage: si?.faq ?? staticLanding.faq.sectionImage ?? "" },
+    finalCta: { ...staticLanding.finalCta, sectionImage: si?.finalCta ?? staticLanding.finalCta.sectionImage ?? "" },
+  };
   const showSectionCounter = content.siteSettings.showSectionCounter;
+  const pricingSA = getStaticLanding("SA").pricing;
+  const pricingEG = getStaticLanding("EG").pricing;
+  const initialLocale = country === "EG" ? "eg" : "sa";
   return (
     <>
       <LandingJsonLd content={content} />
-      <SectionReveal sectionNumber={1} showSectionCounter={showSectionCounter}>
-        <Hero content={content} />
+      <SectionReveal variant="none" sectionNumber={1} showSectionCounter={showSectionCounter}>
+        <Hero content={content} staticLanding={mergedStaticLanding} />
       </SectionReveal>
-      <SectionReveal sectionNumber={2} showSectionCounter={showSectionCounter}>
-        <WhyNow content={content} />
+      <SectionReveal variant="blur-in" sectionNumber={2} showSectionCounter={showSectionCounter}>
+        <WhyNow staticLanding={mergedStaticLanding} />
       </SectionReveal>
-      <SectionReveal sectionNumber={3} showSectionCounter={showSectionCounter}>
-        <HowItWorks content={content} />
+      <SectionReveal variant="blur-in" sectionNumber={3} showSectionCounter={showSectionCounter}>
+        <HowItWorks staticLanding={mergedStaticLanding} />
       </SectionReveal>
-      <SectionReveal sectionNumber={4} showSectionCounter={showSectionCounter}>
-        <Outcomes content={content} />
+      <SectionReveal variant="blur-in" sectionNumber={4} showSectionCounter={showSectionCounter}>
+        <Outcomes staticLanding={mergedStaticLanding} />
       </SectionReveal>
-      <SectionReveal sectionNumber={5} showSectionCounter={showSectionCounter}>
-        <SocialProof content={content} />
+      <SectionReveal variant="fade-up" sectionNumber={5} showSectionCounter={showSectionCounter}>
+        <SocialProof staticLanding={mergedStaticLanding} />
       </SectionReveal>
-      <SectionReveal sectionNumber={6} showSectionCounter={showSectionCounter}>
-        <PricingTeaser content={content} country={country} />
+      <SectionReveal variant="fade-up" delay={80} sectionNumber={6} showSectionCounter={showSectionCounter}>
+        <div id="pricing">
+          <ModontyPricing pricingSA={pricingSA} pricingEG={pricingEG} initialLocale={initialLocale} />
+        </div>
       </SectionReveal>
-      <SectionReveal sectionNumber={7} showSectionCounter={showSectionCounter}>
-        <FAQ content={content} />
+      <SectionReveal variant="blur-in" sectionNumber={7} showSectionCounter={showSectionCounter}>
+        <FAQ staticLanding={mergedStaticLanding} />
       </SectionReveal>
-      <SectionReveal sectionNumber={8} showSectionCounter={showSectionCounter}>
-        <FinalCTA content={content} />
+      <SectionReveal variant="blur-in" sectionNumber={8} showSectionCounter={showSectionCounter}>
+        <FinalCTA staticLanding={mergedStaticLanding} />
       </SectionReveal>
     </>
   );

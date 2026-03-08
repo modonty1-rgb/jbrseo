@@ -7,40 +7,15 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model LandingText {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  country String
-  section String
-  key     String
-  value   String
-
-  @@unique([country, section, key])
-}
-
-model LandingImage {
-  id      String @id @default(auto()) @map("_id") @db.ObjectId
-  country String
-  key     String
-  url     String
-
-  @@unique([country, key])
-}
-
-model PricingPlan {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  country   String
-  sortOrder Int
-  name      String
-  forWho    String
-  price     String?
-  annualPrice String?
-  badge     String?
-  highlight Boolean  @default(false)
-  features  String[]
-
-  @@unique([country, sortOrder])
-  @@index([country])
-  @@map("pricing_plans")
+model SiteSettings {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  country        String   @unique
+  seo            Json
+  tracking       Json
+  site           Json
+  images         Json
+  pricingTeaser  Json
+  updatedAt      DateTime @default(now())
 }
 
 model Subscriber {

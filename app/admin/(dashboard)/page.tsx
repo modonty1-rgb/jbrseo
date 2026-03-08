@@ -1,87 +1,96 @@
-import Link from "next/link";
-import { getAdminLandingData } from "@/app/actions/landing";
-import type { SupportedCountry } from "@/lib/landing-content.types";
-import { Button } from "@/app/components/ui/button";
-import { AdminDashboardTabs } from "./AdminDashboardTabs";
+import { Suspense } from "react";
+import { getSubscriberStats } from "@/app/actions/subscribers";
+import { AdminCountryPill } from "./components/AdminCountryPill";
 
-const COUNTRIES: { value: SupportedCountry; label: string }[] = [
-  { value: "SA", label: "Saudi Arabia" },
-  { value: "EG", label: "Egypt" },
-];
+async function getCountry(searchParams: Promise<{ country?: string }>) {
+  const params = await searchParams;
+  return params.country === "EG" ? "EG" : "SA";
+}
 
 export default async function AdminDashboardPage({
   searchParams,
 }: {
   searchParams: Promise<{ country?: string }>;
 }) {
-  const params = await searchParams;
-  const country = (params.country === "EG" ? "EG" : "SA") as SupportedCountry;
-  const { texts, images, pricingPlans } = await getAdminLandingData(country);
-  const IMAGE_KEYS_IN_IMAGES_TAB = ["logoWhite", "logoLight"] as const;
-  const imagesByKey = Object.fromEntries(images.map((i) => [i.key, i.url]));
-  const imagesForImagesTab = IMAGE_KEYS_IN_IMAGES_TAB.map((key) => ({
-    key,
-    url: imagesByKey[key] ?? "",
-  }));
-
-  const bySection = texts.reduce<Record<string, { key: string; value: string }[]>>(
-    (acc, { section, key, value }) => {
-      if (section === "finalCta" && key === "cta") return acc;
-      if (!acc[section]) acc[section] = [];
-      acc[section].push({ key, value });
-      return acc;
-    },
-    {}
-  );
-
-  if (texts.length === 0 && images.length === 0) {
-    return (
-      <div className="mx-auto max-w-4xl px-4 py-8">
-        <h1 className="mb-6 text-2xl font-bold text-foreground">Content editor</h1>
-        <p className="rounded-lg border border-border bg-muted/50 p-4 text-muted-foreground">
-          No data for this country. Run{" "}
-          <code className="rounded bg-muted px-1">pnpm db:seed</code> to populate the database first.
-        </p>
-        <div className="mt-4 flex gap-2">
-          {COUNTRIES.map((c) => (
-            <Button key={c.value} variant="outline" size="sm" asChild>
-              <Link href={`/admin?country=${c.value}`}>{c.label}</Link>
-            </Button>
-          ))}
-        </div>
-      </div>
-    );
-  }
+  await getCountry(searchParams);
+  const stats = await getSubscriberStats();
+  const maxCountry = stats ? Math.max(stats.byCountry.SA, stats.byCountry.EG, 1) : 1;
+  const total = stats?.total ?? 0;
+  const pct7 = total > 0 ? Math.round((stats!.last7Days / total) * 100) : 0;
 
   return (
-    <div className="min-w-[900px] px-4 py-4">
-      <p className="mb-1.5 text-xs text-muted-foreground">For the best experience, use a desktop browser.</p>
-      <header className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-xl font-bold text-foreground">Content editor</h1>
-        <div className="flex flex-wrap items-center gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/admin/subscribers">Subscribers</Link>
-          </Button>
-          {COUNTRIES.map((c) => (
-            <Button
-              key={c.value}
-              variant={country === c.value ? "default" : "outline"}
-              size="sm"
-              asChild
-            >
-              <Link href={`/admin?country=${c.value}`}>{c.label}</Link>
-            </Button>
-          ))}
-        </div>
-      </header>
+    <div className="p-6">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <h1 className="text-xl font-bold text-foreground">لوحة التحكم</h1>
+        <Suspense fallback={null}>
+          <AdminCountryPill />
+        </Suspense>
+      </div>
+      <p className="mb-6 text-sm text-muted-foreground">نظرة سريعة على المشتركين والنشاط.</p>
 
-      <AdminDashboardTabs
-        country={country}
-        bySection={bySection}
-        images={images}
-        imagesForImagesTab={imagesForImagesTab}
-        pricingPlans={pricingPlans}
-      />
+      {stats && (
+        <>
+          <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+              <p className="text-xs font-medium text-muted-foreground">إجمالي المشتركين</p>
+              <p className="mt-1 text-2xl font-bold text-foreground">{stats.total}</p>
+            </div>
+            <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+              <p className="text-xs font-medium text-muted-foreground">السعودية</p>
+              <p className="mt-1 text-2xl font-bold text-foreground">{stats.byCountry.SA}</p>
+            </div>
+            <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+              <p className="text-xs font-medium text-muted-foreground">مصر</p>
+              <p className="mt-1 text-2xl font-bold text-foreground">{stats.byCountry.EG}</p>
+            </div>
+            <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+              <p className="text-xs font-medium text-muted-foreground">آخر ٧ أيام</p>
+              <p className="mt-1 text-2xl font-bold text-foreground">{stats.last7Days}</p>
+            </div>
+          </div>
+
+          <div className="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
+            <h2 className="mb-3 text-sm font-semibold text-foreground">المشتركين حسب البلد</h2>
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="w-20 shrink-0 text-xs text-muted-foreground">السعودية</span>
+                <div className="min-w-0 flex-1 rounded-full bg-muted">
+                  <div
+                    className="h-6 rounded-full bg-primary/80"
+                    style={{ width: `${(stats.byCountry.SA / maxCountry) * 100}%` }}
+                  />
+                </div>
+                <span className="w-8 shrink-0 text-right text-sm font-medium text-foreground">{stats.byCountry.SA}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="w-20 shrink-0 text-xs text-muted-foreground">مصر</span>
+                <div className="min-w-0 flex-1 rounded-full bg-muted">
+                  <div
+                    className="h-6 rounded-full bg-primary/60"
+                    style={{ width: `${(stats.byCountry.EG / maxCountry) * 100}%` }}
+                  />
+                </div>
+                <span className="w-8 shrink-0 text-right text-sm font-medium text-foreground">{stats.byCountry.EG}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+            <h2 className="mb-3 text-sm font-semibold text-foreground">نشاط آخر ٧ أيام</h2>
+            <div className="flex items-center gap-3">
+              <div className="min-w-0 flex-1 rounded-full bg-muted">
+                <div
+                  className="h-6 rounded-full bg-green-600/80 dark:bg-green-500/70"
+                  style={{ width: `${pct7}%` }}
+                />
+              </div>
+              <span className="text-sm text-muted-foreground">
+                {stats.last7Days} من {stats.total} ({pct7}%)
+              </span>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

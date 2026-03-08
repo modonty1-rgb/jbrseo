@@ -1,27 +1,33 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { SectionReveal } from "@/app/components/landing/SectionReveal";
-import { PricingBillingToggle } from "@/app/components/landing/PricingBillingToggle";
+import { SectionReveal } from "@/app/components/shared/SectionReveal";
+import { PricingBillingToggle } from "@/app/components/shared/PricingBillingToggle";
+import ModontyPricing from "@/app/components/landing/price-section/price-section";
+import { getStaticLanding } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getLandingContent } from "@/lib/getLandingContent";
 
 export async function generateMetadata(): Promise<Metadata> {
   const h = await headers();
   const country = getCountryFromHeaders(h);
-  const content = await getLandingContent(country);
-  const { pricingPage } = content;
-  return {
-    title: pricingPage.title,
-    description: pricingPage.description,
-  };
+  const staticLanding = getStaticLanding(country);
+  const { title, description } = staticLanding.pricingPage;
+  return { title, description };
 }
 
 export default async function PricingPage() {
   const h = await headers();
   const country = getCountryFromHeaders(h);
-  const content = await getLandingContent(country);
-  const { landing, pricingPage, sectionHeadings } = content;
+  const [content, staticLanding] = await Promise.all([
+    getLandingContent(country),
+    Promise.resolve(getStaticLanding(country)),
+  ]);
+  const { landing, sectionHeadings } = content;
+  const pricingPage = staticLanding.pricingPage;
   const sh = sectionHeadings.pricingTeaser;
+  const pricingSA = getStaticLanding("SA").pricing;
+  const pricingEG = getStaticLanding("EG").pricing;
+  const initialLocale = country === "EG" ? "eg" : "sa";
 
   return (
     <SectionReveal>
@@ -60,6 +66,13 @@ export default async function PricingPage() {
               }
               variant="page"
             />
+          </div>
+
+          <div className="landing-reveal-content mt-20 pt-16 border-t border-border/60">
+            <p className="mb-8 text-center text-xs font-bold uppercase tracking-widest text-muted-foreground">
+              تجربة — مكون التسعير الجديد
+            </p>
+            <ModontyPricing pricingSA={pricingSA} pricingEG={pricingEG} initialLocale={initialLocale} />
           </div>
         </div>
       </section>

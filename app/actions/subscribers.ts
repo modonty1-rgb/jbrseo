@@ -70,6 +70,29 @@ export type SubscriberListItem = {
   createdAt: Date;
 };
 
+export type SubscriberStats = {
+  total: number;
+  byCountry: { SA: number; EG: number };
+  last7Days: number;
+};
+
+export async function getSubscriberStats(): Promise<SubscriberStats | null> {
+  const ok = await isAdmin();
+  if (!ok) return null;
+  const [total, byCountryRows, last7Days] = await Promise.all([
+    prisma.subscriber.count(),
+    prisma.subscriber.groupBy({ by: ["country"], _count: { id: true }, where: { country: { in: ["SA", "EG"] } } }),
+    prisma.subscriber.count({
+      where: { createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) } },
+    }),
+  ]);
+  const byCountry = { SA: 0, EG: 0 };
+  for (const row of byCountryRows) {
+    if (row.country === "SA" || row.country === "EG") byCountry[row.country] = row._count.id;
+  }
+  return { total, byCountry, last7Days };
+}
+
 export async function getSubscribers(options?: {
   search?: string;
   limit?: number;

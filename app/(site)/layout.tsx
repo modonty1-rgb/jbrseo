@@ -3,13 +3,17 @@ import type { ReactNode } from "react";
 import Script from "next/script";
 import { LandingHeader } from "@/app/components/layout/LandingHeader";
 import { Footer } from "@/app/components/layout/Footer";
+import { getStaticLanding } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getLandingContent } from "@/lib/getLandingContent";
 
 export default async function SiteLayout({ children }: { children: ReactNode }) {
   const h = await headers();
   const country = getCountryFromHeaders(h);
-  const content = await getLandingContent(country);
+  const [content, staticLanding] = await Promise.all([
+    getLandingContent(country),
+    Promise.resolve(getStaticLanding(country)),
+  ]);
   const { gtmId, hotjarId, fbPixelId } = content.tracking;
 
   return (
@@ -64,9 +68,9 @@ export default async function SiteLayout({ children }: { children: ReactNode }) 
         `}</Script>
       )}
 
-      <LandingHeader content={content} />
-      <main>{children}</main>
-      <Footer content={content} />
+      <LandingHeader content={content} staticLanding={staticLanding} />
+      <main id="main-content">{children}</main>
+      <Footer content={content} staticLanding={staticLanding} />
     </div>
   );
 }

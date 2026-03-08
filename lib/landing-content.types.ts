@@ -52,6 +52,15 @@ export type LandingContent = {
     twitterImage: string;
   };
   landingImages: Record<string, string>;
+  sectionImages?: {
+    hero: string;
+    whyNow: string;
+    howItWorks: string;
+    outcomes: string;
+    socialProof: string;
+    faq: string;
+    finalCta: string;
+  };
   tracking: { gtmId: string; hotjarId: string; fbPixelId: string };
   siteSettings: { showSectionCounter: boolean };
   sectionHeadings: SectionHeadings;

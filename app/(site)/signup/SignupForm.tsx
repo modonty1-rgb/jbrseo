@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect, FormEvent } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/button";
 import type { PricingPlan, SupportedCountry } from "@/lib/landing-content.types";
-import { CurrencyIcon } from "@/app/components/landing/PricingBillingToggle";
+import { CurrencyIcon } from "@/app/components/shared/PricingBillingToggle";
 import { createSubscriber } from "@/app/actions/subscribers";
 
 const INPUT_CLS =
