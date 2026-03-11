@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { PricingContent } from "@/app/content/landing/price-section-types";
 import { STYLES } from "./price-section-styles";
 import { AnnouncementBar } from "./AnnouncementBar";
@@ -27,12 +27,6 @@ export default function ModontyPricing({ pricingSA, pricingEG, initialLocale, va
   const currency = activeLocale === "sa" ? "ر.س" : "ج.م";
 
   const validHighlight = highlightPlanId && PLAN_IDS.includes(highlightPlanId as (typeof PLAN_IDS)[number]) ? highlightPlanId : null;
-
-  useEffect(() => {
-    if (!validHighlight) return;
-    const el = document.getElementById(`plan-${validHighlight}`);
-    el?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [validHighlight]);
 
   return (
     <div className="font-tajawal bg-stone-50 min-h-screen text-gray-900" dir="rtl">

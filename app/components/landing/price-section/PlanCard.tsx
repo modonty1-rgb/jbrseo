@@ -23,7 +23,7 @@ export function PlanCard({ plan, annual, currency, ui, compact = false, defaultE
 
   const cardCls = F
     ? "relative flex flex-col rounded-2xl p-8 featured-lift anim-featured shadow-2xl shadow-purple-600/30 border-0 overflow-visible"
-    : "relative flex flex-col rounded-2xl p-6 bg-white border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-200 anim-card overflow-visible";
+    : "relative flex flex-col rounded-2xl p-6 bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-150 anim-card overflow-visible";
 
   return (
     <div
@@ -100,8 +100,8 @@ export function PlanCard({ plan, annual, currency, ui, compact = false, defaultE
 
       <div className={`h-px w-full mb-4 ${F ? "bg-white/10" : "bg-gray-100"}`} />
 
-      <button
-        className={`w-full py-3.5 px-4 rounded-xl text-sm font-extrabold cursor-pointer border-0 transition-all duration-150 hover:opacity-90 hover:-translate-y-px active:translate-y-0 font-tajawal
+      <span
+        className={`inline-flex items-center justify-center w-full py-3.5 px-4 rounded-xl text-sm font-extrabold border-0 font-tajawal
           ${plan.ctaClass === "btn-ghost"    ? "bg-transparent border-gray-200 text-gray-500"
           : plan.ctaClass === "btn-blue"     ? "bg-slate-800 text-white shadow-md"
           : plan.ctaClass === "btn-featured" ? "text-indigo-900 font-extrabold text-base shadow-lg shadow-violet-400/40"
@@ -113,7 +113,7 @@ export function PlanCard({ plan, annual, currency, ui, compact = false, defaultE
         }
       >
         {plan.cta}
-      </button>
+      </span>
 
       {plan.guarantee && (
         <p className={`text-xs text-center mt-2 mb-4 leading-relaxed ${F ? "text-purple-300/60" : "text-gray-400"}`}>

@@ -16,6 +16,7 @@ function assertCountry(value: string): asserts value is "SA" | "EG" {
 export type CreateSubscriberResult = { success: true } | { success: false; error: string };
 
 export async function createSubscriber(formData: FormData): Promise<CreateSubscriberResult> {
+  const contactName = (formData.get("name") as string)?.trim();
   const email = (formData.get("email") as string)?.trim();
   const phone = (formData.get("phone") as string)?.trim();
   const businessName = (formData.get("businessName") as string)?.trim() || null;
@@ -27,6 +28,9 @@ export async function createSubscriber(formData: FormData): Promise<CreateSubscr
   const country = (formData.get("country") as string)?.trim() ?? "SA";
   const isAnnual = formData.get("isAnnual") === "true" || formData.get("isAnnual") === "on";
 
+  if (!contactName) {
+    return { success: false, error: "يرجى إدخال اسمك" };
+  }
   if (!email || !EMAIL_REGEX.test(email)) {
     return { success: false, error: "يرجى إدخال بريد إلكتروني صالح" };
   }
@@ -38,6 +42,7 @@ export async function createSubscriber(formData: FormData): Promise<CreateSubscr
   try {
     await prisma.subscriber.create({
       data: {
+        contactName,
         email,
         phone,
         businessName,
@@ -59,6 +64,7 @@ export async function createSubscriber(formData: FormData): Promise<CreateSubscr
 
 export type SubscriberListItem = {
   id: string;
+  contactName: string;
   email: string;
   phone: string;
   businessName: string | null;
@@ -121,6 +127,7 @@ export async function getSubscribers(options?: {
   });
   return rows.map((r) => ({
     id: r.id,
+    contactName: r.contactName,
     email: r.email,
     phone: r.phone,
     businessName: r.businessName,
@@ -138,6 +145,7 @@ export type UpdateSubscriberResult = { success: true } | { success: false; error
 export async function updateSubscriber(
   id: string,
   data: {
+    contactName?: string;
     email?: string;
     phone?: string;
     businessName?: string | null;
@@ -151,6 +159,10 @@ export async function updateSubscriber(
   const ok = await isAdmin();
   if (!ok) return { success: false, error: "Unauthorized" };
 
+  const contactName = data.contactName?.trim();
+  if (contactName !== undefined && !contactName) {
+    return { success: false, error: "يرجى إدخال اسمك" };
+  }
   const email = data.email?.trim();
   if (email !== undefined && (!email || !EMAIL_REGEX.test(email))) {
     return { success: false, error: "يرجى إدخال بريد إلكتروني صالح" };
@@ -165,6 +177,7 @@ export async function updateSubscriber(
     await prisma.subscriber.update({
       where: { id },
       data: {
+        ...(contactName !== undefined && { contactName }),
         ...(email !== undefined && { email }),
         ...(phone !== undefined && { phone }),
         ...(data.businessName !== undefined && { businessName: data.businessName || null }),

@@ -63,6 +63,7 @@ export function SubscribersPageClient() {
     setFormError(null);
     const form = e.currentTarget;
     const result = await updateSubscriber(id, {
+      contactName: (form.querySelector('[name="name"]') as HTMLInputElement)?.value?.trim(),
       email: (form.querySelector('[name="email"]') as HTMLInputElement)?.value?.trim(),
       phone: (form.querySelector('[name="phone"]') as HTMLInputElement)?.value?.trim(),
       businessName: (form.querySelector('[name="businessName"]') as HTMLInputElement)?.value?.trim() || null,
@@ -122,6 +123,10 @@ export function SubscribersPageClient() {
           <h2 className="text-sm font-semibold">إضافة مشترك</h2>
           <div className="grid grid-cols-2 gap-3">
             <div>
+              <label className={labelClass}>الاسم</label>
+              <input name="name" type="text" required className={inputBase} />
+            </div>
+            <div>
               <label className={labelClass}>البريد</label>
               <input name="email" type="email" required className={inputBase} />
             </div>
@@ -173,6 +178,7 @@ export function SubscribersPageClient() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/40">
+                <th className="text-right p-2 font-medium">الاسم</th>
                 <th className="text-right p-2 font-medium">البريد</th>
                 <th className="text-right p-2 font-medium">الجوال</th>
                 <th className="text-right p-2 font-medium">الخطة</th>
@@ -186,6 +192,7 @@ export function SubscribersPageClient() {
               {list.map((row) => (
                 <Fragment key={row.id}>
                   <tr className="border-b border-border/60 hover:bg-muted/20">
+                    <td className="p-2">{row.contactName}</td>
                     <td className="p-2">{row.email}</td>
                     <td className="p-2">{row.phone}</td>
                     <td className="p-2">{row.planName}</td>
@@ -205,6 +212,7 @@ export function SubscribersPageClient() {
                     <tr>
                       <td colSpan={7} className="p-3 bg-muted/20">
                         <form onSubmit={(e) => handleUpdate(row.id, e)} className="grid grid-cols-2 gap-2">
+                          <div><label className={labelClass}>الاسم</label><input name="name" defaultValue={row.contactName} className={inputBase} required /></div>
                           <div><label className={labelClass}>البريد</label><input name="email" defaultValue={row.email} className={inputBase} required /></div>
                           <div><label className={labelClass}>الجوال</label><input name="phone" defaultValue={row.phone} className={inputBase} required /></div>
                           <div><label className={labelClass}>اسم الخطة</label><input name="planName" defaultValue={row.planName} className={inputBase} /></div>

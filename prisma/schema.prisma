@@ -20,6 +20,7 @@ model SiteSettings {
 
 model Subscriber {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  contactName  String
   email        String   @unique
   phone        String
   businessName String?

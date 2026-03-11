@@ -1,0 +1,908 @@
+[
+  {
+    "id": "TC001",
+    "title": "Homepage content sections are reachable by scrolling",
+    "description": "Verifies a visitor can load the homepage and scroll through the main marketing sections that communicate value and process.",
+    "category": "Public Marketing Site",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Why now\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the \"Why now\" section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"How it works\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the \"How it works\" section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"footer\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC002",
+    "title": "Header navigation to About page works",
+    "description": "Verifies a visitor can navigate from the homepage to the About page using header navigation.",
+    "category": "Public Marketing Site",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"About\" in the header"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/about\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify page title contains \"About\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"footer\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC003",
+    "title": "Header navigation to Team page works",
+    "description": "Verifies a visitor can navigate from the homepage to the Team page using header navigation.",
+    "category": "Public Marketing Site",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Team\" in the header"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/team\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify page title contains \"Team\""
+      }
+    ]
+  },
+  {
+    "id": "TC004",
+    "title": "Pricing link from header goes to Pricing page content",
+    "description": "Verifies a visitor can reach pricing information via the header and see pricing content on the Pricing page.",
+    "category": "Public Marketing Site",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Pricing\" in the header"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/pricing\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify page title contains \"Pricing\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Pricing\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC005",
+    "title": "Primary CTA on Pricing page navigates to Signup",
+    "description": "Verifies a visitor can click the primary pricing call-to-action and reach the signup page.",
+    "category": "Public Marketing Site",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /pricing"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Pricing\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click on the primary call-to-action button in the pricing section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify page title contains \"Signup\""
+      }
+    ]
+  },
+  {
+    "id": "TC006",
+    "title": "Homepage pricing anchor behavior: Pricing in header scrolls to pricing section on homepage",
+    "description": "Verifies clicking Pricing in the homepage header brings the visitor to the pricing section on the same page (anchor scroll behavior).",
+    "category": "Public Marketing Site",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Pricing\" in the header"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Pricing\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the pricing section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"pricing section\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC007",
+    "title": "Homepage pricing flow: scroll sections, click Pricing, then CTA leads to Signup",
+    "description": "Verifies the full intended homepage flow from reading sections to reaching signup via pricing CTA.",
+    "category": "Public Marketing Site",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the hero section"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the \"Why now\" section"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the \"How it works\" section"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Pricing\" in the header"
+      },
+      {
+        "type": "action",
+        "description": "Click on the primary call-to-action button in the pricing section"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup\""
+      }
+    ]
+  },
+  {
+    "id": "TC008",
+    "title": "Fallback pricing navigation: if homepage anchor does not land on pricing, use Pricing link to reach /pricing",
+    "description": "Verifies the fallback path to pricing content by using a header pricing link to navigate to the dedicated Pricing page.",
+    "category": "Public Marketing Site",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Pricing\" in the header"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the middle of the homepage"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Pricing\" is not visible"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Pricing\" in the header again"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/pricing\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Pricing\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC009",
+    "title": "Legal pages are accessible: Terms and Privacy from footer",
+    "description": "Verifies a visitor can access legal pages from the marketing site navigation and see legal page content.",
+    "category": "Public Marketing Site",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "action",
+        "description": "Scroll to the footer"
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Terms\" in the footer"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/terms\""
+      },
+      {
+        "type": "action",
+        "description": "Click on \"Privacy\" in the footer"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/privacy\""
+      }
+    ]
+  },
+  {
+    "id": "TC010",
+    "title": "Successful signup with optional plan preference redirects to thank-you page",
+    "description": "Verifies a visitor can optionally choose a plan, submit a valid signup, and see the thank-you confirmation page.",
+    "category": "User Signup Flow",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup\""
+      },
+      {
+        "type": "action",
+        "description": "Select a plan preference option from the plan preference control (if shown)"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"First name\" with \"Test\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Last name\" with \"User\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Email\" with \"test.user+signup1@example.com\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup/thank-you\""
+      }
+    ]
+  },
+  {
+    "id": "TC011",
+    "title": "Successful signup without selecting a plan preference redirects to thank-you page",
+    "description": "Verifies a visitor can submit the signup form without selecting an optional plan preference and still reach the thank-you page.",
+    "category": "User Signup Flow",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"First name\" with \"Test\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Last name\" with \"User\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Email\" with \"test.user+signup2@example.com\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup/thank-you\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Thank\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC012",
+    "title": "Thank-you page shows confirmation and next steps content",
+    "description": "Verifies the thank-you page displays a confirmation message and indicates next steps after signup.",
+    "category": "User Signup Flow",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup/thank-you"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup/thank-you\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Thank\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"next\" is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"confirmation\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC013",
+    "title": "Signup with missing required email shows inline error and stays on signup page",
+    "description": "Verifies the form validates required fields and shows an inline error when email is missing.",
+    "category": "User Signup Flow",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"First name\" with \"Test\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Last name\" with \"User\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Email\" with \"\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC014",
+    "title": "Signup with invalid email format shows inline error and stays on signup page",
+    "description": "Verifies the form rejects an invalid email format and displays a visible validation message.",
+    "category": "User Signup Flow",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"First name\" with \"Test\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Last name\" with \"User\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Email\" with \"not-an-email\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"email\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC015",
+    "title": "Signup with missing name fields shows inline error and stays on signup page",
+    "description": "Verifies required name fields are enforced and errors are shown inline without redirecting.",
+    "category": "User Signup Flow",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"First name\" with \"\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Last name\" with \"\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Email\" with \"test.user+signup3@example.com\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"required\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC016",
+    "title": "Double submit attempt does not show duplicate success states on the same screen",
+    "description": "Verifies repeated submit actions do not leave the user on the signup page with conflicting success/error messages.",
+    "category": "User Signup Flow",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"First name\" with \"Test\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Last name\" with \"User\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Email\" with \"test.user+signup4@example.com\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "action",
+        "description": "Wait for the page to finish loading"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup/thank-you\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Thank\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC017",
+    "title": "Signup page remains usable when plan preference is changed before submission",
+    "description": "Verifies changing the optional plan preference before submitting still allows successful signup and redirect.",
+    "category": "User Signup Flow",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /signup"
+      },
+      {
+        "type": "action",
+        "description": "Select a plan preference option from the plan preference control (if shown)"
+      },
+      {
+        "type": "action",
+        "description": "Select a different plan preference option from the plan preference control (if shown)"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"First name\" with \"Test\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Last name\" with \"User\""
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Email\" with \"test.user+signup5@example.com\""
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Submit\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/signup/thank-you\""
+      }
+    ]
+  },
+  {
+    "id": "TC018",
+    "title": "Update General settings and verify public site reflects the change",
+    "description": "Verifies an admin can update General settings, save successfully, and see the updated content on the public homepage.",
+    "category": "Admin Dashboard and Settings",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username/email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Settings\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"General\" in the settings navigation"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Updated General Setting\" into a visible General settings text field (such as Site Name or Tagline)"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Saved\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the site/home link in the admin header (or any visible link that returns to the public site)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Updated General Setting\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC019",
+    "title": "Update SEO title/description and verify change is reflected on the homepage UI",
+    "description": "Verifies an admin can update SEO fields and see the updated SEO text reflected somewhere visible on the public homepage (without inspecting page source).",
+    "category": "Admin Dashboard and Settings",
+    "priority": "Medium",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username/email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Settings\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"SEO\" in the settings navigation"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Homepage SEO Title QA\" into the SEO Title field"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Homepage SEO Description QA\" into the SEO Description field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Saved\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the site/home link in the admin header (or any visible link that returns to the public site)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Homepage SEO Title QA\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC020",
+    "title": "Load subscribers list, edit a subscriber, and save successfully",
+    "description": "Verifies an admin can open subscribers, select an entry, edit metadata, and save with a success confirmation.",
+    "category": "Admin Dashboard and Settings",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username/email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Subscribers\" in the dashboard navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Subscribers\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the first visible subscriber entry in the list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify element \"Subscriber details\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"QA Note Updated\" into a visible subscriber metadata field (such as Notes)"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Saved\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC021",
+    "title": "Edit hero content via dynamic content section and verify homepage hero updates",
+    "description": "Verifies an admin can edit the hero content in the dynamic content editor and see the updated hero copy on the public homepage.",
+    "category": "Admin Dashboard and Settings",
+    "priority": "High",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username/email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Content\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Hero\" in the content navigation (or any visible link that opens the hero editor)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Hero\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Fill \"Hero Copy QA Update\" into a visible hero copy text field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Save\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Saved\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click the site/home link in the admin header (or any visible link that returns to the public site)"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/\""
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Hero Copy QA Update\" is visible"
+      }
+    ]
+  },
+  {
+    "id": "TC022",
+    "title": "Navigate between settings sections from the dashboard navigation",
+    "description": "Verifies the admin can navigate among settings pages (General, Tracking, SEO) using in-app navigation and each page renders expected visible headings.",
+    "category": "Admin Dashboard and Settings",
+    "priority": "Low",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /admin/login"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_USER}}\" into the username/email field"
+      },
+      {
+        "type": "action",
+        "description": "Type \"{{LOGIN_PASSWORD}}\" into the password field"
+      },
+      {
+        "type": "action",
+        "description": "Click the \"Login\" button"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify URL contains \"/admin\""
+      },
+      {
+        "type": "action",
+        "description": "Click \"Settings\" in the dashboard navigation"
+      },
+      {
+        "type": "action",
+        "description": "Click \"General\" in the settings navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"General\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click \"Tracking\" in the settings navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"Tracking\" is visible"
+      },
+      {
+        "type": "action",
+        "description": "Click \"SEO\" in the settings navigation"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify text \"SEO\" is visible"
+      }
+    ]
+  }
+]

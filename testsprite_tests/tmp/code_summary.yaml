@@ -1,0 +1,153 @@
+version: "2"
+type: frontend
+tech_stack:
+  - language: TypeScript
+  - framework: Next.js (App Router)
+  - ui_library: Tailwind CSS
+  - other: Prisma
+routes:
+  - path: /
+    file: app/(site)/page.tsx
+    auth_required: false
+    description: Public marketing homepage
+  - path: /about
+    file: app/(site)/about/page.tsx
+    auth_required: false
+    description: About JBRSEO information page
+  - path: /pricing
+    file: app/(site)/pricing/page.tsx
+    auth_required: false
+    description: SEO pricing and plans page
+  - path: /team
+    file: app/(site)/team/page.tsx
+    auth_required: false
+    description: Team information page
+  - path: /terms
+    file: app/(site)/terms/page.tsx
+    auth_required: false
+    description: Terms of service page
+  - path: /privacy
+    file: app/(site)/privacy/page.tsx
+    auth_required: false
+    description: Privacy policy page
+  - path: /signup
+    file: app/(site)/signup/page.tsx
+    auth_required: false
+    description: Signup page to create an account
+  - path: /signup/thank-you
+    file: app/(site)/signup/thank-you/page.tsx
+    auth_required: false
+    description: Post-signup thank you page
+  - path: /admin/login
+    file: app/admin/login/page.tsx
+    auth_required: false
+    description: Admin login page
+  - path: /admin
+    file: app/admin/(dashboard)/page.tsx
+    auth_required: true
+    description: Admin dashboard home
+  - path: /admin/subscribers
+    file: app/admin/(dashboard)/subscribers/page.tsx
+    auth_required: true
+    description: Manage subscribers in the admin dashboard
+  - path: /admin/settings/general
+    file: app/admin/(dashboard)/settings/general/page.tsx
+    auth_required: true
+    description: General settings for the site
+  - path: /admin/settings/tracking
+    file: app/admin/(dashboard)/settings/tracking/page.tsx
+    auth_required: true
+    description: Analytics and tracking-related settings
+  - path: /admin/settings/seo
+    file: app/admin/(dashboard)/settings/seo/page.tsx
+    auth_required: true
+    description: SEO configuration settings
+  - path: /admin/settings/images
+    file: app/admin/(dashboard)/settings/images/page.tsx
+    auth_required: true
+    description: Image and media related settings
+  - path: /admin/content/emojis
+    file: app/admin/(dashboard)/content/emojis/page.tsx
+    auth_required: true
+    description: Manage emoji-related content
+  - path: /admin/content/header-footer
+    file: app/admin/(dashboard)/content/header-footer/page.tsx
+    auth_required: true
+    description: Manage header and footer content
+  - path: /admin/content/[section]
+    file: app/admin/(dashboard)/content/[section]/page.tsx
+    auth_required: true
+    description: Dynamic admin content editor for different sections
+features:
+  - name: Public Marketing Site
+    description: Static marketing pages presenting JBRSEO, pricing, team, and legal information.
+    files:
+      - app/(site)/page.tsx
+      - app/(site)/about/page.tsx
+      - app/(site)/pricing/page.tsx
+      - app/(site)/team/page.tsx
+      - app/(site)/terms/page.tsx
+      - app/(site)/privacy/page.tsx
+    entry_route: /
+    user_interactions:
+      - Navigate between public pages via header or footer links
+      - Scroll through marketing content sections
+      - Click primary calls-to-action to go to signup
+    api_calls: []
+    auth_required: false
+  - name: User Signup Flow
+    description: Visitors can sign up for JBRSEO and are redirected to a thank-you page.
+    files:
+      - app/(site)/signup/page.tsx
+      - app/(site)/signup/thank-you/page.tsx
+    entry_route: /signup
+    user_interactions:
+      - Fill signup form fields
+      - Submit signup form
+      - View confirmation on /signup/thank-you
+    api_calls:
+      - method: POST
+        endpoint: /api/signup
+    auth_required: false
+  - name: Admin Authentication
+    description: Admin users log into the dashboard from a dedicated login page.
+    files:
+      - app/admin/login/page.tsx
+    entry_route: /admin/login
+    user_interactions:
+      - Fill admin email and password fields
+      - Click Login button
+      - See error message on invalid credentials
+    api_calls:
+      - method: POST
+        endpoint: /api/admin/login
+    auth_required: false
+  - name: Admin Dashboard and Settings
+    description: Authenticated admins can manage site content, subscribers, and SEO settings.
+    files:
+      - app/admin/(dashboard)/page.tsx
+      - app/admin/(dashboard)/subscribers/page.tsx
+      - app/admin/(dashboard)/settings/general/page.tsx
+      - app/admin/(dashboard)/settings/tracking/page.tsx
+      - app/admin/(dashboard)/settings/seo/page.tsx
+      - app/admin/(dashboard)/settings/images/page.tsx
+      - app/admin/(dashboard)/content/emojis/page.tsx
+      - app/admin/(dashboard)/content/header-footer/page.tsx
+      - app/admin/(dashboard)/content/[section]/page.tsx
+    entry_route: /admin
+    user_interactions:
+      - Navigate between dashboard sections
+      - Edit and save settings forms
+      - Manage subscribers list entries
+      - Edit content in emojis, header, footer, and dynamic sections
+    api_calls:
+      - method: GET
+        endpoint: /api/admin/settings
+      - method: POST
+        endpoint: /api/admin/settings
+      - method: GET
+        endpoint: /api/admin/subscribers
+      - method: POST
+        endpoint: /api/admin/subscribers
+    auth_required: true
+known_limitations: []

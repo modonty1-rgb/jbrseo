@@ -1,0 +1,18 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:3000",
+  "executionArgs": {
+    "projectName": "jbrseo.com",
+    "projectPath": "c:\\Users\\w2nad\\Desktop\\dreamToApp\\JBRSEO\\jbrseo.com",
+    "testIds": [],
+    "additionalInstruction": "",
+    "serverMode": "production",
+    "envs": {
+      "API_KEY": "sk-user-wtLZujp7bv46Z0fiC4Nbl7xK5Ah0VD0qj38-M_Jidp7aPZ5i36J-ZMgwHpDR0UWsYrNIProwIYGuolXcke6Jzy9pAWI-EfzA8MEfoJ5F4hV1pQ0eNHX53kJoo-D69_GvLJY"
+    }
+  },
+  "serverPort": 60177,
+  "proxy": "http://3130ac61-7788-433c-a009-85b37f6a660e:WMgLQIZPQXkRG5lHkpNJj40fkX1fjAWi@tun.testsprite.com:8080"
+}

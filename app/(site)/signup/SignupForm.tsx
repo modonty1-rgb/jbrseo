@@ -38,11 +38,12 @@ export function SignupForm({ serverPlans, country }: SignupFormProps) {
     planIndexFromParam(searchParams.get("plan"), maxPlanIndex)
   );
   const [isAnnual, setIsAnnual] = useState(false);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [businessType, setBusinessType] = useState("");
-  const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string }>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -78,7 +79,10 @@ export function SignupForm({ serverPlans, country }: SignupFormProps) {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const nextErrors: { email?: string; phone?: string } = {};
+    const nextErrors: { name?: string; email?: string; phone?: string } = {};
+    if (!name.trim()) {
+      nextErrors.name = "يرجى إدخال اسمك";
+    }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       nextErrors.email = "يرجى إدخال بريد إلكتروني صالح";
     }
@@ -224,6 +228,21 @@ export function SignupForm({ serverPlans, country }: SignupFormProps) {
             <input type="hidden" name="planName" value={serverPlan?.name ?? ""} />
             <input type="hidden" name="country" value={country} />
             <input type="hidden" name="isAnnual" value={isAnnual ? "true" : "false"} />
+            <div className="space-y-1">
+              <label htmlFor="name" className="block text-sm font-medium text-foreground">
+                اسمك
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                className={INPUT_CLS}
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+              />
+              {errors.name && <p className="text-xs text-destructive">{errors.name}</p>}
+            </div>
             <div className="space-y-1">
               <label htmlFor="email" className="block text-sm font-medium text-foreground">
                 البريد الإلكتروني
