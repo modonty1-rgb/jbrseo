@@ -1,17 +1,16 @@
-import type { CSSProperties } from "react";
 import type { StaticLanding } from "@/app/content/landing/types";
-import { SectionImage } from "@/app/components/landing/SectionImage";
 import { OutcomesBackground } from "./OutcomesBackground";
 import { OutcomesHeader } from "./OutcomesHeader";
 import { OutcomeCard } from "./OutcomeCard";
 import { OutcomesBottomStrip } from "./OutcomesBottomStrip";
 
-export default function Outcomes({ staticLanding }: { staticLanding: StaticLanding }) {
+const DEFAULT_CTA = "احجز مقعدك بسعر التأسيس";
+
+export default function Outcomes({ staticLanding, ctaLabel = DEFAULT_CTA }: { staticLanding: StaticLanding; ctaLabel?: string }) {
   const o = staticLanding.outcomes;
   return (
     <section
       id="outcomes"
-      data-reveal-section
       aria-labelledby="outcomes-title"
       className="
         relative overflow-hidden border-t border-border bg-card
@@ -22,7 +21,6 @@ export default function Outcomes({ staticLanding }: { staticLanding: StaticLandi
     >
       <OutcomesBackground />
       <div className="relative mx-auto max-w-[1100px]">
-        <SectionImage src={o.sectionImage} alt={o.eyebrow} slot="outcomes" />
         <div className="relative z-10">
           <OutcomesHeader
             eyebrow={o.eyebrow}
@@ -38,18 +36,14 @@ export default function Outcomes({ staticLanding }: { staticLanding: StaticLandi
             "
           >
             {o.outcomes.map((item, i) => (
-              <div
-                key={i}
-                data-reveal="scale-pop"
-                style={{ "--d": `${i * 90}ms` } as CSSProperties}
-              >
+              <div key={i}>
                 <OutcomeCard item={item} index={i} />
               </div>
             ))}
           </div>
           <OutcomesBottomStrip
-            ctaLink={o.ctaLink}
-            cta={o.cta}
+            ctaLink="#pricing"
+            cta={ctaLabel}
             badgeText={o.badgeText}
             message={o.message}
             messageHighlight={o.messageHighlight}

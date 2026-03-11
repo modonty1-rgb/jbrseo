@@ -1,6 +1,5 @@
 import type { StaticLanding } from "@/app/content/landing/types";
 import dynamic from "next/dynamic";
-import { SectionImage } from "@/app/components/landing/SectionImage";
 import { WhyNowBackground } from "./WhyNowBackground";
 import { WhyNowHeader } from "./WhyNowHeader";
 import { WhyNowReasons } from "./WhyNowReasons";
@@ -11,12 +10,13 @@ const WhyNowInteractive = dynamic(
   { ssr: true }
 );
 
-export default function WhyNow({ staticLanding }: { staticLanding: StaticLanding }) {
+const DEFAULT_CTA = "ابدأ مجاناً — بدون بطاقة";
+
+export default function WhyNow({ staticLanding, ctaLabel = DEFAULT_CTA }: { staticLanding: StaticLanding; ctaLabel?: string }) {
   const w = staticLanding.whyNow;
   return (
     <section
       id="why-now"
-      data-reveal-section
       aria-labelledby="why-now-title"
       className="
         relative overflow-hidden border-t border-border bg-muted/40
@@ -28,7 +28,6 @@ export default function WhyNow({ staticLanding }: { staticLanding: StaticLanding
       <WhyNowBackground />
 
       <div className="relative mx-auto max-w-6xl">
-        <SectionImage src={w.sectionImage} alt={w.eyebrow} slot="whyNow" />
         <div className="relative z-10">
           <WhyNowHeader
             eyebrow={w.eyebrow}
@@ -43,8 +42,8 @@ export default function WhyNow({ staticLanding }: { staticLanding: StaticLanding
 
           <WhyNowBottomBar
             ctaText={w.ctaText}
-            ctaBtn={w.ctaBtn}
-            ctaLink={w.ctaLink}
+            ctaBtn={ctaLabel}
+            ctaLink="/signup"
             highlightText={w.ctaHighlight}
           />
         </div>

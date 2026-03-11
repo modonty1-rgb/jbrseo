@@ -1,31 +1,34 @@
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { LandingContent } from "@/lib/landing-content.types";
-import { SectionImage } from "@/app/components/landing/SectionImage";
+import type { SupportedCountry } from "@/lib/landing-content.types";
+import { getWhatsAppLink } from "@/lib/site-links";
 import { HeroBackground } from "./HeroBackground";
 import { HeroBenefits } from "./HeroBenefits";
 import { HeroCTASection } from "./HeroCTASection";
 import { HeroEyebrow } from "./HeroEyebrow";
 import { HeroHeadline } from "./HeroHeadline";
-import { HeroImageBlock } from "./HeroImageBlock";
 import { HeroSlogan } from "./HeroSlogan";
-
-const DEFAULT_AVATAR =
-  "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771979297/modonatyAvatar_scfhac.png";
 
 export default function Hero({
   content,
   staticLanding,
+  country,
 }: {
   content: LandingContent;
   staticLanding: StaticLanding;
+  country?: SupportedCountry;
 }) {
   const h = staticLanding.hero;
-  const contactAvatar = content.landingImages?.contactAvatar ?? DEFAULT_AVATAR;
+  const ctaLabel = content.siteSettings?.ctaLabel || "ابدأ مجاناً — بدون بطاقة";
+  const waLink = country ? getWhatsAppLink(country) : "";
+  const secondaryCta =
+    waLink && staticLanding.finalCta?.wa
+      ? { label: staticLanding.finalCta.wa, href: waLink }
+      : undefined;
 
   return (
     <section
       id="hero"
-      data-reveal-section
       aria-labelledby="hero-title"
       className="
         landing-grain relative overflow-hidden bg-background
@@ -35,34 +38,25 @@ export default function Hero({
       "
     >
       <HeroBackground />
-
-      <SectionImage src={h.sectionImage} alt={h.heroImageAlt} slot="hero" priority />
-
       <div className="
-        relative z-10 mx-auto max-w-6xl
-        grid grid-cols-1 items-center gap-10
-        md:grid-cols-[1fr_360px] md:gap-14
-        lg:grid-cols-[1fr_440px] lg:gap-20
+        relative z-10 mx-auto max-w-5xl
+        flex flex-col items-center
       ">
-        <div className="order-2 lg:order-1">
+        <div className="hero-content-reveal w-full">
           <HeroEyebrow proof={h.proof} />
           <HeroHeadline line1={h.h1Line1} line2={h.h1Line2} />
           <HeroSlogan tagline={staticLanding.footer.tagline} />
-          <p className="landing-reveal-content mt-0 mb-7 max-w-[490px] text-base leading-[1.85] text-muted-foreground sm:text-[17.5px]">
+          <p className="landing-hero-sub landing-reveal-content mt-0 mb-8 max-w-[490px] text-base font-normal leading-[1.85] text-muted-foreground sm:text-[17.5px]">
             {h.sub}
           </p>
           <HeroBenefits benefits={h.benefits} />
           <HeroCTASection
-            cta={h.cta}
-            ctaLink={h.ctaLink}
+            cta={ctaLabel}
+            ctaLink="/signup"
             trust={h.trust}
-            seatsTotal={h.seatsTotal}
-            seatsTaken={h.seatsTaken}
-            socialLine={h.socialLine}
+            secondaryCta={secondaryCta}
           />
         </div>
-
-        <HeroImageBlock avatarSrc={contactAvatar} stats={h.stats} alt={h.heroImageAlt} />
       </div>
     </section>
   );

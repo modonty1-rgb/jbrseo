@@ -1,7 +1,5 @@
 "use client";
 
-import type { CSSProperties } from "react";
-import { ChevronDown } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/app/components/ui/collapsible";
 import type { FaqItem } from "@/app/content/landing/types";
 import { TAG_TOKENS } from "@/app/content/landing/types";
@@ -19,8 +17,6 @@ export function FAQAccordion({ faqs }: FAQAccordionProps) {
         return (
           <div
             key={i}
-            data-reveal="slide-rtl"
-            style={{ "--d": `${i * 80}ms` } as CSSProperties}
             role="listitem"
           >
             <Collapsible className="group overflow-hidden rounded-[18px] border border-border bg-background transition-all duration-200 data-[state=open]:border-[color-mix(in_oklch,var(--accent)_35%,transparent)] data-[state=open]:shadow-[0_6px_28px_color-mix(in_oklch,var(--accent)_8%,transparent)]">
@@ -44,9 +40,9 @@ export function FAQAccordion({ faqs }: FAQAccordionProps) {
                 </span>
                 <span
                   aria-hidden
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-all duration-250 bg-border text-muted-foreground group-data-[state=open]:bg-accent/10 group-data-[state=open]:text-accent group-data-[state=open]:rotate-180"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-sm transition-all duration-250 bg-border text-muted-foreground group-data-[state=open]:bg-accent/10 group-data-[state=open]:text-accent group-data-[state=open]:rotate-180"
                 >
-                  <ChevronDown className="size-4" strokeWidth={2.5} />
+                  ▼
                 </span>
               </button>
             </CollapsibleTrigger>

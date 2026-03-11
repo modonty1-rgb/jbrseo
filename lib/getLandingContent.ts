@@ -1,7 +1,8 @@
 import "server-only";
+import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { prisma } from "./prisma";
-import { getStaticLanding } from "@/app/content/landing/get-static-landing";
+import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import type { LandingContent, SupportedCountry } from "./landing-content.types";
 import type { SiteSettingsJson } from "./site-settings.types";
 import { staticPlansToPricingPlans } from "./static-plans-to-content";
@@ -52,7 +53,7 @@ async function getStaticFallback(): Promise<LandingContent> {
       finalCta: "",
     },
     tracking: { gtmId: "", hotjarId: "", fbPixelId: "" },
-    siteSettings: { showSectionCounter: false },
+    siteSettings: { showSectionCounter: false, ctaLabel: "ابدأ مجاناً — بدون بطاقة" },
     sectionHeadings: {
       whyNow: { eyebrow: "لماذا الآن", title: "كل شهر تأخير له ثمن" },
       howItWorks: { eyebrow: "الطريقة", title: "كيف نعمل" },
@@ -74,7 +75,7 @@ async function getStaticFallback(): Promise<LandingContent> {
 
 async function fetchLandingContent(country: SupportedCountry): Promise<LandingContent> {
   const base = await getStaticFallback();
-  const staticLanding = getStaticLanding(country);
+  const staticLanding = await getStaticLandingWithOverrides(country);
   const [settingsRow, globalRow] = await Promise.all([
     prisma.siteSettings.findUnique({ where: { country } }),
     prisma.siteSettings.findUnique({ where: { country: "GLOBAL" } }),
@@ -117,13 +118,27 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
     faq: (settings.images.sectionFaq ?? "").trim(),
     finalCta: (settings.images.sectionFinalCta ?? "").trim(),
   };
+  const sectionImageAlts: NonNullable<LandingContent["sectionImageAlts"]> = {
+    hero: (settings.images.sectionHeroAlt ?? "").trim(),
+    whyNow: (settings.images.sectionWhyNowAlt ?? "").trim(),
+    howItWorks: (settings.images.sectionHowItWorksAlt ?? "").trim(),
+    outcomes: (settings.images.sectionOutcomesAlt ?? "").trim(),
+    socialProof: (settings.images.sectionSocialProofAlt ?? "").trim(),
+    faq: (settings.images.sectionFaqAlt ?? "").trim(),
+    finalCta: (settings.images.sectionFinalCtaAlt ?? "").trim(),
+  };
+  const defaultCta = "ابدأ مجاناً — بدون بطاقة";
   return {
     ...base,
     seo: settings.seo as LandingContent["seo"],
     tracking: settings.tracking,
-    siteSettings: settings.site,
+    siteSettings: {
+      showSectionCounter: settings.site.showSectionCounter,
+      ctaLabel: (settings.site as { ctaLabel?: string }).ctaLabel?.trim() || defaultCta,
+    },
     landingImages,
     sectionImages,
+    sectionImageAlts,
     sectionHeadings: {
       ...base.sectionHeadings,
       pricingTeaser: settings.pricingTeaser.sectionHeadings,
@@ -132,7 +147,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
   };
 }
 
-export async function getLandingContent(country: SupportedCountry): Promise<LandingContent> {
+async function getLandingContentImpl(country: SupportedCountry): Promise<LandingContent> {
   const cached = unstable_cache(
     async () => {
       try {
@@ -146,3 +161,5 @@ export async function getLandingContent(country: SupportedCountry): Promise<Land
   );
   return cached();
 }
+
+export const getLandingContent = cache(getLandingContentImpl);

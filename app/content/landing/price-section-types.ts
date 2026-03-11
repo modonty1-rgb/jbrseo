@@ -27,13 +27,6 @@ export interface TrustItem {
   label: string;
 }
 
-export interface PricingHero {
-  socialProof: string;
-  headlineLine1: string;
-  headlineLine2: string;
-  subheadline: string;
-}
-
 export interface PricingBottomCta {
   headline: string;
   subheadline: string;
@@ -53,21 +46,16 @@ export interface PricingUI {
   youGet: string;
   moreDetails: string;
   whatsapp: string;
-  activeNow: string;
   monthly: string;
   yearly: string;
   save20: string;
   banner12Title: string;
   banner12Sub: string;
-  dialectLabel: string;
-  dialectSA: string;
-  dialectEG: string;
   trustTitle: string;
 }
 
 export interface PricingContent {
   ANNOUNCEMENT: string;
-  HERO: PricingHero;
   PLANS: Plan[];
   TRUST_ITEMS: TrustItem[];
   BOTTOM_CTA: PricingBottomCta;

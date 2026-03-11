@@ -49,7 +49,10 @@ export function SignupForm({ serverPlans, country }: SignupFormProps) {
   const router = useRouter();
 
   const hasAnnual = serverPlans.some((p) => p.annualPrice);
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const countryCode = country === "SA" ? "+966" : "+20";
 
   const serverPlan = useMemo(
     () => serverPlans[Math.min(planIndex, serverPlans.length - 1)] ?? serverPlans[0],
@@ -79,14 +82,25 @@ export function SignupForm({ serverPlans, country }: SignupFormProps) {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       nextErrors.email = "يرجى إدخال بريد إلكتروني صالح";
     }
-    if (!phone || !/^\+?\d[\d\s-]{7,14}$/.test(phone)) {
-      nextErrors.phone = "يرجى إدخال رقم جوال صالح";
+    const local = phone.replace(/[\s-]/g, "");
+    const isValidLocal =
+      country === "SA"
+        ? /^5\d{8}$/.test(local)
+        : /^01\d{8,9}$/.test(local);
+    if (!local || !isValidLocal) {
+      nextErrors.phone =
+        country === "SA"
+          ? "يرجى إدخال رقم جوال سعودي بدون مفتاح الدولة (مثال: 5XXXXXXXX)."
+          : "يرجى إدخال رقم جوال مصري بدون مفتاح الدولة (مثال: 01XXXXXXXXX).";
     }
     setErrors(nextErrors);
     setSubmitError(null);
     if (Object.keys(nextErrors).length > 0) return;
     setPending(true);
     const formData = new FormData(event.currentTarget);
+    const localDigits = phone.replace(/[^\d]/g, "");
+    const phoneWithCode = countryCode + localDigits;
+    formData.set("phone", phoneWithCode);
     formData.set("planIndex", String(planIndex));
     formData.set("country", country);
     formData.set("isAnnual", isAnnual ? "true" : "false");
@@ -230,16 +244,24 @@ export function SignupForm({ serverPlans, country }: SignupFormProps) {
               <label htmlFor="phone" className="block text-sm font-medium text-foreground">
                 رقم الجوال
               </label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                autoComplete="tel"
-                className={INPUT_CLS}
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-              />
-              <p className="text-[11px] text-muted-foreground">رقمك مع مفتاح الدولة، مثل +966...</p>
+              <div className="flex gap-2">
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  autoComplete="tel"
+                  className={INPUT_CLS}
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                  placeholder={country === "SA" ? "5XXXXXXXXX" : "01XXXXXXXXX"}
+                />
+                <span className="inline-flex items-center rounded-lg border border-input bg-muted px-3 text-xs font-semibold text-muted-foreground shrink-0">
+                  {countryCode}
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground">
+                اكتب رقم جوالك فقط بدون مفتاح الدولة، وسنضيفه تلقائياً.
+              </p>
               {errors.phone && <p className="text-xs text-destructive">{errors.phone}</p>}
             </div>
 

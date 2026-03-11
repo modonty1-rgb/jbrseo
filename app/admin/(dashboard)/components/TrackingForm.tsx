@@ -3,7 +3,8 @@
 import { updateTrackingFormData } from "@/app/actions/landing";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { SiteSettingsJson } from "@/lib/site-settings.types";
-import { SubmitButton, inputBase, labelClass } from "./AdminFormShared";
+import { inputBase, labelClass } from "./AdminFormShared";
+import { ConfirmSaveDialog } from "./ConfirmSaveDialog";
 
 const TRACKING_FIELDS = [
   { key: "gtmId" as const, label: "Google Tag Manager ID", placeholder: "GTM-XXXXXX" },
@@ -21,7 +22,7 @@ export function TrackingForm({
   redirect?: string;
 }) {
   return (
-    <form action={updateTrackingFormData} className="flex flex-col gap-3">
+    <form id="tracking-form" action={updateTrackingFormData} className="flex flex-col gap-3">
       <input type="hidden" name="country" value={country} />
       {redirect && <input type="hidden" name="redirect" value={redirect} />}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -42,7 +43,11 @@ export function TrackingForm({
           </div>
         ))}
       </div>
-      <SubmitButton>حفظ التتبع</SubmitButton>
+      <ConfirmSaveDialog
+        formId="tracking-form"
+        triggerLabel="حفظ التتبع"
+        description="سيتم حفظ إعدادات التتبع (GTM, Hotjar, Facebook Pixel) الحالية. هل أنت متأكد من المتابعة؟"
+      />
     </form>
   );
 }

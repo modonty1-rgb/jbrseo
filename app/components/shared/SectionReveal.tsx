@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 
 type AnimVariant = "blur-in" | "fade-up" | "slide-rtl" | "scale-pop" | "none";
 
@@ -33,16 +33,8 @@ export function SectionReveal({
   className = "",
   as: Tag = "div",
 }: SectionRevealProps) {
-  if (variant === "none") {
-    return <Tag className={`relative ${className}`}>{children}</Tag>;
-  }
-
   return (
-    <Tag
-      className={`relative ${className}`}
-      data-reveal={variant}
-      style={delay > 0 ? ({ "--d": `${delay}ms` } as CSSProperties) : undefined}
-    >
+    <Tag className={`relative ${className}`}>
       {showSectionCounter && sectionNumber != null && (
         <span
           aria-hidden="true"
@@ -50,7 +42,7 @@ export function SectionReveal({
             pointer-events-none select-none
             absolute -top-6 end-4 z-0
             font-black leading-none tabular-nums
-            text-[8rem] text-foreground/[0.04]
+            text-[8rem] text-foreground/4
             sm:text-[11rem] lg:text-[14rem]
           "
         >
@@ -69,10 +61,7 @@ export function StaggerReveal({
   as: Tag = "div",
 }: StaggerRevealProps) {
   return (
-    <Tag
-      className={`stagger-root ${className}`}
-      data-stagger-delay={itemDelay}
-    >
+    <Tag className={className}>
       {children}
     </Tag>
   );

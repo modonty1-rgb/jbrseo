@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 type TestimonialCardProps = {
   name: string;
   role: string;
@@ -23,14 +25,14 @@ export function TestimonialCard({
       <div className="flex gap-5">
         {image ? (
           <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-muted ring-2 ring-border/80 ring-offset-2 ring-offset-card transition-shadow duration-200 group-hover:ring-primary/20 sm:h-16 sm:w-16">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src={image}
               alt={name ? `Portrait of ${name}` : ""}
               className="h-full w-full object-cover"
               width={64}
               height={64}
               loading={imageLoading}
+              sizes="(min-width: 640px) 64px, 56px"
             />
           </div>
         ) : null}

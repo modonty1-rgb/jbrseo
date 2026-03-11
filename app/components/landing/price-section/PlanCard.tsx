@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { Plan, PricingUI } from "@/app/content/landing/price-section-types";
 import { Check, WhatsApp } from "./PriceSectionIcons";
 import { DetailsAccordion } from "./DetailsAccordion";
@@ -9,9 +10,12 @@ interface PlanCardProps {
   annual: boolean;
   currency: string;
   ui: PricingUI;
+  compact?: boolean;
+  defaultExpandDetails?: boolean;
+  id?: string;
 }
 
-export function PlanCard({ plan, annual, currency, ui }: PlanCardProps) {
+export function PlanCard({ plan, annual, currency, ui, compact = false, defaultExpandDetails = false, id }: PlanCardProps) {
   const mo = plan.price.mo;
   const price = annual ? plan.price.yr : mo;
   const savings = mo > 0 ? (mo - plan.price.yr) * 12 : 0;
@@ -23,6 +27,7 @@ export function PlanCard({ plan, annual, currency, ui }: PlanCardProps) {
 
   return (
     <div
+      id={id}
       className={cardCls}
       style={F ? { background: "linear-gradient(165deg, #1e1b4b 0%, #312e81 55%, #2e1065 100%)" } : {}}
     >
@@ -136,8 +141,19 @@ export function PlanCard({ plan, annual, currency, ui }: PlanCardProps) {
       {plan.sections && plan.sections.length > 0 && (
         <>
           <div className={`h-px w-full mt-4 ${F ? "bg-white/10" : "bg-gray-100"}`} />
-          <p className={`text-xs font-bold mt-3 mb-1 ${F ? "text-purple-300/50" : "text-gray-300"}`}>{ui.moreDetails}</p>
-          <DetailsAccordion sections={plan.sections} featured={F} />
+          {compact ? (
+            <Link
+              href={`/pricing?plan=${plan.id}`}
+              className={`text-xs font-bold mt-3 inline-block underline underline-offset-2 ${F ? "text-purple-300 hover:text-purple-200" : "text-violet-600 hover:text-violet-700"}`}
+            >
+              {ui.moreDetails}
+            </Link>
+          ) : (
+            <>
+              <p className={`text-xs font-bold mt-3 mb-1 ${F ? "text-purple-300/50" : "text-gray-300"}`}>{ui.moreDetails}</p>
+              <DetailsAccordion sections={plan.sections} featured={F} defaultOpenIndex={defaultExpandDetails ? 0 : null} />
+            </>
+          )}
         </>
       )}
 

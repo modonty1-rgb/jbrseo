@@ -11,8 +11,13 @@ import { Twitter } from "@/app/components/icons/twitter";
 import { Youtube } from "@/app/components/icons/youtube";
 import { RoundSnapchat } from "@/app/components/icons/snapchat";
 import { TiktokLogoLight } from "@/app/components/icons/tiktok";
+import type { SupportedCountry } from "@/lib/landing-content.types";
+import { getFooterLinks, getWhatsAppLink, LEGAL_LINKS } from "@/lib/site-links";
 
 const DEFAULT_LOGO = "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg";
+const BRAND_NAME = "JBRSEO";
+const COPYRIGHT = "© جميع الحقوق محفوظة — JBRSEO";
+const WA_LABEL = "تواصل على واتساب";
 
 const WhatsAppIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="#25d366" aria-hidden>
@@ -20,9 +25,11 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-export function Footer({ content, staticLanding }: { content: LandingContent; staticLanding: StaticLanding }) {
+export function Footer({ content, staticLanding, country }: { content: LandingContent; staticLanding: StaticLanding; country: SupportedCountry }) {
   const { landingImages } = content;
   const footer = staticLanding.footer;
+  const footerLinks = getFooterLinks(country);
+  const waLink = getWhatsAppLink(country);
   const logoDark  = landingImages.logoWhite || DEFAULT_LOGO;
   const logoLight = landingImages.logoLight || landingImages.logoWhite || DEFAULT_LOGO;
 
@@ -85,17 +92,17 @@ export function Footer({ content, staticLanding }: { content: LandingContent; st
           {/* BRAND COL */}
           <div>
             {/* logo */}
-            <Link href="/#hero" aria-label={`${footer.brandName} — الرئيسية`} className="mb-1 block">
+            <Link href="/#hero" aria-label={`${BRAND_NAME} — الرئيسية`} className="mb-1 block">
               <Image
                 src={logoDark}
-                alt={footer.brandName}
+                alt={BRAND_NAME}
                 width={110}
                 height={36}
                 className="hidden h-9 w-auto transition-opacity hover:opacity-80 dark:block"
               />
               <Image
                 src={logoLight}
-                alt={footer.brandName}
+                alt={BRAND_NAME}
                 width={110}
                 height={36}
                 className="block h-9 w-auto transition-opacity hover:opacity-80 dark:hidden"
@@ -122,7 +129,7 @@ export function Footer({ content, staticLanding }: { content: LandingContent; st
 
             {/* WhatsApp */}
             <a
-              href={footer.waLink}
+              href={waLink}
               target="_blank"
               rel="noopener noreferrer"
               className="
@@ -134,7 +141,7 @@ export function Footer({ content, staticLanding }: { content: LandingContent; st
               "
             >
               <WhatsAppIcon />
-              {footer.wa}
+              {WA_LABEL}
             </a>
           </div>
 
@@ -146,7 +153,7 @@ export function Footer({ content, staticLanding }: { content: LandingContent; st
               روابط سريعة
             </p>
             <ul className="flex flex-col gap-2.5">
-              {footer.links.map((l, i) => (
+              {footerLinks.map((l, i) => (
                 <li key={i}>
                   <Link
                     href={l.href}
@@ -197,10 +204,10 @@ export function Footer({ content, staticLanding }: { content: LandingContent; st
         {/* ── BOTTOM ROW ── */}
         <div className="flex flex-col items-center justify-between gap-3 pt-6 sm:flex-row">
           <p className="text-[12px] text-muted-foreground">
-            {footer.copyright}
+            {COPYRIGHT}
           </p>
           <nav className="flex gap-5">
-            {footer.legal.map((l, i) => (
+            {LEGAL_LINKS.map((l, i) => (
               <Link
                 key={i}
                 href={l.href}

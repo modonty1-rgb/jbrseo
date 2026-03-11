@@ -61,8 +61,17 @@ export type LandingContent = {
     faq: string;
     finalCta: string;
   };
+  sectionImageAlts?: {
+    hero: string;
+    whyNow: string;
+    howItWorks: string;
+    outcomes: string;
+    socialProof: string;
+    faq: string;
+    finalCta: string;
+  };
   tracking: { gtmId: string; hotjarId: string; fbPixelId: string };
-  siteSettings: { showSectionCounter: boolean };
+  siteSettings: { showSectionCounter: boolean; ctaLabel: string };
   sectionHeadings: SectionHeadings;
   footer: { brandName: string; copyright: string };
   pricingPage: { title: string; description: string; h1: string; intro: string };

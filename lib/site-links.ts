@@ -1,0 +1,52 @@
+import type { SupportedCountry } from "./landing-content.types";
+
+export type NavLinkItem = { href: string; label: string };
+export type FooterLinkItem = { label: string; href: string };
+
+const NAV_SA: NavLinkItem[] = [
+  { href: "/about", label: "من نحن" },
+  { href: "/#why-now", label: "لماذا الآن" },
+  { href: "/#how-it-works", label: "كيف نعمل" },
+  { href: "/#outcomes", label: "النتائج" },
+  { href: "/#social-proof", label: "الشهادات" },
+  { href: "/#pricing", label: "الأسعار" },
+  { href: "/#faq", label: "الأسئلة" },
+];
+
+const NAV_EG: NavLinkItem[] = [
+  { href: "/about", label: "من نحن" },
+  { href: "/#why-now", label: "ليه دلوقتي" },
+  { href: "/#how-it-works", label: "كيف نعمل" },
+  { href: "/#outcomes", label: "النتائج" },
+  { href: "/#social-proof", label: "الشهادات" },
+  { href: "/#pricing", label: "الأسعار" },
+  { href: "/#faq", label: "الأسئلة" },
+];
+
+export function getNavLinks(country: SupportedCountry): NavLinkItem[] {
+  return country === "EG" ? NAV_EG : NAV_SA;
+}
+
+const FOOTER_LINKS: FooterLinkItem[] = [
+  { label: "كيف نعمل", href: "/#how-it-works" },
+  { label: "النتائج", href: "/#outcomes" },
+  { label: "الأسعار", href: "/#pricing" },
+  { label: "الشهادات", href: "/#social-proof" },
+  { label: "الأسئلة", href: "/#faq" },
+];
+
+export function getFooterLinks(_country?: SupportedCountry): FooterLinkItem[] {
+  return FOOTER_LINKS;
+}
+
+export const LEGAL_LINKS: FooterLinkItem[] = [
+  { label: "سياسة الخصوصية", href: "/privacy" },
+  { label: "شروط الاستخدام", href: "/terms" },
+];
+
+const WHATSAPP_SA = "https://wa.me/966500000000";
+const WHATSAPP_EG = "https://wa.me/201000000000";
+
+export function getWhatsAppLink(country: SupportedCountry): string {
+  return country === "EG" ? WHATSAPP_EG : WHATSAPP_SA;
+}

@@ -1,5 +1,4 @@
 import type { StaticLanding } from "@/app/content/landing/types";
-import { SectionImage } from "@/app/components/landing/SectionImage";
 import { SocialProofBackground } from "./SocialProofBackground";
 import { SocialProofHeader } from "./SocialProofHeader";
 import { SocialProofCarousel } from "./SocialProofCarousel";
@@ -10,7 +9,6 @@ export default function SocialProof({ staticLanding }: { staticLanding: StaticLa
   return (
     <section
       id="social-proof"
-      data-reveal-section
       aria-labelledby="social-proof-title"
       className="
         relative overflow-hidden border-t border-border bg-muted/40
@@ -21,7 +19,6 @@ export default function SocialProof({ staticLanding }: { staticLanding: StaticLa
     >
       <SocialProofBackground />
       <div className="relative mx-auto max-w-[1000px]">
-        <SectionImage src={s.sectionImage} alt={s.eyebrow} slot="socialProof" />
         <div className="relative z-10">
           <SocialProofHeader eyebrow={s.eyebrow} title={s.title} subtitle={s.subtitle} />
           <SocialProofCarousel testimonials={s.testimonials} />

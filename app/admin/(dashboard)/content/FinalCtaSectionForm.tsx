@@ -1,0 +1,125 @@
+"use client";
+
+import type { StaticLanding } from "@/app/content/landing/types";
+import type { SupportedCountry } from "@/lib/landing-content.types";
+import { updateFinalCtaSection } from "@/app/actions/content-sections";
+import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
+
+type FinalCtaSectionFormProps = {
+  section: StaticLanding["finalCta"];
+  country: SupportedCountry;
+};
+
+export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormProps) {
+  const benefits = section.benefits ?? [];
+  const benefitsText = benefits.join("\n");
+
+  async function onSubmit(formData: FormData) {
+    await updateFinalCtaSection(formData);
+  }
+
+  return (
+    <form id="final-cta-form" action={onSubmit} className="space-y-4">
+      <input type="hidden" name="country" value={country} />
+      <input type="hidden" name="section" value="finalCta" />
+      <input
+        type="hidden"
+        name="redirect"
+        value={`/admin/content/finalCta?country=${country}`}
+      />
+
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-sm font-semibold text-muted-foreground">
+          تعديل قسم الدعوة النهائية
+        </h2>
+        <a
+          href={`/admin/content/finalCta?country=${country}&useDefault=1`}
+          className="text-xs font-semibold text-primary hover:underline"
+        >
+          تحميل القيم الافتراضية
+        </a>
+      </div>
+
+      <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
+        اسم القسم
+        <input
+          name="eyebrow"
+          defaultValue={section.eyebrow}
+          className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+        />
+      </label>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
+          العنوان ١
+          <input
+            name="title1"
+            defaultValue={section.title1}
+            className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
+          العنوان ٢
+          <input
+            name="title2"
+            defaultValue={section.title2}
+            className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+          />
+        </label>
+      </div>
+
+      <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
+        العنوان الفرعي
+        <input
+          name="subtitle"
+          defaultValue={section.subtitle}
+          className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+        />
+      </label>
+
+      <div className="grid gap-3 md:grid-cols-2">
+        <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
+          إجمالي المقاعد
+          <input
+            name="seatsTotal"
+            defaultValue={String(section.seats?.total ?? 0)}
+            className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+          />
+        </label>
+        <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
+          المقاعد المحجوزة
+          <input
+            name="seatsTaken"
+            defaultValue={String(section.seats?.taken ?? 0)}
+            className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+          />
+        </label>
+      </div>
+
+      <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
+        الفوائد (سطر لكل فائدة)
+        <textarea
+          name="benefitsLines"
+          defaultValue={benefitsText}
+          className="min-h-[70px] rounded-md border border-border bg-background px-2 py-1 text-sm"
+        />
+      </label>
+
+      <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
+        نص زر واتساب / الدعوة
+        <input
+          name="wa"
+          defaultValue={section.wa}
+          className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+        />
+      </label>
+
+      <ConfirmSaveDialog
+        formId="final-cta-form"
+        triggerLabel="حفظ قسم الدعوة النهائية"
+        description="سيتم حفظ التغييرات على قسم الدعوة النهائية للبلد المحدد. هل أنت متأكد من المتابعة؟"
+      />
+    </form>
+  );
+}
+

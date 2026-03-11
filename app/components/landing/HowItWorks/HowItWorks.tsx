@@ -1,16 +1,16 @@
 import type { StaticLanding } from "@/app/content/landing/types";
-import { SectionImage } from "@/app/components/landing/SectionImage";
 import { HowItWorksBackground } from "./HowItWorksBackground";
 import { HowItWorksHeader } from "./HowItWorksHeader";
 import { HowItWorksSteps } from "./HowItWorksSteps";
 import { HowItWorksCTA } from "./HowItWorksCTA";
 
-export default function HowItWorks({ staticLanding }: { staticLanding: StaticLanding }) {
+const DEFAULT_CTA = "ابدأ مجاناً — بدون بطاقة";
+
+export default function HowItWorks({ staticLanding, ctaLabel = DEFAULT_CTA }: { staticLanding: StaticLanding; ctaLabel?: string }) {
   const h = staticLanding.howItWorks;
   return (
     <section
       id="how-it-works"
-      data-reveal-section
       aria-labelledby="how-it-works-title"
       className="
         relative overflow-hidden border-t border-border bg-muted/40
@@ -21,7 +21,6 @@ export default function HowItWorks({ staticLanding }: { staticLanding: StaticLan
     >
       <HowItWorksBackground />
       <div className="relative mx-auto max-w-[1080px]">
-        <SectionImage src={h.sectionImage} alt={h.eyebrow} slot="howItWorks" />
         <div className="relative z-10">
           <HowItWorksHeader
             eyebrow={h.eyebrow}
@@ -30,8 +29,8 @@ export default function HowItWorks({ staticLanding }: { staticLanding: StaticLan
           />
           <HowItWorksSteps steps={h.steps} />
           <HowItWorksCTA
-            ctaLink={h.ctaLink}
-            cta={h.cta}
+            ctaLink="/signup"
+            cta={ctaLabel}
             guarantee={h.guarantee}
           />
         </div>

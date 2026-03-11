@@ -1,5 +1,6 @@
 import type { StaticLanding } from "@/app/content/landing/types";
-import { SectionImage } from "@/app/components/landing/SectionImage";
+import type { SupportedCountry } from "@/lib/landing-content.types";
+import { getWhatsAppLink } from "@/lib/site-links";
 import { FAQAccordion } from "./FAQAccordion";
 
 const WhatsAppIcon = () => (
@@ -8,12 +9,14 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-export default function FAQ({ staticLanding }: { staticLanding: StaticLanding }) {
+const DEFAULT_CTA = "تحدث معنا على واتساب";
+
+export default function FAQ({ staticLanding, country, ctaLabel = DEFAULT_CTA }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string }) {
   const f = staticLanding.faq;
+  const waLink = getWhatsAppLink(country);
   return (
     <section
       id="faq"
-      data-reveal-section
       aria-labelledby="faq-title"
       className="
         relative overflow-hidden border-t border-border bg-card
@@ -37,7 +40,6 @@ export default function FAQ({ staticLanding }: { staticLanding: StaticLanding })
       />
 
       <div className="relative mx-auto max-w-[760px]">
-        <SectionImage src={f.sectionImage} alt={f.eyebrow} slot="faq" />
         <div className="relative z-10">
         <div className="landing-reveal-eyebrow mb-14 text-center">
           <div
@@ -72,7 +74,7 @@ export default function FAQ({ staticLanding }: { staticLanding: StaticLanding })
         >
           <p className="mb-3.5 text-[15px] font-bold text-foreground">{f.ctaLabel}</p>
           <a
-            href={f.waLink}
+            href={waLink}
             target="_blank"
             rel="noopener noreferrer"
             className="
@@ -87,7 +89,7 @@ export default function FAQ({ staticLanding }: { staticLanding: StaticLanding })
             }}
           >
             <WhatsAppIcon />
-            {f.ctaBtn}
+            {ctaLabel}
           </a>
         </div>
         </div>

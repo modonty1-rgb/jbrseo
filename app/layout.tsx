@@ -1,9 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Tajawal } from "next/font/google";
+import Link from "next/link";
 import Script from "next/script";
 import { ThemeProvider } from "@/app/helpers/useTheme";
-import { RevealObserver } from "@/app/components/shared/RevealObserver";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#0E065A" },
+    { media: "(prefers-color-scheme: dark)", color: "#0E065A" },
+  ],
+};
 
 const tajawal = Tajawal({
   subsets: ["arabic", "latin"],
@@ -60,14 +67,13 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={`${tajawal.className} bg-background text-foreground`}>
-        <a
+        <Link
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 focus:z-[9999] focus:bg-accent focus:text-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 focus:z-9999 focus:bg-accent focus:text-white focus:px-4 focus:py-2 focus:rounded focus:shadow-lg"
         >
           انتقل للمحتوى الرئيسي
-        </a>
+        </Link>
         <ThemeProvider>{children}</ThemeProvider>
-        <RevealObserver />
       </body>
     </html>
   );

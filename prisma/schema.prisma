@@ -33,3 +33,13 @@ model Subscriber {
   @@index([country])
   @@index([createdAt])
 }
+
+model LandingSection {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  country   String
+  section   String
+  data      Json
+  updatedAt DateTime @updatedAt
+
+  @@unique([country, section])
+}

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Check } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import type { PricingPlan, SupportedCountry } from "@/lib/landing-content.types";
 import { EgyptianPoundIcon } from "@/app/components/icons/egyptian-pound-icon";
@@ -158,12 +157,14 @@ export function PricingBillingToggle({ plans, country, highlightBadge, colClass,
                     <ul className="list-none space-y-2" aria-label="مميزات الخطة">
                       {features.map((f, j) => (
                         <li key={j} className="flex items-start gap-2 text-sm">
-                          <Check
-                            className={`mt-0.5 h-4 w-4 shrink-0 ${
+                          <span
+                            className={`mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center text-base ${
                               isHighlighted ? "text-primary-foreground/80" : "text-success"
                             }`}
                             aria-hidden
-                          />
+                          >
+                            ✅
+                          </span>
                           <span
                             className={
                               isHighlighted

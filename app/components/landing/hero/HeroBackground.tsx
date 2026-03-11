@@ -12,13 +12,11 @@ export function HeroBackground() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-[200px] -end-[120px] h-[680px] w-[680px] rounded-full bg-primary/7 blur-[110px]"
-        style={{ animation: "glow-pulse 4s ease-in-out infinite" }}
+        className="hero-glow-pulse pointer-events-none absolute -top-[200px] -end-[120px] h-[680px] w-[680px] rounded-full bg-primary/7 blur-[110px]"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-[60px] -start-[80px] h-[460px] w-[460px] rounded-full bg-accent/5 blur-[100px]"
-        style={{ animation: "glow-pulse 5s 1s ease-in-out infinite" }}
+        className="hero-glow-pulse-delay pointer-events-none absolute -bottom-[60px] -start-[80px] h-[460px] w-[460px] rounded-full bg-accent/5 blur-[100px]"
       />
       <div
         aria-hidden

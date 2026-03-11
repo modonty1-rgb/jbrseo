@@ -1,6 +1,5 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { useThemeOptional } from "@/app/helpers/useTheme";
 
@@ -15,7 +14,7 @@ export function ThemeToggle() {
         className="h-10 w-10 rounded-full border border-border/70 bg-background/80 text-foreground/70 hover:bg-primary/10 hover:text-primary hover:border-primary/40 dark:border-border/60 dark:bg-background/40 dark:hover:bg-primary/20"
         aria-label="تفعيل الوضع الداكن"
       >
-        <Moon className="h-4 w-4" />
+        <span className="text-xl" aria-hidden>🌙</span>
       </Button>
     );
   }
@@ -29,11 +28,9 @@ export function ThemeToggle() {
       className="h-10 w-10 rounded-full border border-border/70 bg-background/80 text-foreground/70 hover:bg-primary/10 hover:text-primary hover:border-primary/40 dark:border-border/60 dark:bg-background/40 dark:hover:bg-primary/20"
       aria-label={theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"}
     >
-      {theme === "dark" ? (
-        <Sun className="h-4 w-4" />
-      ) : (
-        <Moon className="h-4 w-4" />
-      )}
+      <span className="text-xl" aria-hidden>
+        {theme === "dark" ? "☀️" : "🌙"}
+      </span>
     </Button>
   );
 }

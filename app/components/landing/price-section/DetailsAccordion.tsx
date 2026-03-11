@@ -6,10 +6,11 @@ import type { Section } from "@/app/content/landing/price-section-types";
 interface DetailsAccordionProps {
   sections: Section[];
   featured: boolean;
+  defaultOpenIndex?: number | null;
 }
 
-export function DetailsAccordion({ sections, featured }: DetailsAccordionProps) {
-  const [open, setOpen] = useState<number | null>(null);
+export function DetailsAccordion({ sections, featured, defaultOpenIndex }: DetailsAccordionProps) {
+  const [open, setOpen] = useState<number | null>(defaultOpenIndex ?? null);
   return (
     <div className="mt-4 flex flex-col gap-1.5">
       {sections.map((sec, i) => (

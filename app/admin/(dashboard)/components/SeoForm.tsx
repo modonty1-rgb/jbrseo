@@ -3,7 +3,8 @@
 import { updateSeoFormData } from "@/app/actions/landing";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { SiteSettingsJson } from "@/lib/site-settings.types";
-import { SubmitButton, inputBase, labelClass } from "./AdminFormShared";
+import { inputBase, labelClass } from "./AdminFormShared";
+import { ConfirmSaveDialog } from "./ConfirmSaveDialog";
 
 const SEO_FIELDS: { key: string; label: string; type?: "text" | "url"; placeholder?: string }[] = [
   { key: "title", label: "Meta title" },
@@ -34,7 +35,7 @@ export function SeoForm({
 }) {
   const get = (key: string) => (seo as Record<string, string>)[key] ?? "";
   return (
-    <form action={updateSeoFormData} className="flex flex-col gap-3">
+    <form id="seo-form" action={updateSeoFormData} className="flex flex-col gap-3">
       <input type="hidden" name="country" value={country} />
       {redirect && <input type="hidden" name="redirect" value={redirect} />}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -74,7 +75,11 @@ export function SeoForm({
           </div>
         ))}
       </div>
-      <SubmitButton loadingLabel="جاري الحفظ…">حفظ SEO وبطاقات التواصل</SubmitButton>
+      <ConfirmSaveDialog
+        formId="seo-form"
+        triggerLabel="حفظ SEO وبطاقات التواصل"
+        description="سيتم حفظ إعدادات SEO وبطاقات التواصل الحالية. هل أنت متأكد من المتابعة؟"
+      />
     </form>
   );
 }

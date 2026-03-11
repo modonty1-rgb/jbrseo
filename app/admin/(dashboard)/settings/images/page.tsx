@@ -28,9 +28,11 @@ export default async function AdminSettingsImagesPage({
 }) {
   const country = await getCountry(searchParams);
   const settings = await getSiteSettings(country);
+  const img = settings.images as Record<string, string>;
   const images = IMAGE_KEYS.map((key) => ({
     key,
-    url: (settings.images as Record<string, string>)[key] ?? "",
+    url: img[key] ?? "",
+    alt: img[`${key}Alt`] ?? "",
   }));
   return (
     <div className="p-6">
@@ -43,8 +45,13 @@ export default async function AdminSettingsImagesPage({
       <Suspense fallback={null}>
         <AdminFormFeedback />
       </Suspense>
-      <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-        <ImagesForm country={country} images={images} redirect={`/admin/settings/images?country=${country}`} />
+      <div className="rounded-lg border border-border bg-card shadow-sm overflow-hidden">
+        <div className="border-b border-border bg-muted/50 px-4 py-3 text-sm font-semibold text-muted-foreground">
+          روابط الصور ونص البديل (للوصولية)
+        </div>
+        <div className="p-4">
+          <ImagesForm country={country} images={images} redirect={`/admin/settings/images?country=${country}`} />
+        </div>
       </div>
     </div>
   );

@@ -24,6 +24,7 @@ export type SiteSettingsTracking = {
 
 export type SiteSettingsSite = {
   showSectionCounter: boolean;
+  ctaLabel: string;
 };
 
 export type SiteSettingsSectionImages = {
@@ -40,13 +41,21 @@ export type SiteSettingsImages = {
   logoWhite: string;
   logoLight: string;
   contactAvatar: string;
+  contactAvatarAlt: string;
   sectionHero: string;
+  sectionHeroAlt: string;
   sectionWhyNow: string;
+  sectionWhyNowAlt: string;
   sectionHowItWorks: string;
+  sectionHowItWorksAlt: string;
   sectionOutcomes: string;
+  sectionOutcomesAlt: string;
   sectionSocialProof: string;
+  sectionSocialProofAlt: string;
   sectionFaq: string;
+  sectionFaqAlt: string;
   sectionFinalCta: string;
+  sectionFinalCtaAlt: string;
 };
 
 export type SiteSettingsPricingTeaser = {
@@ -85,18 +94,26 @@ export const DEFAULT_SITE_SETTINGS_JSON: SiteSettingsJson = {
     twitterImage: "",
   },
   tracking: { gtmId: "", hotjarId: "", fbPixelId: "" },
-  site: { showSectionCounter: false },
+  site: { showSectionCounter: false, ctaLabel: "ابدأ مجاناً — بدون بطاقة" },
   images: {
     logoWhite: "",
     logoLight: "",
     contactAvatar: "",
+    contactAvatarAlt: "",
     sectionHero: "",
+    sectionHeroAlt: "",
     sectionWhyNow: "",
+    sectionWhyNowAlt: "",
     sectionHowItWorks: "",
+    sectionHowItWorksAlt: "",
     sectionOutcomes: "",
+    sectionOutcomesAlt: "",
     sectionSocialProof: "",
+    sectionSocialProofAlt: "",
     sectionFaq: "",
+    sectionFaqAlt: "",
     sectionFinalCta: "",
+    sectionFinalCtaAlt: "",
   },
   pricingTeaser: {
     cta: "",

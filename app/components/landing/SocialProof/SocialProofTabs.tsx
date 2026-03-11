@@ -32,7 +32,7 @@ export function SocialProofTabs({ testimonials, active, onSelect }: SocialProofT
             className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border-2 transition-colors duration-200 lg:h-10 lg:w-10"
             style={{ borderColor: active === i ? "color-mix(in oklch, var(--accent) 40%, transparent)" : "transparent" }}
           >
-            <Image src={t.avatarImg} alt={t.name} fill className="object-cover" unoptimized sizes="40px" />
+            <Image src={t.avatarImg} alt={t.name} fill className="object-cover" sizes="40px" />
           </div>
           <div className="min-w-0 hidden sm:block lg:block">
             <p className="truncate text-[12px] font-black text-foreground lg:text-[13px]">{t.name}</p>

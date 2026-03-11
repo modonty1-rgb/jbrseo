@@ -1,14 +1,16 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import dynamic from "next/dynamic";
+import type { StaticLanding } from "@/app/content/landing/types";
 import Hero from "@/app/components/landing/hero/Hero";
 import WhyNow from "@/app/components/landing/WhyNow/WhyNow";
 import HowItWorks from "@/app/components/landing/HowItWorks/HowItWorks";
 import Outcomes from "@/app/components/landing/Outcomes/Outcomes";
 import LandingJsonLd from "@/app/components/shared/LandingJsonLd";
 import { SectionReveal } from "@/app/components/shared/SectionReveal";
-import { getStaticLanding } from "@/app/content/landing/get-static-landing";
+import { getStaticLanding, getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
+import type { SupportedCountry } from "@/lib/landing-content.types";
 import { getLandingContent } from "@/lib/getLandingContent";
 
 const SocialProof = dynamic(
@@ -17,8 +19,10 @@ const SocialProof = dynamic(
 const ModontyPricing = dynamic(
   () => import("@/app/components/landing/price-section/price-section")
 );
-const FAQ = dynamic(() => import("@/app/components/landing/FAQ/FAQ"));
-const FinalCTA = dynamic(
+const FAQ = dynamic<{ staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string }>(
+  () => import("@/app/components/landing/FAQ/FAQ")
+);
+const FinalCTA = dynamic<{ staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string }>(
   () => import("@/app/components/landing/FinalCTA/FinalCTA")
 );
 
@@ -65,53 +69,58 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const h = await headers();
   const country = getCountryFromHeaders(h);
-  const [content, staticLanding] = await Promise.all([
+  const [content, baseLanding, pricingSALanding, pricingEGLanding] = await Promise.all([
     getLandingContent(country),
-    Promise.resolve(getStaticLanding(country)),
+    getStaticLandingWithOverrides(country),
+    getStaticLandingWithOverrides("SA"),
+    getStaticLandingWithOverrides("EG"),
   ]);
   const si = content.sectionImages;
   const mergedStaticLanding = {
-    ...staticLanding,
-    hero: { ...staticLanding.hero, sectionImage: si?.hero ?? staticLanding.hero.sectionImage ?? "" },
-    whyNow: { ...staticLanding.whyNow, sectionImage: si?.whyNow ?? staticLanding.whyNow.sectionImage ?? "" },
-    howItWorks: { ...staticLanding.howItWorks, sectionImage: si?.howItWorks ?? staticLanding.howItWorks.sectionImage ?? "" },
-    outcomes: { ...staticLanding.outcomes, sectionImage: si?.outcomes ?? staticLanding.outcomes.sectionImage ?? "" },
-    socialProof: { ...staticLanding.socialProof, sectionImage: si?.socialProof ?? staticLanding.socialProof.sectionImage ?? "" },
-    faq: { ...staticLanding.faq, sectionImage: si?.faq ?? staticLanding.faq.sectionImage ?? "" },
-    finalCta: { ...staticLanding.finalCta, sectionImage: si?.finalCta ?? staticLanding.finalCta.sectionImage ?? "" },
+    ...baseLanding,
+    hero: { ...baseLanding.hero, sectionImage: si?.hero ?? "" },
+    whyNow: { ...baseLanding.whyNow, sectionImage: si?.whyNow ?? baseLanding.whyNow.sectionImage ?? "" },
+    howItWorks: { ...baseLanding.howItWorks, sectionImage: si?.howItWorks ?? baseLanding.howItWorks.sectionImage ?? "" },
+    outcomes: { ...baseLanding.outcomes, sectionImage: si?.outcomes ?? baseLanding.outcomes.sectionImage ?? "" },
+    socialProof: { ...baseLanding.socialProof, sectionImage: si?.socialProof ?? baseLanding.socialProof.sectionImage ?? "" },
+    faq: { ...baseLanding.faq, sectionImage: si?.faq ?? baseLanding.faq.sectionImage ?? "" },
+    finalCta: { ...baseLanding.finalCta, sectionImage: si?.finalCta ?? baseLanding.finalCta.sectionImage ?? "" },
+    pricing: baseLanding.pricing,
+    pricingPage: baseLanding.pricingPage,
   };
   const showSectionCounter = content.siteSettings.showSectionCounter;
-  const pricingSA = getStaticLanding("SA").pricing;
-  const pricingEG = getStaticLanding("EG").pricing;
+  const ctaLabel = content.siteSettings.ctaLabel || "ابدأ مجاناً — بدون بطاقة";
+  const pricingSA = pricingSALanding.pricing;
+  const pricingEG = pricingEGLanding.pricing;
   const initialLocale = country === "EG" ? "eg" : "sa";
   return (
     <>
       <LandingJsonLd content={content} />
       <SectionReveal variant="none" sectionNumber={1} showSectionCounter={showSectionCounter}>
-        <Hero content={content} staticLanding={mergedStaticLanding} />
+        <Hero content={content} staticLanding={mergedStaticLanding} country={country} />
       </SectionReveal>
       <SectionReveal variant="blur-in" sectionNumber={2} showSectionCounter={showSectionCounter}>
-        <WhyNow staticLanding={mergedStaticLanding} />
+        <WhyNow staticLanding={mergedStaticLanding} ctaLabel={ctaLabel} />
       </SectionReveal>
       <SectionReveal variant="blur-in" sectionNumber={3} showSectionCounter={showSectionCounter}>
-        <HowItWorks staticLanding={mergedStaticLanding} />
+        <HowItWorks staticLanding={mergedStaticLanding} ctaLabel={ctaLabel} />
       </SectionReveal>
       <SectionReveal variant="blur-in" sectionNumber={4} showSectionCounter={showSectionCounter}>
-        <Outcomes staticLanding={mergedStaticLanding} />
+        <Outcomes staticLanding={mergedStaticLanding} ctaLabel={ctaLabel} />
       </SectionReveal>
       <SectionReveal variant="fade-up" sectionNumber={5} showSectionCounter={showSectionCounter}>
         <SocialProof staticLanding={mergedStaticLanding} />
       </SectionReveal>
       <SectionReveal variant="fade-up" delay={80} sectionNumber={6} showSectionCounter={showSectionCounter}>
         <div id="pricing">
-          <ModontyPricing pricingSA={pricingSA} pricingEG={pricingEG} initialLocale={initialLocale} />
+          <ModontyPricing pricingSA={pricingSA} pricingEG={pricingEG} initialLocale={initialLocale} variant="homepage" />
         </div>
       </SectionReveal>
       <SectionReveal variant="blur-in" sectionNumber={7} showSectionCounter={showSectionCounter}>
-        <FAQ staticLanding={mergedStaticLanding} />
+        <FAQ staticLanding={mergedStaticLanding} country={country} ctaLabel={ctaLabel} />
       </SectionReveal>
       <SectionReveal variant="blur-in" sectionNumber={8} showSectionCounter={showSectionCounter}>
-        <FinalCTA staticLanding={mergedStaticLanding} />
+        <FinalCTA staticLanding={mergedStaticLanding} country={country} ctaLabel={ctaLabel} />
       </SectionReveal>
     </>
   );

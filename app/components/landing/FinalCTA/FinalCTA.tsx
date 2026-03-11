@@ -1,5 +1,6 @@
 import type { StaticLanding } from "@/app/content/landing/types";
-import { SectionImage } from "@/app/components/landing/SectionImage";
+import type { SupportedCountry } from "@/lib/landing-content.types";
+import { getWhatsAppLink } from "@/lib/site-links";
 import { FinalCTABackground } from "./FinalCTABackground";
 import { FinalCTAHeader } from "./FinalCTAHeader";
 import { FinalCTASeatsBar } from "./FinalCTASeatsBar";
@@ -7,11 +8,13 @@ import { FinalCTAButtons } from "./FinalCTAButtons";
 import { FinalCTABenefits } from "./FinalCTABenefits";
 import { FinalCTAKeyframes } from "./FinalCTAKeyframes";
 
-export default function FinalCTA({ staticLanding }: { staticLanding: StaticLanding }) {
+const DEFAULT_CTA = "احجز مقعدك — مجاناً";
+
+export default function FinalCTA({ staticLanding, country, ctaLabel = DEFAULT_CTA }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string }) {
   const c = staticLanding.finalCta;
+  const waLink = getWhatsAppLink(country);
   return (
     <section
-      data-reveal-section
       aria-labelledby="final-cta-title"
       className="final-cta-section relative overflow-hidden px-5 pt-[100px] pb-20 sm:px-8 sm:pt-[110px] sm:pb-24"
     >
@@ -38,7 +41,6 @@ export default function FinalCTA({ staticLanding }: { staticLanding: StaticLandi
       `}</style>
       <FinalCTABackground />
       <div className="relative mx-auto flex max-w-[680px] flex-col items-center text-center">
-        <SectionImage src={c.sectionImage} alt={c.eyebrow} slot="finalCta" />
         <div className="relative z-10 w-full">
           <FinalCTAHeader
             eyebrow={c.eyebrow}
@@ -47,7 +49,7 @@ export default function FinalCTA({ staticLanding }: { staticLanding: StaticLandi
             subtitle={c.subtitle}
           />
           <FinalCTASeatsBar total={c.seats.total} taken={c.seats.taken} />
-          <FinalCTAButtons cta={c.cta} ctaLink={c.ctaLink} wa={c.wa} waLink={c.waLink} />
+          <FinalCTAButtons cta={ctaLabel} ctaLink="/signup" wa={c.wa} waLink={waLink} />
           <FinalCTABenefits benefits={c.benefits} />
         </div>
       </div>

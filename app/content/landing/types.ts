@@ -40,22 +40,61 @@ export type NavLink = { href: string; label: string };
 
 export type FooterLink = { label: string; href: string };
 
+export type LegalSection = {
+  title: string;
+  updatedAt?: string;
+  body: string;
+};
+
+export type AboutStoryBlock = {
+  label: string;
+  title: string;
+  body: string;
+};
+
+export type AboutValue = {
+  title: string;
+  body: string;
+};
+
+export type AboutLegalInfo = {
+  legalName: string;
+  registrationCountry: string;
+  crNumber: string;
+  foundedAt: string;
+  address: string;
+  email: string;
+  phone: string;
+  note?: string;
+};
+
+export type AboutCta = {
+  title: string;
+  body: string;
+  primaryLabel: string;
+  primaryHref: string;
+  secondaryLabel: string;
+  secondaryHref: string;
+};
+
+export type TeamPageMember = {
+  name: string;
+  role: string;
+  bio: string;
+  avatarColor: string;
+  avatarUrl?: string;
+};
+
 export type StaticLanding = {
   hero: {
     sectionImage?: string;
-    heroImageAlt: string;
     proof: string;
     h1Line1: string;
     h1Line2: string;
     sub: string;
     benefits: { objection: string; answer: string }[];
-    cta: string;
     trust: string[];
-    stats: { icon: string; num: string; label: string }[];
-    seatsTotal: number;
-    seatsTaken: number;
-    socialLine: string;
-    ctaLink: string;
+    guaranteeBadge?: string;
   };
   whyNow: {
     sectionImage?: string;
@@ -66,8 +105,6 @@ export type StaticLanding = {
     costs: { month: string; label: string; desc: string; value: string; icon: string; severity: number }[];
     reasons: { icon: string; title: string; body: string }[];
     ctaText: string;
-    ctaBtn: string;
-    ctaLink: string;
     ctaHighlight: string;
     daysTarget: number;
   };
@@ -77,8 +114,6 @@ export type StaticLanding = {
     title: string;
     subtitle: string;
     steps: { num: string; icon: string; title: string; line: string; tag: string }[];
-    ctaLink: string;
-    cta: string;
     guarantee: string;
   };
   outcomes: {
@@ -87,8 +122,6 @@ export type StaticLanding = {
     title: string;
     subtitle: string;
     outcomes: OutcomeItem[];
-    ctaLink: string;
-    cta: string;
     badgeText: string;
     message: string;
     messageHighlight: string;
@@ -108,8 +141,6 @@ export type StaticLanding = {
     subtitle: string;
     faqs: FaqItem[];
     ctaLabel: string;
-    ctaBtn: string;
-    waLink: string;
   };
   finalCta: {
     sectionImage?: string;
@@ -119,28 +150,16 @@ export type StaticLanding = {
     subtitle: string;
     seats: { total: number; taken: number };
     benefits: string[];
-    cta: string;
-    ctaLink: string;
     wa: string;
-    waLink: string;
   };
   header: {
-    navLinks: NavLink[];
-    ctaLabel: string;
     seats: { total: number; taken: number };
     announcementPrefix: string;
     announcementSuffix: string;
-    bookCta: string;
   };
   footer: {
     tagline: string;
     desc: string;
-    wa: string;
-    waLink: string;
-    links: FooterLink[];
-    legal: FooterLink[];
-    brandName: string;
-    copyright: string;
   };
   pricing: PricingContent;
   pricingPage: {
@@ -148,5 +167,24 @@ export type StaticLanding = {
     description: string;
     h1: string;
     intro: string;
+  };
+  privacy: LegalSection;
+  terms: LegalSection;
+  about: {
+    hero: {
+      eyebrow?: string;
+      title: string;
+      subtitle: string;
+    };
+    storyBlocks: AboutStoryBlock[];
+    values: AboutValue[];
+    fitFor: string[];
+    notFitFor: string[];
+    legalInfo: AboutLegalInfo;
+    cta: AboutCta;
+  };
+  team: {
+    coreTeam: TeamPageMember[];
+    executionTeam: TeamPageMember[];
   };
 };

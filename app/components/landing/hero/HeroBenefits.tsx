@@ -6,16 +6,11 @@ export function HeroBenefits({ benefits }: { benefits: readonly Benefit[] }) {
       {benefits.map((b, i) => (
         <div
           key={i}
-          className="flex cursor-default items-start gap-3 border-b border-border px-4 py-3.5 transition-colors duration-150 last:border-0 hover:bg-muted/50 sm:gap-3.5 sm:px-[18px]"
+          className="flex cursor-default flex-col gap-2 border-b border-border px-4 py-3.5 transition-colors duration-150 last:border-0 hover:bg-muted/50 sm:gap-2.5 sm:px-[18px]"
         >
-          <div className="flex shrink-0 flex-col items-center gap-1 pt-0.5">
-            <span className="inline-flex h-[22px] w-[22px] items-center justify-center rounded-full bg-success/12 text-[10px] font-black text-success ring-1 ring-success/22">
-              ✓
-            </span>
-            <span className="mt-1 whitespace-nowrap text-[10.5px] font-extrabold text-muted-foreground">
-              {b.objection}
-            </span>
-          </div>
+          <span className="inline-flex w-fit rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary ring-1 ring-primary/20">
+            {b.objection}
+          </span>
           <span className="text-sm leading-relaxed text-foreground/85 sm:text-[14.5px]">
             {b.answer}
           </span>

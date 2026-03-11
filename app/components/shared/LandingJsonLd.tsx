@@ -24,11 +24,11 @@ function buildJsonLd(content: LandingContent) {
   const webSite = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "مدونتي",
+    name: "JBRSEO",
     description: seo.description,
     url: seo.canonical,
     inLanguage: "ar",
-    publisher: { "@type": "Organization", name: "مدونتي" },
+    publisher: { "@type": "Organization", name: "JBRSEO" },
   };
   const faqPage = {
     "@context": "https://schema.org",
@@ -57,7 +57,7 @@ function buildJsonLd(content: LandingContent) {
       reviewBody: t.quote || "",
       itemReviewed: {
         "@type": "Organization" as const,
-        name: "مدونتي",
+        name: "JBRSEO",
         url: seo.canonical,
       },
     }));

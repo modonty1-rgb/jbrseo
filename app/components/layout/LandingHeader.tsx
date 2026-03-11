@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import type { StaticLanding } from "@/app/content/landing/types";
-import type { LandingContent } from "@/lib/landing-content.types";
+import type { LandingContent, SupportedCountry } from "@/lib/landing-content.types";
+import { getNavLinks } from "@/lib/site-links";
 import { HeaderLogo } from "./HeaderLogo";
 import HeaderActionsClient from "./HeaderActionsClient";
 
-function DesktopNav({ navLinks }: { navLinks: StaticLanding["header"]["navLinks"] }) {
+type NavLinkItem = { href: string; label: string };
+
+function DesktopNav({ navLinks }: { navLinks: NavLinkItem[] }) {
   return (
     <nav className="hidden items-center gap-1 lg:flex" aria-label="القائمة الرئيسية">
       {navLinks.map(({ href, label }) => (
@@ -31,13 +34,13 @@ function DesktopNav({ navLinks }: { navLinks: StaticLanding["header"]["navLinks"
   );
 }
 
-function HeaderActions({ staticLanding }: { staticLanding: StaticLanding }) {
-  const { header, hero } = staticLanding;
+function HeaderActions({ staticLanding, navLinks, ctaLabel }: { staticLanding: StaticLanding; navLinks: NavLinkItem[]; ctaLabel: string }) {
+  const { header } = staticLanding;
   return (
     <HeaderActionsClient
-      navLinks={header.navLinks}
-      ctaLabel={header.ctaLabel}
-      pricingHref={hero.ctaLink}
+      navLinks={navLinks}
+      ctaLabel={ctaLabel}
+      pricingHref="/signup"
       seatsTotal={header.seats.total}
       seatsTaken={header.seats.taken}
       announcementPrefix={header.announcementPrefix}
@@ -46,15 +49,25 @@ function HeaderActions({ staticLanding }: { staticLanding: StaticLanding }) {
   );
 }
 
-export function LandingHeader({ content, staticLanding }: { content: LandingContent; staticLanding: StaticLanding }) {
-  const { header, hero } = staticLanding;
+const DEFAULT_CTA = "ابدأ مجاناً — بدون بطاقة";
+
+export function LandingHeader({ content, staticLanding, country }: { content: LandingContent; staticLanding: StaticLanding; country: SupportedCountry }) {
+  const { header } = staticLanding;
+  const navLinks = getNavLinks(country);
+  const ctaLabel = content.siteSettings.ctaLabel || DEFAULT_CTA;
+  type HeaderWithBookCta = StaticLanding["header"] & { bookCta?: string };
+  const bookCta = (header as HeaderWithBookCta).bookCta || ctaLabel;
   const remaining = header.seats.total - header.seats.taken;
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl">
       {/* ── TOP ANNOUNCEMENT BAR ── */}
       <div
-        className="flex items-center justify-center gap-2.5 px-4 py-2 text-center text-[11.5px] font-bold"
+        className="
+          flex flex-wrap items-center justify-center gap-1.5
+          px-3 py-2 text-center text-[11px] font-bold
+          sm:px-4 sm:py-2.5 sm:text-[11.5px]
+        "
         style={{
           background:   "linear-gradient(to left, oklch(0.14 0.13 275), oklch(0.32 0.16 275))",
           color:        "#fff",
@@ -66,20 +79,28 @@ export function LandingHeader({ content, staticLanding }: { content: LandingCont
           style={{ background: "oklch(0.65 0.18 142)", animation: "pulse-hdr 1.8s ease infinite" }}
           aria-hidden
         />
-        {header.announcementPrefix}
+        <span>{header.announcementPrefix}</span>
         <span
-          className="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[11px] font-black"
+          className="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-[10.5px] font-black sm:text-[11px]"
           style={{ background: "oklch(0.65 0.18 142)", color: "#fff", minWidth: 22 }}
         >
           {remaining}
         </span>
-        {header.announcementSuffix} {header.seats.total}
-        <span className="mx-1 opacity-40">·</span>
+        <span className="hidden sm:inline">
+          {header.announcementSuffix} {header.seats.total}
+        </span>
+        <span className="hidden sm:inline mx-1 opacity-40">·</span>
         <Link
-          href={hero.ctaLink}
-          className="underline underline-offset-2 opacity-80 hover:opacity-100 transition-opacity"
+          href="/signup"
+          className="
+            inline-flex items-center gap-1 rounded-full
+            border border-white/30 bg-white/10
+            px-2.5 py-0.5 text-[10.5px] font-black
+            shadow-sm transition-colors
+            hover:bg-white/20
+          "
         >
-          {header.bookCta}
+          <span>{bookCta}</span>
         </Link>
       </div>
 
@@ -90,10 +111,10 @@ export function LandingHeader({ content, staticLanding }: { content: LandingCont
         <HeaderLogo landingImages={content.landingImages} />
 
         {/* DESKTOP NAV */}
-        <DesktopNav navLinks={header.navLinks} />
+        <DesktopNav navLinks={navLinks} />
 
         {/* RIGHT ACTIONS (client) */}
-        <HeaderActions staticLanding={staticLanding} />
+        <HeaderActions staticLanding={staticLanding} navLinks={navLinks} ctaLabel={ctaLabel} />
       </div>
 
       <style>{`

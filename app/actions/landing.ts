@@ -31,7 +31,11 @@ export async function getSiteSettings(country: string): Promise<SiteSettingsJson
   assertCountry(country);
   const row = await prisma.siteSettings.findUnique({ where: { country } });
   if (!row) return { ...DEFAULT_SITE_SETTINGS_JSON };
-  return row as unknown as SiteSettingsJson;
+  const data = row as unknown as SiteSettingsJson;
+  return {
+    ...data,
+    site: { ...DEFAULT_SITE_SETTINGS_JSON.site, ...data.site },
+  };
 }
 
 export async function getGlobalLogos(): Promise<{ logoWhite: string; logoLight: string }> {
@@ -109,6 +113,8 @@ export async function updateImagesFormData(formData: FormData) {
   for (const key of keys) {
     if (ALLOWED_IMAGE_KEYS.has(key)) {
       images[key as keyof SiteSettingsImages] = (formData.get(`u_${key}`) as string) ?? "";
+      const altKey = `${key}Alt` as keyof SiteSettingsImages;
+      images[altKey] = (formData.get(`a_${key}`) as string)?.trim() ?? "";
     }
   }
   await upsertSiteSettings(country, { ...current, images });
@@ -141,9 +147,10 @@ export async function updateSiteSettingsFormData(formData: FormData) {
   assertCountry(country);
   const current = await getSiteSettings(country);
   const showSectionCounter = formData.get("showSectionCounter") === "true";
+  const ctaLabel = (formData.get("ctaLabel") as string)?.trim() || current.site.ctaLabel || "ابدأ مجاناً — بدون بطاقة";
   await upsertSiteSettings(country, {
     ...current,
-    site: { showSectionCounter },
+    site: { showSectionCounter, ctaLabel },
   });
   const globalLogoWhite = (formData.get("logoWhite") as string)?.trim() ?? "";
   const globalRow = await prisma.siteSettings.findUnique({ where: { country: GLOBAL_COUNTRY } });

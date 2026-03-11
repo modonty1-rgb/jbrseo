@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import { HowItWorksStepCard } from "./HowItWorksStepCard";
 
 type Step = { num: string; icon: string; title: string; line: string; tag: string };
@@ -34,11 +33,7 @@ export function HowItWorksSteps({ steps }: { steps: readonly Step[] }) {
         }}
       />
       {(steps as Step[]).map((step, i) => (
-        <div
-          key={i}
-          data-reveal="slide-rtl"
-          style={{ "--d": `${i * 120}ms` } as CSSProperties}
-        >
+        <div key={i}>
           <HowItWorksStepCard step={step} index={i} />
         </div>
       ))}
