@@ -24,6 +24,8 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
       avatarImg: "",
       stars: 5,
       tag: "",
+      videoUrl: "",
+      videoLabel: "",
     };
 
   async function onSubmit(formData: FormData) {
@@ -162,6 +164,22 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
                 <input
                   name={`testimonials_${i}_tag`}
                   defaultValue={t.tag}
+                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
+                رابط الفيديو (اختياري)
+                <input
+                  name={`testimonials_${i}_videoUrl`}
+                  defaultValue={t.videoUrl}
+                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
+                نص زر الفيديو (اختياري)
+                <input
+                  name={`testimonials_${i}_videoLabel`}
+                  defaultValue={t.videoLabel}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
                 />
               </label>

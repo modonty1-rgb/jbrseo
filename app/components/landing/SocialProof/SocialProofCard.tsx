@@ -1,12 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import type { Testimonial } from "@/app/content/landing/types";
+import { SocialProofVideo } from "./SocialProofVideo";
 
 type SocialProofCardProps = {
   testimonial: Testimonial;
 };
 
 export function SocialProofCard({ testimonial }: SocialProofCardProps) {
-  const { name, role, quote, metric, avatarImg, stars, tag } = testimonial;
+  const { name, role, quote, metric, avatarImg, stars, tag, videoUrl, videoLabel } = testimonial;
+  const effectiveVideoUrl = videoUrl ?? "https://www.youtube.com/shorts/6SMagY8K2Jc";
   return (
     <div
       className="relative overflow-hidden rounded-[20px] border border-border bg-card p-5 shadow-[0_4px_24px_color-mix(in_oklch,var(--foreground)_5%,transparent)] sm:p-8"
@@ -24,6 +28,7 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
       >
         "
       </span>
+      {effectiveVideoUrl && <SocialProofVideo url={effectiveVideoUrl} title={videoLabel ?? name} />}
       <p className="mb-3 text-[14px] tracking-[2px] text-accent sm:mb-5 sm:text-[16px]" aria-label={`${stars} نجوم`}>
         {"★".repeat(stars)}
       </p>
@@ -58,6 +63,17 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
         >
           {tag}
         </span>
+        {effectiveVideoUrl && (
+          <a
+            href={effectiveVideoUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="ms-auto inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[10px] font-semibold text-primary transition hover:bg-primary/10 sm:text-[11px]"
+          >
+            <span className="text-xs">▶</span>
+            <span>{videoLabel ?? "شاهد القصة"}</span>
+          </a>
+        )}
       </div>
     </div>
   );

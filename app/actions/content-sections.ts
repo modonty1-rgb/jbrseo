@@ -422,8 +422,23 @@ export async function updateSocialProofSection(formData: FormData) {
     const stars = Number.isFinite(starsParsed) ? starsParsed : 0;
     const tag =
       ((formData.get(`testimonials_${i}_tag`) as string | null) ?? "").trim();
+    const videoUrl =
+      ((formData.get(`testimonials_${i}_videoUrl`) as string | null) ?? "").trim();
+    const videoLabel =
+      ((formData.get(`testimonials_${i}_videoLabel`) as string | null) ?? "").trim();
 
-    if (!name && !role && !company && !quote && !metric && !avatarImg && !starsRaw && !tag) {
+    if (
+      !name &&
+      !role &&
+      !company &&
+      !quote &&
+      !metric &&
+      !avatarImg &&
+      !starsRaw &&
+      !tag &&
+      !videoUrl &&
+      !videoLabel
+    ) {
       continue;
     }
 
@@ -436,6 +451,8 @@ export async function updateSocialProofSection(formData: FormData) {
       avatarImg,
       stars,
       tag,
+      videoUrl: videoUrl || undefined,
+      videoLabel: videoLabel || undefined,
     });
   }
 

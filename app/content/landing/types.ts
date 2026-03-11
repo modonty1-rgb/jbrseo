@@ -34,6 +34,10 @@ export type Testimonial = {
   avatarImg: string;
   stars: number;
   tag: string;
+  /** Optional video testimonial URL (YouTube, etc.) */
+  videoUrl?: string;
+  /** Optional label for the video button */
+  videoLabel?: string;
 };
 
 export type NavLink = { href: string; label: string };
