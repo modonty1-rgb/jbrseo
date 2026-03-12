@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import Link from "@/app/components/link";
 import { AdminCountryPill } from "../../components/AdminCountryPill";
 import { EmojiGrid } from "./EmojiGrid";
 

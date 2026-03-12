@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/app/components/link";
 
 type Props = { ctaLink: string; cta: string; guarantee: string };
 

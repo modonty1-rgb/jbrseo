@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/app/components/link";
 import type { Plan, PricingUI } from "@/app/content/landing/price-section-types";
 import { Check, WhatsApp } from "./PriceSectionIcons";
 import { DetailsAccordion } from "./DetailsAccordion";

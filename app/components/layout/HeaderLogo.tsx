@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/app/components/link";
 import HeaderLogoClient from "./HeaderLogoClient";
 import type { LandingContent } from "@/lib/landing-content.types";
 

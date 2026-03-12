@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/app/components/link";
 import { Button } from "@/app/components/ui/button";
 import type { Metadata } from "next";
 

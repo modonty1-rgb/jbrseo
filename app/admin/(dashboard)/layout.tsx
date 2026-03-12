@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import Link from "next/link";
+import Link from "@/app/components/link";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/app/actions/auth";
 import { AdminSidebar } from "./components/AdminSidebar";

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/app/components/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { COUNTRIES } from "../_config";
 import { cn } from "@/lib/utils";

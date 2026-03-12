@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/app/components/link";
 import { WhatsApp } from "./PriceSectionIcons";
 
 interface BottomCtaContent {

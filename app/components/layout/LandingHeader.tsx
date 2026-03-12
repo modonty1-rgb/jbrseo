@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/app/components/link";
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { LandingContent, SupportedCountry } from "@/lib/landing-content.types";
 import { getNavLinks } from "@/lib/site-links";

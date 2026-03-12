@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/app/components/link";
 import Image from "next/image";
 import { Button } from "@/app/components/ui/button";
 import type { PricingPlan, SupportedCountry } from "@/lib/landing-content.types";

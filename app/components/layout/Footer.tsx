@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/app/components/link";
 import Image from "next/image";
 import type { LandingContent } from "@/lib/landing-content.types";
 import type { StaticLanding } from "@/app/content/landing/types";

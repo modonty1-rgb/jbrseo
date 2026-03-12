@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/app/components/link";
 
 const WhatsAppIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden className="text-success dark:text-success-foreground">

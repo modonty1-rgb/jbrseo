@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Tajawal } from "next/font/google";
-import Link from "next/link";
+import Link from "@/app/components/link";
 import Script from "next/script";
 import { ThemeProvider } from "@/app/helpers/useTheme";
 import "./globals.css";
@@ -62,6 +62,10 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={tajawal.variable} suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://static.hotjar.com" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
         <Script id="theme-init" strategy="afterInteractive">
           {`(function(){var s=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',s==='dark'||(!s&&d));})();`}
         </Script>

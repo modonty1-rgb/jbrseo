@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import Link from "next/link";
+import Link from "@/app/components/link";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { StaffAvatar } from "@/app/components/StaffAvatar";
