@@ -8,7 +8,7 @@ import HowItWorks from "@/app/components/landing/HowItWorks/HowItWorks";
 import Outcomes from "@/app/components/landing/Outcomes/Outcomes";
 import LandingJsonLd from "@/app/components/shared/LandingJsonLd";
 import { SectionReveal } from "@/app/components/shared/SectionReveal";
-import { getStaticLanding, getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
+import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { getLandingContent } from "@/lib/getLandingContent";
@@ -75,12 +75,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const h = await headers();
   const country = getCountryFromHeaders(h);
-  const [content, baseLanding, pricingSALanding, pricingEGLanding] = await Promise.all([
+  const [content, pricingSALanding, pricingEGLanding] = await Promise.all([
     getLandingContent(country),
-    getStaticLandingWithOverrides(country),
     getStaticLandingWithOverrides("SA"),
     getStaticLandingWithOverrides("EG"),
   ]);
+  const baseLanding = content.staticLanding ?? (await getStaticLandingWithOverrides(country));
   const si = content.sectionImages;
   const mergedStaticLanding = {
     ...baseLanding,

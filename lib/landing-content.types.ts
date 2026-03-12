@@ -19,7 +19,10 @@ export type SectionHeadings = {
   faq?: { eyebrow: string; title: string };
 };
 
+import type { StaticLanding } from "@/app/content/landing/types";
+
 export type LandingContent = {
+  staticLanding?: StaticLanding;
   landing: {
     hero: { h1: string; subheadline: string; benefits: string[]; proof: string; cta: string };
     whyNow: { lines: string[] };

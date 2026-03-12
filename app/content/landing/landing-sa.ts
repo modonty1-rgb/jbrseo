@@ -1,5 +1,6 @@
 import type { Plan, TrustItem } from "./price-section-types";
 import type { StaticLanding } from "./types";
+import { landingImages } from "@/app/content/landing-images";
 
 // ─── PRICING (SA) ─────────────────────────────────────────────────────────────
 const ANNOUNCEMENT = "🎁 اشترك سنوياً ووفّر ٢٠٪ — العرض ما يدوم، استفد منه الحين";
@@ -98,7 +99,7 @@ export const landingSA: StaticLanding = {
         quote:
           "كنا ننفق على إعلانات بنتائج متقلبة. بعد ٤ أشهر مع مدونتي، بدأنا نستقبل استفسارات عضوية أسبوعياً — بدون صرف ريال على إعلانات.",
         metric: "استفسارات عضوية أسبوعية",
-        avatarImg: "https://api.dicebear.com/7.x/thumbs/svg?seed=ahmed&backgroundColor=0e065a",
+        avatarImg: landingImages.contactAvatar,
         stars: 5,
         tag: "قطاع الاستشارات",
         videoUrl: "https://www.youtube.com/shorts/6SMagY8K2Jc",
@@ -111,7 +112,7 @@ export const landingSA: StaticLanding = {
         quote:
           "المنصة تفهم السوق العربي. الدعم بالعربي وفعّال، والمقالات بدأت تظهر في جوجل خلال أسابيع. أفضل قرار اتخذته هذا العام.",
         metric: "ظهور في جوجل خلال أسابيع",
-        avatarImg: "https://api.dicebear.com/7.x/thumbs/svg?seed=mona&backgroundColor=312e81",
+        avatarImg: landingImages.contactAvatar,
         stars: 5,
         tag: "قطاع القانون",
         videoUrl: "https://www.youtube.com/shorts/6SMagY8K2Jc",
@@ -124,7 +125,7 @@ export const landingSA: StaticLanding = {
         quote:
           "خلال ٦ أشهر تحوّل موقعنا من كتيّب تعريفي إلى مصدر رئيسي لحجوزات المرضى الجدد. مع تدفّق ثابت من الطلبات كل أسبوع.",
         metric: "تدفق ثابت من الحجوزات",
-        avatarImg: "https://api.dicebear.com/7.x/thumbs/svg?seed=faisal&backgroundColor=1e1b4b",
+        avatarImg: landingImages.contactAvatar,
         stars: 5,
         tag: "القطاع الطبي",
         videoUrl: "https://www.youtube.com/shorts/6SMagY8K2Jc",

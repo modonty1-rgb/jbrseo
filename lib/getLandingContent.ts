@@ -90,6 +90,37 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
   const sectionCta = settings?.pricingTeaser.cta || base.landing.pricingTeaser.plans[0]?.cta || "ابدأ الآن";
   const plans = staticPlansToPricingPlans(staticLanding.pricing.PLANS, sectionCta, country);
 
+  const socialProofFromStatic = staticLanding.socialProof;
+  const landingSocialProof = {
+    testimonial: {
+      name: socialProofFromStatic.testimonials[0]?.name ?? base.landing.socialProof.testimonial.name,
+      role: socialProofFromStatic.testimonials[0]?.role ?? base.landing.socialProof.testimonial.role,
+      quote: socialProofFromStatic.testimonials[0]?.quote ?? base.landing.socialProof.testimonial.quote,
+      metric: socialProofFromStatic.testimonials[0]?.metric ?? base.landing.socialProof.testimonial.metric,
+      image: socialProofFromStatic.testimonials[0]?.avatarImg,
+    },
+    testimonials: socialProofFromStatic.testimonials.map((t) => ({
+      name: t.name,
+      role: t.role,
+      quote: t.quote,
+      metric: t.metric,
+      image: t.avatarImg,
+    })),
+    stats: base.landing.socialProof.stats,
+  };
+
+  const landingFaq = staticLanding.faq.faqs.map((item) => ({
+    question: item.q,
+    answer: item.a,
+  }));
+
+  const landingFromStatic = {
+    ...base.landing,
+    socialProof: landingSocialProof,
+    faq: landingFaq,
+    pricingTeaser: { plans },
+  };
+
   if (!settings) {
     const landingImages = {
       ...base.landingImages,
@@ -98,9 +129,10 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
     };
     return {
       ...base,
+      staticLanding,
       landingImages,
       sectionImages: base.sectionImages,
-      landing: { ...base.landing, pricingTeaser: { plans } },
+      landing: landingFromStatic,
     };
   }
 
@@ -130,6 +162,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
   const defaultCta = "ابدأ مجاناً — بدون بطاقة";
   return {
     ...base,
+    staticLanding,
     seo: settings.seo as LandingContent["seo"],
     tracking: settings.tracking,
     siteSettings: {
@@ -143,7 +176,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
       ...base.sectionHeadings,
       pricingTeaser: settings.pricingTeaser.sectionHeadings,
     },
-    landing: { ...base.landing, pricingTeaser: { plans } },
+    landing: landingFromStatic,
   };
 }
 

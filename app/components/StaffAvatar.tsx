@@ -1,7 +1,5 @@
-"use client";
-
 import Image from "next/image";
-import { useState } from "react";
+import { landingImages } from "@/app/content/landing-images";
 
 type StaffAvatarProps = {
   avatarUrl?: string;
@@ -22,9 +20,9 @@ export function StaffAvatar({
   name,
   size = "md",
 }: StaffAvatarProps) {
-  const [imgError, setImgError] = useState(false);
   const url = avatarUrl?.trim();
-  const showImage = !!url && !imgError;
+  const effectiveUrl = url || landingImages.contactAvatar;
+  const showImage = !!effectiveUrl;
 
   const initials = name
     .trim()
@@ -37,19 +35,18 @@ export function StaffAvatar({
   const dim = sizeClasses[size];
   const isFull = size === "full";
 
-  if (showImage && url) {
+  if (showImage && effectiveUrl) {
     return (
       <div
         className={`relative shrink-0 overflow-hidden bg-muted ${isFull ? `${dim} rounded-t-2xl` : `rounded-full ${dim}`}`}
       >
         <Image
-          src={url}
+          src={effectiveUrl}
           alt=""
           fill
           className="object-cover"
           sizes={isFull ? "100vw" : "48px"}
-          unoptimized
-          onError={() => setImgError(true)}
+          unoptimized={!!url}
         />
       </div>
     );

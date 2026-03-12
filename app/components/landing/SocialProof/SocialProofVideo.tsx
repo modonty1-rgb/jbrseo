@@ -53,6 +53,7 @@ export function SocialProofVideo({ url, title }: SocialProofVideoProps) {
               height={360}
               sizes="(max-width: 768px) 100vw, 50vw"
               loading="lazy"
+              unoptimized
               className="h-full w-full object-cover opacity-90 transition group-hover:opacity-100"
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-transparent" />
