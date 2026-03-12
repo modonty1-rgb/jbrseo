@@ -308,6 +308,23 @@
   }
 }
 
+/* ─── MOBILE: reduce blur for performance ──────── */
+@media (max-width: 768px), (hover: none) {
+  [class*="blur-\["] {
+    filter: blur(40px);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  [class*="backdrop-blur"] {
+    backdrop-filter: none;
+    background-color: var(--background);
+  }
+  [class*="blur-\["] {
+    filter: none;
+  }
+}
+
 /* ─── GRAIN OVERLAY ──────────────────────────── */
 
 .landing-grain::after {

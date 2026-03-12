@@ -22,8 +22,8 @@ export function PlanCard({ plan, annual, currency, ui, compact = false, defaultE
   const F = plan.featured;
 
   const cardCls = F
-    ? "relative flex flex-col rounded-2xl p-8 featured-lift anim-featured shadow-2xl shadow-purple-600/30 border-0 overflow-visible"
-    : "relative flex flex-col rounded-2xl p-6 bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-150 anim-card overflow-visible";
+    ? "relative flex flex-col rounded-2xl p-8 -translate-y-4 hover:-translate-y-6 transition-transform duration-200 shadow-2xl shadow-purple-600/30 border-0 overflow-visible"
+    : "relative flex flex-col rounded-2xl p-6 bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-150 overflow-visible";
 
   return (
     <div

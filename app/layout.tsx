@@ -14,7 +14,7 @@ export const viewport: Viewport = {
 
 const tajawal = Tajawal({
   subsets: ["arabic", "latin"],
-  weight: ["300", "400", "500", "700", "800", "900"],
+  weight: ["400", "700", "800"],
   variable: "--font-tajawal",
   display: "swap",
   preload: true,
@@ -62,7 +62,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={tajawal.variable} suppressHydrationWarning>
       <head>
-        <Script id="theme-init" strategy="beforeInteractive">
+        <Script id="theme-init" strategy="afterInteractive">
           {`(function(){var s=localStorage.getItem('theme');var d=window.matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',s==='dark'||(!s&&d));})();`}
         </Script>
       </head>

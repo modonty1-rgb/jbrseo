@@ -13,17 +13,23 @@ import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { getLandingContent } from "@/lib/getLandingContent";
 
+const sectionFallback = () => <section className="min-h-[200px]" aria-hidden />;
+
 const SocialProof = dynamic(
-  () => import("@/app/components/landing/SocialProof/SocialProof")
+  () => import("@/app/components/landing/SocialProof/SocialProof"),
+  { loading: sectionFallback }
 );
 const ModontyPricing = dynamic(
-  () => import("@/app/components/landing/price-section/price-section")
+  () => import("@/app/components/landing/price-section/price-section"),
+  { loading: sectionFallback }
 );
 const FAQ = dynamic<{ staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string }>(
-  () => import("@/app/components/landing/FAQ/FAQ")
+  () => import("@/app/components/landing/FAQ/FAQ"),
+  { loading: sectionFallback }
 );
 const FinalCTA = dynamic<{ staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string }>(
-  () => import("@/app/components/landing/FinalCTA/FinalCTA")
+  () => import("@/app/components/landing/FinalCTA/FinalCTA"),
+  { loading: sectionFallback }
 );
 
 function toAbsoluteUrl(pathOrUrl: string): string {

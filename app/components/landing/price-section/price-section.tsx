@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import type { PricingContent } from "@/app/content/landing/price-section-types";
-import { STYLES } from "./price-section-styles";
 import { AnnouncementBar } from "./AnnouncementBar";
 import { PriceSectionHeader } from "./PriceSectionHeader";
 import { PlanCard } from "./PlanCard";
@@ -29,14 +28,16 @@ export default function ModontyPricing({ pricingSA, pricingEG, initialLocale, va
   const validHighlight = highlightPlanId && PLAN_IDS.includes(highlightPlanId as (typeof PLAN_IDS)[number]) ? highlightPlanId : null;
 
   return (
-    <div className="font-tajawal bg-stone-50 min-h-screen text-gray-900" dir="rtl">
-      <style>{STYLES}</style>
+    <div className="bg-stone-50 min-h-screen text-gray-900" dir="rtl">
       <AnnouncementBar text={ANNOUNCEMENT} />
       <div className="max-w-6xl mx-auto px-5 py-16 pb-20">
         <PriceSectionHeader UI={UI} annual={annual} setAnnual={setAnnual} />
         <div className="grid grid-cols-4 gap-4 items-start mb-16 max-lg:grid-cols-2 max-sm:grid-cols-1">
           {PLANS.map((p, i) => (
-            <div key={p.id} className={["delay-1", "delay-2", "delay-3", "delay-4"][i] + (p.featured ? "" : " anim-card")}>
+            <div
+              key={p.id}
+              className={["animate-fade-in-up", "animate-fade-in-up delay-200", "animate-fade-in-up delay-400", "animate-fade-in-up delay-600"][i]}
+            >
               <PlanCard
                 plan={p}
                 annual={annual}

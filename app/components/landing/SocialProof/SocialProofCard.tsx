@@ -47,7 +47,7 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
       </span>
       <div className="flex flex-wrap items-center gap-2.5">
         <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full shadow-[0_4px_12px_color-mix(in_oklch,var(--primary)_20%,transparent)] sm:h-12 sm:w-12">
-          <Image src={avatarImg} alt={name} fill className="object-cover" sizes="48px" />
+          <Image src={avatarImg} alt={name} fill className="object-cover" sizes="48px" unoptimized />
         </div>
         <div>
           <p className="text-[13px] font-black text-foreground sm:text-[15px]">{name}</p>

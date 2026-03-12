@@ -60,7 +60,7 @@ export function LandingHeader({ content, staticLanding, country }: { content: La
   const remaining = header.seats.total - header.seats.taken;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl max-md:backdrop-blur-sm">
       {/* ── TOP ANNOUNCEMENT BAR ── */}
       <div
         className="
