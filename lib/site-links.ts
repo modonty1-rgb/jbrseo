@@ -23,8 +23,18 @@ const NAV_EG: NavLinkItem[] = [
   { href: "/#faq", label: "الأسئلة" },
 ];
 
-export function getNavLinks(country: SupportedCountry): NavLinkItem[] {
-  return country === "EG" ? NAV_EG : NAV_SA;
+function withBasePath<T extends { href: string }>(items: T[], basePath?: string): T[] {
+  if (!basePath) return items;
+  return items.map((item) =>
+    item.href.startsWith("/#")
+      ? { ...item, href: basePath + item.href.slice(1) }
+      : item
+  );
+}
+
+export function getNavLinks(country: SupportedCountry, basePath?: string): NavLinkItem[] {
+  const raw = country === "EG" ? NAV_EG : NAV_SA;
+  return withBasePath(raw, basePath);
 }
 
 const FOOTER_LINKS: FooterLinkItem[] = [
@@ -35,8 +45,8 @@ const FOOTER_LINKS: FooterLinkItem[] = [
   { label: "الأسئلة", href: "/#faq" },
 ];
 
-export function getFooterLinks(_country?: SupportedCountry): FooterLinkItem[] {
-  return FOOTER_LINKS;
+export function getFooterLinks(_country?: SupportedCountry, basePath?: string): FooterLinkItem[] {
+  return withBasePath(FOOTER_LINKS, basePath);
 }
 
 export const LEGAL_LINKS: FooterLinkItem[] = [

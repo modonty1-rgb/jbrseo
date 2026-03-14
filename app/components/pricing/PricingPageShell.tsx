@@ -11,6 +11,7 @@ type Props = {
   faq: StaticLanding["faq"];
   country: SupportedCountry;
   highlightPlanId?: string | null;
+  signupHrefBase?: string;
 };
 
 export function PricingPageShell({
@@ -19,12 +20,13 @@ export function PricingPageShell({
   faq,
   country,
   highlightPlanId = null,
+  signupHrefBase = "/signup",
 }: Props) {
   const { PLANS, TRUST_ITEMS, BOTTOM_CTA, UI } = pricing;
   const currency = country === "EG" ? "ج.م" : "ر.س";
   const featuredPlan =
     PLANS.find((p) => p.featured) ?? PLANS[1] ?? PLANS[0];
-  const primaryHref = `/signup?plan=${featuredPlan.id}`;
+  const primaryHref = `${signupHrefBase}?plan=${featuredPlan.id}`;
   const secondaryHref = getWhatsAppLink(country);
   const safeHighlight =
     highlightPlanId && PLANS.some((p) => p.id === highlightPlanId)
@@ -78,7 +80,7 @@ export function PricingPageShell({
           </div>
         </div>
 
-        <PricingBillingSection plans={PLANS} ui={UI} currency={currency} />
+        <PricingBillingSection plans={PLANS} ui={UI} currency={currency} signupHrefBase={signupHrefBase} />
 
         <div className="mt-10 grid gap-4 border-t border-border/60 pt-6 text-[12px] text-muted-foreground sm:grid-cols-3">
           <div>

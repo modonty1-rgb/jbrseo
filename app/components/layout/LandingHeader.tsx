@@ -1,11 +1,9 @@
-"use client";
-
-import Link from "@/app/components/link";
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { LandingContent, SupportedCountry } from "@/lib/landing-content.types";
 import { getNavLinks } from "@/lib/site-links";
 import { HeaderLogo } from "./HeaderLogo";
 import HeaderActionsClient from "./HeaderActionsClient";
+import { PreviewLink } from "./PreviewLink";
 
 type NavLinkItem = { href: string; label: string };
 
@@ -13,7 +11,7 @@ function DesktopNav({ navLinks }: { navLinks: NavLinkItem[] }) {
   return (
     <nav className="hidden items-center gap-1 lg:flex" aria-label="القائمة الرئيسية">
       {navLinks.map(({ href, label }) => (
-        <Link
+        <PreviewLink
           key={href}
           href={href}
           className="
@@ -28,19 +26,19 @@ function DesktopNav({ navLinks }: { navLinks: NavLinkItem[] }) {
           "
         >
           {label}
-        </Link>
+        </PreviewLink>
       ))}
     </nav>
   );
 }
 
-function HeaderActions({ staticLanding, navLinks, ctaLabel }: { staticLanding: StaticLanding; navLinks: NavLinkItem[]; ctaLabel: string }) {
+function HeaderActions({ staticLanding, navLinks, ctaLabel, pricingHref }: { staticLanding: StaticLanding; navLinks: NavLinkItem[]; ctaLabel: string; pricingHref: string }) {
   const { header } = staticLanding;
   return (
     <HeaderActionsClient
       navLinks={navLinks}
       ctaLabel={ctaLabel}
-      pricingHref="/signup"
+      pricingHref={pricingHref}
       seatsTotal={header.seats.total}
       seatsTaken={header.seats.taken}
       announcementPrefix={header.announcementPrefix}
@@ -51,9 +49,18 @@ function HeaderActions({ staticLanding, navLinks, ctaLabel }: { staticLanding: S
 
 const DEFAULT_CTA = "ابدأ مجاناً — بدون بطاقة";
 
-export function LandingHeader({ content, staticLanding, country }: { content: LandingContent; staticLanding: StaticLanding; country: SupportedCountry }) {
+type LandingHeaderProps = {
+  content: LandingContent;
+  staticLanding: StaticLanding;
+  country: SupportedCountry;
+  logoHref?: string;
+  pricingHref?: string;
+  navLinks?: NavLinkItem[];
+};
+
+export function LandingHeader({ content, staticLanding, country, logoHref = "/#hero", pricingHref = "/signup", navLinks: navLinksProp }: LandingHeaderProps) {
   const { header } = staticLanding;
-  const navLinks = getNavLinks(country);
+  const navLinks = navLinksProp ?? getNavLinks(country);
   const ctaLabel = content.siteSettings.ctaLabel || DEFAULT_CTA;
   type HeaderWithBookCta = StaticLanding["header"] & { bookCta?: string };
   const bookCta = (header as HeaderWithBookCta).bookCta || ctaLabel;
@@ -61,7 +68,6 @@ export function LandingHeader({ content, staticLanding, country }: { content: La
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl max-md:backdrop-blur-sm">
-      {/* ── TOP ANNOUNCEMENT BAR ── */}
       <div
         className="
           flex flex-wrap items-center justify-center gap-1.5
@@ -90,8 +96,8 @@ export function LandingHeader({ content, staticLanding, country }: { content: La
           {header.announcementSuffix} {header.seats.total}
         </span>
         <span className="hidden sm:inline mx-1 opacity-40">·</span>
-        <Link
-          href="/signup"
+        <PreviewLink
+          href={pricingHref}
           className="
             inline-flex items-center gap-1 rounded-full
             border border-white/30 bg-white/10
@@ -101,20 +107,13 @@ export function LandingHeader({ content, staticLanding, country }: { content: La
           "
         >
           <span>{bookCta}</span>
-        </Link>
+        </PreviewLink>
       </div>
 
-      {/* ── MAIN NAV ── */}
       <div className="mx-auto flex max-w-[1100px] flex-wrap items-center justify-between px-5 py-3 sm:px-8 lg:px-10">
-
-        {/* LOGO */}
-        <HeaderLogo landingImages={content.landingImages} />
-
-        {/* DESKTOP NAV */}
+        <HeaderLogo landingImages={content.landingImages} logoHref={logoHref} />
         <DesktopNav navLinks={navLinks} />
-
-        {/* RIGHT ACTIONS (client) */}
-        <HeaderActions staticLanding={staticLanding} navLinks={navLinks} ctaLabel={ctaLabel} />
+        <HeaderActions staticLanding={staticLanding} navLinks={navLinks} ctaLabel={ctaLabel} pricingHref={pricingHref} />
       </div>
 
       <style>{`
@@ -126,4 +125,3 @@ export function LandingHeader({ content, staticLanding, country }: { content: La
     </header>
   );
 }
-

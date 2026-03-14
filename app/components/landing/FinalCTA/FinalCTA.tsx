@@ -10,7 +10,7 @@ import { FinalCTAKeyframes } from "./FinalCTAKeyframes";
 
 const DEFAULT_CTA = "احجز مقعدك — مجاناً";
 
-export default function FinalCTA({ staticLanding, country, ctaLabel = DEFAULT_CTA }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string }) {
+export default function FinalCTA({ staticLanding, country, ctaLabel = DEFAULT_CTA, ctaLink = "/signup" }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string; ctaLink?: string }) {
   const c = staticLanding.finalCta;
   const waLink = getWhatsAppLink(country);
   return (
@@ -49,7 +49,7 @@ export default function FinalCTA({ staticLanding, country, ctaLabel = DEFAULT_CT
             subtitle={c.subtitle}
           />
           <FinalCTASeatsBar total={c.seats.total} taken={c.seats.taken} />
-          <FinalCTAButtons cta={ctaLabel} ctaLink="/signup" wa={c.wa} waLink={waLink} />
+          <FinalCTAButtons cta={ctaLabel} ctaLink={ctaLink} wa={c.wa} waLink={waLink} />
           <FinalCTABenefits benefits={c.benefits} />
         </div>
       </div>

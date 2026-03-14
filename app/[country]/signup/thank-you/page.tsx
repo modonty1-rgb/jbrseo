@@ -1,14 +1,45 @@
 import Link from "@/app/components/link";
 import { Button } from "@/app/components/ui/button";
 import type { Metadata } from "next";
+import {
+  isSupportedCountrySlug,
+} from "@/lib/country-config";
 
-export const metadata: Metadata = {
-  title: "شكراً لتسجيلك",
-  description: "استلمنا بياناتك وسنتواصل معك قريباً.",
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ country: string }>;
+}): Promise<Metadata> {
+  const { country: raw } = await params;
+  const slug = raw?.toLowerCase();
+  if (!isSupportedCountrySlug(slug)) {
+    return { title: "شكراً — JBRSEO" };
+  }
+  return {
+    title: "شكراً لتسجيلك",
+    description: "استلمنا بياناتك وسنتواصل معك قريباً.",
+    robots: { index: false, follow: false },
+  };
+}
 
-export default function SignupThankYouPage() {
+export default async function CountrySignupThankYouPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ country: string }>;
+  searchParams: Promise<{ country?: string }>;
+}) {
+  const { country: raw } = await params;
+  const slug = raw?.toLowerCase();
+  if (!isSupportedCountrySlug(slug)) {
+    return null;
+  }
+  const countrySlug = slug as "sa" | "eg";
+  const sp = await searchParams;
+  const preview = sp?.country?.toLowerCase();
+  const previewQuery = preview === "sa" || preview === "eg" ? `?country=${preview}` : "";
+  const homeHref = `/${countrySlug}${previewQuery}`;
+
   return (
     <div className="relative min-h-[80vh] overflow-hidden px-4 py-20 flex justify-center items-center landing-grain">
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -78,7 +109,7 @@ export default function SignupThankYouPage() {
             size="lg"
             className="rounded-full px-8 font-semibold shadow-lg shadow-primary/20 hover:scale-105 transition-transform duration-200"
           >
-            <Link href="/">العودة للرئيسية</Link>
+            <Link href={homeHref}>العودة للرئيسية</Link>
           </Button>
         </div>
       </div>

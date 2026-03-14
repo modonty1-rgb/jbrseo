@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "@/app/components/link";
 import { Button } from "@/app/components/ui/button";
 import { ThemeToggle } from "@/app/components/layout/ThemeToggle";
+import { useSearchParams } from "next/navigation";
+import { appendPreviewQuery } from "@/app/components/layout/PreviewLink";
 
 type NavLink = { href: string; label: string };
 
@@ -27,6 +29,12 @@ export default function HeaderActionsClient({
   announcementSuffix,
 }: HeaderActionsClientProps) {
   const [open, setOpen] = useState(false);
+  const searchParams = useSearchParams();
+  const preview = searchParams.get("country")?.toLowerCase();
+  const isPreview = preview === "sa" || preview === "eg";
+  const q = (href: string) => (isPreview ? appendPreviewQuery(href, preview) : href);
+  const finalPricingHref = q(pricingHref);
+  const finalNavLinks = navLinks.map((l) => ({ ...l, href: q(l.href) }));
 
   useEffect(() => {
     if (!open) return;
@@ -47,7 +55,7 @@ export default function HeaderActionsClient({
           size="default"
           className="hidden rounded-full px-5 font-black shadow-[0_4px_16px_oklch(0.14_0.13_275/20%)] transition-all duration-200 hover:scale-[1.03] hover:shadow-[0_6px_24px_oklch(0.14_0.13_275/30%)] lg:inline-flex"
         >
-          <Link href={pricingHref}>{ctaLabel}</Link>
+          <Link href={finalPricingHref}>{ctaLabel}</Link>
         </Button>
 
         <button
@@ -125,7 +133,7 @@ export default function HeaderActionsClient({
             </div>
 
             <Button asChild className="w-full rounded-xl font-black shadow-md shadow-primary/10">
-              <Link href={pricingHref} onClick={() => setOpen(false)}>
+              <Link href={finalPricingHref} onClick={() => setOpen(false)}>
                 {ctaLabel}
               </Link>
             </Button>

@@ -11,9 +11,10 @@ interface BottomCtaContent {
 
 interface PriceSectionBottomCtaProps {
   BOTTOM_CTA: BottomCtaContent;
+  signupHref?: string;
 }
 
-export function PriceSectionBottomCta({ BOTTOM_CTA }: PriceSectionBottomCtaProps) {
+export function PriceSectionBottomCta({ BOTTOM_CTA, signupHref = "/signup" }: PriceSectionBottomCtaProps) {
   return (
     <div
       className="relative rounded-3xl px-8 py-14 text-center overflow-hidden"
@@ -31,7 +32,7 @@ export function PriceSectionBottomCta({ BOTTOM_CTA }: PriceSectionBottomCtaProps
       </p>
       <div className="flex gap-3 justify-center flex-wrap relative z-10">
         <Link
-          href="/signup"
+          href={signupHref}
           className="px-9 py-4 rounded-xl text-base font-extrabold bg-white text-violet-700 border-0 cursor-pointer font-tajawal shadow-lg shadow-black/20 hover:opacity-90 transition-opacity inline-block text-center"
         >
           {BOTTOM_CTA.primaryBtn}

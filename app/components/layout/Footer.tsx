@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import Link from "@/app/components/link";
 import Image from "next/image";
 import type { LandingContent } from "@/lib/landing-content.types";
@@ -25,13 +26,35 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-export function Footer({ content, staticLanding, country }: { content: LandingContent; staticLanding: StaticLanding; country: SupportedCountry }) {
+type FooterProps = {
+  content: LandingContent;
+  staticLanding: StaticLanding;
+  country: SupportedCountry;
+  basePath?: string;
+};
+
+function appendPreviewQuery(href: string, preview: string): string {
+  if (!preview) return href;
+  const [path, hash] = href.split("#");
+  const sep = path.includes("?") ? "&" : "?";
+  const withQuery = path + sep + "country=" + encodeURIComponent(preview);
+  return hash ? withQuery + "#" + hash : withQuery;
+}
+
+export function Footer({ content, staticLanding, country, basePath }: FooterProps) {
+  const searchParams = useSearchParams();
+  const preview = searchParams.get("country")?.toLowerCase();
+  const isPreview = preview === "sa" || preview === "eg";
+  const q = (href: string) => (isPreview ? appendPreviewQuery(href, preview) : href);
+
   const { landingImages } = content;
   const footer = staticLanding.footer;
-  const footerLinks = getFooterLinks(country);
+  const rawFooterLinks = getFooterLinks(country, basePath);
+  const footerLinks = isPreview ? rawFooterLinks.map((l) => ({ ...l, href: q(l.href) })) : rawFooterLinks;
   const waLink = getWhatsAppLink(country);
   const logoDark  = landingImages.logoWhite || DEFAULT_LOGO;
   const logoLight = landingImages.logoLight || landingImages.logoWhite || DEFAULT_LOGO;
+  const homeHref = q(basePath ? `${basePath}#hero` : "/#hero");
 
   const socialLinks = [
     { href: process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK_URL,  label: "Facebook",    Icon: SocialFacebookOutline },
@@ -92,7 +115,7 @@ export function Footer({ content, staticLanding, country }: { content: LandingCo
           {/* BRAND COL */}
           <div>
             {/* logo */}
-            <Link href="/#hero" aria-label={`${BRAND_NAME} — الرئيسية`} className="mb-1 block">
+            <Link href={homeHref} aria-label={`${BRAND_NAME} — الرئيسية`} className="mb-1 block">
               <Image
                 src={logoDark}
                 alt={BRAND_NAME}

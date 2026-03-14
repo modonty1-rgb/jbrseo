@@ -12,7 +12,7 @@ const WhyNowInteractive = dynamic(
 
 const DEFAULT_CTA = "ابدأ مجاناً — بدون بطاقة";
 
-export default function WhyNow({ staticLanding, ctaLabel = DEFAULT_CTA }: { staticLanding: StaticLanding; ctaLabel?: string }) {
+export default function WhyNow({ staticLanding, ctaLabel = DEFAULT_CTA, ctaLink = "/signup" }: { staticLanding: StaticLanding; ctaLabel?: string; ctaLink?: string }) {
   const w = staticLanding.whyNow;
   return (
     <section
@@ -43,7 +43,7 @@ export default function WhyNow({ staticLanding, ctaLabel = DEFAULT_CTA }: { stat
           <WhyNowBottomBar
             ctaText={w.ctaText}
             ctaBtn={ctaLabel}
-            ctaLink="/signup"
+            ctaLink={ctaLink}
             highlightText={w.ctaHighlight}
           />
         </div>

@@ -13,10 +13,12 @@ export default function Hero({
   content,
   staticLanding,
   country,
+  ctaLink = "/signup",
 }: {
   content: LandingContent;
   staticLanding: StaticLanding;
   country?: SupportedCountry;
+  ctaLink?: string;
 }) {
   const h = staticLanding.hero;
   const ctaLabel = content.siteSettings?.ctaLabel || "ابدأ مجاناً — بدون بطاقة";
@@ -52,7 +54,7 @@ export default function Hero({
           <HeroBenefits benefits={h.benefits} />
           <HeroCTASection
             cta={ctaLabel}
-            ctaLink="/signup"
+            ctaLink={ctaLink}
             trust={h.trust}
             secondaryCta={secondaryCta}
           />

@@ -13,9 +13,10 @@ interface PlanCardProps {
   compact?: boolean;
   defaultExpandDetails?: boolean;
   id?: string;
+  pricingHrefBase?: string;
 }
 
-export function PlanCard({ plan, annual, currency, ui, compact = false, defaultExpandDetails = false, id }: PlanCardProps) {
+export function PlanCard({ plan, annual, currency, ui, compact = false, defaultExpandDetails = false, id, pricingHrefBase = "/pricing" }: PlanCardProps) {
   const mo = plan.price.mo;
   const price = annual ? plan.price.yr : mo;
   const savings = mo > 0 ? (mo - plan.price.yr) * 12 : 0;
@@ -143,7 +144,7 @@ export function PlanCard({ plan, annual, currency, ui, compact = false, defaultE
           <div className={`h-px w-full mt-4 ${F ? "bg-white/10" : "bg-gray-100"}`} />
           {compact ? (
             <Link
-              href={`/pricing?plan=${plan.id}`}
+              href={`${pricingHrefBase}?plan=${plan.id}`}
               className={`text-xs font-bold mt-3 inline-block underline underline-offset-2 ${F ? "text-purple-300 hover:text-purple-200" : "text-violet-600 hover:text-violet-700"}`}
             >
               {ui.moreDetails}

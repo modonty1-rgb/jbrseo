@@ -9,9 +9,10 @@ type Props = {
   plans: PricingContent["PLANS"];
   ui: PricingContent["UI"];
   currency: string;
+  signupHrefBase?: string;
 };
 
-export function PricingBillingSection({ plans, ui, currency }: Props) {
+export function PricingBillingSection({ plans, ui, currency, signupHrefBase = "/signup" }: Props) {
   const [annual, setAnnual] = useState(false);
 
   return (
@@ -27,7 +28,7 @@ export function PricingBillingSection({ plans, ui, currency }: Props) {
             annual={annual}
             ui={ui}
             currency={currency}
-            href={`/signup?plan=${plan.id}`}
+            href={`${signupHrefBase}?plan=${plan.id}`}
           />
         ))}
       </div>

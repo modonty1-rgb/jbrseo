@@ -6,7 +6,7 @@ import { OutcomesBottomStrip } from "./OutcomesBottomStrip";
 
 const DEFAULT_CTA = "احجز مقعدك بسعر التأسيس";
 
-export default function Outcomes({ staticLanding, ctaLabel = DEFAULT_CTA }: { staticLanding: StaticLanding; ctaLabel?: string }) {
+export default function Outcomes({ staticLanding, ctaLabel = DEFAULT_CTA, ctaLink = "#pricing" }: { staticLanding: StaticLanding; ctaLabel?: string; ctaLink?: string }) {
   const o = staticLanding.outcomes;
   return (
     <section
@@ -42,7 +42,7 @@ export default function Outcomes({ staticLanding, ctaLabel = DEFAULT_CTA }: { st
             ))}
           </div>
           <OutcomesBottomStrip
-            ctaLink="#pricing"
+            ctaLink={ctaLink}
             cta={ctaLabel}
             badgeText={o.badgeText}
             message={o.message}

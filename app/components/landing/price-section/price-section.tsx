@@ -16,9 +16,11 @@ type ModontyPricingProps = {
   initialLocale: "sa" | "eg";
   variant?: "homepage" | "full";
   highlightPlanId?: string | null;
+  pricingHrefBase?: string;
+  signupHrefBase?: string;
 };
 
-export default function ModontyPricing({ pricingSA, pricingEG, initialLocale, variant = "full", highlightPlanId = null }: ModontyPricingProps) {
+export default function ModontyPricing({ pricingSA, pricingEG, initialLocale, variant = "full", highlightPlanId = null, pricingHrefBase = "/pricing", signupHrefBase = "/signup" }: ModontyPricingProps) {
   const [annual, setAnnual] = useState(false);
   const activeLocale = initialLocale;
   const P = activeLocale === "sa" ? pricingSA : pricingEG;
@@ -46,12 +48,13 @@ export default function ModontyPricing({ pricingSA, pricingEG, initialLocale, va
                 compact={variant === "homepage"}
                 defaultExpandDetails={validHighlight === p.id}
                 id={`plan-${p.id}`}
+                pricingHrefBase={pricingHrefBase}
               />
             </div>
           ))}
         </div>
         <TrustBar items={TRUST_ITEMS} title={UI.trustTitle} />
-        <PriceSectionBottomCta BOTTOM_CTA={BOTTOM_CTA} />
+        <PriceSectionBottomCta BOTTOM_CTA={BOTTOM_CTA} signupHref={signupHrefBase} />
       </div>
     </div>
   );

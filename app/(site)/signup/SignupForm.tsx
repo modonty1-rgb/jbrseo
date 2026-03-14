@@ -29,9 +29,9 @@ function planIndexFromParam(param: string | null, maxIndex: number): number {
   return 0;
 }
 
-type SignupFormProps = { serverPlans: PricingPlan[]; country: SupportedCountry };
+type SignupFormProps = { serverPlans: PricingPlan[]; country: SupportedCountry; countrySlug?: string };
 
-export function SignupForm({ serverPlans, country }: SignupFormProps) {
+export function SignupForm({ serverPlans, country, countrySlug }: SignupFormProps) {
   const searchParams = useSearchParams();
   const maxPlanIndex = Math.max(0, serverPlans.length - 1);
   const [planIndex, setPlanIndex] = useState(() =>
@@ -111,7 +111,10 @@ export function SignupForm({ serverPlans, country }: SignupFormProps) {
     const result = await createSubscriber(formData);
     setPending(false);
     if (result.success) {
-      router.push("/signup/thank-you");
+      const thankYouPath = countrySlug ? `/${countrySlug}/signup/thank-you` : "/signup/thank-you";
+      const preview = searchParams.get("country")?.toLowerCase();
+      const withPreview = preview === "sa" || preview === "eg" ? `${thankYouPath}?country=${preview}` : thankYouPath;
+      router.push(withPreview);
       return;
     }
     setSubmitError(result.error);
