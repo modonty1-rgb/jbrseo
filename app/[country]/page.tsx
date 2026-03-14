@@ -5,8 +5,6 @@ import Hero from "@/app/components/landing/hero/Hero";
 import WhyNow from "@/app/components/landing/WhyNow/WhyNow";
 import HowItWorks from "@/app/components/landing/HowItWorks/HowItWorks";
 import Outcomes from "@/app/components/landing/Outcomes/Outcomes";
-import SocialProof from "@/app/components/landing/SocialProof/SocialProof";
-import ModontyPricing from "@/app/components/landing/price-section/price-section";
 import LandingJsonLd from "@/app/components/shared/LandingJsonLd";
 import { SectionReveal } from "@/app/components/shared/SectionReveal";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
@@ -18,6 +16,14 @@ import { getLandingContent } from "@/lib/getLandingContent";
 
 const sectionFallback = () => <section className="min-h-[200px]" aria-hidden />;
 
+const SocialProof = dynamic(
+  () => import("@/app/components/landing/SocialProof/SocialProof"),
+  { loading: sectionFallback }
+);
+const ModontyPricing = dynamic(
+  () => import("@/app/components/landing/price-section/price-section"),
+  { loading: sectionFallback }
+);
 const FAQ = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel?: string }>(
   () => import("@/app/components/landing/FAQ/FAQ"),
   { loading: sectionFallback }
