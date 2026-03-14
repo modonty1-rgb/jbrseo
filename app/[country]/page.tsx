@@ -83,14 +83,12 @@ export async function generateMetadata({
   };
 }
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export default async function CountryHome({
   params,
-  searchParams,
 }: {
   params: Promise<{ country: string }>;
-  searchParams: Promise<{ country?: string }>;
 }) {
   const { country: raw } = await params;
   const slug = raw?.toLowerCase();
@@ -100,13 +98,10 @@ export default async function CountryHome({
   const countrySlug = slug as "sa" | "eg";
   const countryCode = getCountryCodeFromSlug(countrySlug);
   const basePath = `/${countrySlug}`;
-  const sp = await searchParams;
-  const previewSlug = sp?.country?.toLowerCase();
-  const previewQuery = previewSlug === "sa" || previewSlug === "eg" ? `?country=${previewSlug}` : "";
-  const ctaLink = `${basePath}/signup${previewQuery}`;
-  const pricingHrefBase = `${basePath}/pricing${previewQuery}`;
+  const ctaLink = `${basePath}/signup`;
+  const pricingHrefBase = `${basePath}/pricing`;
   const signupHrefBase = ctaLink;
-  const outcomesCtaLink = previewQuery ? `${basePath}${previewQuery}#pricing` : `${basePath}#pricing`;
+  const outcomesCtaLink = `${basePath}#pricing`;
 
   const [content, pricingSALanding, pricingEGLanding] = await Promise.all([
     getLandingContent(countryCode),

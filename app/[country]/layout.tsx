@@ -18,7 +18,7 @@ export function generateStaticParams() {
   return SUPPORTED_COUNTRY_SLUGS.map((country) => ({ country }));
 }
 
-function CountryLayoutFallback({ children }: { children: ReactNode }) {
+function CountryLayoutFallback() {
   return (
     <>
       <header className="border-b border-border bg-background/95 px-4 py-3" aria-hidden>
@@ -30,7 +30,17 @@ function CountryLayoutFallback({ children }: { children: ReactNode }) {
           </div>
         </div>
       </header>
-      <main id="main-content">{children}</main>
+      <main id="main-content" className="mx-auto max-w-6xl px-4 sm:px-8 lg:px-12" aria-busy="true" aria-label="جاري التحميل">
+        <div className="flex flex-col gap-8 py-12">
+          <div className="h-64 w-full max-w-2xl rounded-2xl bg-muted/50" />
+          <div className="h-4 w-3/4 max-w-md rounded bg-muted/40" />
+          <div className="h-4 w-1/2 max-w-sm rounded bg-muted/40" />
+          <div className="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div className="h-40 rounded-xl bg-muted/40" />
+            <div className="h-40 rounded-xl bg-muted/40" />
+          </div>
+        </div>
+      </main>
       <footer className="border-t border-border bg-muted/30 px-4 py-8" aria-hidden>
         <div className="mx-auto max-w-6xl">
           <div className="h-4 w-48 rounded bg-muted/60" />
@@ -135,7 +145,7 @@ export default async function CountryLayout({
 }) {
   return (
     <div dir="rtl" className="min-h-screen bg-background text-foreground" lang="ar">
-      <Suspense fallback={<CountryLayoutFallback>{children}</CountryLayoutFallback>}>
+      <Suspense fallback={<CountryLayoutFallback />}>
         <CountryLayoutContent params={params}>{children}</CountryLayoutContent>
       </Suspense>
     </div>

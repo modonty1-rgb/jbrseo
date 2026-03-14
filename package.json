@@ -32,10 +32,17 @@
     "server-only": "^0.0.1",
     "tailwind-merge": "^3.4.0"
   },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions",
+    "not dead",
+    "not IE 11"
+  ],
   "devDependencies": {
     "@next/bundle-analyzer": "^16.1.1",
     "@tailwindcss/postcss": "^4.1.18",
-    "babel-plugin-react-compiler": "^1.0.0",
     "@types/node": "^25.0.3",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
