@@ -2,11 +2,14 @@
 
 import Image from "next/image";
 import { useThemeOptional } from "@/app/helpers/useTheme";
+import { cl } from "@/helpers/cloudinary";
 
-const FALLBACK_LIGHT =
-  "https://res.cloudinary.com/dfegnpgwx/image/upload/v1772803131/darrk-jbrseo_gsvavm.svg";
-const FALLBACK_DARK =
-  "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg";
+const FALLBACK_LIGHT = cl(
+  "https://res.cloudinary.com/dfegnpgwx/image/upload/v1772803131/darrk-jbrseo_gsvavm.svg"
+);
+const FALLBACK_DARK = cl(
+  "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg"
+);
 
 export default function HeaderLogoClient({
   logoLight,

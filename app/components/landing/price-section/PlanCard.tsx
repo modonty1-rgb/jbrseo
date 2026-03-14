@@ -2,6 +2,7 @@
 
 import Link from "@/app/components/link";
 import type { Plan, PricingUI } from "@/app/content/landing/price-section-types";
+import { Icon } from "@/app/components/Icon";
 import { Check, WhatsApp } from "./PriceSectionIcons";
 import { DetailsAccordion } from "./DetailsAccordion";
 
@@ -77,7 +78,7 @@ export function PlanCard({ plan, annual, currency, ui, compact = false, defaultE
               <div className="flex flex-col gap-1.5 mt-2">
                 <span className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full w-fit
                   ${F ? "bg-green-400/20 text-green-300 border border-green-400/25" : "bg-green-50 text-green-700 border border-green-200"}`}>
-                  ✓ {ui.savedYearly.replace("{n}", savings.toLocaleString()).replace("{c}", currency)}
+                  <Icon emoji="✓" /> {ui.savedYearly.replace("{n}", savings.toLocaleString()).replace("{c}", currency)}
                 </span>
                 <span className={`inline-flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full w-fit
                   ${F ? "bg-yellow-300/15 text-yellow-200 border border-yellow-300/25" : "bg-amber-50 text-amber-800 border border-amber-300"}`}>
@@ -96,7 +97,7 @@ export function PlanCard({ plan, annual, currency, ui, compact = false, defaultE
         className="inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full mt-3 mb-5 w-fit border"
         style={{ background: F ? "rgba(167,139,250,0.18)" : plan.accentBg, color: plan.accent, borderColor: F ? "rgba(167,139,250,0.3)" : plan.accent + "28" }}
       >
-        ✦ {plan.articles}
+        <Icon emoji="✦" /> {plan.articles}
       </span>
 
       <div className={`h-px w-full mb-4 ${F ? "bg-white/10" : "bg-gray-100"}`} />

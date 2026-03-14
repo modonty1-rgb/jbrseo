@@ -1,7 +1,9 @@
 import type { SupportedCountry } from "@/lib/landing-content.types";
+import { sanitizeUserFacingString } from "@/lib/sanitize-user-facing";
 import { landingEG } from "./landing-eg";
 import { landingSA } from "./landing-sa";
 import type { StaticLanding } from "./types";
+import type { Plan } from "./price-section-types";
 import {
   SECTION_KEYS,
   getLandingSectionOverride,
@@ -11,6 +13,16 @@ import {
 
 export function getStaticLanding(country: SupportedCountry): StaticLanding {
   return country === "EG" ? landingEG : landingSA;
+}
+
+function sanitizePricingPlanNames(landing: StaticLanding): StaticLanding {
+  const plans = landing.pricing?.PLANS;
+  if (!Array.isArray(plans) || plans.length === 0) return landing;
+  const sanitized: Plan[] = plans.map((p) => ({
+    ...p,
+    name: sanitizeUserFacingString(p.name),
+  }));
+  return { ...landing, pricing: { ...landing.pricing, PLANS: sanitized } };
 }
 
 export async function getStaticLandingWithOverrides(
@@ -34,7 +46,7 @@ export async function getStaticLandingWithOverrides(
     }
   }
 
-  if (!hasOverride) return base;
-  return mergeStaticWithOverrides(base, overrides);
+  const merged = hasOverride ? mergeStaticWithOverrides(base, overrides) : base;
+  return sanitizePricingPlanNames(merged);
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import type { Testimonial } from "@/app/content/landing/types";
+import { Avatar } from "@/app/components/Avatar";
 
 type SocialProofTabsProps = {
   testimonials: readonly Testimonial[];
@@ -29,10 +29,10 @@ export function SocialProofTabs({ testimonials, active, onSelect }: SocialProofT
           aria-pressed={active === i}
         >
           <div
-            className="relative h-9 w-9 shrink-0 overflow-hidden rounded-full border-2 transition-colors duration-200 lg:h-10 lg:w-10"
+            className="border-2 transition-colors duration-200"
             style={{ borderColor: active === i ? "color-mix(in oklch, var(--accent) 40%, transparent)" : "transparent" }}
           >
-            <Image src={t.avatarImg} alt={t.name} fill className="object-cover" sizes="40px" unoptimized />
+            <Avatar name={t.name} src={t.avatarImg} size="sm" className="lg:h-10 lg:w-10" />
           </div>
           <div className="min-w-0 hidden sm:block lg:block">
             <p className="truncate text-[12px] font-black text-foreground lg:text-[13px]">{t.name}</p>

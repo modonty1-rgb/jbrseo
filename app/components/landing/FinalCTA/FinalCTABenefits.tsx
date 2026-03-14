@@ -1,3 +1,5 @@
+import { Icon } from "@/app/components/Icon";
+
 type FinalCTABenefitsProps = {
   benefits: readonly string[];
 };
@@ -13,7 +15,9 @@ export function FinalCTABenefits({ benefits }: FinalCTABenefitsProps) {
           key={i}
           className="flex items-center gap-1.5 text-[12px] font-semibold text-muted-foreground dark:text-primary-foreground/90"
         >
-          <span className="text-success dark:text-success-foreground">✓</span>
+          <span className="text-success dark:text-success-foreground">
+            <Icon emoji="✓" />
+          </span>
           {b}
         </span>
       ))}

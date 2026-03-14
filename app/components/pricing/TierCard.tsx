@@ -1,5 +1,7 @@
 "use client";
+
 import type { Plan, PricingUI } from "@/app/content/landing/price-section-types";
+import { Icon } from "@/app/components/Icon";
 
 type TierCardProps = {
   plan: Plan;
@@ -89,7 +91,7 @@ export function TierCard({ plan, annual, ui, currency, href }: TierCardProps) {
       <div className="mt-auto space-y-2">
         {plan.guarantee && (
           <p className="text-[11px] text-success-foreground flex items-center justify-end gap-1">
-            <span aria-hidden>🔒</span>
+            <Icon emoji="🔒" />
             <span>{ui.guarantee}</span>
           </p>
         )}

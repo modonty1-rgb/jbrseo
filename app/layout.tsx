@@ -2,8 +2,25 @@ import type { Metadata, Viewport } from "next";
 import { Tajawal } from "next/font/google";
 import Link from "@/app/components/link";
 import Script from "next/script";
+import { JsonLd } from "@/app/components/JsonLd";
+import { cl } from "@/helpers/cloudinary";
 import { ThemeProvider } from "@/app/helpers/useTheme";
 import "./globals.css";
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jbrseo.com";
+
+const ORGANIZATION_SCHEMA: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "مدونتي — JBRSEO",
+  url: SITE_URL,
+  logo: `${SITE_URL.replace(/\/$/, "")}/logo.svg`,
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer support",
+    availableLanguage: "Arabic",
+  },
+};
 
 export const viewport: Viewport = {
   themeColor: [
@@ -20,8 +37,9 @@ const tajawal = Tajawal({
   preload: true,
 });
 
-const LOGO_URL =
-  "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg";
+const LOGO_URL = cl(
+  "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg"
+);
 
 const OG_IMAGE = {
   url: "/og-image.png",
@@ -62,6 +80,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl" className={tajawal.variable} suppressHydrationWarning>
       <head>
+        <JsonLd schema={ORGANIZATION_SCHEMA} />
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://static.hotjar.com" />

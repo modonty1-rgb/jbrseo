@@ -1,10 +1,11 @@
 import "server-only";
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
-import { prisma } from "./prisma";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
+import { cl } from "@/helpers/cloudinary";
 import type { LandingContent, SupportedCountry } from "./landing-content.types";
 import type { SiteSettingsJson } from "./site-settings.types";
+import { prisma } from "./prisma";
 import { staticPlansToPricingPlans } from "./static-plans-to-content";
 
 async function getStaticFallback(): Promise<LandingContent> {
@@ -75,7 +76,7 @@ async function getStaticFallback(): Promise<LandingContent> {
 
 async function fetchLandingContent(country: SupportedCountry): Promise<LandingContent> {
   const base = await getStaticFallback();
-  const staticLanding = await getStaticLandingWithOverrides(country);
+  const staticLandingRaw = await getStaticLandingWithOverrides(country);
   const [settingsRow, globalRow] = await Promise.all([
     prisma.siteSettings.findUnique({ where: { country } }),
     prisma.siteSettings.findUnique({ where: { country: "GLOBAL" } }),
@@ -86,6 +87,16 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
   const globalImages = (globalRow as unknown as SiteSettingsJson | null)?.images;
   const globalLogoWhite = globalImages?.logoWhite?.trim() ?? "";
   const globalLogoLight = globalImages?.logoLight?.trim() ?? "";
+
+  const site = settings?.site;
+  const totalSeats = site?.totalSeats ?? staticLandingRaw.header.seats.total;
+  const takenSeats = site?.takenSeats ?? staticLandingRaw.header.seats.taken;
+  const seats = { total: totalSeats, taken: takenSeats };
+  const staticLanding: typeof staticLandingRaw = {
+    ...staticLandingRaw,
+    header: { ...staticLandingRaw.header, seats },
+    finalCta: { ...staticLandingRaw.finalCta, seats },
+  };
 
   const sectionCta = settings?.pricingTeaser.cta || base.landing.pricingTeaser.plans[0]?.cta || "ابدأ الآن";
   const plans = staticPlansToPricingPlans(staticLanding.pricing.PLANS, sectionCta, country);
@@ -138,17 +149,18 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
 
   const landingImages: LandingContent["landingImages"] = {
     ...settings.images,
-    logoWhite: globalLogoWhite || settings.images.logoWhite || base.landingImages.logoWhite,
-    logoLight: globalLogoLight || settings.images.logoLight || base.landingImages.logoLight,
+    logoWhite: cl(globalLogoWhite || settings.images.logoWhite || base.landingImages.logoWhite),
+    logoLight: cl(globalLogoLight || settings.images.logoLight || base.landingImages.logoLight),
+    contactAvatar: settings.images.contactAvatar ? cl(settings.images.contactAvatar) : base.landingImages.contactAvatar,
   };
   const sectionImages: NonNullable<LandingContent["sectionImages"]> = {
-    hero: (settings.images.sectionHero ?? "").trim(),
-    whyNow: (settings.images.sectionWhyNow ?? "").trim(),
-    howItWorks: (settings.images.sectionHowItWorks ?? "").trim(),
-    outcomes: (settings.images.sectionOutcomes ?? "").trim(),
-    socialProof: (settings.images.sectionSocialProof ?? "").trim(),
-    faq: (settings.images.sectionFaq ?? "").trim(),
-    finalCta: (settings.images.sectionFinalCta ?? "").trim(),
+    hero: cl((settings.images.sectionHero ?? "").trim()),
+    whyNow: cl((settings.images.sectionWhyNow ?? "").trim()),
+    howItWorks: cl((settings.images.sectionHowItWorks ?? "").trim()),
+    outcomes: cl((settings.images.sectionOutcomes ?? "").trim()),
+    socialProof: cl((settings.images.sectionSocialProof ?? "").trim()),
+    faq: cl((settings.images.sectionFaq ?? "").trim()),
+    finalCta: cl((settings.images.sectionFinalCta ?? "").trim()),
   };
   const sectionImageAlts: NonNullable<LandingContent["sectionImageAlts"]> = {
     hero: (settings.images.sectionHeroAlt ?? "").trim(),

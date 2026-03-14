@@ -25,6 +25,10 @@ export type SiteSettingsTracking = {
 export type SiteSettingsSite = {
   showSectionCounter: boolean;
   ctaLabel: string;
+  /** Single source for scarcity: total seats (e.g. 150) */
+  totalSeats?: number;
+  /** Single source: seats taken so far (e.g. 90). remaining = totalSeats - takenSeats */
+  takenSeats?: number;
 };
 
 export type SiteSettingsSectionImages = {

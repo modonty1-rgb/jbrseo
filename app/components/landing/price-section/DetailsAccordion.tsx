@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Section } from "@/app/content/landing/price-section-types";
+import { Icon } from "@/app/components/Icon";
 
 interface DetailsAccordionProps {
   sections: Section[];
@@ -26,7 +27,7 @@ export function DetailsAccordion({ sections, featured, defaultOpenIndex }: Detai
               ${featured ? "hover:bg-white/5" : "hover:bg-stone-50"}`}
           >
             <div className="flex items-center gap-2">
-              <span className="text-base leading-none">{sec.icon}</span>
+              <span className="text-base leading-none"><Icon emoji={sec.icon} /></span>
               <span className={`text-xs font-bold ${featured ? "text-white/70" : "text-gray-600"}`}>
                 {sec.title}
               </span>
@@ -40,7 +41,9 @@ export function DetailsAccordion({ sections, featured, defaultOpenIndex }: Detai
             <div className="px-3 pb-3 flex flex-col gap-2">
               {sec.features.map((f, j) => (
                 <div key={j} className="flex items-start gap-2">
-                  <span className={`text-xs mt-0.5 shrink-0 ${featured ? "text-purple-400" : "text-violet-500"}`}>✓</span>
+                  <span className={`text-xs mt-0.5 shrink-0 ${featured ? "text-purple-400" : "text-violet-500"}`}>
+                <Icon emoji="✓" />
+              </span>
                   <span className={`text-xs leading-relaxed ${featured ? "text-white/70" : "text-gray-500"}`}>{f}</span>
                 </div>
               ))}

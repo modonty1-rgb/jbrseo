@@ -14,8 +14,11 @@ import { RoundSnapchat } from "@/app/components/icons/snapchat";
 import { TiktokLogoLight } from "@/app/components/icons/tiktok";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { getFooterLinks, getWhatsAppLink, LEGAL_LINKS } from "@/lib/site-links";
+import { cl } from "@/helpers/cloudinary";
 
-const DEFAULT_LOGO = "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg";
+const DEFAULT_LOGO = cl(
+  "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg"
+);
 const BRAND_NAME = "JBRSEO";
 const COPYRIGHT = "© جميع الحقوق محفوظة — JBRSEO";
 const WA_LABEL = "تواصل على واتساب";

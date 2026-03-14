@@ -1,8 +1,11 @@
 import type { LandingContent } from "@/lib/landing-content.types";
+import { cl } from "@/helpers/cloudinary";
 
 function buildJsonLd(content: LandingContent) {
   const { seo, landing } = content;
-  const logoUrl = content.landingImages.logoWhite || "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg";
+  const logoUrl = content.landingImages.logoWhite || cl(
+    "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg"
+  );
   const socialUrls = [
     process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK_URL,
     process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL,

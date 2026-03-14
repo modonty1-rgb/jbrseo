@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect, FormEvent } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/app/components/ui/button";
+import { Icon } from "@/app/components/Icon";
 import type { PricingPlan, SupportedCountry } from "@/lib/landing-content.types";
 import { CurrencyIcon } from "@/app/components/shared/PricingBillingToggle";
 import { createSubscriber } from "@/app/actions/subscribers";
@@ -183,7 +184,7 @@ export function SignupForm({ serverPlans, country, countrySlug }: SignupFormProp
                     >
                       سنوي
                     <span className="rounded-full bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold text-accent">
-                      الأوفر ✦
+                      الأوفر <Icon emoji="✦" />
                     </span>
                     </button>
                   </div>

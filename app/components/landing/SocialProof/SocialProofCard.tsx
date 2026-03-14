@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import type { Testimonial } from "@/app/content/landing/types";
+import { Avatar } from "@/app/components/Avatar";
+import { Icon } from "@/app/components/Icon";
 import { SocialProofVideo } from "./SocialProofVideo";
 
 type SocialProofCardProps = {
@@ -29,8 +30,8 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
         "
       </span>
       {effectiveVideoUrl && <SocialProofVideo url={effectiveVideoUrl} title={videoLabel ?? name} />}
-      <p className="mb-3 text-[14px] tracking-[2px] text-accent sm:mb-5 sm:text-[16px]" aria-label={`${stars} نجوم`}>
-        {"★".repeat(stars)}
+      <p className="mb-3 text-[14px] tracking-[2px] text-accent sm:mb-5 sm:text-[16px]">
+        <Icon emoji={"★".repeat(stars)} label={`${stars} نجوم`} />
       </p>
       <p className="relative z-10 mb-5 text-[15px] font-medium leading-[1.85] text-foreground sm:mb-7 sm:text-[18px]">
         &quot;{quote}&quot;
@@ -46,9 +47,12 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
         ✓ {metric}
       </span>
       <div className="flex flex-wrap items-center gap-2.5">
-        <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full shadow-[0_4px_12px_color-mix(in_oklch,var(--primary)_20%,transparent)] sm:h-12 sm:w-12">
-          <Image src={avatarImg} alt={name} fill className="object-cover" sizes="48px" unoptimized />
-        </div>
+        <Avatar
+          name={name}
+          src={avatarImg}
+          size="md"
+          className="shadow-[0_4px_12px_color-mix(in_oklch,var(--primary)_20%,transparent)]"
+        />
         <div>
           <p className="text-[13px] font-black text-foreground sm:text-[15px]">{name}</p>
           <p className="text-[11px] text-muted-foreground sm:text-[12px]">{role}</p>
@@ -70,7 +74,7 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
             rel="noreferrer"
             className="ms-auto inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[10px] font-semibold text-primary transition hover:bg-primary/10 sm:text-[11px]"
           >
-            <span className="text-xs">▶</span>
+            <Icon emoji="▶" label="تشغيل الفيديو" />
             <span>{videoLabel ?? "شاهد القصة"}</span>
           </a>
         )}

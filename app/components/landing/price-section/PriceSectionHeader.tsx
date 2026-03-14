@@ -1,6 +1,7 @@
 "use client";
 
 import type { PricingUI } from "@/app/content/landing/price-section-types";
+import { Icon } from "@/app/components/Icon";
 
 interface PriceSectionHeaderProps {
   UI: PricingUI;
@@ -33,7 +34,7 @@ export function PriceSectionHeader({ UI, annual, setAnnual }: PriceSectionHeader
         </div>
 
         <div className="inline-flex items-center gap-3 bg-amber-50 border-2 border-amber-300 rounded-2xl px-6 py-3 shadow-sm shadow-amber-100">
-          <span className="text-xl">🎁</span>
+          <span className="text-xl"><Icon emoji="🎁" /></span>
           <div className="text-right">
             <div className="text-sm font-extrabold text-amber-900 leading-snug">{UI.banner12Title}</div>
             <div className="text-xs text-amber-700 mt-0.5 font-medium">{UI.banner12Sub}</div>

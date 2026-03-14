@@ -53,8 +53,8 @@ export async function generateMetadata({
   const countryCode = getCountryCodeFromSlug(slug as "sa" | "eg");
   const content = await getLandingContent(countryCode);
   const { seo: s } = content;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jbrseo.com";
-  const canonical = `${siteUrl}/${slug}`;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jbrseo.com";
+  const canonical = `${siteUrl.replace(/\/$/, "")}/${slug}`;
   const ogImageUrl = s.ogImage ? toAbsoluteUrl(s.ogImage) : "";
   const twitterImageUrl = s.twitterImage ? toAbsoluteUrl(s.twitterImage) : ogImageUrl;
   const ogImages = ogImageUrl
@@ -64,7 +64,10 @@ export async function generateMetadata({
   return {
     title: s.title,
     description: s.description,
-    alternates: { canonical },
+    alternates: {
+      canonical,
+      languages: { ar: canonical },
+    },
     openGraph: {
       title: s.ogTitle || s.title,
       description: s.ogDescription || s.description,
@@ -159,7 +162,7 @@ export default async function CountryHome({
         </div>
       </SectionReveal>
       <SectionReveal variant="blur-in" sectionNumber={7} showSectionCounter={showSectionCounter}>
-        <FAQ staticLanding={mergedStaticLanding} country={countryCode} ctaLabel={ctaLabel} />
+        <FAQ staticLanding={mergedStaticLanding} country={countryCode} ctaLabel="تحدث معنا على واتساب" />
       </SectionReveal>
       <SectionReveal variant="blur-in" sectionNumber={8} showSectionCounter={showSectionCounter}>
         <FinalCTA staticLanding={mergedStaticLanding} country={countryCode} ctaLabel={ctaLabel} ctaLink={ctaLink} />

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
+import { Icon } from "@/app/components/Icon";
 
 type SocialProofVideoProps = {
   url: string;
@@ -59,7 +60,7 @@ export function SocialProofVideo({ url, title }: SocialProofVideoProps) {
             <div className="absolute inset-0 bg-linear-to-t from-black/50 via-black/10 to-transparent" />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/95 text-black shadow-lg transition group-hover:scale-105">
-                <span className="ps-0.5 text-xl">▶</span>
+                <span className="ps-0.5 text-xl"><Icon emoji="▶" label="تشغيل" /></span>
               </div>
             </div>
           </div>

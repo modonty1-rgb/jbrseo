@@ -1,5 +1,6 @@
 import Link from "@/app/components/link";
 import { Button } from "@/app/components/ui/button";
+import { Icon } from "@/app/components/Icon";
 
 type Props = {
   cta: string;
@@ -62,7 +63,7 @@ export function HeroCTASection({ cta, ctaLink, trust, secondaryCta }: Props) {
             )}
             <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <span className="inline-flex h-[15px] w-[15px] items-center justify-center rounded-full bg-success/12 text-[8px] font-black text-success">
-                ✓
+                <Icon emoji="✓" />
               </span>
               {t}
             </span>
