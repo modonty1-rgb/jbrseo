@@ -82,6 +82,7 @@ export default function RootLayout({
       <head>
         <JsonLd schema={ORGANIZATION_SCHEMA} />
         <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://static.hotjar.com" />
         <link rel="dns-prefetch" href="https://connect.facebook.net" />

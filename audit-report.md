@@ -1,3 +1,184 @@
+# jbrseo.com/sa — Audit Report
+
+Generated from command runs. No fixes applied.
+
+---
+
+## 1. BABEL CONFIG
+
+```
+NO BABEL FILES FOUND
+```
+
+No `babel.config.js`, `.babelrc`, `.babelrc.js`, or `babel.config.json` exist in the project.
+
+---
+
+## 2. NEXT CONFIG
+
+**File:** `next.config.ts`
+
+```ts
+import type { NextConfig } from "next";
+import bundleAnalyzer from "@next/bundle-analyzer";
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+  openAnalyzer: false,
+});
+
+const nextConfig: NextConfig = {
+  reactCompiler: true,
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "res.cloudinary.com", pathname: "/**" },
+    ],
+    formats: ["image/avif", "image/webp"],
+  },
+};
+
+export default withBundleAnalyzer(nextConfig);
+```
+
+---
+
+## 3. PACKAGE.JSON (relevant parts)
+
+- **Package manager:** pnpm@9.15.0  
+- **Next:** ^16.1.1  
+- **React:** ^19.2.3  
+- No `babel.config.js` or `babel-plugin-react-compiler` in repo  
+- **browserslist** present
+
+```json
+{
+  "name": "jbrseo.com",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "analyze": "ANALYZE=true next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
+    "db:setup": "prisma generate && prisma db push && prisma db seed",
+    "postinstall": "prisma generate"
+  },
+  "prisma": { "seed": "pnpm exec tsx prisma/seed.ts" },
+  "dependencies": {
+    "@heyo.so/js": "^1.1.3",
+    "@prisma/client": "^6.9.0",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
+    "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-tabs": "^1.1.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "next": "^16.1.1",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^3.4.0"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions",
+    "not dead",
+    "not IE 11"
+  ],
+  "devDependencies": {
+    "@next/bundle-analyzer": "^16.1.1",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^25.0.3",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.23",
+    "eslint": "^9.39.2",
+    "eslint-config-next": "^16.1.1",
+    "postcss": "^8.5.6",
+    "prisma": "^6.9.0",
+    "tailwindcss": "^4.1.18",
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.3"
+  }
+}
+```
+
+---
+
+## 4. BUILD OUTPUT
+
+**Command:** `pnpm build 2>&1`  
+**Exit code:** 0
+
+```
+> jbrseo.com@0.1.0 build C:\Users\w2nad\Desktop\dreamToApp\JBRSEO\jbrseo.com
+> next build
+
+▲ Next.js 16.1.1 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 26.6s
+  Running TypeScript ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/26) ...
+  Generating static pages using 7 workers (6/26) 
+  Generating static pages using 7 workers (12/26) 
+  Generating static pages using 7 workers (19/26) 
+✓ Generating static pages using 7 workers (26/26) in 3.5s
+  Finalizing page optimization ...
+
+Route (app)                       Revalidate  Expire
+┌ ƒ /
+├ ○ /_not-found
+├ ● /[country]                            1m      1y
+│ ├ /sa                                   1m      1y
+│ └ /eg                                   1m      1y
+├ ƒ /[country]/pricing
+├ ● /[country]/signup                     1m      1y
+│ ├ /sa/signup                            1m      1y
+│ └ /eg/signup                            1m      1y
+├ ƒ /[country]/signup/thank-you
+├ ƒ /about
+├ ƒ /admin
+├ ƒ /admin/content/[section]
+├ ƒ /admin/content/emojis
+├ ƒ /admin/content/header-footer
+├ ○ /admin/login
+├ ƒ /admin/settings/general
+├ ƒ /admin/settings/images
+├ ƒ /admin/settings/seo
+├ ƒ /admin/settings/tracking
+├ ƒ /admin/subscribers
+├ ƒ /privacy
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+├ ƒ /team
+└ ƒ /terms
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+```
+
+---
+
+## 5. /sa PAGE FILE
+
+**Note:** There is no file at path `*/sa/page.tsx`. The `/sa` route is served by the dynamic segment **`app/[country]/page.tsx`** (with `country=sa`).
+
+**File:** `app/[country]/page.tsx` (full content)
+
+```tsx
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import type { StaticLanding } from "@/app/content/landing/types";
@@ -5,8 +186,6 @@ import Hero from "@/app/components/landing/hero/Hero";
 import WhyNow from "@/app/components/landing/WhyNow/WhyNow";
 import HowItWorks from "@/app/components/landing/HowItWorks/HowItWorks";
 import Outcomes from "@/app/components/landing/Outcomes/Outcomes";
-import SocialProof from "@/app/components/landing/SocialProof/SocialProof";
-import ModontyPricing from "@/app/components/landing/price-section/price-section";
 import LandingJsonLd from "@/app/components/shared/LandingJsonLd";
 import { SectionReveal } from "@/app/components/shared/SectionReveal";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
@@ -18,6 +197,14 @@ import { getLandingContent } from "@/lib/getLandingContent";
 
 const sectionFallback = () => <section className="min-h-[200px]" aria-hidden />;
 
+const SocialProof = dynamic(
+  () => import("@/app/components/landing/SocialProof/SocialProof"),
+  { loading: sectionFallback }
+);
+const ModontyPricing = dynamic(
+  () => import("@/app/components/landing/price-section/price-section"),
+  { loading: sectionFallback }
+);
 const FAQ = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel?: string }>(
   () => import("@/app/components/landing/FAQ/FAQ"),
   { loading: sectionFallback }
@@ -164,3 +351,42 @@ export default async function CountryHome({
     </>
   );
 }
+```
+
+---
+
+## 6. ROUTE BUILD STATUS
+
+**Command:** `pnpm build 2>&1 | grep -E "λ|○|◐|/sa"` (PowerShell equivalent used)
+
+```
+│ ├ /sa                                   1m      1y
+│ ├ /sa/signup                            1m      1y
+```
+
+**Legend (from build output):**
+
+| Symbol | Meaning |
+|--------|--------|
+| ○ | Static — prerendered as static content |
+| ● | SSG — prerendered as static HTML (uses generateStaticParams) |
+| ƒ | Dynamic — server-rendered on demand |
+| λ | (not present) Server-rendered on demand |
+
+**Summary:**
+
+- **`/[country]`** (includes **`/sa`**) is **● SSG**, revalidate 1m.
+- **`/sa/signup`** is **● SSG**, revalidate 1m.
+- No **λ** (server-rendered on demand) for these routes.
+
+---
+
+## Summary
+
+| Item | Result |
+|------|--------|
+| Babel config files | None found |
+| Next config | `reactCompiler: true`, Cloudinary images, AVIF/WebP |
+| Build | Passes (exit 0) |
+| /sa page | Served by `app/[country]/page.tsx` |
+| /sa route type | ● SSG (not λ) |
