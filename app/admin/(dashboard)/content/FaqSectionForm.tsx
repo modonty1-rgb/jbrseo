@@ -120,8 +120,16 @@ export function FaqSectionForm({ section, country }: FaqSectionFormProps) {
         })}
       </div>
 
+      <button
+        type="submit"
+        id="faq-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="faq-form"
+        submitButtonId="faq-form-submit"
         triggerLabel="حفظ قسم الأسئلة الشائعة"
         description="سيتم حفظ التغييرات على قسم الأسئلة الشائعة للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

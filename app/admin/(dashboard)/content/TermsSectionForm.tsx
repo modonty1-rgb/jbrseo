@@ -92,8 +92,16 @@ export function TermsSectionForm({ section, country }: Props) {
         />
       </label>
 
+      <button
+        type="submit"
+        id="terms-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="terms-form"
+        submitButtonId="terms-form-submit"
         pending={pending}
         triggerLabel="حفظ شروط الاستخدام"
         confirmLabel="تأكيد الحفظ"

@@ -137,8 +137,16 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
         })}
       </div>
 
+      <button
+        type="submit"
+        id="how-it-works-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="how-it-works-form"
+        submitButtonId="how-it-works-form-submit"
         triggerLabel="حفظ قسم كيف يعمل"
         description="سيتم حفظ التغييرات على قسم كيف يعمل للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

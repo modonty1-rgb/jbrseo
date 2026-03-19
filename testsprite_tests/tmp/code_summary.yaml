@@ -50,14 +50,10 @@ routes:
     file: app/admin/(dashboard)/subscribers/page.tsx
     auth_required: true
     description: Manage subscribers in the admin dashboard
-  - path: /admin/settings/general
-    file: app/admin/(dashboard)/settings/general/page.tsx
+  - path: /admin/settings
+    file: app/admin/(dashboard)/settings/page.tsx
     auth_required: true
-    description: General settings for the site
-  - path: /admin/settings/tracking
-    file: app/admin/(dashboard)/settings/tracking/page.tsx
-    auth_required: true
-    description: Analytics and tracking-related settings
+    description: General and tracking settings for the site
   - path: /admin/settings/seo
     file: app/admin/(dashboard)/settings/seo/page.tsx
     auth_required: true
@@ -127,8 +123,7 @@ features:
     files:
       - app/admin/(dashboard)/page.tsx
       - app/admin/(dashboard)/subscribers/page.tsx
-      - app/admin/(dashboard)/settings/general/page.tsx
-      - app/admin/(dashboard)/settings/tracking/page.tsx
+      - app/admin/(dashboard)/settings/page.tsx
       - app/admin/(dashboard)/settings/seo/page.tsx
       - app/admin/(dashboard)/settings/images/page.tsx
       - app/admin/(dashboard)/content/emojis/page.tsx

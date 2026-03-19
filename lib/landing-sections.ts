@@ -21,9 +21,18 @@ const SECTION_KEYS = [
   "terms",
   "about",
   "team",
+  "seo",
+  "ctaLabel",
+  "pricingTeaser",
 ] as const;
 
 export type LandingSectionKey = (typeof SECTION_KEYS)[number];
+
+const SETTINGS_ONLY_KEYS = ["seo", "ctaLabel", "pricingTeaser"] as const;
+export type StaticSectionKey = Exclude<LandingSectionKey, (typeof SETTINGS_ONLY_KEYS)[number]>;
+export const STATIC_ONLY_KEYS: readonly StaticSectionKey[] = SECTION_KEYS.filter(
+  (k): k is StaticSectionKey => !SETTINGS_ONLY_KEYS.includes(k as (typeof SETTINGS_ONLY_KEYS)[number]),
+);
 
 export async function getLandingSectionOverride(
   country: SupportedCountry,
@@ -53,11 +62,11 @@ export function mergeStaticWithOverrides(
 ): StaticLanding {
   let merged: StaticLanding = { ...staticLanding };
 
-  for (const key of SECTION_KEYS) {
+  for (const key of STATIC_ONLY_KEYS) {
     const override = overrides[key];
     if (override === undefined || override === null) continue;
 
-    const original = staticLanding[key];
+    const original = staticLanding[key as keyof StaticLanding];
 
     if (Array.isArray(original) || Array.isArray(override)) {
       // For array sections, take the override as-is.

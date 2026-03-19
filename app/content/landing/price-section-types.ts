@@ -49,6 +49,7 @@ export interface PricingUI {
   monthly: string;
   yearly: string;
   save20: string;
+  totalAnnual: string;
   banner12Title: string;
   banner12Sub: string;
   trustTitle: string;

@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { isAdmin } from "@/app/actions/auth";
 import { AdminSidebar } from "./components/AdminSidebar";
 import { AdminCountryToggle } from "./components/AdminCountryToggle";
+import { AdminCountrySync } from "./components/AdminCountrySync";
+import { AdminSubscribersLink } from "./components/AdminSubscribersLink";
 
 export default async function AdminDashboardLayout({
   children,
@@ -14,6 +16,9 @@ export default async function AdminDashboardLayout({
   if (!ok) redirect("/admin/login");
   return (
     <div className="min-h-screen bg-background">
+      <Suspense fallback={null}>
+        <AdminCountrySync />
+      </Suspense>
       <header className="sticky top-0 z-20 flex items-center justify-between border-b border-border bg-card/95 px-6 py-3 backdrop-blur">
         <div className="flex items-center gap-2">
           <span className="rounded-md bg-primary/10 px-2 py-1 text-xs font-semibold text-primary">
@@ -25,12 +30,13 @@ export default async function AdminDashboardLayout({
         </div>
         <nav className="flex items-center gap-3 text-xs text-muted-foreground">
           <span>يمكنك إدارة المحتوى والإعدادات من اللوحة الجانبية</span>
-          <Link
-            href="/admin/subscribers"
-            className="inline-flex items-center rounded-md border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground shadow-sm hover:bg-muted/70"
-          >
-            المشتركون
-          </Link>
+          <Suspense fallback={
+            <Link href="/admin/subscribers" className="inline-flex items-center rounded-md border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground shadow-sm hover:bg-muted/70">
+              المشتركون
+            </Link>
+          }>
+            <AdminSubscribersLink />
+          </Suspense>
           <Suspense fallback={
             <div className="flex items-center gap-1 rounded-md bg-muted px-1 py-0.5 text-[11px] font-medium text-foreground">
               <span className="px-2 py-1 rounded-md bg-primary/90 text-primary-foreground">السعودية</span>

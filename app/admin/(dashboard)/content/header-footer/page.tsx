@@ -32,8 +32,8 @@ export default async function AdminHeaderFooterContentPage({
       country as SupportedCountry,
       "header",
     );
-    if (override !== null && override !== undefined) {
-      headerData = override as StaticLanding["header"];
+    if (override !== null && override !== undefined && typeof override === "object") {
+      headerData = { ...staticHeader, ...override } as StaticLanding["header"];
     } else {
       headerData = staticHeader;
     }

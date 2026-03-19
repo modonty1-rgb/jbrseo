@@ -123,8 +123,16 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps) {
         />
       </label>
 
+      <button
+        type="submit"
+        id="hero-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="hero-form"
+        submitButtonId="hero-form-submit"
         triggerLabel="حفظ قسم الهيرو"
         description="سيتم حفظ التغييرات على قسم الهيرو للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

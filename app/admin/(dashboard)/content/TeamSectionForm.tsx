@@ -235,8 +235,16 @@ export function TeamSectionForm({ section, country }: TeamSectionFormProps) {
         </div>
       </div>
 
+      <button
+        type="submit"
+        id="team-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="team-form"
+        submitButtonId="team-form-submit"
         triggerLabel="حفظ صفحة فريق العمل"
         description="سيتم حفظ التغييرات على صفحة فريق العمل للبلد المحدد. هل أنت متأكد؟"
       />

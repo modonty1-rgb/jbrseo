@@ -114,8 +114,16 @@ export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormPro
         />
       </label>
 
+      <button
+        type="submit"
+        id="final-cta-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="final-cta-form"
+        submitButtonId="final-cta-form-submit"
         triggerLabel="حفظ قسم الدعوة النهائية"
         description="سيتم حفظ التغييرات على قسم الدعوة النهائية للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

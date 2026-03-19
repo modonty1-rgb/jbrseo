@@ -18,9 +18,14 @@ const COLLAPSIBLE_GROUPS = [
   IMPORTANT_PAGES_GROUP_LABEL,
 ];
 
+function withCountry(href: string, country: string): string {
+  return href + (href.includes("?") ? "&" : "?") + "country=" + country;
+}
+
 export function AdminSidebar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const country = searchParams.get("country") === "EG" ? "EG" : "SA";
   const [settingsOpen, setSettingsOpen] = useState(true);
   const [contentOpen, setContentOpen] = useState(true);
   const [pricingOpen, setPricingOpen] = useState(true);
@@ -29,13 +34,13 @@ export function AdminSidebar() {
   return (
     <aside className="flex h-full w-full flex-col p-4">
       <div className="mb-4">
-        <Link href="/admin" className="text-base font-semibold text-foreground hover:underline">
+        <Link href={withCountry("/admin", country)} className="text-base font-semibold text-foreground hover:underline">
           JBRSEO Admin
         </Link>
       </div>
       <nav className="flex flex-1 flex-col gap-1">
         <Link
-          href="/admin"
+          href={withCountry("/admin", country)}
           className={cn(
             "rounded-md px-3 py-2 text-sm transition-colors",
             pathname === "/admin" ? "bg-muted font-medium text-foreground" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
@@ -43,6 +48,35 @@ export function AdminSidebar() {
         >
           لوحة التحكم
         </Link>
+        <div className="pt-2">
+          <p className="mb-1 px-3 text-xs font-semibold uppercase tracking-wider text-primary">
+            معاينة الموقع
+          </p>
+          <div className="flex flex-col gap-0.5">
+            <Link
+              href={withCountry("/admin/preview", country)}
+              className="rounded-md px-3 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary/10 hover:text-primary"
+            >
+              أداة المعاينة (داخل اللوحة)
+            </Link>
+            <Link
+              href="/sa?country=sa"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+            >
+              عرض — السعودية
+            </Link>
+            <Link
+              href="/eg?country=eg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+            >
+              عرض — مصر
+            </Link>
+          </div>
+        </div>
         {SIDEBAR_GROUPS.map((group) => {
           const isCollapsible = COLLAPSIBLE_GROUPS.includes(group.label);
           let isOpen = true;
@@ -81,11 +115,12 @@ export function AdminSidebar() {
                     <div className="flex flex-col gap-0.5">
                       {group.hrefs.map((href) => {
                         const label = LABEL_BY_HREF[href] ?? href;
+                        const hrefWithCountry = withCountry(href, country);
                         const isActive = pathname === href || pathname.startsWith(href + "/");
                         return (
                           <Link
                             key={href}
-                            href={href}
+                            href={hrefWithCountry}
                             className={cn(
                               "rounded-md px-3 py-2 text-sm transition-colors",
                               isActive ? "bg-muted font-medium text-foreground" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
@@ -106,11 +141,12 @@ export function AdminSidebar() {
                   <div className="flex flex-col gap-0.5">
                     {group.hrefs.map((href) => {
                       const label = LABEL_BY_HREF[href] ?? href;
+                      const hrefWithCountry = withCountry(href, country);
                       const isActive = pathname === href || pathname.startsWith(href + "/");
                       return (
                         <Link
                           key={href}
-                          href={href}
+                          href={hrefWithCountry}
                           className={cn(
                             "rounded-md px-3 py-2 text-sm transition-colors",
                             isActive ? "bg-muted font-medium text-foreground" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"

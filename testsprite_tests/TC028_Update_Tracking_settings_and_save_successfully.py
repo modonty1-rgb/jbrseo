@@ -49,7 +49,7 @@ async def run_test():
         
         # --> Assertions to verify final state
         frame = context.pages[-1]
-        assert '/admin/settings/tracking' in frame.url
+        assert '/admin/settings' in frame.url
         await expect(frame.locator('text=Saved').first).to_be_visible(timeout=3000)
         await asyncio.sleep(5)
 

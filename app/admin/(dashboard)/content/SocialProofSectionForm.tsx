@@ -26,14 +26,11 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
       tag: "",
       videoUrl: "",
       videoLabel: "",
+      siteLink: "",
     };
 
-  async function onSubmit(formData: FormData) {
-    await updateSocialProofSection(formData);
-  }
-
   return (
-    <form id="social-proof-form" action={onSubmit} className="space-y-4">
+    <form id="social-proof-form" action={updateSocialProofSection} className="space-y-4">
       <input type="hidden" name="country" value={country} />
       <input type="hidden" name="section" value="socialProof" />
       <input
@@ -92,104 +89,127 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
         />
       </label>
 
-      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-2">
         {Array.from({ length: testimonialsCount }).map((_, i) => {
           const t = getTestimonial(i);
           return (
             <div
               key={i}
-              className="space-y-2 rounded-md border border-border bg-muted/30 p-2"
+              className="space-y-1.5 rounded border border-border bg-muted/20 px-2 py-1.5"
             >
-              <div className="text-xs font-semibold text-muted-foreground">
+              <div className="text-[10px] font-medium text-muted-foreground">
                 شهادة {i + 1}
               </div>
-              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                الاسم
-                <input
-                  name={`testimonials_${i}_name`}
-                  defaultValue={t.name}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                الدور
-                <input
-                  name={`testimonials_${i}_role`}
-                  defaultValue={t.role}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                الشركة
-                <input
-                  name={`testimonials_${i}_company`}
-                  defaultValue={t.company}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
+              <div className="grid grid-cols-2 gap-x-2 gap-y-1 sm:grid-cols-3">
+                <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
+                  الاسم
+                  <input
+                    name={`testimonials_${i}_name`}
+                    defaultValue={t.name}
+                    className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                  />
+                </label>
+                <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
+                  الدور
+                  <input
+                    name={`testimonials_${i}_role`}
+                    defaultValue={t.role}
+                    className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                  />
+                </label>
+                <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
+                  الشركة
+                  <input
+                    name={`testimonials_${i}_company`}
+                    defaultValue={t.company}
+                    className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                  />
+                </label>
+                <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:col-span-2">
+                  المقياس
+                  <input
+                    name={`testimonials_${i}_metric`}
+                    defaultValue={t.metric}
+                    className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                  />
+                </label>
+                <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
+                  النجوم
+                  <input
+                    name={`testimonials_${i}_stars`}
+                    defaultValue={String(t.stars ?? 5)}
+                    className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                  />
+                </label>
+                <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:col-span-3">
+                  الوسم
+                  <input
+                    name={`testimonials_${i}_tag`}
+                    defaultValue={t.tag}
+                    className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                  />
+                </label>
+              </div>
+              <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
                 الاقتباس
                 <textarea
                   name={`testimonials_${i}_quote`}
                   defaultValue={t.quote}
-                  className="min-h-[60px] rounded-md border border-border bg-background px-2 py-1 text-xs"
+                  className="min-h-[44px] rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
                 />
               </label>
-              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                المقياس
-                <input
-                  name={`testimonials_${i}_metric`}
-                  defaultValue={t.metric}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                رابط الصورة (avatar)
-                <input
-                  name={`testimonials_${i}_avatarImg`}
-                  defaultValue={t.avatarImg}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                عدد النجوم (1-5)
-                <input
-                  name={`testimonials_${i}_stars`}
-                  defaultValue={String(t.stars ?? 5)}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                الوسم
-                <input
-                  name={`testimonials_${i}_tag`}
-                  defaultValue={t.tag}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                رابط الفيديو (اختياري)
-                <input
-                  name={`testimonials_${i}_videoUrl`}
-                  defaultValue={t.videoUrl}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                نص زر الفيديو (اختياري)
-                <input
-                  name={`testimonials_${i}_videoLabel`}
-                  defaultValue={t.videoLabel}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
+              <div className="grid grid-cols-1 gap-y-1 sm:grid-cols-2">
+                <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
+                  صورة
+                  <input
+                    name={`testimonials_${i}_avatarImg`}
+                    defaultValue={t.avatarImg}
+                    className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                  />
+                </label>
+                <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
+                  رابط الموقع
+                  <input
+                    name={`testimonials_${i}_siteLink`}
+                    type="text"
+                    defaultValue={t.siteLink ?? ""}
+                    placeholder="https://..."
+                    className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                  />
+                </label>
+                <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:col-span-2">
+                  فيديو
+                  <input
+                    name={`testimonials_${i}_videoUrl`}
+                    defaultValue={t.videoUrl}
+                    placeholder="رابط الفيديو"
+                    className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                  />
+                </label>
+                <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:col-span-2">
+                  نص زر الفيديو
+                  <input
+                    name={`testimonials_${i}_videoLabel`}
+                    defaultValue={t.videoLabel}
+                    className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
+                  />
+                </label>
+              </div>
             </div>
           );
         })}
       </div>
 
+      <button
+        type="submit"
+        id="social-proof-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="social-proof-form"
+        submitButtonId="social-proof-form-submit"
         triggerLabel="حفظ قسم الشهادات"
         description="سيتم حفظ التغييرات على قسم الشهادات للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

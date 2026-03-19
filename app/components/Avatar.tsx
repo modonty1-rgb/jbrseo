@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { cl } from "@/helpers/cloudinary";
+import { cn } from "@/lib/utils";
 
 const PLACEHOLDER_AVATAR = cl(
   "https://res.cloudinary.com/dfegnpgwx/image/upload/w_96,c_fill,g_face/v1771979297/modonatyAvatar_scfhac.png"
@@ -47,7 +48,7 @@ export function Avatar({ name, src, size = "md", className = "" }: AvatarProps) 
   if (usePlaceholder) {
     return (
       <div
-        className={`flex shrink-0 items-center justify-center overflow-hidden rounded-full font-bold text-white ${sizeClass} ${className}`}
+        className={cn("flex shrink-0 items-center justify-center overflow-hidden font-bold text-white", sizeClass, className, "rounded-full")}
         style={{ backgroundColor: color }}
         aria-hidden
       >
@@ -57,12 +58,12 @@ export function Avatar({ name, src, size = "md", className = "" }: AvatarProps) 
   }
 
   return (
-    <div className={`relative shrink-0 overflow-hidden rounded-full ${sizeClass} ${className}`}>
+    <div className={cn("relative shrink-0 overflow-hidden", sizeClass, className, "rounded-full")}>
       <Image
         src={effectiveSrc}
         alt={name}
         fill
-        className="object-cover"
+        className="object-cover rounded-full"
         sizes={size === "sm" ? "40px" : "48px"}
       />
     </div>

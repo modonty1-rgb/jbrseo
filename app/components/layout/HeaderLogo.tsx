@@ -1,16 +1,24 @@
-import HeaderLogoClient from "./HeaderLogoClient";
-import { PreviewLink } from "./PreviewLink";
-import type { LandingContent } from "@/lib/landing-content.types";
+import Image from "next/image";
+import Link from "@/app/components/link";
+import { SITE_LOGO_URL } from "@/lib/constants";
 
-type HeaderLogoProps = { landingImages: LandingContent["landingImages"]; logoHref?: string };
-export function HeaderLogo({ landingImages, logoHref = "/#hero" }: HeaderLogoProps) {
+type HeaderLogoProps = { logoHref?: string };
+
+export function HeaderLogo({ logoHref = "/#hero" }: HeaderLogoProps) {
   return (
-    <PreviewLink
+    <Link
       href={logoHref}
       className="flex shrink-0 items-center gap-2"
       aria-label="مدونتي — الرئيسية"
     >
-      <HeaderLogoClient logoLight={landingImages.logoLight} logoWhite={landingImages.logoWhite} />
-    </PreviewLink>
+      <Image
+        src={SITE_LOGO_URL}
+        alt="مدونتي"
+        width={110}
+        height={34}
+        className="h-8 w-auto md:h-9"
+        priority
+      />
+    </Link>
   );
 }

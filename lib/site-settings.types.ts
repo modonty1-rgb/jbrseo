@@ -22,13 +22,18 @@ export type SiteSettingsTracking = {
   fbPixelId: string;
 };
 
+export type GlobalSiteSettings = {
+  gtmId: string;
+  hotjarId: string;
+  fbPixelId: string;
+  whatsappNumber: string;
+};
+
 export type SiteSettingsSite = {
   showSectionCounter: boolean;
   ctaLabel: string;
-  /** Single source for scarcity: total seats (e.g. 150) */
-  totalSeats?: number;
-  /** Single source: seats taken so far (e.g. 90). remaining = totalSeats - takenSeats */
-  takenSeats?: number;
+  /** Optional WhatsApp number for wa.me links (per country). Digits only when building link. */
+  whatsappNumber?: string;
 };
 
 export type SiteSettingsSectionImages = {
@@ -98,7 +103,7 @@ export const DEFAULT_SITE_SETTINGS_JSON: SiteSettingsJson = {
     twitterImage: "",
   },
   tracking: { gtmId: "", hotjarId: "", fbPixelId: "" },
-  site: { showSectionCounter: false, ctaLabel: "ابدأ مجاناً — بدون بطاقة" },
+  site: { showSectionCounter: false, ctaLabel: "ابدأ مجاناً — بدون بطاقة", whatsappNumber: "" },
   images: {
     logoWhite: "",
     logoLight: "",

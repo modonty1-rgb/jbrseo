@@ -11,9 +11,9 @@ const WhatsAppIcon = () => (
 
 const DEFAULT_CTA = "تحدث معنا على واتساب";
 
-export default function FAQ({ staticLanding, country, ctaLabel = DEFAULT_CTA }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string }) {
+export default function FAQ({ staticLanding, country, ctaLabel = DEFAULT_CTA, whatsappNumber }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string; whatsappNumber?: string }) {
   const f = staticLanding.faq;
-  const waLink = getWhatsAppLink(country);
+  const waLink = getWhatsAppLink(country, whatsappNumber);
   return (
     <section
       id="faq"

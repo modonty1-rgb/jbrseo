@@ -92,8 +92,16 @@ export function PrivacySectionForm({ section, country }: Props) {
         />
       </label>
 
+      <button
+        type="submit"
+        id="privacy-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="privacy-form"
+        submitButtonId="privacy-form-submit"
         pending={pending}
         triggerLabel="حفظ سياسة الخصوصية"
         confirmLabel="تأكيد الحفظ"

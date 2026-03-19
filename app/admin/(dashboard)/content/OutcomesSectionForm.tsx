@@ -156,8 +156,16 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
         })}
       </div>
 
+      <button
+        type="submit"
+        id="outcomes-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="outcomes-form"
+        submitButtonId="outcomes-form-submit"
         triggerLabel="حفظ قسم النتائج"
         description="سيتم حفظ التغييرات على قسم النتائج للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

@@ -25,7 +25,7 @@ const BOTTOM_CTA = {
   footnote: "من غير بطاقة ائتمان · ضمان استرداد ١٤ يوم · بتلغي امتى ما تحب",
 };
 const UI = {
-  freeLabel: "مجاني", perMonth: "/ شهر", savedYearly: "وفّرت {n} {c} في السنة", offer12_18: "🎁 ادفع ١٢ — وخد ١٨ شهر", billingAnnual: "بتدفع {n} {c} · بتاخد ١٨ شهر", billingMonthly: "بتدفع شهري · من غير عقد", guarantee: "🔒 ضمان استرداد كامل خلال ١٤ يوم", youGet: "إيه اللي بتاخده", moreDetails: "تفاصيل أكتر", whatsapp: "كلمنا على واتساب دلوقتي", monthly: "شهري", yearly: "سنوي", save20: "وفر ٢٠٪", banner12Title: "ادفع ١٢ شهر — وخد ١٨", banner12Sub: "٦ شهور مجاناً · عرض لفترة محدودة عشان تبني سلطتك", trustTitle: "إيه اللي بيضمنه مدونتي",
+  freeLabel: "مجاني", perMonth: "/ شهر", savedYearly: "وفّرت {n} {c} في السنة", offer12_18: "🎁 ادفع ١٢ — وخد ١٨ شهر", billingAnnual: "بتدفع {n} {c} · بتاخد ١٨ شهر", billingMonthly: "بتدفع شهري · من غير عقد", guarantee: "🔒 ضمان استرداد كامل خلال ١٤ يوم", youGet: "إيه اللي بتاخده", moreDetails: "تفاصيل أكتر", whatsapp: "كلمنا على واتساب دلوقتي", monthly: "شهري", yearly: "سنوي", save20: "وفر ٢٠٪", totalAnnual: "الإجمالي السنوي: {total} {c}", banner12Title: "ادفع ١٢ شهر — وخد ١٨", banner12Sub: "٦ شهور مجاناً · عرض لفترة محدودة عشان تبني سلطتك", trustTitle: "إيه اللي بيضمنه مدونتي",
 };
 
 export const landingEG: StaticLanding = {
@@ -165,6 +165,7 @@ export const landingEG: StaticLanding = {
     seats: { total: 150, taken: 90 },
     announcementPrefix: "أسعار التأسيس — يتبقى",
     announcementSuffix: "مقعد بس من",
+    bannerText: "أسعار التأسيس — يتبقى ٦٠ مقعد بس من ١٥٠",
   },
   footer: {
     tagline: "حضور مش وعود",

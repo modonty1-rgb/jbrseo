@@ -29,7 +29,7 @@ export function SocialProofTabs({ testimonials, active, onSelect }: SocialProofT
           aria-pressed={active === i}
         >
           <div
-            className="border-2 transition-colors duration-200"
+            className="rounded-full border-2 transition-colors duration-200 shrink-0"
             style={{ borderColor: active === i ? "color-mix(in oklch, var(--accent) 40%, transparent)" : "transparent" }}
           >
             <Avatar name={t.name} src={t.avatarImg} size="sm" className="lg:h-10 lg:w-10" />

@@ -219,8 +219,16 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
         />
       </label>
 
+      <button
+        type="submit"
+        id="why-now-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="why-now-form"
+        submitButtonId="why-now-form-submit"
         triggerLabel="حفظ قسم لماذا الآن"
         description="سيتم حفظ التغييرات على قسم لماذا الآن للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

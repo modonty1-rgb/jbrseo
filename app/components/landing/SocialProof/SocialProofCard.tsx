@@ -10,8 +10,13 @@ type SocialProofCardProps = {
 };
 
 export function SocialProofCard({ testimonial }: SocialProofCardProps) {
-  const { name, role, quote, metric, avatarImg, stars, tag, videoUrl, videoLabel } = testimonial;
+  const { name, role, quote, metric, avatarImg, stars, tag, videoUrl, videoLabel, siteLink } = testimonial;
   const effectiveVideoUrl = videoUrl ?? "https://www.youtube.com/shorts/6SMagY8K2Jc";
+  const effectiveSiteLink = (siteLink ?? "").trim();
+  const siteLinkHref =
+    effectiveSiteLink && !/^https?:\/\//i.test(effectiveSiteLink)
+      ? "https://" + effectiveSiteLink
+      : effectiveSiteLink;
   return (
     <div
       className="relative overflow-hidden rounded-[20px] border border-border bg-card p-5 shadow-[0_4px_24px_color-mix(in_oklch,var(--foreground)_5%,transparent)] sm:p-8"
@@ -78,6 +83,16 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
             <span>{videoLabel ?? "شاهد القصة"}</span>
           </a>
         )}
+        {effectiveSiteLink ? (
+          <a
+            href={siteLinkHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[10px] font-semibold text-primary transition hover:bg-primary/10 sm:text-[11px]"
+          >
+            زيارة الموقع
+          </a>
+        ) : null}
       </div>
     </div>
   );

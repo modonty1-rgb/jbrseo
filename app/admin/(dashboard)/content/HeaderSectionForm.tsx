@@ -74,8 +74,16 @@ export function HeaderSectionForm({ section, country }: HeaderSectionFormProps) 
         />
       </label>
 
+      <button
+        type="submit"
+        id="header-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="header-form"
+        submitButtonId="header-form-submit"
         triggerLabel="حفظ قسم الهيدر"
         description="سيتم حفظ التغييرات على قسم الهيدر (شريط المقاعد ونص الإعلان) للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

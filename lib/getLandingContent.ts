@@ -4,9 +4,9 @@ import { unstable_cache } from "next/cache";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { cl } from "@/helpers/cloudinary";
 import type { LandingContent, SupportedCountry } from "./landing-content.types";
-import type { SiteSettingsJson } from "./site-settings.types";
 import { prisma } from "./prisma";
 import { staticPlansToPricingPlans } from "./static-plans-to-content";
+import { getLandingSectionOverride } from "./landing-sections";
 
 async function getStaticFallback(): Promise<LandingContent> {
   const [{ landing, seo }, { landingImages }, { footerTexts }] = await Promise.all([
@@ -54,7 +54,7 @@ async function getStaticFallback(): Promise<LandingContent> {
       finalCta: "",
     },
     tracking: { gtmId: "", hotjarId: "", fbPixelId: "" },
-    siteSettings: { showSectionCounter: false, ctaLabel: "ابدأ مجاناً — بدون بطاقة" },
+    siteSettings: { ctaLabel: "ابدأ مجاناً — بدون بطاقة", whatsappNumber: "" },
     sectionHeadings: {
       whyNow: { eyebrow: "لماذا الآن", title: "كل شهر تأخير له ثمن" },
       howItWorks: { eyebrow: "الطريقة", title: "كيف نعمل" },
@@ -76,29 +76,20 @@ async function getStaticFallback(): Promise<LandingContent> {
 
 async function fetchLandingContent(country: SupportedCountry): Promise<LandingContent> {
   const base = await getStaticFallback();
-  const staticLandingRaw = await getStaticLandingWithOverrides(country);
-  const [settingsRow, globalRow] = await Promise.all([
-    prisma.siteSettings.findUnique({ where: { country } }),
-    prisma.siteSettings.findUnique({ where: { country: "GLOBAL" } }),
+  const [staticLandingRaw, settingsRow, seoOverride, ctaLabelOverride, pricingTeaserOverride] = await Promise.all([
+    getStaticLandingWithOverrides(country),
+    prisma.siteSettings.findFirst(),
+    getLandingSectionOverride(country, "seo"),
+    getLandingSectionOverride(country, "ctaLabel"),
+    getLandingSectionOverride(country, "pricingTeaser"),
   ]);
-  const settings: SiteSettingsJson | null = settingsRow
-    ? (settingsRow as unknown as SiteSettingsJson)
-    : null;
-  const globalImages = (globalRow as unknown as SiteSettingsJson | null)?.images;
-  const globalLogoWhite = globalImages?.logoWhite?.trim() ?? "";
-  const globalLogoLight = globalImages?.logoLight?.trim() ?? "";
 
-  const site = settings?.site;
-  const totalSeats = site?.totalSeats ?? staticLandingRaw.header.seats.total;
-  const takenSeats = site?.takenSeats ?? staticLandingRaw.header.seats.taken;
-  const seats = { total: totalSeats, taken: takenSeats };
-  const staticLanding: typeof staticLandingRaw = {
-    ...staticLandingRaw,
-    header: { ...staticLandingRaw.header, seats },
-    finalCta: { ...staticLandingRaw.finalCta, seats },
-  };
-
-  const sectionCta = settings?.pricingTeaser.cta || base.landing.pricingTeaser.plans[0]?.cta || "ابدأ الآن";
+  const staticLanding = staticLandingRaw;
+  const defaultCta = "ابدأ مجاناً — بدون بطاقة";
+  const sectionCta =
+    (pricingTeaserOverride && typeof pricingTeaserOverride === "object" && "cta" in pricingTeaserOverride && typeof (pricingTeaserOverride as { cta?: string }).cta === "string"
+      ? (pricingTeaserOverride as { cta: string }).cta
+      : null) ?? base.landing.pricingTeaser.plans[0]?.cta ?? "ابدأ الآن";
   const plans = staticPlansToPricingPlans(staticLanding.pricing.PLANS, sectionCta, country);
 
   const socialProofFromStatic = staticLanding.socialProof;
@@ -132,61 +123,55 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
     pricingTeaser: { plans },
   };
 
-  if (!settings) {
-    const landingImages = {
-      ...base.landingImages,
-      logoWhite: globalLogoWhite || base.landingImages.logoWhite,
-      logoLight: globalLogoLight || base.landingImages.logoLight,
-    };
-    return {
-      ...base,
-      staticLanding,
-      landingImages,
-      sectionImages: base.sectionImages,
-      landing: landingFromStatic,
-    };
-  }
+  const tracking = settingsRow
+    ? { gtmId: settingsRow.gtmId ?? "", hotjarId: settingsRow.hotjarId ?? "", fbPixelId: settingsRow.fbPixelId ?? "" }
+    : { gtmId: "", hotjarId: "", fbPixelId: "" };
 
-  const landingImages: LandingContent["landingImages"] = {
-    ...settings.images,
-    logoWhite: cl(globalLogoWhite || settings.images.logoWhite || base.landingImages.logoWhite),
-    logoLight: cl(globalLogoLight || settings.images.logoLight || base.landingImages.logoLight),
-    contactAvatar: settings.images.contactAvatar ? cl(settings.images.contactAvatar) : base.landingImages.contactAvatar,
+  const ctaLabel =
+    (ctaLabelOverride && typeof ctaLabelOverride === "object" && "ctaLabel" in ctaLabelOverride && typeof (ctaLabelOverride as { ctaLabel?: string }).ctaLabel === "string"
+      ? (ctaLabelOverride as { ctaLabel: string }).ctaLabel?.trim()
+      : null) ?? defaultCta;
+
+  const whatsappNumber = settingsRow?.whatsappNumber?.trim() ?? "";
+
+  const seo =
+    seoOverride && typeof seoOverride === "object" && !Array.isArray(seoOverride)
+      ? { ...base.seo, ...(seoOverride as Record<string, string>) }
+      : base.seo;
+
+  const rawPricingHeadings =
+    pricingTeaserOverride &&
+    typeof pricingTeaserOverride === "object" &&
+    "sectionHeadings" in pricingTeaserOverride &&
+    pricingTeaserOverride.sectionHeadings &&
+    typeof pricingTeaserOverride.sectionHeadings === "object"
+      ? (pricingTeaserOverride as { sectionHeadings: { eyebrow?: string; title?: string; highlightBadge?: string } }).sectionHeadings
+      : null;
+  const pricingTeaserHeadings = rawPricingHeadings
+    ? {
+        eyebrow: rawPricingHeadings.eyebrow ?? base.sectionHeadings.pricingTeaser?.eyebrow ?? "الخطط",
+        title: rawPricingHeadings.title ?? base.sectionHeadings.pricingTeaser?.title ?? "اختر خطتك",
+        highlightBadge: rawPricingHeadings.highlightBadge ?? base.sectionHeadings.pricingTeaser?.highlightBadge ?? "الأكثر شيوعاً",
+      }
+    : base.sectionHeadings.pricingTeaser;
+
+  const landingImages = {
+    ...base.landingImages,
+    logoWhite: cl(base.landingImages.logoWhite),
+    logoLight: cl(base.landingImages.logoLight),
   };
-  const sectionImages: NonNullable<LandingContent["sectionImages"]> = {
-    hero: cl((settings.images.sectionHero ?? "").trim()),
-    whyNow: cl((settings.images.sectionWhyNow ?? "").trim()),
-    howItWorks: cl((settings.images.sectionHowItWorks ?? "").trim()),
-    outcomes: cl((settings.images.sectionOutcomes ?? "").trim()),
-    socialProof: cl((settings.images.sectionSocialProof ?? "").trim()),
-    faq: cl((settings.images.sectionFaq ?? "").trim()),
-    finalCta: cl((settings.images.sectionFinalCta ?? "").trim()),
-  };
-  const sectionImageAlts: NonNullable<LandingContent["sectionImageAlts"]> = {
-    hero: (settings.images.sectionHeroAlt ?? "").trim(),
-    whyNow: (settings.images.sectionWhyNowAlt ?? "").trim(),
-    howItWorks: (settings.images.sectionHowItWorksAlt ?? "").trim(),
-    outcomes: (settings.images.sectionOutcomesAlt ?? "").trim(),
-    socialProof: (settings.images.sectionSocialProofAlt ?? "").trim(),
-    faq: (settings.images.sectionFaqAlt ?? "").trim(),
-    finalCta: (settings.images.sectionFinalCtaAlt ?? "").trim(),
-  };
-  const defaultCta = "ابدأ مجاناً — بدون بطاقة";
+
   return {
     ...base,
     staticLanding,
-    seo: settings.seo as LandingContent["seo"],
-    tracking: settings.tracking,
-    siteSettings: {
-      showSectionCounter: settings.site.showSectionCounter,
-      ctaLabel: (settings.site as { ctaLabel?: string }).ctaLabel?.trim() || defaultCta,
-    },
+    seo: seo as LandingContent["seo"],
+    tracking,
+    siteSettings: { ctaLabel, whatsappNumber },
     landingImages,
-    sectionImages,
-    sectionImageAlts,
+    sectionImages: base.sectionImages,
     sectionHeadings: {
       ...base.sectionHeadings,
-      pricingTeaser: settings.pricingTeaser.sectionHeadings,
+      pricingTeaser: pricingTeaserHeadings,
     },
     landing: landingFromStatic,
   };

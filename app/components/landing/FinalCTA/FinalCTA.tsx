@@ -10,9 +10,9 @@ import { FinalCTAKeyframes } from "./FinalCTAKeyframes";
 
 const DEFAULT_CTA = "احجز مقعدك — مجاناً";
 
-export default function FinalCTA({ staticLanding, country, ctaLabel = DEFAULT_CTA, ctaLink = "/signup" }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string; ctaLink?: string }) {
+export default function FinalCTA({ staticLanding, country, ctaLabel = DEFAULT_CTA, ctaLink = "/signup", whatsappNumber }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string; ctaLink?: string; whatsappNumber?: string }) {
   const c = staticLanding.finalCta;
-  const waLink = getWhatsAppLink(country);
+  const waLink = getWhatsAppLink(country, whatsappNumber);
   return (
     <section
       aria-labelledby="final-cta-title"

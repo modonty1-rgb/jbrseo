@@ -20,6 +20,7 @@ type ConfirmSaveDialogProps = {
   confirmLabel?: string;
   description: ReactNode;
   pending?: boolean;
+  submitButtonId?: string;
 };
 
 export function ConfirmSaveDialog({
@@ -28,9 +29,18 @@ export function ConfirmSaveDialog({
   confirmLabel,
   description,
   pending = false,
+  submitButtonId,
 }: ConfirmSaveDialogProps) {
   const triggerText = pending ? "جاري الحفظ..." : triggerLabel;
   const confirmText = pending ? "جارٍ الحفظ..." : confirmLabel ?? "تأكيد الحفظ";
+
+  const handleConfirm = () => {
+    if (submitButtonId) {
+      document.getElementById(submitButtonId)?.click();
+    } else {
+      (document.getElementById(formId) as HTMLFormElement | null)?.requestSubmit();
+    }
+  };
 
   return (
     <AlertDialog>
@@ -50,11 +60,7 @@ export function ConfirmSaveDialog({
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={pending}>إلغاء</AlertDialogCancel>
-          <AlertDialogAction
-            type="button"
-            disabled={pending}
-            onClick={() => (document.getElementById(formId) as HTMLFormElement | null)?.requestSubmit()}
-          >
+          <AlertDialogAction type="button" disabled={pending} onClick={handleConfirm}>
             {confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>

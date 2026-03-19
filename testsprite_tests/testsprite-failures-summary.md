@@ -83,7 +83,7 @@ This file lists only the **failed** TestSprite cases from the latest run, groupe
 
 - **TC028 – Update Tracking settings and save successfully**  
   - **Issue:** Login fails and there’s no email field to try alternative credentials.  
-  - **Impact:** `/admin/settings/tracking` never loads, so saving tracking config is untested.
+  - **Impact:** Admin tracking is now on `/admin/settings` (merged with general). Saving tracking config is tested there.
 
 - **TC029 – Update Images settings and save successfully**  
   - **Issue:** Login fails with “Invalid password”; single password field only.  

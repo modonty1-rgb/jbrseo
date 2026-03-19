@@ -40,7 +40,7 @@
       "name": "Admin Dashboard and Settings",
       "description": "Authenticated admin console for managing subscribers, per-country site settings (general, SEO, tracking, images), and content sections (hero, header/footer, emojis, dynamic sections); changes persist via server actions and reflect on the public site.",
       "user_flows": [
-        "Navigate to /admin -> Click General settings link in dashboard -> Navigate to /admin/settings/general -> Edit general settings form fields (e.g., hero text or pricing copy) -> Click Save -> POST /api/admin/settings -> See success confirmation -> Navigate to / -> See updated content reflected on the public site",
+        "Navigate to /admin -> Click Settings link in dashboard -> Navigate to /admin/settings -> Edit general or tracking form fields -> Click Save -> POST /api/admin/settings -> See success confirmation -> Navigate to / -> See updated content reflected on the public site",
         "Navigate to /admin -> Not authenticated -> Get redirected to /admin/login -> See login form and cannot access dashboard until authenticated"
       ]
     }
@@ -130,16 +130,10 @@
         "description": "Manage subscribers in the admin dashboard"
       },
       {
-        "path": "/admin/settings/general",
-        "file": "app/admin/(dashboard)/settings/general/page.tsx",
+        "path": "/admin/settings",
+        "file": "app/admin/(dashboard)/settings/page.tsx",
         "auth_required": true,
-        "description": "General settings for the site"
-      },
-      {
-        "path": "/admin/settings/tracking",
-        "file": "app/admin/(dashboard)/settings/tracking/page.tsx",
-        "auth_required": true,
-        "description": "Analytics and tracking-related settings"
+        "description": "General and tracking settings for the site"
       },
       {
         "path": "/admin/settings/seo",
@@ -240,8 +234,7 @@
         "files": [
           "app/admin/(dashboard)/page.tsx",
           "app/admin/(dashboard)/subscribers/page.tsx",
-          "app/admin/(dashboard)/settings/general/page.tsx",
-          "app/admin/(dashboard)/settings/tracking/page.tsx",
+          "app/admin/(dashboard)/settings/page.tsx",
           "app/admin/(dashboard)/settings/seo/page.tsx",
           "app/admin/(dashboard)/settings/images/page.tsx",
           "app/admin/(dashboard)/content/emojis/page.tsx",

@@ -426,6 +426,8 @@ export async function updateSocialProofSection(formData: FormData) {
       ((formData.get(`testimonials_${i}_videoUrl`) as string | null) ?? "").trim();
     const videoLabel =
       ((formData.get(`testimonials_${i}_videoLabel`) as string | null) ?? "").trim();
+    const siteLink =
+      ((formData.get(`testimonials_${i}_siteLink`) as string | null) ?? "").trim();
 
     if (
       !name &&
@@ -437,7 +439,8 @@ export async function updateSocialProofSection(formData: FormData) {
       !starsRaw &&
       !tag &&
       !videoUrl &&
-      !videoLabel
+      !videoLabel &&
+      !siteLink
     ) {
       continue;
     }
@@ -453,6 +456,7 @@ export async function updateSocialProofSection(formData: FormData) {
       tag,
       videoUrl: videoUrl || undefined,
       videoLabel: videoLabel || undefined,
+      siteLink: siteLink || undefined,
     });
   }
 
@@ -469,6 +473,9 @@ export async function updateSocialProofSection(formData: FormData) {
   revalidateTag(`landing-${country}`, "default");
   revalidatePath("/");
   revalidatePath("/pricing");
+  revalidatePath("/admin/content/socialProof");
+  revalidatePath("/sa");
+  revalidatePath("/eg");
 
   redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
 }
@@ -692,27 +699,9 @@ export async function updateHeaderFooterSections(formData: FormData) {
     return redirect(redirectTo);
   }
 
-  const seatsTotalRaw =
-    ((formData.get("seatsTotal") as string | null) ?? "").trim();
-  const seatsTakenRaw =
-    ((formData.get("seatsTaken") as string | null) ?? "").trim();
-  const seatsTotalParsed = parseInt(seatsTotalRaw || "0", 10);
-  const seatsTakenParsed = parseInt(seatsTakenRaw || "0", 10);
-  const seats = {
-    total: Number.isFinite(seatsTotalParsed) ? seatsTotalParsed : 0,
-    taken: Number.isFinite(seatsTakenParsed) ? seatsTakenParsed : 0,
-  };
-
-  const announcementPrefix =
-    ((formData.get("announcementPrefix") as string | null) ?? "").trim();
-  const announcementSuffix =
-    ((formData.get("announcementSuffix") as string | null) ?? "").trim();
-
-  const header = {
-    seats,
-    announcementPrefix,
-    announcementSuffix,
-  };
+  const bannerText =
+    ((formData.get("bannerText") as string | null) ?? "").trim();
+  const header = { bannerText };
 
   const tagline = ((formData.get("tagline") as string | null) ?? "").trim();
   const desc = ((formData.get("desc") as string | null) ?? "").trim();

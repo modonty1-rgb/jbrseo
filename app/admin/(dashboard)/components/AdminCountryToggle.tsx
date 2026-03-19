@@ -10,15 +10,14 @@ export function AdminCountryToggle() {
   const searchParams = useSearchParams();
   const current = searchParams.get("country") === "EG" ? "EG" : "SA";
 
-  const isContentPage = pathname?.startsWith("/admin/content");
-  const basePath = isContentPage ? pathname : "/admin/content/hero";
-  const params = new URLSearchParams(isContentPage ? searchParams?.toString() ?? "" : "");
+  const params = new URLSearchParams(searchParams?.toString() ?? "");
+  const baseHref = pathname ?? "/admin";
 
   return (
     <div className="flex items-center gap-1 rounded-md bg-muted px-1 py-0.5 text-[11px] font-medium text-foreground">
       {COUNTRIES.map(({ value, label }) => {
         params.set("country", value);
-        const href = pathname?.startsWith("/admin/content") ? `${pathname}?${params}` : `${basePath}?${params}`;
+        const href = `${baseHref}?${params.toString()}`;
         const isActive = current === value;
         return (
           <Link

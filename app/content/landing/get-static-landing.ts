@@ -5,7 +5,7 @@ import { landingSA } from "./landing-sa";
 import type { StaticLanding } from "./types";
 import type { Plan } from "./price-section-types";
 import {
-  SECTION_KEYS,
+  STATIC_ONLY_KEYS,
   getLandingSectionOverride,
   mergeStaticWithOverrides,
   type LandingSectionKey,
@@ -31,8 +31,8 @@ export async function getStaticLandingWithOverrides(
   const base = getStaticLanding(country);
 
   const overridesEntries = await Promise.all(
-    SECTION_KEYS.map(async (section) => {
-      const data = await getLandingSectionOverride(country, section as LandingSectionKey);
+    STATIC_ONLY_KEYS.map(async (section) => {
+      const data = await getLandingSectionOverride(country, section);
       return [section, data] as const;
     }),
   );

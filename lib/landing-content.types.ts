@@ -74,7 +74,7 @@ export type LandingContent = {
     finalCta: string;
   };
   tracking: { gtmId: string; hotjarId: string; fbPixelId: string };
-  siteSettings: { showSectionCounter: boolean; ctaLabel: string };
+  siteSettings: { ctaLabel: string; whatsappNumber?: string };
   sectionHeadings: SectionHeadings;
   footer: { brandName: string; copyright: string };
   pricingPage: { title: string; description: string; h1: string; intro: string };

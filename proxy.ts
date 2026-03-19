@@ -15,6 +15,10 @@ export function proxy(request: NextRequest) {
   if (countryParam === "SA" || countryParam === "EG") {
     requestHeaders.set("x-country-code", countryParam);
   }
+  const previewCountry = request.nextUrl.searchParams.get("country")?.toLowerCase();
+  if (previewCountry === "sa" || previewCountry === "eg") {
+    requestHeaders.set("x-preview-country", previewCountry);
+  }
 
   const pathname = request.nextUrl.pathname;
 

@@ -7,9 +7,11 @@ import { isAdmin } from "@/app/actions/auth";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import {
   DEFAULT_SITE_SETTINGS_JSON,
-  type SiteSettingsImages,
-  type SiteSettingsJson,
+  type GlobalSiteSettings,
+  type SiteSettingsSeo,
 } from "@/lib/site-settings.types";
+import type { Prisma } from "@prisma/client";
+import { getLandingSectionOverride, upsertLandingSection } from "@/lib/landing-sections";
 
 const ALLOWED_COUNTRIES: SupportedCountry[] = ["SA", "EG"];
 
@@ -25,42 +27,22 @@ function revalidateLanding(country: string) {
   revalidatePath("/pricing");
 }
 
-const GLOBAL_COUNTRY = "GLOBAL";
-
-export async function getSiteSettings(country: string): Promise<SiteSettingsJson> {
-  assertCountry(country);
-  const row = await prisma.siteSettings.findUnique({ where: { country } });
-  if (!row) return { ...DEFAULT_SITE_SETTINGS_JSON };
-  const data = row as unknown as SiteSettingsJson;
-  return {
-    ...data,
-    site: { ...DEFAULT_SITE_SETTINGS_JSON.site, ...data.site },
-  };
+function revalidateAllLanding() {
+  revalidateTag("landing-SA", "default");
+  revalidateTag("landing-EG", "default");
+  revalidatePath("/");
+  revalidatePath("/pricing");
 }
 
-export async function getGlobalLogos(): Promise<{ logoWhite: string; logoLight: string }> {
-  const row = await prisma.siteSettings.findUnique({ where: { country: GLOBAL_COUNTRY } });
-  if (!row) return { logoWhite: "", logoLight: "" };
-  const data = row as unknown as SiteSettingsJson;
+export async function getGlobalSiteSettings(): Promise<GlobalSiteSettings | null> {
+  const row = await prisma.siteSettings.findFirst();
+  if (!row) return null;
   return {
-    logoWhite: data.images?.logoWhite?.trim() ?? "",
-    logoLight: data.images?.logoLight?.trim() ?? "",
+    gtmId: row.gtmId ?? "",
+    hotjarId: row.hotjarId ?? "",
+    fbPixelId: row.fbPixelId ?? "",
+    whatsappNumber: row.whatsappNumber ?? "",
   };
-}
-
-async function upsertSiteSettings(country: string, data: SiteSettingsJson) {
-  const payload = {
-    seo: data.seo,
-    tracking: data.tracking,
-    site: data.site,
-    images: data.images,
-    pricingTeaser: data.pricingTeaser,
-  };
-  await prisma.siteSettings.upsert({
-    where: { country },
-    create: { country, ...payload },
-    update: payload,
-  });
 }
 
 const SEO_FORM_KEYS = [
@@ -74,70 +56,46 @@ export async function updateSeoFormData(formData: FormData) {
   const country = formData.get("country") as string;
   if (!country) return;
   assertCountry(country);
-  const current = await getSiteSettings(country);
-  const seo = { ...current.seo };
+  const currentRaw = await getLandingSectionOverride(country as SupportedCountry, "seo");
+  const current: SiteSettingsSeo = currentRaw && typeof currentRaw === "object" && !Array.isArray(currentRaw)
+    ? { ...DEFAULT_SITE_SETTINGS_JSON.seo, ...(currentRaw as Record<string, string>) }
+    : { ...DEFAULT_SITE_SETTINGS_JSON.seo };
+  const seo = { ...current };
   for (const key of SEO_FORM_KEYS) {
     (seo as Record<string, string>)[key] = (formData.get(key) as string)?.trim() ?? "";
   }
-  await upsertSiteSettings(country, { ...current, seo });
+  await upsertLandingSection(country as SupportedCountry, "seo", seo as unknown as Prisma.InputJsonValue);
   revalidatePath("/admin");
   revalidateLanding(country);
   const r = (formData.get("redirect") as string)?.trim();
   if (r) redirect(r + (r.includes("?") ? "&" : "?") + "saved=1");
 }
 
-export async function updateImagesFormData(formData: FormData) {
+export async function updateImagesFormData(_formData: FormData) {
   if (!(await isAdmin())) return;
-  const country = formData.get("country") as string;
-  const keysJson = formData.get("keys") as string;
-  if (!country || !keysJson) return;
-  assertCountry(country);
-  let keys: string[];
-  try {
-    keys = JSON.parse(keysJson) as string[];
-  } catch {
-    return;
-  }
-  const ALLOWED_IMAGE_KEYS = new Set([
-    "contactAvatar",
-    "sectionHero",
-    "sectionWhyNow",
-    "sectionHowItWorks",
-    "sectionOutcomes",
-    "sectionSocialProof",
-    "sectionFaq",
-    "sectionFinalCta",
-  ]);
-  const current = await getSiteSettings(country);
-  const images: SiteSettingsImages = { ...current.images };
-  for (const key of keys) {
-    if (ALLOWED_IMAGE_KEYS.has(key)) {
-      images[key as keyof SiteSettingsImages] = (formData.get(`u_${key}`) as string) ?? "";
-      const altKey = `${key}Alt` as keyof SiteSettingsImages;
-      images[altKey] = (formData.get(`a_${key}`) as string)?.trim() ?? "";
-    }
-  }
-  await upsertSiteSettings(country, { ...current, images });
   revalidatePath("/admin");
-  revalidateLanding(country);
-  const r = (formData.get("redirect") as string)?.trim();
-  if (r) redirect(r + (r.includes("?") ? "&" : "?") + "saved=1");
 }
 
 export async function updateTrackingFormData(formData: FormData) {
   if (!(await isAdmin())) return;
-  const country = formData.get("country") as string;
-  if (!country) return;
-  assertCountry(country);
-  const current = await getSiteSettings(country);
-  const tracking = {
-    gtmId: (formData.get("gtmId") as string)?.trim() ?? "",
-    hotjarId: (formData.get("hotjarId") as string)?.trim() ?? "",
-    fbPixelId: (formData.get("fbPixelId") as string)?.trim() ?? "",
-  };
-  await upsertSiteSettings(country, { ...current, tracking });
+  const gtmId = (formData.get("gtmId") as string)?.trim() ?? "";
+  const hotjarId = (formData.get("hotjarId") as string)?.trim() ?? "";
+  const fbPixelId = (formData.get("fbPixelId") as string)?.trim() ?? "";
+  const row = await prisma.siteSettings.findFirst();
+  if (row) {
+    await prisma.siteSettings.update({
+      where: { id: row.id },
+      data: { gtmId, hotjarId, fbPixelId },
+    });
+  } else {
+    await prisma.siteSettings.create({
+      data: { gtmId, hotjarId, fbPixelId, whatsappNumber: "" },
+    });
+  }
   revalidatePath("/admin");
-  revalidateLanding(country);
+  revalidateAllLanding();
+  const r = (formData.get("redirect") as string)?.trim();
+  if (r) redirect(r + (r.includes("?") ? "&" : "?") + "saved=1");
 }
 
 export async function updateSiteSettingsFormData(formData: FormData) {
@@ -145,27 +103,23 @@ export async function updateSiteSettingsFormData(formData: FormData) {
   const country = formData.get("country") as string;
   if (!country) return;
   assertCountry(country);
-  const current = await getSiteSettings(country);
-  const showSectionCounter = formData.get("showSectionCounter") === "true";
-  const ctaLabel = (formData.get("ctaLabel") as string)?.trim() || current.site.ctaLabel || "ابدأ مجاناً — بدون بطاقة";
-  await upsertSiteSettings(country, {
-    ...current,
-    site: { showSectionCounter, ctaLabel },
-  });
-  const globalLogoWhite = (formData.get("logoWhite") as string)?.trim() ?? "";
-  const globalRow = await prisma.siteSettings.findUnique({ where: { country: GLOBAL_COUNTRY } });
-  const globalCurrent = globalRow
-    ? (globalRow as unknown as SiteSettingsJson)
-    : { ...DEFAULT_SITE_SETTINGS_JSON };
-  await upsertSiteSettings(GLOBAL_COUNTRY, {
-    ...globalCurrent,
-    images: { ...globalCurrent.images, logoWhite: globalLogoWhite },
-  });
+  const ctaLabel = (formData.get("ctaLabel") as string)?.trim() || "ابدأ مجاناً — بدون بطاقة";
+  const whatsappNumber = (formData.get("whatsappNumber") as string)?.trim() ?? "";
+  const row = await prisma.siteSettings.findFirst();
+  if (row) {
+    await prisma.siteSettings.update({
+      where: { id: row.id },
+      data: { whatsappNumber },
+    });
+  } else {
+    await prisma.siteSettings.create({
+      data: { gtmId: "", hotjarId: "", fbPixelId: "", whatsappNumber },
+    });
+  }
+  await upsertLandingSection(country as SupportedCountry, "ctaLabel", { ctaLabel });
   revalidatePath("/admin");
   revalidatePath("/");
-  revalidateTag(`landing-SA`, "default");
-  revalidateTag(`landing-EG`, "default");
-  revalidatePath("/");
+  revalidateAllLanding();
   const r = (formData.get("redirect") as string)?.trim();
   if (r) redirect(r + (r.includes("?") ? "&" : "?") + "saved=1");
 }

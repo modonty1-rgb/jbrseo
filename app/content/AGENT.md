@@ -47,10 +47,10 @@ app/content/
 
 - **`getStaticLanding(country)`**: `app/(site)/layout.tsx`, `app/(site)/page.tsx`, `app/(site)/pricing/page.tsx`, `lib/getLandingContent.ts`.
 - **`StaticLanding` type**: Hero, WhyNow, HowItWorks, Outcomes, SocialProof, FAQ, FinalCTA, LandingHeader, Footer (they receive `staticLanding` from layout/page).
-- **Section/item types**: OutcomeCard → `OutcomeItem`; FAQAccordion → `FaqItem` + `TAG_TOKENS`; SocialProof* → `Testimonial`; TrustBar → `TrustItem`; PlanCard/DetailsAccordion/PriceSectionHeader → `Plan`, `Section`, `PricingContent`, `PricingUI`, `PricingHero`.
+- **Section/item types**: OutcomeCard → `OutcomeItem`; FAQAccordion → `FaqItem` + `TAG_TOKENS`; SocialProof* → `Testimonial`; TrustBar → `TrustItem`; PlanCard/PriceSectionHeader → `Plan`, `Section`, `PricingContent`, `PricingUI`, `PricingHero`.
 - **Fallback**: `lib/getLandingContent.ts` dynamic-imports `@/app/content/landing` and `@/app/content/landing-images` inside `getStaticFallback()`.
 - **Seed**: `prisma/seed.ts` imports `seo` from `app/content/landing` and `landingImages` from `app/content/landing-images`.
-- **Admin**: `app/admin/(dashboard)/settings/general/page.tsx` uses `landingImages` for default logo/avatar.
+- **Logos**: Hardcoded in `app/content/landing-images.ts`; not editable in admin. Public site and JSON-LD use them via `getLandingContent` → `base.landingImages`.
 
 ---
 

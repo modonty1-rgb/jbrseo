@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import type { StaticLanding } from "@/app/content/landing/types";
 import Hero from "@/app/components/landing/hero/Hero";
-import WhyNow from "@/app/components/landing/WhyNow/WhyNow";
+import WhyNowCalculator from "@/app/components/landing/Calculator/Calculator";
 import HowItWorks from "@/app/components/landing/HowItWorks/HowItWorks";
 import Outcomes from "@/app/components/landing/Outcomes/Outcomes";
 import LandingJsonLd from "@/app/components/shared/LandingJsonLd";
-import { SectionReveal } from "@/app/components/shared/SectionReveal";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
 } from "@/lib/country-config";
 import { getLandingContent } from "@/lib/getLandingContent";
+import { getWhatsAppLink } from "@/lib/site-links";
 
 const sectionFallback = () => <section className="min-h-[200px]" aria-hidden />;
 
@@ -20,15 +20,12 @@ const SocialProof = dynamic(
   () => import("@/app/components/landing/SocialProof/SocialProof"),
   { loading: sectionFallback }
 );
-const ModontyPricing = dynamic(
-  () => import("@/app/components/landing/price-section/price-section"),
-  { loading: sectionFallback }
-);
-const FAQ = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel?: string }>(
+import ModontyPricing from "@/app/components/landing/price-section/price-section";
+const FAQ = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel?: string; whatsappNumber?: string }>(
   () => import("@/app/components/landing/FAQ/FAQ"),
   { loading: sectionFallback }
 );
-const FinalCTA = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel?: string; ctaLink?: string }>(
+const FinalCTA = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel?: string; ctaLink?: string; whatsappNumber?: string }>(
   () => import("@/app/components/landing/FinalCTA/FinalCTA"),
   { loading: sectionFallback }
 );
@@ -90,10 +87,14 @@ export const revalidate = 60;
 
 export default async function CountryHome({
   params,
+  searchParams,
 }: {
   params: Promise<{ country: string }>;
+  searchParams: Promise<{ billing?: string }>;
 }) {
   const { country: raw } = await params;
+  const sp = await searchParams;
+  const annual = sp?.billing === "annual";
   const slug = raw?.toLowerCase();
   if (!isSupportedCountrySlug(slug)) {
     return null;
@@ -125,48 +126,50 @@ export default async function CountryHome({
     pricing: baseLanding.pricing,
     pricingPage: baseLanding.pricingPage,
   };
-  const showSectionCounter = content.siteSettings.showSectionCounter;
   const ctaLabel = content.siteSettings.ctaLabel || "ابدأ مجاناً — بدون بطاقة";
   const pricingSA = pricingSALanding.pricing;
   const pricingEG = pricingEGLanding.pricing;
   const initialLocale = countryCode === "EG" ? "eg" : "sa";
+  const whatsappLink = getWhatsAppLink(countryCode, content.siteSettings?.whatsappNumber);
 
   return (
     <>
       <LandingJsonLd content={content} />
-      <SectionReveal variant="none" sectionNumber={1} showSectionCounter={showSectionCounter}>
+      <section className="relative">
         <Hero content={content} staticLanding={mergedStaticLanding} country={countryCode} ctaLink={ctaLink} />
-      </SectionReveal>
-      <SectionReveal variant="blur-in" sectionNumber={2} showSectionCounter={showSectionCounter}>
-        <WhyNow staticLanding={mergedStaticLanding} ctaLabel={ctaLabel} ctaLink={ctaLink} />
-      </SectionReveal>
-      <SectionReveal variant="blur-in" sectionNumber={3} showSectionCounter={showSectionCounter}>
+      </section>
+      <section className="relative">
+        <WhyNowCalculator ctaLabel={ctaLabel} ctaLink={ctaLink} />
+      </section>
+      <section className="relative">
         <HowItWorks staticLanding={mergedStaticLanding} ctaLabel={ctaLabel} ctaLink={ctaLink} />
-      </SectionReveal>
-      <SectionReveal variant="blur-in" sectionNumber={4} showSectionCounter={showSectionCounter}>
+      </section>
+      <section className="relative">
         <Outcomes staticLanding={mergedStaticLanding} ctaLabel={ctaLabel} ctaLink={outcomesCtaLink} />
-      </SectionReveal>
-      <SectionReveal variant="fade-up" sectionNumber={5} showSectionCounter={showSectionCounter}>
+      </section>
+      <section className="relative">
         <SocialProof staticLanding={mergedStaticLanding} />
-      </SectionReveal>
-      <SectionReveal variant="fade-up" delay={80} sectionNumber={6} showSectionCounter={showSectionCounter}>
+      </section>
+      <section className="relative">
         <div id="pricing">
           <ModontyPricing
             pricingSA={pricingSA}
             pricingEG={pricingEG}
             initialLocale={initialLocale}
-            variant="homepage"
+            annual={annual}
+            basePath={basePath}
             pricingHrefBase={pricingHrefBase}
             signupHrefBase={signupHrefBase}
+            whatsappLink={whatsappLink}
           />
         </div>
-      </SectionReveal>
-      <SectionReveal variant="blur-in" sectionNumber={7} showSectionCounter={showSectionCounter}>
-        <FAQ staticLanding={mergedStaticLanding} country={countryCode} ctaLabel="تحدث معنا على واتساب" />
-      </SectionReveal>
-      <SectionReveal variant="blur-in" sectionNumber={8} showSectionCounter={showSectionCounter}>
-        <FinalCTA staticLanding={mergedStaticLanding} country={countryCode} ctaLabel={ctaLabel} ctaLink={ctaLink} />
-      </SectionReveal>
+      </section>
+      <section className="relative">
+        <FAQ staticLanding={mergedStaticLanding} country={countryCode} ctaLabel="تحدث معنا على واتساب" whatsappNumber={content.siteSettings?.whatsappNumber} />
+      </section>
+      <section className="relative">
+        <FinalCTA staticLanding={mergedStaticLanding} country={countryCode} ctaLabel={ctaLabel} ctaLink={ctaLink} whatsappNumber={content.siteSettings?.whatsappNumber} />
+      </section>
     </>
   );
 }

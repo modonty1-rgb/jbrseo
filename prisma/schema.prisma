@@ -8,14 +8,12 @@ datasource db {
 }
 
 model SiteSettings {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  country        String   @unique
-  seo            Json
-  tracking       Json
-  site           Json
-  images         Json
-  pricingTeaser  Json
-  updatedAt      DateTime @default(now())
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  gtmId           String   @default("")
+  hotjarId        String   @default("")
+  fbPixelId       String   @default("")
+  whatsappNumber  String   @default("")
+  updatedAt       DateTime @default(now())
 }
 
 model Subscriber {

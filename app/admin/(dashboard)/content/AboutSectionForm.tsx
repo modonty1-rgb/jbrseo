@@ -288,8 +288,16 @@ export function AboutSectionForm({ section, country }: AboutSectionFormProps) {
         </div>
       </div>
 
+      <button
+        type="submit"
+        id="about-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="about-form"
+        submitButtonId="about-form-submit"
         triggerLabel="حفظ صفحة من نحن"
         description="سيتم حفظ جميع التغييرات على صفحة من نحن (القصة، القيم، الفريق، المعلومات القانونية، و CTA) للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

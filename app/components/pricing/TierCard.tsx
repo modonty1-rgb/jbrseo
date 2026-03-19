@@ -53,6 +53,11 @@ export function TierCard({ plan, annual, ui, currency, href }: TierCardProps) {
         <p className="mt-1 text-[11px] text-muted-foreground">
           {annual ? ui.billingAnnual.replace("{n}", priceLabel).replace("{c}", "") : ui.billingMonthly}
         </p>
+        {annual && plan.price.yr > 0 && (
+          <p className="mt-0.5 text-[11px] font-medium text-foreground/90">
+            {ui.totalAnnual.replace("{total}", (plan.price.yr * 12).toLocaleString("ar-EG")).replace("{c}", currency)}
+          </p>
+        )}
       </div>
 
       <ul className="mb-4 space-y-1.5 text-[11px] text-muted-foreground leading-relaxed text-right">

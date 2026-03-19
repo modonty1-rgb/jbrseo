@@ -12,6 +12,7 @@ type Props = {
   country: SupportedCountry;
   highlightPlanId?: string | null;
   signupHrefBase?: string;
+  whatsappHref?: string;
 };
 
 export function PricingPageShell({
@@ -21,13 +22,14 @@ export function PricingPageShell({
   country,
   highlightPlanId = null,
   signupHrefBase = "/signup",
+  whatsappHref,
 }: Props) {
   const { PLANS, TRUST_ITEMS, BOTTOM_CTA, UI } = pricing;
   const currency = country === "EG" ? "ج.م" : "ر.س";
   const featuredPlan =
     PLANS.find((p) => p.featured) ?? PLANS[1] ?? PLANS[0];
   const primaryHref = `${signupHrefBase}?plan=${featuredPlan.id}`;
-  const secondaryHref = getWhatsAppLink(country);
+  const secondaryHref = whatsappHref ?? getWhatsAppLink(country);
   const safeHighlight =
     highlightPlanId && PLANS.some((p) => p.id === highlightPlanId)
       ? highlightPlanId
@@ -46,6 +48,7 @@ export function PricingPageShell({
           <p className="mb-6 max-w-xl text-sm text-muted-foreground leading-relaxed">
             {pricingPage.intro}
           </p>
+        
           <p className="mb-6 text-[11px] text-muted-foreground">
             بدون بطاقة ائتمان · إلغاء في أي وقت · ضمان استرجاع ١٤ يوم
           </p>
@@ -70,14 +73,12 @@ export function PricingPageShell({
 
       <section id="pricing" className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="mb-6 text-right">
-          <div className="text-right">
-            <h2 className="mb-1 text-sm font-extrabold tracking-tight text-foreground">
-              اختر الخطة المناسبة لمرحلة نشاطك
-            </h2>
-            <p className="text-[11px] text-muted-foreground">
-              جميع الباقات تشمل إعداد المحتوى، النشر، والتحسين لمحركات البحث.
-            </p>
-          </div>
+          <h2 className="mb-1 text-sm font-extrabold tracking-tight text-foreground">
+            اختر الخطة المناسبة لمرحلة نشاطك
+          </h2>
+          <p className="text-[11px] text-muted-foreground">
+            جميع الباقات تشمل إعداد المحتوى، النشر، والتحسين لمحركات البحث.
+          </p>
         </div>
 
         <PricingBillingSection plans={PLANS} ui={UI} currency={currency} signupHrefBase={signupHrefBase} />
@@ -103,26 +104,24 @@ export function PricingPageShell({
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-border bg-card/80 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              {UI.trustTitle}
-            </p>
-            <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-muted-foreground">
-              {TRUST_ITEMS.map((item, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1"
-                >
-                  <span aria-hidden>{item.icon}</span>
-                  <span>{item.label}</span>
-                </span>
-              ))}
-            </div>
+        <div className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-border bg-card/80 px-4 py-4 text-center">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            {UI.trustTitle}
+          </p>
+          <div className="flex flex-wrap justify-center gap-2 text-[11px] text-muted-foreground">
+            {TRUST_ITEMS.map((item, i) => (
+              <span
+                key={i}
+                className="inline-flex items-center gap-1 rounded-full bg-muted px-2.5 py-1"
+              >
+                <span aria-hidden>{item.icon}</span>
+                <span>{item.label}</span>
+              </span>
+            ))}
           </div>
-          <div className="text-[11px] text-muted-foreground">
-            <div className="font-semibold">{BOTTOM_CTA.headline}</div>
-            <div className="mt-1 whitespace-pre-line">{BOTTOM_CTA.subheadline}</div>
+          <div className="w-full max-w-xl text-[11px] text-muted-foreground">
+            <p className="font-semibold">{BOTTOM_CTA.headline}</p>
+            <p className="mt-1 whitespace-pre-line">{BOTTOM_CTA.subheadline}</p>
           </div>
         </div>
 

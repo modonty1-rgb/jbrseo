@@ -5,6 +5,8 @@ import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
 } from "@/lib/country-config";
+import { getLandingContent } from "@/lib/getLandingContent";
+import { getWhatsAppLink } from "@/lib/site-links";
 
 export async function generateMetadata({
   params,
@@ -58,7 +60,11 @@ export default async function CountryPricingPage({
   const { plan } = sp;
   const previewSlug = sp?.country?.toLowerCase();
   const previewQuery = previewSlug === "sa" || previewSlug === "eg" ? `?country=${previewSlug}` : "";
-  const landing = await getStaticLandingWithOverrides(countryCode);
+  const [landing, content] = await Promise.all([
+    getStaticLandingWithOverrides(countryCode),
+    getLandingContent(countryCode),
+  ]);
+  const whatsappHref = getWhatsAppLink(countryCode, content.siteSettings?.whatsappNumber);
 
   return (
     <PricingPageShell
@@ -68,6 +74,7 @@ export default async function CountryPricingPage({
       country={countryCode}
       highlightPlanId={plan ?? null}
       signupHrefBase={`/${countrySlug}/signup${previewQuery}`}
+      whatsappHref={whatsappHref}
     />
   );
 }

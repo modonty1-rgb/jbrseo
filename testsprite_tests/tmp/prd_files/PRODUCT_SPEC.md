@@ -54,10 +54,9 @@
   - `/admin/login`: Auth gateway to dashboard. **Login is intentionally implemented as a password‑only form (no email/username field). For this environment, the shared admin password is `admin123`.**
   - `/admin`: Overview dashboard with subscriber stats (total, by country, last 7 days) and activity visualization.
   - `/admin/subscribers`: Management and inspection of subscriber list (segmented by country).
-  - `/admin/settings/general`: General site settings (logos, base site configuration) per country.
+  - `/admin/settings`: General and tracking settings (logos, base site configuration, GTM/script IDs) per country.
   - `/admin/settings/seo`: SEO metadata (title, description, OG/Twitter, canonical) per country.
   - `/admin/settings/images`: Central management of landing section imagery (hero, why now, how it works, outcomes, social proof, FAQ, final CTA).
-  - `/admin/settings/tracking`: Analytics and tracking configuration (e.g., GTM/script IDs).
   - `/admin/content/*`: Per-section content forms for hero, why now, how it works, outcomes, FAQ, final CTA, header/footer, privacy, and other landing sections, localized for SA/EG.
 
 ### 6. Functional Requirements

@@ -47,8 +47,8 @@ async def run_test():
         elem = frame.locator('xpath=/html/body/div[2]/div/form/button').nth(0)
         await page.wait_for_timeout(3000); await elem.click(timeout=5000)
         
-        # -> Navigate to the admin Settings > General page (/admin/settings/general) to continue with updating the plan name and price. ASSERTION: Current URL contains '/admin' before navigating.
-        await page.goto("http://localhost:3000/admin/settings/general", wait_until="commit", timeout=10000)
+        # -> Navigate to the admin Settings page (/admin/settings) to continue with updating the plan name and price. ASSERTION: Current URL contains '/admin' before navigating.
+        await page.goto("http://localhost:3000/admin/settings", wait_until="commit", timeout=10000)
         
         # -> Fill the password field with 'password123' and click 'Log in' to authenticate to the admin interface.
         frame = context.pages[-1]
@@ -64,7 +64,7 @@ async def run_test():
         # --> Assertions to verify final state
         frame = context.pages[-1]
         assert '/admin' in frame.url
-        assert '/admin/settings/general' in frame.url
+        assert '/admin/settings' in frame.url
         await expect(frame.locator('text=Saved').first).to_be_visible(timeout=3000)
         assert '/pricing' in frame.url
         await expect(frame.locator('text=Scale Updated').first).to_be_visible(timeout=3000)

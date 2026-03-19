@@ -22,7 +22,7 @@ export default function Hero({
 }) {
   const h = staticLanding.hero;
   const ctaLabel = content.siteSettings?.ctaLabel || "ابدأ مجاناً — بدون بطاقة";
-  const waLink = country ? getWhatsAppLink(country) : "";
+  const waLink = country ? getWhatsAppLink(country, content.siteSettings?.whatsappNumber) : "";
   const secondaryCta =
     waLink && staticLanding.finalCta?.wa
       ? { label: staticLanding.finalCta.wa, href: waLink }

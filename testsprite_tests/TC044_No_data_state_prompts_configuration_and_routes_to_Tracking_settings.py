@@ -40,7 +40,7 @@ async def run_test():
         frame = context.pages[-1]
         assert '/admin' in frame.url
         await expect(frame.locator('text=No data').first).to_be_visible(timeout=3000)
-        assert '/admin/settings/tracking' in frame.url
+        assert '/admin/settings' in frame.url
         await asyncio.sleep(5)
 
     finally:

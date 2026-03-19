@@ -3,7 +3,7 @@ import { Tajawal } from "next/font/google";
 import Link from "@/app/components/link";
 import Script from "next/script";
 import { JsonLd } from "@/app/components/JsonLd";
-import { cl } from "@/helpers/cloudinary";
+import { FAVICON_URLS, SITE_LOGO_URL } from "@/lib/constants";
 import { ThemeProvider } from "@/app/helpers/useTheme";
 import "./globals.css";
 
@@ -37,10 +37,6 @@ const tajawal = Tajawal({
   preload: true,
 });
 
-const LOGO_URL = cl(
-  "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg"
-);
-
 const OG_IMAGE = {
   url: "/og-image.png",
   width: 1200,
@@ -56,9 +52,14 @@ export const metadata: Metadata = {
   },
   description: "JBRSEO – وكالة سيو متخصصة تساعدك على الظهور الأول في نتائج البحث وتنمية أعمالك في السعودية ومصر.",
   icons: {
-    icon: LOGO_URL,
-    shortcut: LOGO_URL,
-    apple: LOGO_URL,
+    icon: [
+      { url: FAVICON_URLS.icon32, sizes: "32x32", type: "image/webp" },
+      { url: FAVICON_URLS.any, sizes: "any", type: "image/webp" },
+    ],
+    shortcut: FAVICON_URLS.icon32,
+    apple: [
+      { url: FAVICON_URLS.apple180, sizes: "180x180", type: "image/webp" },
+    ],
   },
   openGraph: {
     type: "website",

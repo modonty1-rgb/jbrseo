@@ -151,10 +151,9 @@ Route (app)                       Revalidate  Expire
 ├ ƒ /admin/content/emojis
 ├ ƒ /admin/content/header-footer
 ├ ○ /admin/login
-├ ƒ /admin/settings/general
+├ ƒ /admin/settings
 ├ ƒ /admin/settings/images
 ├ ƒ /admin/settings/seo
-├ ƒ /admin/settings/tracking
 ├ ƒ /admin/subscribers
 ├ ƒ /privacy
 ├ ○ /robots.txt

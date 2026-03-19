@@ -55,8 +55,16 @@ export function FooterSectionForm({ section, country }: FooterSectionFormProps) 
         />
       </label>
 
+      <button
+        type="submit"
+        id="footer-form-submit"
+        className="hidden"
+        tabIndex={-1}
+        aria-hidden
+      />
       <ConfirmSaveDialog
         formId="footer-form"
+        submitButtonId="footer-form-submit"
         triggerLabel="حفظ الشعار"
         description="سيتم حفظ التغييرات على الشعار (Footer) للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

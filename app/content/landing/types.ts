@@ -38,6 +38,8 @@ export type Testimonial = {
   videoUrl?: string;
   /** Optional label for the video button */
   videoLabel?: string;
+  /** Optional site link; when set, shown on public site for this testimonial */
+  siteLink?: string;
 };
 
 export type NavLink = { href: string; label: string };
@@ -160,6 +162,7 @@ export type StaticLanding = {
     seats: { total: number; taken: number };
     announcementPrefix: string;
     announcementSuffix: string;
+    bannerText?: string;
   };
   footer: {
     tagline: string;

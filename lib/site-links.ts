@@ -57,6 +57,13 @@ export const LEGAL_LINKS: FooterLinkItem[] = [
 const WHATSAPP_SA = "https://wa.me/966500000000";
 const WHATSAPP_EG = "https://wa.me/201000000000";
 
-export function getWhatsAppLink(country: SupportedCountry): string {
+function buildWhatsAppLinkFromNumber(raw: string): string {
+  const digits = (raw ?? "").replace(/\D/g, "");
+  return digits ? `https://wa.me/${digits}` : "";
+}
+
+export function getWhatsAppLink(country: SupportedCountry, overrideNumber?: string | null): string {
+  const link = overrideNumber != null ? buildWhatsAppLinkFromNumber(String(overrideNumber).trim()) : "";
+  if (link) return link;
   return country === "EG" ? WHATSAPP_EG : WHATSAPP_SA;
 }
