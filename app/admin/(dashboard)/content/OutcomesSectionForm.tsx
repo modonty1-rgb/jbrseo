@@ -3,6 +3,9 @@
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateOutcomesSection } from "@/app/actions/content-sections";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 
 type OutcomesSectionFormProps = {
@@ -46,7 +49,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         اسم القسم
-        <input
+        <Input
           name="eyebrow"
           defaultValue={section.eyebrow}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -56,7 +59,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان
-          <input
+          <Input
             name="title"
             defaultValue={section.title}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -64,7 +67,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان الفرعي
-          <input
+          <Input
             name="subtitle"
             defaultValue={section.subtitle}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -75,7 +78,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           نص الشارة
-          <input
+          <Input
             name="badgeText"
             defaultValue={section.badgeText}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -83,7 +86,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           الرسالة
-          <input
+          <Input
             name="message"
             defaultValue={section.message}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -93,7 +96,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         تمييز الرسالة
-        <input
+        <Input
           name="messageHighlight"
           defaultValue={section.messageHighlight}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -113,7 +116,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
               </div>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 الأيقونة
-                <input
+                <Input
                   name={`outcomes_${i}_icon`}
                   defaultValue={o.icon}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -121,7 +124,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 المقياس
-                <input
+                <Input
                   name={`outcomes_${i}_metric`}
                   defaultValue={o.metric}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -129,7 +132,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 العنوان
-                <input
+                <Input
                   name={`outcomes_${i}_title`}
                   defaultValue={o.title}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -137,7 +140,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 السطر
-                <textarea
+                <Textarea
                   name={`outcomes_${i}_line`}
                   defaultValue={o.line}
                   className="min-h-[40px] rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -145,7 +148,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 نوع الوسم (accent/success/destructive)
-                <input
+                <Input
                   name={`outcomes_${i}_token`}
                   defaultValue={o.token}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -156,7 +159,7 @@ export function OutcomesSectionForm({ section, country }: OutcomesSectionFormPro
         })}
       </div>
 
-      <button
+      <Button
         type="submit"
         id="outcomes-form-submit"
         className="hidden"

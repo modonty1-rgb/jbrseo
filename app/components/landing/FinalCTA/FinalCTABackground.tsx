@@ -21,12 +21,12 @@ export function FinalCTABackground() {
       <div
         aria-hidden
         className="pointer-events-none absolute -top-[120px] -end-[80px] h-[500px] w-[500px] rounded-full blur-[100px]"
-        style={{ background: "color-mix(in oklch, var(--final-cta-accent) 10%, transparent)" }}
+        style={{ background: "color-mix(in oklch, var(--final-cta-accent) 18%, transparent)" }}
       />
       <div
         aria-hidden
         className="pointer-events-none absolute -bottom-[100px] -start-[60px] h-[400px] w-[400px] rounded-full blur-[80px]"
-        style={{ background: "color-mix(in oklch, var(--final-cta-accent) 6%, transparent)" }}
+        style={{ background: "color-mix(in oklch, var(--final-cta-accent) 12%, transparent)" }}
       />
     </>
   );

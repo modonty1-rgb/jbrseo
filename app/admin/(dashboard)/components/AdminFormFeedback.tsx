@@ -1,47 +1,50 @@
 "use client";
 
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
+import { toast } from "@/app/components/ui/sonner";
 
 export function AdminFormFeedback() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [message, setMessage] = useState<"saved" | "error" | null>(null);
+  const handledQuery = useRef<string | null>(null);
 
   useEffect(() => {
     const saved = searchParams.get("saved");
     const error = searchParams.get("error");
+    const full = `${pathname}?${searchParams.toString()}`;
+
+    const reason = searchParams.get("reason");
+
+    if (saved !== "1" && error !== "1") {
+      handledQuery.current = null;
+      return;
+    }
+
+    if (handledQuery.current === full) return;
+    handledQuery.current = full;
+
     if (saved === "1") {
-      setMessage("saved");
+      toast.success("تم الحفظ بنجاح");
       const u = new URL(pathname, window.location.origin);
-      searchParams.forEach((v, k) => { if (k !== "saved") u.searchParams.set(k, v); });
+      searchParams.forEach((v, k) => {
+        if (k !== "saved") u.searchParams.set(k, v);
+      });
       router.replace(u.pathname + (u.searchParams.toString() ? "?" + u.searchParams.toString() : ""));
     } else if (error === "1") {
-      setMessage("error");
+      if (reason === "seo_description_max") {
+        toast.error("الوصف طويل جداً — الحد الأقصى 160 حرفاً (مقطع غوغل).");
+      } else {
+        toast.error("حدث خطأ، يرجى المحاولة لاحقاً");
+      }
       const u = new URL(pathname, window.location.origin);
-      searchParams.forEach((v, k) => { if (k !== "error") u.searchParams.set(k, v); });
+      searchParams.forEach((v, k) => {
+        if (k !== "error" && k !== "reason") u.searchParams.set(k, v);
+      });
       router.replace(u.pathname + (u.searchParams.toString() ? "?" + u.searchParams.toString() : ""));
     }
   }, [pathname, searchParams, router]);
 
-  useEffect(() => {
-    if (!message) return;
-    const t = setTimeout(() => setMessage(null), 3000);
-    return () => clearTimeout(t);
-  }, [message]);
-
-  if (!message) return null;
-  return (
-    <div
-      role="alert"
-      className={
-        message === "saved"
-          ? "mb-4 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-800 dark:border-green-800 dark:bg-green-950/40 dark:text-green-200"
-          : "mb-4 rounded-md border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800 dark:border-red-800 dark:bg-red-950/40 dark:text-red-200"
-      }
-    >
-      {message === "saved" ? "تم الحفظ بنجاح" : "حدث خطأ، يرجى المحاولة لاحقاً"}
-    </div>
-  );
+  return null;
 }

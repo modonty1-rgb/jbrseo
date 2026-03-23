@@ -1,34 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { updateSeoFormData } from "@/app/actions/landing";
+import { META_DESCRIPTION_MAX_CHARS } from "@/lib/seo-meta";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { SiteSettingsJson } from "@/lib/site-settings.types";
-import { inputBase, labelClass } from "./AdminFormShared";
+import { Label } from "@/app/components/ui/label";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "./ConfirmSaveDialog";
-
-const SEO_FIELDS: {
-  key: string;
-  label: string;
-  hint: string;
-  type?: "text" | "url";
-  placeholder?: string;
-}[] = [
-  { key: "title", label: "Meta title", hint: "العنوان الذي يظهر في نتائج غوغل عند البحث عن موقعك" },
-  { key: "description", label: "Meta description", hint: "جملة قصيرة تظهر تحت العنوان في نتائج البحث وتلخص محتوى الصفحة", type: "text" },
-  { key: "canonical", label: "Canonical URL", hint: "رابط الصفحة الرسمي (اتركه فارغاً أو ضع رابط الصفحة الأساسي)", type: "url", placeholder: "https://..." },
-  { key: "ogLocale", label: "OG locale", hint: "لغة الصفحة: ar_SA للسعودية، ar_EG لمصر", placeholder: "ar_SA" },
-  { key: "ogTitle", label: "OG title", hint: "العنوان الذي يظهر عند مشاركة الرابط في واتساب أو فيسبوك" },
-  { key: "ogDescription", label: "OG description", hint: "الوصف الذي يظهر عند مشاركة الرابط في واتساب أو فيسبوك", type: "text" },
-  { key: "ogImage", label: "OG image URL", hint: "رابط صورة تظهر عند مشاركة الرابط (مثلاً في واتساب أو فيسبوك)", type: "url", placeholder: "https://..." },
-  { key: "ogImageWidth", label: "OG image width", hint: "عرض الصورة بالبكسل (مثلاً 1200)", placeholder: "1200" },
-  { key: "ogImageHeight", label: "OG image height", hint: "ارتفاع الصورة بالبكسل (مثلاً 630)", placeholder: "630" },
-  { key: "ogType", label: "OG type", hint: "نوع الصفحة، عادةً website للموقع", placeholder: "website" },
-  { key: "ogSiteName", label: "OG site name", hint: "اسم الموقع كما يظهر عند المشاركة", placeholder: "JBRSEO" },
-  { key: "twitterCard", label: "Twitter card", hint: "شكل البطاقة في تويتر (مثلاً summary_large_image لصورة كبيرة)", placeholder: "summary_large_image" },
-  { key: "twitterTitle", label: "Twitter title", hint: "العنوان عند مشاركة الرابط في تويتر" },
-  { key: "twitterDescription", label: "Twitter description", hint: "الوصف عند مشاركة الرابط في تويتر", type: "text" },
-  { key: "twitterImage", label: "Twitter image URL", hint: "رابط صورة تظهر عند مشاركة الرابط في تويتر", type: "url", placeholder: "https://..." },
-];
 
 export function SeoForm({
   country,
@@ -38,53 +18,93 @@ export function SeoForm({
   country: SupportedCountry;
   seo: SiteSettingsJson["seo"];
   redirect?: string;
-}) {
-  const get = (key: string) => (seo as Record<string, string>)[key] ?? "";
+}): React.JSX.Element {
+  const [descLen, setDescLen] = useState(seo.description.length);
+
   return (
     <form id="seo-form" action={updateSeoFormData} className="flex flex-col gap-3">
       <input type="hidden" name="country" value={country} />
       {redirect && <input type="hidden" name="redirect" value={redirect} />}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {SEO_FIELDS.map(({ key, label, hint, type = "text", placeholder }) => (
-          <div
-            key={key}
-            className={
-              type === "text" && (key === "description" || key === "ogDescription" || key === "twitterDescription")
-                ? "col-span-2 flex flex-col gap-1.5"
-                : "flex flex-col gap-1.5"
-            }
-          >
-            <div className="flex flex-row items-center justify-between gap-2">
-              <label className={labelClass} htmlFor={`seo-${key}`}>
-                {label}
-              </label>
-              <span className="text-xs text-muted-foreground" role="note">
-                {hint}
-              </span>
-            </div>
-            {key === "description" || key === "ogDescription" || key === "twitterDescription" ? (
-              <textarea
-                id={`seo-${key}`}
-                name={key}
-                defaultValue={get(key)}
-                rows={2}
-                className={inputBase}
-                placeholder={placeholder}
-                dir="ltr"
-              />
-            ) : (
-              <input
-                id={`seo-${key}`}
-                type={type}
-                name={key}
-                defaultValue={get(key)}
-                className={inputBase}
-                placeholder={placeholder}
-                dir="ltr"
-              />
-            )}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex flex-row items-center justify-between gap-2">
+            <Label htmlFor="seo-title" className="text-xs font-medium text-muted-foreground">
+              العنوان
+            </Label>
+            <span className="text-xs text-muted-foreground" role="note">
+              العنوان في نتائج البحث ومشاركات التواصل
+            </span>
           </div>
-        ))}
+          <Input
+            id="seo-title"
+            type="text"
+            name="title"
+            defaultValue={seo.title}
+            dir="ltr"
+          />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <div className="flex flex-row items-center justify-between gap-2">
+            <Label htmlFor="seo-canonical" className="text-xs font-medium text-muted-foreground">
+              Canonical URL
+            </Label>
+            <span className="text-xs text-muted-foreground" role="note">
+              رابط الصفحة الرسمي (اتركه فارغاً أو ضع رابط الصفحة الأساسي)
+            </span>
+          </div>
+          <Input
+            id="seo-canonical"
+            type="url"
+            name="canonical"
+            defaultValue={seo.canonical}
+            placeholder="https://..."
+            dir="ltr"
+          />
+        </div>
+
+        <div className="col-span-2 flex flex-col gap-1.5">
+          <div className="flex flex-row items-center justify-between gap-2">
+            <Label htmlFor="seo-description" className="text-xs font-medium text-muted-foreground">
+              الوصف
+            </Label>
+            <span className="text-xs text-muted-foreground" role="note">
+              الوصف في نتائج البحث — حتى {META_DESCRIPTION_MAX_CHARS} حرفاً
+            </span>
+          </div>
+          <Textarea
+            id="seo-description"
+            name="description"
+            defaultValue={seo.description}
+            rows={2}
+            dir="ltr"
+            maxLength={META_DESCRIPTION_MAX_CHARS}
+            onChange={(e) => setDescLen(e.target.value.length)}
+            aria-describedby="seo-description-hint"
+          />
+          <p id="seo-description-hint" className="text-xs text-muted-foreground">
+            {descLen}/{META_DESCRIPTION_MAX_CHARS}
+          </p>
+        </div>
+
+        <div className="col-span-2 flex flex-col gap-1.5">
+          <div className="flex flex-row items-center justify-between gap-2">
+            <Label htmlFor="seo-ogImage" className="text-xs font-medium text-muted-foreground">
+              صورة المشاركة
+            </Label>
+            <span className="text-xs text-muted-foreground" role="note">
+              صورة تظهر عند مشاركة الرابط في واتساب وتويتر وفيسبوك
+            </span>
+          </div>
+          <Input
+            id="seo-ogImage"
+            type="url"
+            name="ogImage"
+            defaultValue={seo.ogImage}
+            placeholder="https://..."
+            dir="ltr"
+          />
+        </div>
       </div>
       <ConfirmSaveDialog
         formId="seo-form"

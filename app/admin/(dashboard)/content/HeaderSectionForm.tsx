@@ -3,6 +3,8 @@
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateHeaderSection } from "@/app/actions/content-sections";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 
 type HeaderSectionFormProps = {
@@ -40,7 +42,7 @@ export function HeaderSectionForm({ section, country }: HeaderSectionFormProps) 
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           إجمالي المقاعد
-          <input
+          <Input
             name="seatsTotal"
             defaultValue={String(section.seats?.total ?? 0)}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -48,7 +50,7 @@ export function HeaderSectionForm({ section, country }: HeaderSectionFormProps) 
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           المقاعد المحجوزة
-          <input
+          <Input
             name="seatsTaken"
             defaultValue={String(section.seats?.taken ?? 0)}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -58,7 +60,7 @@ export function HeaderSectionForm({ section, country }: HeaderSectionFormProps) 
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         بداية الإعلان
-        <input
+        <Input
           name="announcementPrefix"
           defaultValue={section.announcementPrefix}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -67,14 +69,14 @@ export function HeaderSectionForm({ section, country }: HeaderSectionFormProps) 
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         نهاية الإعلان
-        <input
+        <Input
           name="announcementSuffix"
           defaultValue={section.announcementSuffix}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
         />
       </label>
 
-      <button
+      <Button
         type="submit"
         id="header-form-submit"
         className="hidden"

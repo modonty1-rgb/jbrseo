@@ -3,10 +3,11 @@ export function HeroHeadline({ line1, line2 }: { line1: string; line2: string })
     <h1
       id="hero-title"
       className="
-        landing-reveal-title font-black text-foreground
-        text-[36px] leading-[1.08] tracking-[-0.025em]
-        sm:text-[48px]
-        lg:text-[clamp(52px,5vw,68px)] lg:leading-[1.03] lg:tracking-[-0.035em]
+        landing-reveal-title font-black text-foreground text-balance
+        text-[clamp(1.6875rem,calc(2.85vw+0.95rem),4.125rem)]
+        leading-[1.1] tracking-[-0.025em]
+        sm:leading-[1.06]
+        lg:leading-[1.03] lg:tracking-[-0.035em]
         mb-0
       "
     >

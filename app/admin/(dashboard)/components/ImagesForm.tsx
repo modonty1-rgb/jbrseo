@@ -4,7 +4,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { updateImagesFormData } from "@/app/actions/landing";
 import type { SupportedCountry } from "@/lib/landing-content.types";
-import { inputBase, labelClass } from "./AdminFormShared";
+import { Label } from "@/app/components/ui/label";
+import { Input } from "@/app/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
 import { ConfirmSaveDialog } from "./ConfirmSaveDialog";
 
 const IMAGE_KEY_LABELS: Record<string, string> = {
@@ -61,48 +63,50 @@ export function ImagesForm({
       <input type="hidden" name="keys" value={JSON.stringify(images.map((i) => i.key))} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {images.map(({ key }) => (
-          <div
+          <Card
             key={key}
-            className="rounded-lg border border-border/60 bg-card p-4 shadow-sm transition-shadow hover:shadow-md"
+            className="border-border/60 shadow-sm transition-shadow hover:shadow-md"
           >
-            <h3 className="mb-3 text-sm font-semibold text-foreground">
-              {IMAGE_KEY_LABELS[key] ?? key}
-            </h3>
-            <div className="space-y-3">
+            <CardHeader className="p-4 pb-2">
+              <CardTitle className="text-sm font-semibold">
+                {IMAGE_KEY_LABELS[key] ?? key}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 p-4 pt-0">
               <div>
-                <label className={labelClass} htmlFor={`u-${key}`}>
+                <Label htmlFor={`u-${key}`} className="text-xs font-medium text-muted-foreground">
                   رابط الصورة
-                </label>
-                <input
+                </Label>
+                <Input
                   id={`u-${key}`}
                   type="url"
                   name={`u_${key}`}
                   value={urls[key] ?? ""}
                   onChange={(e) => setUrls((prev) => ({ ...prev, [key]: e.target.value }))}
                   placeholder="https://..."
-                  className={inputBase}
                   dir="ltr"
+                  className="mt-1"
                   aria-describedby={urls[key] ? undefined : `preview-${key}`}
                 />
               </div>
               <div>
-                <label className={labelClass} htmlFor={`a-${key}`}>
+                <Label htmlFor={`a-${key}`} className="text-xs font-medium text-muted-foreground">
                   نص بديل (للوصولية)
-                </label>
-                <input
+                </Label>
+                <Input
                   id={`a-${key}`}
                   type="text"
                   name={`a_${key}`}
                   value={alts[key] ?? ""}
                   onChange={(e) => setAlts((prev) => ({ ...prev, [key]: e.target.value }))}
                   placeholder="وصف مختصر للصورة"
-                  className={inputBase}
                   dir="rtl"
+                  className="mt-1"
                 />
               </div>
               <ImagePreview src={urls[key] ?? ""} alt={alts[key] ?? ""} />
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
       <ConfirmSaveDialog

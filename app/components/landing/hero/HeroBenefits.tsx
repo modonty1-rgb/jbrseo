@@ -1,10 +1,11 @@
 import Link from "@/app/components/link";
+import { Card } from "@/app/components/ui/card";
 
 type Benefit = { objection: string; answer: string };
 
 export function HeroBenefits({ benefits }: { benefits: readonly Benefit[] }) {
   return (
-    <div className="landing-reveal-content mb-8 overflow-hidden rounded-[18px] border border-border bg-card shadow-sm">
+    <Card className="landing-reveal-content mb-8 overflow-hidden rounded-[18px] border border-border bg-card p-0 shadow-sm">
       {benefits.map((b, i) => (
         <div
           key={i}
@@ -27,6 +28,6 @@ export function HeroBenefits({ benefits }: { benefits: readonly Benefit[] }) {
           </span>
         </div>
       ))}
-    </div>
+    </Card>
   );
 }

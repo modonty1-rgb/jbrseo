@@ -43,7 +43,7 @@ export function FinalCTAHeader({ eyebrow, title1, title2, subtitle }: FinalCTAHe
         {title2}
       </p>
       <p
-        className="mb-9 max-w-[480px] leading-[1.8] text-muted-foreground dark:text-primary-foreground/92"
+        className="mx-auto mb-9 max-w-[480px] leading-[1.8] text-primary-foreground/70"
         style={{ fontSize: 15, animation: "fadeUp .4s .2s ease both", opacity: 0 }}
       >
         {subtitle}

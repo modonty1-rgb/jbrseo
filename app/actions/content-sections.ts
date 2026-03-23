@@ -39,6 +39,21 @@ function assertCountry(country: string): asserts country is SupportedCountry {
   }
 }
 
+/** Accepts `example.com` or `https://example.com`; rejects non-http(s) schemes. */
+function normalizeHttpUrl(raw: string): string | null {
+  const t = raw.trim();
+  if (!t) return null;
+  const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(t);
+  const candidate = hasScheme ? t : `https://${t}`;
+  try {
+    const u = new URL(candidate);
+    if (u.protocol !== "http:" && u.protocol !== "https:") return null;
+    return u.href;
+  } catch {
+    return null;
+  }
+}
+
 export async function updateSection(formData: FormData) {
   if (!(await isAdmin())) return;
 
@@ -122,6 +137,34 @@ export async function updateHeroSection(formData: FormData) {
     .map((l) => l.trim())
     .filter(Boolean);
 
+  const trustBarHeadline = ((formData.get("trustBarHeadline") as string | null) ?? "").trim();
+
+  const rawClientsJson = (formData.get("trustClientsJson") as string | null) ?? "[]";
+  let trustBarClients: { name: string; logoUrl: string; href?: string }[] = [];
+  try {
+    const parsed: unknown = JSON.parse(rawClientsJson);
+    if (Array.isArray(parsed)) {
+      trustBarClients = parsed
+        .filter((c): c is Record<string, unknown> =>
+          typeof c === "object" && c !== null,
+        )
+        .filter((c) => typeof c.name === "string" && !!(c.name as string).trim())
+        .map((c) => {
+          const logoUrl =
+            typeof c.logoUrl === "string" ? normalizeHttpUrl(c.logoUrl) ?? "" : "";
+          const href =
+            typeof c.href === "string" ? normalizeHttpUrl(c.href) : null;
+          return {
+            name: (c.name as string).trim(),
+            logoUrl,
+            ...(href ? { href } : {}),
+          };
+        });
+    }
+  } catch {
+    trustBarClients = [];
+  }
+
   const hero = {
     proof,
     h1Line1,
@@ -129,13 +172,17 @@ export async function updateHeroSection(formData: FormData) {
     sub,
     benefits,
     trust: trustLines,
+    trustBarHeadline,
+    trustBarClients,
   };
 
   await upsertLandingSection(country, "hero", hero);
 
+  const countrySlug = country === "SA" ? "sa" : "eg";
   revalidateTag(`landing-${country}`, "default");
+  revalidatePath(`/${countrySlug}`);
+  revalidatePath(`/${countrySlug}/pricing`);
   revalidatePath("/");
-  revalidatePath("/pricing");
 
   redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
 }

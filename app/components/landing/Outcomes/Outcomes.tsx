@@ -1,4 +1,5 @@
 import type { StaticLanding } from "@/app/content/landing/types";
+import Link from "@/app/components/link";
 import { OutcomesBackground } from "./OutcomesBackground";
 import { OutcomesHeader } from "./OutcomesHeader";
 import { OutcomeCard } from "./OutcomeCard";
@@ -48,6 +49,15 @@ export default function Outcomes({ staticLanding, ctaLabel = DEFAULT_CTA, ctaLin
             message={o.message}
             messageHighlight={o.messageHighlight}
           />
+          <div className="mt-8 text-center">
+            <Link
+              href="/features"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+            >
+              اكتشف كل ما تحصل عليه
+              <span>←</span>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

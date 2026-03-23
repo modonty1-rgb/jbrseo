@@ -1,15 +1,13 @@
 import Link from "@/app/components/link";
 import { Button } from "@/app/components/ui/button";
-import { Icon } from "@/app/components/Icon";
 
 type Props = {
   cta: string;
   ctaLink: string;
-  trust: readonly string[];
   secondaryCta?: { label: string; href: string };
 };
 
-export function HeroCTASection({ cta, ctaLink, trust, secondaryCta }: Props) {
+export function HeroCTASection({ cta, ctaLink, secondaryCta }: Props) {
   return (
     <div className="landing-reveal-content">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
@@ -53,22 +51,6 @@ export function HeroCTASection({ cta, ctaLink, trust, secondaryCta }: Props) {
             {secondaryCta.label}
           </a>
         )}
-      </div>
-
-      <div className="mt-3.5 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-0">
-        {trust.map((t, i) => (
-          <span key={i} className="flex items-center">
-            {i > 0 && (
-              <span className="mx-3.5 hidden h-[3px] w-[3px] rounded-full bg-border sm:block" />
-            )}
-            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <span className="inline-flex h-[15px] w-[15px] items-center justify-center rounded-full bg-success/12 text-[8px] font-black text-success">
-                <Icon emoji="✓" />
-              </span>
-              {t}
-            </span>
-          </span>
-        ))}
       </div>
     </div>
   );

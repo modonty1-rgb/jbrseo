@@ -1,9 +1,14 @@
 "use client";
 
-import type { StaticLanding } from "@/app/content/landing/types";
+import { useState, useTransition } from "react";
+import type { StaticLanding, TrustBarClient } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateHeroSection } from "@/app/actions/content-sections";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
+
+const HERO_FORM_ID = "hero-section-form";
 
 type HeroSectionFormProps = {
   hero: StaticLanding["hero"];
@@ -18,12 +23,38 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps) {
 
   const trustText = (hero.trust ?? []).join("\n");
 
-  async function onSubmit(formData: FormData) {
-    await updateHeroSection(formData);
+  const [clients, setClients] = useState<TrustBarClient[]>(
+    hero.trustBarClients && hero.trustBarClients.length > 0
+      ? hero.trustBarClients
+      : [{ name: "", logoUrl: "", href: "" }],
+  );
+
+  const [isPending, startTransition] = useTransition();
+
+  function addClient() {
+    setClients((prev) => [...prev, { name: "", logoUrl: "", href: "" }]);
+  }
+
+  function removeClient(idx: number) {
+    setClients((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function updateClient(idx: number, field: keyof TrustBarClient, value: string) {
+    setClients((prev) => prev.map((c, i) => (i === idx ? { ...c, [field]: value } : c)));
+  }
+
+  function handleSave() {
+    const form = document.getElementById(HERO_FORM_ID);
+    if (!(form instanceof HTMLFormElement)) return;
+    const fd = new FormData(form);
+    fd.set("trustClientsJson", JSON.stringify(clients));
+    startTransition(() => {
+      void updateHeroSection(fd);
+    });
   }
 
   return (
-    <form id="hero-form" action={onSubmit} className="space-y-4">
+    <form id={HERO_FORM_ID} className="space-y-4">
       <input type="hidden" name="country" value={country} />
       <input type="hidden" name="section" value="hero" />
       <input
@@ -32,6 +63,7 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps) {
         value={`/admin/content/hero?country=${country}`}
       />
       <input type="hidden" name="benefitsCount" value={benefitsCount} />
+
 
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-semibold text-muted-foreground">
@@ -47,7 +79,7 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps) {
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         إثبات
-        <input
+        <Input
           name="proof"
           defaultValue={hero.proof}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -57,7 +89,7 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps) {
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان الرئيسي - السطر ١
-          <input
+          <Input
             name="h1Line1"
             defaultValue={hero.h1Line1}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -65,7 +97,7 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps) {
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان الرئيسي - السطر ٢
-          <input
+          <Input
             name="h1Line2"
             defaultValue={hero.h1Line2}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -75,7 +107,7 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps) {
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         نص فرعي
-        <textarea
+        <Textarea
           name="sub"
           defaultValue={hero.sub}
           className="min-h-[70px] rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -95,7 +127,7 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps) {
               </div>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 اعتراض
-                <input
+                <Input
                   name={`benefits_${i}_objection`}
                   defaultValue={b.objection}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -103,7 +135,7 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps) {
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 إجابة
-                <textarea
+                <Textarea
                   name={`benefits_${i}_answer`}
                   defaultValue={b.answer}
                   className="min-h-[50px] rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -116,23 +148,87 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps) {
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         عناصر الثقة (سطر لكل عنصر)
-        <textarea
+        <Textarea
           name="trustLines"
           defaultValue={trustText}
           className="min-h-[70px] rounded-md border border-border bg-background px-2 py-1 text-sm"
         />
       </label>
 
-      <button
-        type="submit"
-        id="hero-form-submit"
-        className="hidden"
-        tabIndex={-1}
-        aria-hidden
-      />
+      {/* ── شريط العملاء ── */}
+      <div className="space-y-3 rounded-md border border-border bg-muted/20 p-3">
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs font-semibold text-muted-foreground">شريط العملاء</p>
+        </div>
+
+        <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
+          عنوان الشريط
+          <Input
+            name="trustBarHeadline"
+            defaultValue={hero.trustBarHeadline ?? ""}
+            placeholder="يثق بنا +١٢٠ نشاط تجاري..."
+            className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+          />
+        </label>
+
+        <div className="space-y-2">
+          {clients.map((client, i) => (
+            <div key={i} className="rounded-md border border-border bg-background p-2 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-semibold text-muted-foreground">عميل {i + 1}</span>
+                <button
+                  type="button"
+                  onClick={() => removeClient(i)}
+                  className="text-[11px] text-destructive hover:underline"
+                >
+                  حذف
+                </button>
+              </div>
+              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
+                اسم العميل
+                <Input
+                  value={client.name}
+                  onChange={(e) => updateClient(i, "name", e.target.value)}
+                  placeholder="آفاق للاستشارات"
+                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
+                رابط الشعار (Cloudinary أو URL)
+                <Input
+                  value={client.logoUrl}
+                  onChange={(e) => updateClient(i, "logoUrl", e.target.value)}
+                  placeholder="https://res.cloudinary.com/..."
+                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+                  dir="ltr"
+                />
+              </label>
+              <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
+                رابط الموقع (اختياري)
+                <Input
+                  value={client.href ?? ""}
+                  onChange={(e) => updateClient(i, "href", e.target.value)}
+                  placeholder="https://example.com"
+                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+                  dir="ltr"
+                />
+              </label>
+            </div>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={addClient}
+          className="text-xs font-semibold text-primary hover:underline"
+        >
+          + إضافة عميل
+        </button>
+      </div>
+
       <ConfirmSaveDialog
-        formId="hero-form"
-        submitButtonId="hero-form-submit"
+        onConfirm={handleSave}
+        pending={isPending}
         triggerLabel="حفظ قسم الهيرو"
         description="سيتم حفظ التغييرات على قسم الهيرو للبلد المحدد. هل أنت متأكد من المتابعة؟"
       />

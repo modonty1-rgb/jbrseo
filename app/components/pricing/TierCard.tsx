@@ -2,6 +2,10 @@
 
 import type { Plan, PricingUI } from "@/app/content/landing/price-section-types";
 import { Icon } from "@/app/components/Icon";
+import { Card } from "@/app/components/ui/card";
+import { Badge } from "@/app/components/ui/badge";
+import { applyPricingUiPlaceholders } from "@/lib/pricing-ui-placeholders";
+import { cn } from "@/lib/utils";
 
 type TierCardProps = {
   plan: Plan;
@@ -12,14 +16,18 @@ type TierCardProps = {
 };
 
 export function TierCard({ plan, annual, ui, currency, href }: TierCardProps) {
+  const mo = plan.price.mo;
   const price = annual ? plan.price.yr : plan.price.mo;
   const priceLabel = `${price.toLocaleString("ar-EG")} ${currency}`;
+  const annualTotal = annual && mo > 0 ? price * 12 : 0;
+  const per18 = annualTotal > 0 ? Math.round(annualTotal / 18) : 0;
 
   return (
-    <article
-      className={`flex h-full flex-col rounded-2xl border border-border bg-card/95 p-5 shadow-sm ${
-        plan.featured ? "ring-2 ring-primary shadow-md" : ""
-      }`}
+    <Card
+      className={cn(
+        "flex h-full flex-col rounded-2xl border border-border bg-card/95 p-5 shadow-sm",
+        plan.featured && "ring-2 ring-primary shadow-md"
+      )}
     >
       <div className="mb-3 flex items-center justify-between gap-2">
         <div className="space-y-1 text-right">
@@ -30,33 +38,84 @@ export function TierCard({ plan, annual, ui, currency, href }: TierCardProps) {
             {plan.persona}
           </p>
         </div>
-        {plan.badge && (
-          <span
-            className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold ${
-              plan.badgeGold
-                ? "bg-amber-100 text-amber-800"
-                : "bg-primary/10 text-primary"
-            }`}
-          >
-            {plan.badge}
-          </span>
-        )}
+        {plan.badge &&
+          (plan.badgeGold ? (
+            <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
+              {plan.badge}
+            </span>
+          ) : (
+            <Badge
+              variant="secondary"
+              className="rounded-full px-2 py-0.5 text-[10px] font-bold bg-primary/10 text-primary hover:bg-primary/15"
+            >
+              {plan.badge}
+            </Badge>
+          ))}
       </div>
 
       <div className="mb-3 border-b border-border/60 pb-3 text-right">
-        <div className="flex items-baseline justify-end gap-1">
-          <span className="text-xl font-black tracking-tight text-foreground tabular-nums">
-            {priceLabel}
-          </span>
-          <span className="text-[11px] text-muted-foreground">{ui.perMonth}</span>
-        </div>
-        <p className="mt-1 text-[11px] text-muted-foreground">
-          {annual ? ui.billingAnnual.replace("{n}", priceLabel).replace("{c}", "") : ui.billingMonthly}
-        </p>
-        {annual && plan.price.yr > 0 && (
-          <p className="mt-0.5 text-[11px] font-medium text-foreground/90">
-            {ui.totalAnnual.replace("{total}", (plan.price.yr * 12).toLocaleString("ar-EG")).replace("{c}", currency)}
-          </p>
+        {annual && annualTotal > 0 ? (
+          <>
+            <p className="text-[11px] line-through text-muted-foreground tabular-nums">
+              {(mo * 12).toLocaleString("ar-EG")} {currency}
+            </p>
+            {(() => {
+              const colon = ui.totalAnnual.indexOf(":");
+              const eyebrow = colon > 0 ? ui.totalAnnual.slice(0, colon).trim() : "";
+              return eyebrow ? (
+                <p className="text-[10px] font-bold text-muted-foreground mt-0.5">{eyebrow}</p>
+              ) : null;
+            })()}
+            <div className="flex items-baseline justify-end gap-1 flex-wrap mt-0.5">
+              <span className="text-2xl font-black tracking-tight text-foreground tabular-nums">
+                {annualTotal.toLocaleString("ar-EG")}
+              </span>
+              <span className="text-xs font-bold text-muted-foreground">{currency}</span>
+            </div>
+            {ui.annualAvgMonthly ? (
+              <p className="mt-1 text-[11px] font-semibold text-foreground/90 tabular-nums">
+                {applyPricingUiPlaceholders(ui.annualAvgMonthly, {
+                  n: price.toLocaleString("ar-EG"),
+                  c: currency,
+                })}
+              </p>
+            ) : (
+              <p className="mt-1 text-[11px] font-semibold text-foreground/90 tabular-nums">
+                {priceLabel}
+                <span className="text-muted-foreground font-medium ms-0.5">{ui.perMonth}</span>
+              </p>
+            )}
+            {per18 > 0 && ui.annualEquiv18 ? (
+              <p className="mt-0.5 text-[10px] text-muted-foreground leading-snug">
+                {applyPricingUiPlaceholders(ui.annualEquiv18, {
+                  n: per18.toLocaleString("ar-EG"),
+                  c: currency,
+                })}
+              </p>
+            ) : null}
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              {applyPricingUiPlaceholders(ui.billingAnnual, {
+                n: price.toLocaleString("ar-EG"),
+                c: currency,
+                total: annualTotal.toLocaleString("ar-EG"),
+              })}
+            </p>
+          </>
+        ) : (
+          <>
+            <div className="flex items-baseline justify-end gap-1">
+              <span className="text-xl font-black tracking-tight text-foreground tabular-nums">
+                {priceLabel}
+              </span>
+              <span className="text-[11px] text-muted-foreground">{ui.perMonth}</span>
+            </div>
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              {applyPricingUiPlaceholders(ui.billingMonthly, {
+                n: price.toLocaleString("ar-EG"),
+                c: currency,
+              })}
+            </p>
+          </>
         )}
       </div>
 
@@ -115,7 +174,7 @@ export function TierCard({ plan, annual, ui, currency, href }: TierCardProps) {
           {plan.cta}
         </a>
       </div>
-    </article>
+    </Card>
   );
 }
 

@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "@/app/components/link";
+import { Card } from "@/app/components/ui/card";
+import { cn } from "@/lib/utils";
 import {
   CALCULATOR_SAVINGS_CARD,
   CALCULATOR_WITH_CARD,
@@ -33,144 +35,128 @@ export default function SavingsCard({
   formatMoney: (n: number) => string;
 }) {
   return (
-    <div className="relative mb-5 overflow-hidden rounded-2xl bg-linear-to-tr from-primary via-primary/80 to-primary p-8 sm:p-10">
-      {/* Radial glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-56"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 50% at 50% 0%, oklch(0.55 0.22 275 / 35%), transparent)",
-        }}
-      />
-
-      {/* Header */}
-      <div className="relative mb-8 text-center">
-        <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[11px] font-extrabold uppercase tracking-[.14em] text-white/50">
-          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success" />
-          مقارنة التكلفة الفعلية
-        </span>
+    <Card className="relative mb-5 rounded-3xl border border-border bg-card p-6 text-foreground shadow-sm sm:p-8">
+      <div className="relative mx-auto mb-6 max-w-xl text-center sm:mb-7">
         <h3
-          className="mt-2 font-black text-white"
-          style={{ fontSize: "clamp(22px,3.5vw,34px)", lineHeight: 1.15 }}
+          className="font-black leading-tight text-foreground"
+          style={{ fontSize: "clamp(22px, 3.5vw, 34px)" }}
         >
-          توفيرك الحقيقي:{" "}
+          {CALCULATOR_SAVINGS_CARD.title}:{" "}
           <span className="text-success">{pct}%</span>
         </h3>
-        <p className="mt-1 text-[11px] text-white/30">
-          {CALCULATOR_SAVINGS_CARD.percentLabel}
-        </p>
       </div>
 
-      {/* Progress bar */}
-      <div className="relative mx-auto mb-8 max-w-sm">
-        <div className="h-3 w-full overflow-hidden rounded-full bg-white/10">
-          <div
-            className="h-full rounded-full bg-linear-to-l from-success to-success/80 transition-all duration-500"
-            style={{
-              width: `${Math.min(pct, 100)}%`,
-            }}
-          />
-        </div>
+      <div className="relative mb-8 overflow-x-auto rounded-2xl border border-border bg-background">
+        <table className="w-full min-w-[280px] border-collapse text-center">
+          <thead>
+            <tr className="border-b border-border bg-muted/40">
+              <th
+                scope="col"
+                className="p-3 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground/80"
+              />
+              <th
+                scope="col"
+                className="p-3 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground"
+              >
+                {CALCULATOR_WITHOUT_CARD.title}
+              </th>
+              <th
+                scope="col"
+                className="p-3 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground"
+              >
+                {CALCULATOR_WITH_CARD.title}
+              </th>
+              <th
+                scope="col"
+                className="p-3 text-[10px] font-extrabold uppercase tracking-wider text-muted-foreground"
+              >
+                {CALCULATOR_SAVINGS_CARD.differenceColumnTitle}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b border-border">
+              <th
+                scope="row"
+                className="bg-muted/25 p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+              >
+                {CALCULATOR_SAVINGS_CARD.yearly}
+              </th>
+              <td
+                className={cn(
+                  "p-4 align-middle text-lg font-black tabular-nums text-destructive sm:text-xl",
+                  "border-s border-border",
+                )}
+              >
+                {formatMoney(totalY)}
+              </td>
+              <td
+                className={cn(
+                  "p-4 align-middle text-lg font-black tabular-nums text-success sm:text-xl",
+                  "border-s border-border",
+                )}
+              >
+                {formatMoney(subY)}
+              </td>
+              <td
+                className={cn(
+                  "bg-success/10 p-4 align-middle text-lg font-black tabular-nums text-success sm:text-xl",
+                  "border-s border-success/25",
+                )}
+              >
+                {formatMoney(saveY)}
+              </td>
+            </tr>
+            <tr>
+              <th
+                scope="row"
+                className="bg-muted/25 p-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+              >
+                {CALCULATOR_SAVINGS_CARD.monthly}
+              </th>
+              <td
+                className={cn(
+                  "p-4 align-middle text-sm font-extrabold tabular-nums text-destructive/90 sm:text-base",
+                  "border-s border-border",
+                )}
+              >
+                {formatMoney(totalM)}
+              </td>
+              <td
+                className={cn(
+                  "p-4 align-middle text-sm font-extrabold tabular-nums text-success/90 sm:text-base",
+                  "border-s border-border",
+                )}
+              >
+                {formatMoney(subM)}
+              </td>
+              <td
+                className={cn(
+                  "bg-success/10 p-4 align-middle text-sm font-extrabold tabular-nums text-success sm:text-base",
+                  "border-s border-success/25",
+                )}
+              >
+                {formatMoney(saveM)}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      {/* 3-column comparison */}
-      <div className="relative mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {/* Without plan */}
-        <div className="rounded-xl border border-white/8 bg-white/5 p-5 text-center">
-          <p className="mb-1 text-[10px] font-extrabold uppercase tracking-widest text-white/40">
-            {CALCULATOR_WITHOUT_CARD.title}
-          </p>
-          <p className="mb-3 text-[9px] text-white/25">
-            {CALCULATOR_SAVINGS_CARD.yearly}
-          </p>
-          <p
-            className="font-black leading-none tabular-nums text-destructive transition-all duration-300"
-            style={{ fontSize: "clamp(22px,3.5vw,36px)" }}
-          >
-            {formatMoney(totalY)}
-          </p>
-          <div className="mt-3 border-t border-white/8 pt-3">
-            <p className="text-[9px] uppercase tracking-wider text-white/30">
-              {CALCULATOR_WITHOUT_CARD.monthly}
-            </p>
-            <p className="text-sm font-extrabold tabular-nums text-destructive/80">
-              {formatMoney(totalM)}
-            </p>
-          </div>
-        </div>
-
-        {/* With plan */}
-        <div className="rounded-xl border border-white/8 bg-white/5 p-5 text-center">
-          <p className="mb-1 text-[10px] font-extrabold uppercase tracking-widest text-white/40">
-            {CALCULATOR_WITH_CARD.title}
-          </p>
-          <p className="mb-3 text-[9px] text-white/25">
-            {CALCULATOR_SAVINGS_CARD.yearly}
-          </p>
-          <p
-            className="font-black leading-none tabular-nums text-success transition-all duration-300"
-            style={{ fontSize: "clamp(22px,3.5vw,36px)" }}
-          >
-            {formatMoney(subY)}
-          </p>
-          <div className="mt-3 border-t border-white/8 pt-3">
-            <p className="text-[9px] uppercase tracking-wider text-white/30">
-              {CALCULATOR_WITH_CARD.monthly}
-            </p>
-            <p className="text-sm font-extrabold tabular-nums text-success/80">
-              {formatMoney(subM)}
-            </p>
-          </div>
-        </div>
-
-        {/* Savings — highlighted */}
-        <div className="relative rounded-xl border border-success/30 bg-success/15 p-5 text-center ring-1 ring-success/20">
-          <span className="absolute -top-2.5 inset-x-0 mx-auto w-fit rounded-full bg-success px-3 py-0.5 text-[9px] font-extrabold uppercase tracking-widest text-black">
-            توفيرك الفعلي
-          </span>
-          <p className="mb-1 mt-1 text-[10px] font-extrabold uppercase tracking-widest text-white/40">
-            الفرق (التوفير)
-          </p>
-          <p className="mb-3 text-[9px] text-white/25">
-            {CALCULATOR_SAVINGS_CARD.yearly}
-          </p>
-          <p
-            className="font-black leading-none tabular-nums text-success transition-all duration-300"
-            style={{ fontSize: "clamp(22px,3.5vw,36px)" }}
-          >
-            {formatMoney(saveY)}
-          </p>
-          <div className="mt-3 border-t border-[#86efac]/20 pt-3">
-            <p className="text-[9px] uppercase tracking-wider text-white/30">
-              {CALCULATOR_SAVINGS_CARD.monthly}
-            </p>
-            <p className="text-sm font-extrabold tabular-nums text-success">
-              {formatMoney(saveM)}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* CTAs */}
-      <div className="relative flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <div className="relative flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:justify-center">
         <Link
           href={ctaLink}
-          className="inline-flex items-center gap-2.5 rounded-[14px] bg-white px-8 py-3.5 text-[15px] font-black text-primary shadow-lg transition-all hover:-translate-y-0.5 hover:shadow-xl"
+          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-primary px-8 py-3.5 text-[15px] font-black text-primary-foreground shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-lg"
         >
           {ctaLabel}
         </Link>
         <Link
           href={featuresLink}
-          className="inline-flex items-center gap-2 rounded-[14px] border border-white/20 bg-white/10 px-6 py-3.5 text-[14px] font-bold text-white/80 transition-all hover:bg-white/15 hover:text-white"
+          className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-background px-6 py-3.5 text-[14px] font-bold text-foreground transition-colors hover:bg-muted"
         >
           {CALCULATOR_SAVINGS_CARD.secondaryCta}
         </Link>
       </div>
-
-      <p className="relative mt-5 text-center text-[11px] text-white/25">
-        {CALCULATOR_SAVINGS_CARD.footnote}
-      </p>
-    </div>
+    </Card>
   );
 }

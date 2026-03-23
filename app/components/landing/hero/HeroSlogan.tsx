@@ -1,4 +1,10 @@
-export function HeroSlogan({ tagline }: { tagline: string }) {
+import type { ReactElement } from "react";
+
+type HeroSloganProps = {
+  tagline: string;
+};
+
+export function HeroSlogan({ tagline }: HeroSloganProps): ReactElement {
   return (
     <div className="landing-reveal-content mt-5 mb-4 inline-flex items-center gap-3">
       <span

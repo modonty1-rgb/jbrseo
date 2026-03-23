@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import type { StaticLanding } from "@/app/content/landing/types";
 import Hero from "@/app/components/landing/hero/Hero";
+import { HeroTrustBar } from "@/app/components/landing/hero/HeroTrustBar";
 import WhyNowCalculator from "@/app/components/landing/Calculator/Calculator";
 import HowItWorks from "@/app/components/landing/HowItWorks/HowItWorks";
 import Outcomes from "@/app/components/landing/Outcomes/Outcomes";
@@ -11,7 +12,10 @@ import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
 } from "@/lib/country-config";
+import { isAnnualFromBillingParam } from "@/lib/billing-search-param";
 import { getLandingContent } from "@/lib/getLandingContent";
+import { buildLandingOgMetadata } from "@/lib/landing-open-graph";
+import { resolveCanonicalForMetadata, resolveSiteOriginFromSeoCanonical } from "@/lib/seo-meta";
 import { getWhatsAppLink } from "@/lib/site-links";
 
 const sectionFallback = () => <section className="min-h-[200px]" aria-hidden />;
@@ -20,7 +24,10 @@ const SocialProof = dynamic(
   () => import("@/app/components/landing/SocialProof/SocialProof"),
   { loading: sectionFallback }
 );
-import ModontyPricing from "@/app/components/landing/price-section/price-section";
+const ModontyPricing = dynamic(
+  () => import("@/app/components/landing/price-section/price-section"),
+  { loading: sectionFallback }
+);
 const FAQ = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel?: string; whatsappNumber?: string }>(
   () => import("@/app/components/landing/FAQ/FAQ"),
   { loading: sectionFallback }
@@ -30,12 +37,8 @@ const FinalCTA = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/
   { loading: sectionFallback }
 );
 
-function toAbsoluteUrl(pathOrUrl: string): string {
-  if (!pathOrUrl) return "";
-  if (pathOrUrl.startsWith("http://") || pathOrUrl.startsWith("https://")) return pathOrUrl;
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jbrseo.com";
-  return pathOrUrl.startsWith("/") ? `${base}${pathOrUrl}` : `${base}/${pathOrUrl}`;
-}
+const HOME_SA_DESCRIPTION =
+  "مدونتي — منصة المحتوى العربي. مقالات تتصدر جوجل، صفحة شركتك في الشبكة، وقاعدة Leads مصنّفة — بدون كتابة حرف واحد.";
 
 export async function generateMetadata({
   params,
@@ -50,36 +53,29 @@ export async function generateMetadata({
   const countryCode = getCountryCodeFromSlug(slug as "sa" | "eg");
   const content = await getLandingContent(countryCode);
   const { seo: s } = content;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jbrseo.com";
-  const canonical = `${siteUrl.replace(/\/$/, "")}/${slug}`;
-  const ogImageUrl = s.ogImage ? toAbsoluteUrl(s.ogImage) : "";
-  const twitterImageUrl = s.twitterImage ? toAbsoluteUrl(s.twitterImage) : ogImageUrl;
-  const ogImages = ogImageUrl
-    ? [{ url: ogImageUrl, width: parseInt(s.ogImageWidth, 10) || 1200, height: parseInt(s.ogImageHeight, 10) || 630, alt: s.ogTitle || s.title }]
-    : undefined;
-  const twitterImages = twitterImageUrl ? [twitterImageUrl] : undefined;
+  const envSiteBase =
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "").trim() || "https://www.jbrseo.com";
+  const siteBase = resolveSiteOriginFromSeoCanonical(s.canonical, envSiteBase);
+  const fallbackCanonical = `${siteBase}/${slug}`;
+  const canonical = resolveCanonicalForMetadata(s.canonical, fallbackCanonical);
+  const baseMeta = buildLandingOgMetadata({
+    seo: s,
+    canonical,
+    siteBase,
+    documentTitle: s.title,
+  });
+  if (slug !== "sa") {
+    return baseMeta;
+  }
   return {
-    title: s.title,
-    description: s.description,
-    alternates: {
-      canonical,
-      languages: { ar: canonical },
-    },
-    openGraph: {
-      title: s.ogTitle || s.title,
-      description: s.ogDescription || s.description,
-      url: canonical,
-      locale: s.ogLocale || "ar_SA",
-      type: (s.ogType as "website") || "website",
-      siteName: s.ogSiteName || "JBRSEO",
-      images: ogImages,
-    },
-    twitter: {
-      card: (s.twitterCard as "summary_large_image") || "summary_large_image",
-      title: s.twitterTitle || s.title,
-      description: s.twitterDescription || s.description,
-      images: twitterImages,
-    },
+    ...baseMeta,
+    description: HOME_SA_DESCRIPTION,
+    openGraph: baseMeta.openGraph
+      ? { ...baseMeta.openGraph, description: HOME_SA_DESCRIPTION }
+      : baseMeta.openGraph,
+    twitter: baseMeta.twitter
+      ? { ...baseMeta.twitter, description: HOME_SA_DESCRIPTION }
+      : baseMeta.twitter,
   };
 }
 
@@ -94,7 +90,7 @@ export default async function CountryHome({
 }) {
   const { country: raw } = await params;
   const sp = await searchParams;
-  const annual = sp?.billing === "annual";
+  const annual = isAnnualFromBillingParam(sp?.billing);
   const slug = raw?.toLowerCase();
   if (!isSupportedCountrySlug(slug)) {
     return null;
@@ -103,9 +99,11 @@ export default async function CountryHome({
   const countryCode = getCountryCodeFromSlug(countrySlug);
   const basePath = `/${countrySlug}`;
   const ctaLink = `${basePath}/signup`;
+  const pricingCtaLink = `${basePath}#pricing`;
+  const pricingCtaLabel = "شوف الأسعار والخطة المناسبة";
   const pricingHrefBase = `${basePath}/pricing`;
   const signupHrefBase = ctaLink;
-  const outcomesCtaLink = `${basePath}#pricing`;
+  const outcomesCtaLink = pricingCtaLink;
 
   const [content, pricingSALanding, pricingEGLanding] = await Promise.all([
     getLandingContent(countryCode),
@@ -136,16 +134,17 @@ export default async function CountryHome({
     <>
       <LandingJsonLd content={content} />
       <section className="relative">
-        <Hero content={content} staticLanding={mergedStaticLanding} country={countryCode} ctaLink={ctaLink} />
+        <Hero content={content} staticLanding={mergedStaticLanding} country={countryCode} ctaLink={pricingCtaLink} ctaLabel={pricingCtaLabel} />
+        <HeroTrustBar hero={mergedStaticLanding.hero} />
       </section>
       <section className="relative">
-        <WhyNowCalculator ctaLabel={ctaLabel} ctaLink={ctaLink} />
+        <HowItWorks staticLanding={mergedStaticLanding} ctaLabel={pricingCtaLabel} ctaLink={pricingCtaLink} />
       </section>
       <section className="relative">
-        <HowItWorks staticLanding={mergedStaticLanding} ctaLabel={ctaLabel} ctaLink={ctaLink} />
+        <WhyNowCalculator ctaLabel={pricingCtaLabel} ctaLink={pricingCtaLink} />
       </section>
       <section className="relative">
-        <Outcomes staticLanding={mergedStaticLanding} ctaLabel={ctaLabel} ctaLink={outcomesCtaLink} />
+        <Outcomes staticLanding={mergedStaticLanding} ctaLabel={pricingCtaLabel} ctaLink={outcomesCtaLink} />
       </section>
       <section className="relative">
         <SocialProof staticLanding={mergedStaticLanding} />

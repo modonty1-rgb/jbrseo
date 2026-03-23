@@ -11,8 +11,13 @@ const WhatsAppIcon = () => (
 
 const DEFAULT_CTA = "تحدث معنا على واتساب";
 
+const LEGACY_FAQ_H2 =
+  "إجابات سريعة وواضحة عن مرحلة التأسيس وكيفية السيطرة على نتائج بحث جوجل";
+
 export default function FAQ({ staticLanding, country, ctaLabel = DEFAULT_CTA, whatsappNumber }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string; whatsappNumber?: string }) {
   const f = staticLanding.faq;
+  const faqTitle = f.title.trim() === LEGACY_FAQ_H2 ? "الأسئلة الشائعة" : f.title;
+  const faqSubtitle = f.title.trim() === LEGACY_FAQ_H2 ? "" : f.subtitle;
   const waLink = getWhatsAppLink(country, whatsappNumber);
   return (
     <section
@@ -57,8 +62,13 @@ export default function FAQ({ staticLanding, country, ctaLabel = DEFAULT_CTA, wh
             className="landing-reveal-title font-black tracking-[-0.03em] text-foreground"
             style={{ fontSize: "clamp(28px, 3.6vw, 44px)", lineHeight: 1.1 }}
           >
-            {f.title}{" "}
-            <span className="text-accent">{f.subtitle}</span>
+            {faqTitle}
+            {faqSubtitle ? (
+              <>
+                {" "}
+                <span className="text-accent">{faqSubtitle}</span>
+              </>
+            ) : null}
           </h2>
         </div>
 

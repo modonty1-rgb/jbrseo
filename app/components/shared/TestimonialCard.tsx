@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { Card } from "@/app/components/ui/card";
 
 type TestimonialCardProps = {
   name: string;
@@ -18,7 +19,8 @@ export function TestimonialCard({
   imageLoading = "lazy",
 }: TestimonialCardProps) {
   return (
-    <article
+    <Card
+      role="article"
       className="group rounded-2xl border border-border border-t-2 border-t-accent bg-card p-6 shadow-sm transition-shadow duration-200 hover:shadow-md sm:p-8"
       style={{ scrollMarginTop: "1rem" }}
     >
@@ -61,6 +63,6 @@ export function TestimonialCard({
           </blockquote>
         </div>
       </div>
-    </article>
+    </Card>
   );
 }

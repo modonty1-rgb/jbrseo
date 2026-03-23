@@ -3,6 +3,9 @@
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateFooterSection } from "@/app/actions/content-sections";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 
 type FooterSectionFormProps = {
@@ -39,23 +42,24 @@ export function FooterSectionForm({ section, country }: FooterSectionFormProps) 
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         الشعار (Tagline)
-        <input
+        <Textarea
           name="tagline"
           defaultValue={section.tagline}
-          className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+          rows={3}
+          className="min-h-18 rounded-md border border-border bg-background px-2 py-2 text-sm"
         />
       </label>
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         الوصف
-        <input
+        <Input
           name="desc"
           defaultValue={section.desc}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
         />
       </label>
 
-      <button
+      <Button
         type="submit"
         id="footer-form-submit"
         className="hidden"

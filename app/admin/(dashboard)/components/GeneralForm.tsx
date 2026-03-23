@@ -3,7 +3,9 @@
 import { updateSiteSettingsFormData } from "@/app/actions/landing";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { SiteSettingsJson } from "@/lib/site-settings.types";
-import { inputBase, labelClass } from "./AdminFormShared";
+import { Label } from "@/app/components/ui/label";
+import { Input } from "@/app/components/ui/input";
+import { Separator } from "@/app/components/ui/separator";
 import { ConfirmSaveDialog } from "./ConfirmSaveDialog";
 
 export function GeneralForm({
@@ -24,34 +26,37 @@ export function GeneralForm({
       <input type="hidden" name="country" value={country} />
       {redirect && <input type="hidden" name="redirect" value={redirect} />}
       <div className="flex flex-col gap-1.5">
-        <label className={labelClass} htmlFor="ctaLabel">
+        <Label htmlFor="ctaLabel" className="text-xs font-medium text-muted-foreground">
           نص زر الدعوة الرئيسي
-        </label>
-        <input
+        </Label>
+        <Input
           id="ctaLabel"
           type="text"
           name="ctaLabel"
           defaultValue={site.ctaLabel ?? "ابدأ مجاناً — بدون بطاقة"}
           placeholder="ابدأ مجاناً — بدون بطاقة"
-          className={inputBase}
           dir="rtl"
         />
         <p className="mt-1 text-xs text-muted-foreground">يُستخدم في الهيدر، البطل، وأزرار الدعوة في كل الأقسام.</p>
       </div>
-      <div className="flex flex-col gap-1.5 border-t border-border pt-4">
-        <label className={labelClass} htmlFor="whatsappNumber">
+      <Separator className="my-1" />
+      <div className="flex flex-col gap-1.5 pt-2">
+        <Label htmlFor="whatsappNumber" className="text-xs font-medium text-muted-foreground">
           رقم واتساب (اختياري)
-        </label>
-        <input
+        </Label>
+        <Input
           id="whatsappNumber"
           type="text"
           name="whatsappNumber"
           defaultValue={site.whatsappNumber ?? ""}
           placeholder="966500000000 أو 201000000000"
-          className={inputBase}
           dir="ltr"
         />
-        <p className="mt-1 text-xs text-muted-foreground">يُستخدم في روابط واتساب في الموقع. اتركه فارغاً لاستخدام الرقم الافتراضي.</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          يُستخدم في روابط واتساب في الموقع. اتركه فارغاً أو عيّن{" "}
+          <code className="rounded bg-muted px-1 text-[11px]">NEXT_PUBLIC_WHATSAPP_DEFAULT_SA</code> /{" "}
+          <code className="rounded bg-muted px-1 text-[11px]">EG</code> في البيئة.
+        </p>
       </div>
       <ConfirmSaveDialog
         formId="general-settings-form"

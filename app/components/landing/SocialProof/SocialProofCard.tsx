@@ -4,6 +4,7 @@ import type { Testimonial } from "@/app/content/landing/types";
 import { Avatar } from "@/app/components/Avatar";
 import { Icon } from "@/app/components/Icon";
 import { SocialProofVideo } from "./SocialProofVideo";
+import { Card } from "@/app/components/ui/card";
 
 type SocialProofCardProps = {
   testimonial: Testimonial;
@@ -18,7 +19,7 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
       ? "https://" + effectiveSiteLink
       : effectiveSiteLink;
   return (
-    <div
+    <Card
       className="relative overflow-hidden rounded-[20px] border border-border bg-card p-5 shadow-[0_4px_24px_color-mix(in_oklch,var(--foreground)_5%,transparent)] sm:p-8"
       style={{ animation: "slide-in-up .35s ease both" }}
     >
@@ -94,6 +95,6 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
           </a>
         ) : null}
       </div>
-    </div>
+    </Card>
   );
 }

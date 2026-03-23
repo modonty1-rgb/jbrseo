@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Card } from "@/app/components/ui/card";
 
 type ActivityType = "view" | "question" | "comment" | "share" | "like";
 
@@ -46,7 +47,7 @@ const filters = [
 export function ActivityDashboardBlock(): ReactNode {
   return (
     <div className="mx-auto mb-6 max-w-[960px]" dir="rtl">
-      <div className="overflow-hidden rounded-2xl border border-border bg-card">
+      <Card className="overflow-hidden rounded-2xl border border-border bg-card p-0 shadow-sm">
 
         {/* ── Top Bar ── */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-muted/40 px-7 py-4">
@@ -135,7 +136,7 @@ export function ActivityDashboardBlock(): ReactNode {
           <span className="rounded-full border border-border bg-background px-3.5 py-1.5 text-[11px] font-bold text-muted-foreground">٨ أحداث · اليوم</span>
         </div>
 
-      </div>
+      </Card>
     </div>
   );
 }

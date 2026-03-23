@@ -4,6 +4,9 @@ import { useState } from "react";
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateTeamSection } from "@/app/actions/content-sections";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 
 type TeamSectionFormProps = {
@@ -38,26 +41,27 @@ function MemberFields({ prefix, member, onUpdate, onRemove, showRemove }: Member
       <div className="flex items-start justify-between gap-2">
         <label className="flex-1 flex flex-col gap-1 text-[11px] font-semibold text-muted-foreground">
           الاسم
-          <input
+          <Input
             name={`${prefix}_name`}
             value={name}
             onChange={(e) => onUpdate("name", e.target.value)}
             className="rounded-md border border-border bg-background px-2 py-1 text-xs"
           />
         </label>
-        {showRemove && onRemove && (
-          <button
+        {showRemove && onRemove ? (
+          <Button
             type="button"
+            variant="outline"
             onClick={onRemove}
-            className="mt-5 inline-flex items-center rounded-md border border-destructive/40 bg-destructive/5 px-2 py-1 text-[10px] font-semibold text-destructive hover:bg-destructive/10"
+            className="mt-5 h-auto border-destructive/40 bg-destructive/5 px-2 py-1 text-[10px] font-semibold text-destructive hover:bg-destructive/10"
           >
             حذف
-          </button>
-        )}
+          </Button>
+        ) : null}
       </div>
       <label className="flex flex-col gap-1 text-[11px] font-semibold text-muted-foreground">
         الدور
-        <input
+        <Input
           name={`${prefix}_role`}
           value={role}
           onChange={(e) => onUpdate("role", e.target.value)}
@@ -66,7 +70,7 @@ function MemberFields({ prefix, member, onUpdate, onRemove, showRemove }: Member
       </label>
       <label className="flex flex-col gap-1 text-[11px] font-semibold text-muted-foreground">
         وصف قصير
-        <textarea
+        <Textarea
           name={`${prefix}_bio`}
           value={bio}
           onChange={(e) => onUpdate("bio", e.target.value)}
@@ -75,7 +79,7 @@ function MemberFields({ prefix, member, onUpdate, onRemove, showRemove }: Member
       </label>
       <label className="flex flex-col gap-1 text-[11px] font-semibold text-muted-foreground">
         صورة العضو (رابط)
-        <input
+        <Input
           name={`${prefix}_avatarUrl`}
           value={avatarUrl}
           onChange={(e) => onUpdate("avatarUrl", e.target.value)}
@@ -85,7 +89,7 @@ function MemberFields({ prefix, member, onUpdate, onRemove, showRemove }: Member
       </label>
       <label className="flex flex-col gap-1 text-[11px] font-semibold text-muted-foreground">
         لون الأفاتار عند عدم وجود صورة (مثل from-primary/70 to-primary)
-        <input
+        <Input
           name={`${prefix}_avatarColor`}
           value={avatarColor}
           onChange={(e) => onUpdate("avatarColor", e.target.value)}
@@ -188,13 +192,14 @@ export function TeamSectionForm({ section, country }: TeamSectionFormProps) {
       <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-sm font-semibold text-muted-foreground">الفريق الأساسي</h2>
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={addCoreMember}
-            className="inline-flex items-center rounded-md border border-primary/40 bg-primary/5 px-3 py-1 text-[11px] font-semibold text-primary hover:bg-primary/10"
+            className="h-auto border-primary/40 bg-primary/5 px-3 py-1 text-[11px] font-semibold text-primary hover:bg-primary/10"
           >
             إضافة عضو أساسي
-          </button>
+          </Button>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {coreMembers.map((member, index) => (
@@ -213,13 +218,14 @@ export function TeamSectionForm({ section, country }: TeamSectionFormProps) {
       <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-sm font-semibold text-muted-foreground">فريق التنفيذ والدعم</h2>
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={addExecMember}
-            className="inline-flex items-center rounded-md border border-primary/40 bg-primary/5 px-3 py-1 text-[11px] font-semibold text-primary hover:bg-primary/10"
+            className="h-auto border-primary/40 bg-primary/5 px-3 py-1 text-[11px] font-semibold text-primary hover:bg-primary/10"
           >
             إضافة عضو تنفيذ
-          </button>
+          </Button>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {execMembers.map((member, index) => (
@@ -235,7 +241,7 @@ export function TeamSectionForm({ section, country }: TeamSectionFormProps) {
         </div>
       </div>
 
-      <button
+      <Button
         type="submit"
         id="team-form-submit"
         className="hidden"

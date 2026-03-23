@@ -2,8 +2,10 @@ import type { PricingContent } from "@/app/content/landing/price-section-types";
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { getWhatsAppLink } from "@/lib/site-links";
+import { buildSignupHrefWithPlanId } from "@/lib/signup-href";
 import { PricingBillingSection } from "@/app/components/pricing/PricingBillingSection";
 import { PricingFaqExcerpt } from "@/app/components/pricing/PricingFaqExcerpt";
+import { Card } from "@/app/components/ui/card";
 
 type Props = {
   pricing: PricingContent;
@@ -28,7 +30,13 @@ export function PricingPageShell({
   const currency = country === "EG" ? "ج.م" : "ر.س";
   const featuredPlan =
     PLANS.find((p) => p.featured) ?? PLANS[1] ?? PLANS[0];
-  const primaryHref = `${signupHrefBase}?plan=${featuredPlan.id}`;
+  const primaryHref = buildSignupHrefWithPlanId(
+    signupHrefBase,
+    featuredPlan.id,
+    true,
+    featuredPlan.price.mo,
+    featuredPlan.price.yr
+  );
   const secondaryHref = whatsappHref ?? getWhatsAppLink(country);
   const safeHighlight =
     highlightPlanId && PLANS.some((p) => p.id === highlightPlanId)
@@ -36,7 +44,7 @@ export function PricingPageShell({
       : null;
 
   return (
-    <main className="bg-background text-foreground">
+    <div className="bg-background text-foreground">
       <section className="border-b border-border bg-card/60">
         <div className="mx-auto flex max-w-4xl flex-col items-center px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">
@@ -104,7 +112,7 @@ export function PricingPageShell({
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-border bg-card/80 px-4 py-4 text-center">
+        <Card className="mt-10 flex flex-col items-center gap-4 rounded-2xl border border-border bg-card/80 px-4 py-4 text-center shadow-sm">
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
             {UI.trustTitle}
           </p>
@@ -123,10 +131,10 @@ export function PricingPageShell({
             <p className="font-semibold">{BOTTOM_CTA.headline}</p>
             <p className="mt-1 whitespace-pre-line">{BOTTOM_CTA.subheadline}</p>
           </div>
-        </div>
+        </Card>
 
         <PricingFaqExcerpt faq={faq} />
       </section>
-    </main>
+    </div>
   );
 }

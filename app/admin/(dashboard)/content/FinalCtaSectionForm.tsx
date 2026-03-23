@@ -3,6 +3,9 @@
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateFinalCtaSection } from "@/app/actions/content-sections";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 
 type FinalCtaSectionFormProps = {
@@ -42,7 +45,7 @@ export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormPro
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         اسم القسم
-        <input
+        <Input
           name="eyebrow"
           defaultValue={section.eyebrow}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -52,7 +55,7 @@ export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormPro
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان ١
-          <input
+          <Input
             name="title1"
             defaultValue={section.title1}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -60,7 +63,7 @@ export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormPro
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان ٢
-          <input
+          <Input
             name="title2"
             defaultValue={section.title2}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -70,7 +73,7 @@ export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormPro
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         العنوان الفرعي
-        <input
+        <Input
           name="subtitle"
           defaultValue={section.subtitle}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -80,7 +83,7 @@ export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormPro
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           إجمالي المقاعد
-          <input
+          <Input
             name="seatsTotal"
             defaultValue={String(section.seats?.total ?? 0)}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -88,7 +91,7 @@ export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormPro
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           المقاعد المحجوزة
-          <input
+          <Input
             name="seatsTaken"
             defaultValue={String(section.seats?.taken ?? 0)}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -98,7 +101,7 @@ export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormPro
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         الفوائد (سطر لكل فائدة)
-        <textarea
+        <Textarea
           name="benefitsLines"
           defaultValue={benefitsText}
           className="min-h-[70px] rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -107,14 +110,14 @@ export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormPro
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         نص زر واتساب / الدعوة
-        <input
+        <Input
           name="wa"
           defaultValue={section.wa}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
         />
       </label>
 
-      <button
+      <Button
         type="submit"
         id="final-cta-form-submit"
         className="hidden"

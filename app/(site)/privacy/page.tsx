@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
+import { LegalMarkdownArticle } from "@/app/components/legal/LegalMarkdownArticle";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 
@@ -39,11 +40,7 @@ export default async function PrivacyPage() {
             </p>
           )}
         </header>
-        <article className="prose prose-invert max-w-none text-right prose-p:leading-loose prose-p:text-sm">
-          {body.split("\n\n").map((para, idx) => (
-            <p key={idx}>{para}</p>
-          ))}
-        </article>
+        <LegalMarkdownArticle content={body} />
       </section>
     </main>
   );

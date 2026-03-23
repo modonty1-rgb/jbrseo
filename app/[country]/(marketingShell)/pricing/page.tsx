@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { PricingPageShell } from "@/app/components/pricing/PricingPageShell";
+import { DEFAULT_OG_IMAGE_URL } from "@/lib/constants";
 import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
@@ -21,21 +22,29 @@ export async function generateMetadata({
   const countryCode = getCountryCodeFromSlug(slug as "sa" | "eg");
   const landing = await getStaticLandingWithOverrides(countryCode);
   const { title, description } = landing.pricingPage;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jbrseo.com";
-  const canonical = `${siteUrl}/${slug}/pricing`;
+  const siteBase =
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "").trim() || "https://www.jbrseo.com";
+  const canonical = `${siteBase}/${slug}/pricing`;
+  const ogImages = [{ url: DEFAULT_OG_IMAGE_URL, width: 1200, height: 630, alt: title }];
 
   return {
     title,
     description,
-    alternates: { canonical },
+    alternates: { canonical, languages: { ar: canonical } },
     openGraph: {
       title,
       description,
       url: canonical,
+      type: "website",
+      locale: "ar_SA",
+      siteName: "JBRSEO",
+      images: ogImages,
     },
     twitter: {
+      card: "summary_large_image",
       title,
       description,
+      images: [DEFAULT_OG_IMAGE_URL],
     },
   };
 }

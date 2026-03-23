@@ -1,4 +1,5 @@
 import type { StaticLanding } from "@/app/content/landing/types";
+import { Card } from "@/app/components/ui/card";
 
 type Props = {
   faq: StaticLanding["faq"];
@@ -20,20 +21,19 @@ export function PricingFaqExcerpt({ faq }: Props) {
       </h2>
       <div className="space-y-2">
         {items.map((item, idx) => (
-          <details
-            key={idx}
-            className="rounded-xl border border-border bg-card/90 px-3 py-2 text-[13px]"
-          >
-            <summary className="cursor-pointer list-none font-semibold text-foreground flex items-center justify-between gap-2">
-              <span>{item.q}</span>
-              <span aria-hidden className="text-xs text-muted-foreground">
-                +
-              </span>
-            </summary>
-            <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">
-              {item.a}
-            </p>
-          </details>
+          <Card key={idx} className="rounded-xl border-border bg-card/90 p-0 shadow-sm">
+            <details className="px-3 py-2 text-[13px]">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-2 font-semibold text-foreground">
+                <span>{item.q}</span>
+                <span aria-hidden className="text-xs text-muted-foreground">
+                  +
+                </span>
+              </summary>
+              <p className="mt-2 text-[12px] leading-relaxed text-muted-foreground">
+                {item.a}
+              </p>
+            </details>
+          </Card>
         ))}
       </div>
     </section>

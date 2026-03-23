@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/app/actions/auth";
+import { parseSignupFormData, signupSchema } from "@/app/actions/subscriber-signup-schema";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\+?\d[\d\s-]{7,14}$/;
@@ -13,31 +14,31 @@ function assertCountry(value: string): asserts value is "SA" | "EG" {
   }
 }
 
-export type CreateSubscriberResult = { success: true } | { success: false; error: string };
+export type CreateSubscriberResult =
+  | { success: true }
+  | { success: false; error: string; fieldErrors?: Record<string, string[] | undefined> };
 
 export async function createSubscriber(formData: FormData): Promise<CreateSubscriberResult> {
-  const contactName = (formData.get("name") as string)?.trim();
-  const email = (formData.get("email") as string)?.trim();
-  const phone = (formData.get("phone") as string)?.trim();
-  const businessName = (formData.get("businessName") as string)?.trim() || null;
-  const businessType = (formData.get("businessType") as string)?.trim() || null;
-  const planName = (formData.get("planName") as string)?.trim() ?? "";
-  const planIndexRaw = formData.get("planIndex");
-  const planIndex =
-    planIndexRaw !== null && planIndexRaw !== "" ? parseInt(String(planIndexRaw), 10) : null;
-  const country = (formData.get("country") as string)?.trim() ?? "SA";
-  const isAnnual = formData.get("isAnnual") === "true" || formData.get("isAnnual") === "on";
+  const raw = parseSignupFormData(formData);
+  const validated = signupSchema.safeParse(raw);
+  if (!validated.success) {
+    return {
+      success: false,
+      error: "يرجى تصحيح الحقول",
+      fieldErrors: validated.error.flatten().fieldErrors,
+    };
+  }
 
-  if (!contactName) {
-    return { success: false, error: "يرجى إدخال اسمك" };
-  }
-  if (!email || !EMAIL_REGEX.test(email)) {
-    return { success: false, error: "يرجى إدخال بريد إلكتروني صالح" };
-  }
-  if (!phone || !PHONE_REGEX.test(phone)) {
-    return { success: false, error: "يرجى إدخال رقم جوال صالح" };
-  }
-  assertCountry(country);
+  const v = validated.data;
+  const contactName = v.name;
+  const email = v.email;
+  const phone = v.phone;
+  const businessName = v.businessName ?? null;
+  const businessType = v.businessType ?? null;
+  const planName = v.planName;
+  const planIndex = v.plan;
+  const country = v.country;
+  const isAnnual = v.isAnnual;
 
   try {
     await prisma.subscriber.create({

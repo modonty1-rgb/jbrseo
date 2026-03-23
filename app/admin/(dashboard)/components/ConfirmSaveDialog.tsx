@@ -15,12 +15,13 @@ import {
 } from "@/app/components/ui/alert-dialog";
 
 type ConfirmSaveDialogProps = {
-  formId: string;
+  formId?: string;
   triggerLabel: string;
   confirmLabel?: string;
   description: ReactNode;
   pending?: boolean;
   submitButtonId?: string;
+  onConfirm?: () => void;
 };
 
 export function ConfirmSaveDialog({
@@ -30,15 +31,18 @@ export function ConfirmSaveDialog({
   description,
   pending = false,
   submitButtonId,
+  onConfirm,
 }: ConfirmSaveDialogProps) {
   const triggerText = pending ? "جاري الحفظ..." : triggerLabel;
   const confirmText = pending ? "جارٍ الحفظ..." : confirmLabel ?? "تأكيد الحفظ";
 
   const handleConfirm = () => {
-    if (submitButtonId) {
+    if (onConfirm) {
+      onConfirm();
+    } else if (submitButtonId) {
       document.getElementById(submitButtonId)?.click();
     } else {
-      (document.getElementById(formId) as HTMLFormElement | null)?.requestSubmit();
+      (document.getElementById(formId!) as HTMLFormElement | null)?.requestSubmit();
     }
   };
 

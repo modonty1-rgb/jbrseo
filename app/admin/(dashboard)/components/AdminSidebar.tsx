@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "@/app/components/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { ADMIN_NAV, COUNTRIES, SIDEBAR_GROUPS } from "../_config";
+import { Button } from "@/app/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const LABEL_BY_HREF = Object.fromEntries(ADMIN_NAV.map((n) => [n.href, n.label]));
@@ -100,17 +101,18 @@ export function AdminSidebar() {
             <div key={group.label} className="pt-2">
               {isCollapsible && toggleOpen ? (
                 <>
-                  <button
+                  <Button
                     type="button"
+                    variant="ghost"
                     onClick={toggleOpen}
-                    className="mb-1 flex w-full items-center justify-between rounded-md px-3 py-1.5 text-left text-xs font-semibold uppercase tracking-wider text-primary hover:bg-primary/10 hover:text-primary"
+                    className="mb-1 h-auto w-full justify-between rounded-md px-3 py-1.5 text-start text-xs font-semibold uppercase tracking-wider text-primary hover:bg-primary/10 hover:text-primary"
                     aria-expanded={isOpen}
                   >
                     {group.label}
                     <span className="text-[10px]" aria-hidden>
                       {isOpen ? "▼" : "◀"}
                     </span>
-                  </button>
+                  </Button>
                   {isOpen && (
                     <div className="flex flex-col gap-0.5">
                       {group.hrefs.map((href) => {

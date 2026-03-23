@@ -6,12 +6,12 @@ import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/app/actions/auth";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import {
-  DEFAULT_SITE_SETTINGS_JSON,
   type GlobalSiteSettings,
   type SiteSettingsSeo,
 } from "@/lib/site-settings.types";
 import type { Prisma } from "@prisma/client";
-import { getLandingSectionOverride, upsertLandingSection } from "@/lib/landing-sections";
+import { upsertLandingSection } from "@/lib/landing-sections";
+import { META_DESCRIPTION_MAX_CHARS } from "@/lib/seo-meta";
 
 const ALLOWED_COUNTRIES: SupportedCountry[] = ["SA", "EG"];
 
@@ -45,30 +45,31 @@ export async function getGlobalSiteSettings(): Promise<GlobalSiteSettings | null
   };
 }
 
-const SEO_FORM_KEYS = [
-  "title", "description", "canonical", "ogLocale", "ogTitle", "ogDescription",
-  "ogImage", "ogImageWidth", "ogImageHeight", "ogType", "ogSiteName",
-  "twitterCard", "twitterTitle", "twitterDescription", "twitterImage",
-] as const;
-
 export async function updateSeoFormData(formData: FormData) {
   if (!(await isAdmin())) return;
   const country = formData.get("country") as string;
   if (!country) return;
   assertCountry(country);
-  const currentRaw = await getLandingSectionOverride(country as SupportedCountry, "seo");
-  const current: SiteSettingsSeo = currentRaw && typeof currentRaw === "object" && !Array.isArray(currentRaw)
-    ? { ...DEFAULT_SITE_SETTINGS_JSON.seo, ...(currentRaw as Record<string, string>) }
-    : { ...DEFAULT_SITE_SETTINGS_JSON.seo };
-  const seo = { ...current };
-  for (const key of SEO_FORM_KEYS) {
-    (seo as Record<string, string>)[key] = (formData.get(key) as string)?.trim() ?? "";
+  const redirectBase = (formData.get("redirect") as string)?.trim();
+  const description = (formData.get("description") as string)?.trim() ?? "";
+  if (description.length > META_DESCRIPTION_MAX_CHARS) {
+    const r = redirectBase ?? `/admin/settings/seo?country=${country}`;
+    redirect(
+      `${r}${r.includes("?") ? "&" : "?"}error=1&reason=seo_description_max`,
+    );
   }
+  const seo: SiteSettingsSeo = {
+    title: (formData.get("title") as string)?.trim() ?? "",
+    description,
+    canonical: (formData.get("canonical") as string)?.trim() ?? "",
+    ogImage: (formData.get("ogImage") as string)?.trim() ?? "",
+    ogLocale: country === "EG" ? "ar_EG" : "ar_SA",
+  };
   await upsertLandingSection(country as SupportedCountry, "seo", seo as unknown as Prisma.InputJsonValue);
+  if (country === "SA") revalidateTag("global-seo", "default");
   revalidatePath("/admin");
   revalidateLanding(country);
-  const r = (formData.get("redirect") as string)?.trim();
-  if (r) redirect(r + (r.includes("?") ? "&" : "?") + "saved=1");
+  if (redirectBase) redirect(redirectBase + (redirectBase.includes("?") ? "&" : "?") + "saved=1");
 }
 
 export async function updateImagesFormData(_formData: FormData) {

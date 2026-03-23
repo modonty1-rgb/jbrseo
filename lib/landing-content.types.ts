@@ -41,18 +41,8 @@ export type LandingContent = {
     title: string;
     description: string;
     canonical: string;
-    ogLocale: string;
-    ogTitle: string;
-    ogDescription: string;
     ogImage: string;
-    ogImageWidth: string;
-    ogImageHeight: string;
-    ogType: string;
-    ogSiteName: string;
-    twitterCard: string;
-    twitterTitle: string;
-    twitterDescription: string;
-    twitterImage: string;
+    ogLocale: string;
   };
   landingImages: Record<string, string>;
   sectionImages?: {

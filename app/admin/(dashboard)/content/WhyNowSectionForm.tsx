@@ -3,6 +3,9 @@
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateWhyNowSection } from "@/app/actions/content-sections";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 
 type WhyNowSectionFormProps = {
@@ -52,7 +55,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         اسم القسم
-        <input
+        <Input
           name="eyebrow"
           defaultValue={section.eyebrow}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -62,7 +65,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان ١
-          <input
+          <Input
             name="title1"
             defaultValue={section.title1}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -70,7 +73,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان ٢
-          <input
+          <Input
             name="title2"
             defaultValue={section.title2}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -80,7 +83,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         العنوان الفرعي
-        <textarea
+        <Textarea
           name="subtitle"
           defaultValue={section.subtitle}
           className="min-h-[70px] rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -100,7 +103,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
               </div>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 الشهر
-                <input
+                <Input
                   name={`costs_${i}_month`}
                   defaultValue={c.month}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -108,7 +111,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 التسمية
-                <input
+                <Input
                   name={`costs_${i}_label`}
                   defaultValue={c.label}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -116,7 +119,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 الوصف
-                <textarea
+                <Textarea
                   name={`costs_${i}_desc`}
                   defaultValue={c.desc}
                   className="min-h-[50px] rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -124,7 +127,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 القيمة
-                <input
+                <Input
                   name={`costs_${i}_value`}
                   defaultValue={c.value}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -132,7 +135,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 الأيقونة
-                <input
+                <Input
                   name={`costs_${i}_icon`}
                   defaultValue={c.icon}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -140,7 +143,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 درجة الشدة (1-3)
-                <input
+                <Input
                   name={`costs_${i}_severity`}
                   defaultValue={String(c.severity ?? 1)}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -164,7 +167,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
               </div>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 الأيقونة
-                <input
+                <Input
                   name={`reasons_${i}_icon`}
                   defaultValue={r.icon}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -172,7 +175,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 العنوان
-                <input
+                <Input
                   name={`reasons_${i}_title`}
                   defaultValue={r.title}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -180,7 +183,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 المحتوى
-                <textarea
+                <Textarea
                   name={`reasons_${i}_body`}
                   defaultValue={r.body}
                   className="min-h-[50px] rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -194,7 +197,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           نص زر الدعوة
-          <input
+          <Input
             name="ctaText"
             defaultValue={section.ctaText}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -202,7 +205,7 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           تمييز الدعوة
-          <input
+          <Input
             name="ctaHighlight"
             defaultValue={section.ctaHighlight}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -212,14 +215,14 @@ export function WhyNowSectionForm({ section, country }: WhyNowSectionFormProps) 
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         الأيام المستهدفة
-        <input
+        <Input
           name="daysTarget"
           defaultValue={String(section.daysTarget ?? 0)}
           className="w-32 rounded-md border border-border bg-background px-2 py-1 text-sm"
         />
       </label>
 
-      <button
+      <Button
         type="submit"
         id="why-now-form-submit"
         className="hidden"

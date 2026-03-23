@@ -1,4 +1,7 @@
+"use client";
+
 import Script from "next/script";
+import { useEffect, useState } from "react";
 
 type Props = {
   gtmId?: string | null;
@@ -7,6 +10,30 @@ type Props = {
 };
 
 export function CountryTrackingScripts({ gtmId, hotjarId, fbPixelId }: Props) {
+  const [interacted, setInteracted] = useState(false);
+
+  useEffect(() => {
+    // Delay heavy tracking scripts until user interacts or 5s pass
+    const loadScripts = () => setInteracted(true);
+    const timeoutId = setTimeout(loadScripts, 5000);
+    const events = ["scroll", "mousemove", "keydown", "touchstart"];
+    
+    const handleEvent = () => {
+      loadScripts();
+      events.forEach(e => window.removeEventListener(e, handleEvent));
+      clearTimeout(timeoutId);
+    };
+
+    events.forEach(e => window.addEventListener(e, handleEvent, { once: true, passive: true }));
+
+    return () => {
+      events.forEach(e => window.removeEventListener(e, handleEvent));
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  if (!interacted) return null;
+
   return (
     <>
       {gtmId && (
@@ -21,7 +48,7 @@ export function CountryTrackingScripts({ gtmId, hotjarId, fbPixelId }: Props) {
       )}
 
       {gtmId && (
-        <Script id="gtm" strategy="lazyOnload">
+        <Script id="gtm" strategy="afterInteractive">
           {`
           (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -33,7 +60,7 @@ export function CountryTrackingScripts({ gtmId, hotjarId, fbPixelId }: Props) {
       )}
 
       {hotjarId && (
-        <Script id="hotjar" strategy="lazyOnload">
+        <Script id="hotjar" strategy="afterInteractive">
           {`
           (function(h,o,t,j,a,r){
             h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
@@ -48,7 +75,7 @@ export function CountryTrackingScripts({ gtmId, hotjarId, fbPixelId }: Props) {
       )}
 
       {fbPixelId && (
-        <Script id="fb-pixel" strategy="lazyOnload">
+        <Script id="fb-pixel" strategy="afterInteractive">
           {`
           !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){
           n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};

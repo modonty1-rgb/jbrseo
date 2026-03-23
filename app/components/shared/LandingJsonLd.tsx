@@ -1,11 +1,14 @@
 import type { LandingContent } from "@/lib/landing-content.types";
-import { cl } from "@/helpers/cloudinary";
 
 function buildJsonLd(content: LandingContent) {
   const { seo, landing } = content;
-  const logoUrl = content.landingImages.logoWhite || cl(
-    "https://res.cloudinary.com/dfegnpgwx/image/upload/v1771973886/jbrser_svg_ikxmnn.svg"
-  );
+  const fallbackOrigin =
+    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://www.jbrseo.com";
+  const pageUrl = seo.canonical?.trim() || fallbackOrigin;
+  const orgId = `${pageUrl.replace(/\/$/, "")}#organization`;
+
+  const organizationLogoUrl =
+    "https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,fl_immutable_cache/v1771971820/jbrSeo_coverPage_du6vsm.png";
   const socialUrls = [
     process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK_URL,
     process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL,
@@ -19,29 +22,51 @@ function buildJsonLd(content: LandingContent) {
   const organization = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "JBRSEO",
-    url: seo.canonical,
-    logo: logoUrl,
+    "@id": orgId,
+    name: "مدونتي — JBRSEO",
+    url: pageUrl,
+    logo: { "@type": "ImageObject", url: organizationLogoUrl },
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "customer support",
+      availableLanguage: "Arabic",
+    },
     ...(socialUrls.length > 0 && { sameAs: socialUrls }),
   };
+  const webSiteDescription =
+    seo.description?.trim() ||
+    "منصة المحتوى العربي للشركات السعودية والمصرية — مقالات تجلب عملاء بدون إعلانات.";
   const webSite = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "JBRSEO",
-    description: seo.description,
-    url: seo.canonical,
+    description: webSiteDescription,
+    url: pageUrl,
     inLanguage: "ar",
-    publisher: { "@type": "Organization", name: "JBRSEO" },
+    publisher: { "@id": orgId },
   };
-  const faqPage = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: landing.faq.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: { "@type": "Answer", text: item.answer },
-    })),
-  };
+
+  const faqMainEntity = landing.faq
+    .map((item) => {
+      const name = item.question.trim();
+      const text = item.answer.trim();
+      if (!name || !text) return null;
+      return {
+        "@type": "Question" as const,
+        name,
+        acceptedAnswer: { "@type": "Answer" as const, text },
+      };
+    })
+    .filter((entry): entry is NonNullable<typeof entry> => entry !== null);
+
+  const faqPage =
+    faqMainEntity.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqMainEntity,
+        }
+      : null;
 
   const testimonialList =
     landing.socialProof.testimonials && landing.socialProof.testimonials.length > 0
@@ -61,11 +86,12 @@ function buildJsonLd(content: LandingContent) {
       itemReviewed: {
         "@type": "Organization" as const,
         name: "JBRSEO",
-        url: seo.canonical,
+        url: pageUrl,
       },
     }));
 
-  const scripts: object[] = [organization, webSite, faqPage];
+  const scripts: object[] = [organization, webSite];
+  if (faqPage) scripts.push(faqPage);
   if (reviewsList.length > 0) {
     scripts.push({
       "@context": "https://schema.org",

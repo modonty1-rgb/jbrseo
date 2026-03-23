@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Button } from "@/app/components/ui/button";
 
 type WhyNowSavingsBandProps = {
   saveM: number;
@@ -49,9 +50,12 @@ export function WhyNowSavingsBand({ saveM, saveY, pct }: WhyNowSavingsBandProps)
         <p className="mt-2 text-[26px] font-black text-emerald-300">{pct}%</p>
       </div>
 
-      <button className="mb-3 inline-flex items-center gap-2 rounded-[14px] bg-background px-7 py-3.5 text-[15px] font-extrabold text-accent shadow-lg">
+      <Button
+        type="button"
+        className="mb-3 rounded-[14px] bg-background px-7 py-3.5 text-[15px] font-extrabold text-accent shadow-lg"
+      >
         وفّر هذا الرقم ابتداءً من اليوم ←
-      </button>
+      </Button>
       <br />
       <p className="text-[12px] text-white/40">أول ١٤ يوم مجاناً · بدون بطاقة بنكية · إلغاء في أي وقت</p>
     </div>

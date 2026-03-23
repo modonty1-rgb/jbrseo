@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "@/app/components/link";
+import { Button } from "@/app/components/ui/button";
 
 const COUNTRIES = [
   { slug: "sa", label: "السعودية" },
@@ -31,18 +32,18 @@ export default function AdminPreviewPage() {
             <p className="mb-1 text-[11px] font-medium text-muted-foreground">الدولة</p>
             <div className="inline-flex overflow-hidden rounded-md border border-border bg-background text-xs">
               {COUNTRIES.map((c) => (
-                <button
+                <Button
                   key={c.slug}
                   type="button"
+                  variant={country === c.slug ? "default" : "ghost"}
+                  size="sm"
                   onClick={() => setCountry(c.slug)}
-                  className={`px-3 py-1.5 transition-colors ${
-                    country === c.slug
-                      ? "bg-primary text-primary-foreground"
-                      : "text-muted-foreground hover:bg-muted/70"
+                  className={`h-auto rounded-none px-3 py-1.5 text-xs shadow-none ${
+                    country === c.slug ? "" : "text-muted-foreground hover:bg-muted/70"
                   }`}
                 >
                   {c.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -51,18 +52,20 @@ export default function AdminPreviewPage() {
             <p className="mb-1 text-[11px] font-medium text-muted-foreground">الصفحة</p>
             <div className="space-y-1 text-xs">
               {PAGES.map((p) => (
-                <button
+                <Button
                   key={p.path || "root"}
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setPage(p.path)}
-                  className={`block w-full rounded-md px-3 py-1.5 text-right transition-colors ${
+                  className={`h-auto w-full justify-end rounded-md px-3 py-1.5 text-xs shadow-none ${
                     page === p.path
                       ? "bg-muted font-semibold text-foreground"
                       : "text-muted-foreground hover:bg-muted/70"
                   }`}
                 >
                   {p.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

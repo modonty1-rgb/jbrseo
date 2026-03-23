@@ -4,6 +4,7 @@ import Link from "@/app/components/link";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { StaffAvatar } from "@/app/components/StaffAvatar";
+import { Card } from "@/app/components/ui/card";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jbrseo.com";
 const aboutTitle = "عن منصة JBRSEO | من نحن وسبب وجودنا";
@@ -40,7 +41,7 @@ export default async function AboutPage() {
       </section>
 
       {/* Story */}
-      <section className="space-y-6 rounded-2xl border border-border/60 bg-card/40 px-5 py-6 sm:px-7 sm:py-7">
+      <Card className="space-y-6 rounded-2xl border-border/60 bg-card/40 px-5 py-6 sm:px-7 sm:py-7 shadow-sm">
         <h2 className="text-base font-semibold text-foreground">قصتنا باختصار</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {storyBlocks.map((block) => (
@@ -55,19 +56,19 @@ export default async function AboutPage() {
             </div>
           ))}
         </div>
-      </section>
+      </Card>
 
       {/* Values */}
       <section className="space-y-4">
         <h2 className="text-base font-semibold text-foreground">ما الذي يميز طريقة عملنا؟</h2>
         <div className="grid gap-4 sm:grid-cols-2">
           {values.map((value) => (
-            <div key={value.title} className="rounded-2xl border border-border/60 bg-card/40 p-4 text-sm">
+            <Card key={value.title} className="rounded-2xl border-border/60 bg-card/40 p-4 text-sm shadow-sm">
               <p className="text-xs font-semibold text-foreground">{value.title}</p>
               <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                 {value.body}
               </p>
-            </div>
+            </Card>
           ))}
         </div>
       </section>
@@ -76,16 +77,15 @@ export default async function AboutPage() {
       <section className="space-y-4">
         <h2 className="text-base font-semibold text-foreground">الفريق وراء JBRSEO</h2>
         <p className="text-xs leading-relaxed text-muted-foreground">
-          فريق صغير لكن مركز، يجمع بين خبرة عملية في المتاجر الإلكترونية، وعمق في SEO والمحتوى. الأسماء هنا
-          توضيحية ويمكنك تحديثها حسب فريقك الفعلي.
+          فريق صغير لكن مركز — كل شخص فيه متخصص في دوره، ويشتغلون معاً على نشاطك من أول يوم.
         </p>
         <div className="grid gap-4 sm:grid-cols-3">
           {teamPreview.map((member, i) => (
-            <div
+            <Card
               key={`${i}-${member.name}`}
-              className="flex flex-col overflow-hidden rounded-2xl border border-border/60 bg-card/40 text-sm"
+              className="flex flex-col overflow-hidden rounded-2xl border-border/60 bg-card/40 p-0 text-sm shadow-sm"
             >
-              <div className="aspect-square w-full max-w-[14rem] shrink-0 sm:max-w-[16rem]">
+              <div className="aspect-square w-full shrink-0">
                 <StaffAvatar
                   avatarUrl={member.avatarUrl}
                   avatarColor={member.avatarColor}
@@ -100,7 +100,7 @@ export default async function AboutPage() {
                   {member.bio}
                 </p>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
         <div className="text-start">
@@ -115,26 +115,26 @@ export default async function AboutPage() {
 
       {/* Fit / Not Fit */}
       <section className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl border border-border/60 bg-emerald-500/5 p-4 text-sm">
+        <Card className="rounded-2xl border-border/60 bg-emerald-500/5 p-4 text-sm shadow-sm">
           <p className="text-xs font-semibold text-emerald-300">مناسب لك إذا</p>
           <ul className="mt-2 space-y-1 text-xs leading-relaxed text-muted-foreground">
             {fitFor.map((item) => (
               <li key={item}>✅ {item}</li>
             ))}
           </ul>
-        </div>
-        <div className="rounded-2xl border border-border/60 bg-destructive/5 p-4 text-sm">
+        </Card>
+        <Card className="rounded-2xl border-border/60 bg-destructive/5 p-4 text-sm shadow-sm">
           <p className="text-xs font-semibold text-destructive">قد لا يكون مناسباً إذا</p>
           <ul className="mt-2 space-y-1 text-xs leading-relaxed text-muted-foreground">
             {notFitFor.map((item) => (
               <li key={item}>✖ {item}</li>
             ))}
           </ul>
-        </div>
+        </Card>
       </section>
 
       {/* Legal / Trust */}
-      <section className="space-y-3 rounded-2xl border border-border/60 bg-card/40 px-5 py-6 text-sm sm:px-7">
+      <Card className="space-y-3 rounded-2xl border-border/60 bg-card/40 px-5 py-6 text-sm sm:px-7 shadow-sm">
         <h2 className="text-base font-semibold text-foreground">
           معلومات قانونية عن الشركة
         </h2>
@@ -173,10 +173,10 @@ export default async function AboutPage() {
             {legalInfo.note}
           </p>
         )}
-      </section>
+      </Card>
 
       {/* Soft CTA */}
-      <section className="rounded-2xl border border-border/60 bg-card/60 px-5 py-6 text-center sm:px-7">
+      <Card className="rounded-2xl border-border/60 bg-card/60 px-5 py-6 text-center sm:px-7 shadow-sm">
         <h2 className="text-base font-semibold text-foreground">{cta.title}</h2>
         <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{cta.body}</p>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
@@ -193,7 +193,7 @@ export default async function AboutPage() {
             {cta.secondaryLabel}
           </a>
         </div>
-      </section>
+      </Card>
     </div>
   );
 }

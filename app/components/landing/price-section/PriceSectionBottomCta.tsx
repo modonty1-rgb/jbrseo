@@ -1,4 +1,5 @@
 import Link from "@/app/components/link";
+import { Button } from "@/app/components/ui/button";
 import { WhatsApp } from "./PriceSectionIcons";
 
 interface BottomCtaContent {
@@ -49,9 +50,9 @@ export function PriceSectionBottomCta({ BOTTOM_CTA, signupHref = "/signup", what
             <WhatsApp /> {BOTTOM_CTA.secondaryBtn}
           </a>
         ) : (
-          <button className={secondaryBtnClass}>
+          <Button type="button" className={secondaryBtnClass}>
             <WhatsApp /> {BOTTOM_CTA.secondaryBtn}
-          </button>
+          </Button>
         )}
       </div>
       <p className="text-xs text-primary-foreground/30 mt-5 leading-relaxed relative z-10">

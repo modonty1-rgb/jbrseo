@@ -2,18 +2,8 @@ export type SiteSettingsSeo = {
   title: string;
   description: string;
   canonical: string;
-  ogLocale: string;
-  ogTitle: string;
-  ogDescription: string;
   ogImage: string;
-  ogImageWidth: string;
-  ogImageHeight: string;
-  ogType: string;
-  ogSiteName: string;
-  twitterCard: string;
-  twitterTitle: string;
-  twitterDescription: string;
-  twitterImage: string;
+  ogLocale: string;
 };
 
 export type SiteSettingsTracking = {
@@ -89,18 +79,8 @@ export const DEFAULT_SITE_SETTINGS_JSON: SiteSettingsJson = {
     title: "",
     description: "",
     canonical: "",
-    ogLocale: "ar_SA",
-    ogTitle: "",
-    ogDescription: "",
     ogImage: "",
-    ogImageWidth: "1200",
-    ogImageHeight: "630",
-    ogType: "website",
-    ogSiteName: "JBRSEO",
-    twitterCard: "summary_large_image",
-    twitterTitle: "",
-    twitterDescription: "",
-    twitterImage: "",
+    ogLocale: "ar_SA",
   },
   tracking: { gtmId: "", hotjarId: "", fbPixelId: "" },
   site: { showSectionCounter: false, ctaLabel: "ابدأ مجاناً — بدون بطاقة", whatsappNumber: "" },

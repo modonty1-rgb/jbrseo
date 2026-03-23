@@ -3,7 +3,8 @@
 import { updateTrackingFormData } from "@/app/actions/landing";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { SiteSettingsJson } from "@/lib/site-settings.types";
-import { inputBase, labelClass } from "./AdminFormShared";
+import { Label } from "@/app/components/ui/label";
+import { Input } from "@/app/components/ui/input";
 import { ConfirmSaveDialog } from "./ConfirmSaveDialog";
 
 const TRACKING_FIELDS = [
@@ -28,16 +29,15 @@ export function TrackingForm({
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {TRACKING_FIELDS.map(({ key, label, placeholder }) => (
           <div key={key} className="flex flex-col gap-1.5">
-            <label className={labelClass} htmlFor={`tracking-${key}`}>
+            <Label htmlFor={`tracking-${key}`} className="text-xs font-medium text-muted-foreground">
               {label}
-            </label>
-            <input
+            </Label>
+            <Input
               id={`tracking-${key}`}
               type="text"
               name={key}
               defaultValue={tracking[key]}
               placeholder={placeholder}
-              className={inputBase}
               dir="ltr"
             />
           </div>

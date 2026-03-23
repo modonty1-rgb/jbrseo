@@ -4,10 +4,7 @@ Only components that currently have `"use client"` and are used on the public si
 
 ## Layout
 
-- **HeaderActionsClient** — `app/components/layout/header/HeaderActionsClient.tsx` — `LandingHeader` · theme toggle, desktop CTA, mobile menu trigger
-- **ThemeToggle** — `app/components/layout/header/ThemeToggle.tsx` — used inside `HeaderActionsClient`
-- **HeaderMobileMenu** — `app/components/layout/header/HeaderMobileMenu.tsx` — mobile sheet menu opened from `HeaderActionsClient`
-- **sheet** — `app/components/ui/sheet.tsx` — UI primitive used by `HeaderMobileMenu`
+- **ThemeToggle** — `app/components/layout/header/ThemeToggle.tsx` — used in `LandingHeader`
 - **ChatWidgetLazy** — `app/components/layout/ChatWidgetLazy.tsx` — lazy entrypoint loaded by country/public layouts
 - **ChatWidget** — `app/components/layout/ChatWidget.tsx` — actual chat widget mounted by `ChatWidgetLazy`
 

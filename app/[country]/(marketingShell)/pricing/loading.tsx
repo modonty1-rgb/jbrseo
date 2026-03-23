@@ -1,6 +1,6 @@
 export default function CountryPricingLoading() {
   return (
-    <main className="bg-background text-foreground" dir="rtl" aria-hidden>
+    <div className="bg-background text-foreground" dir="rtl" aria-hidden>
       <section className="border-b border-border bg-card/60">
         <div className="mx-auto max-w-4xl flex flex-col items-center px-4 py-16 text-center sm:px-6 sm:py-20 lg:px-8">
           <div className="h-3 w-24 rounded-full bg-muted/60 animate-pulse mb-3" />
@@ -44,6 +44,6 @@ export default function CountryPricingLoading() {
           <div className="h-4 w-40 rounded bg-muted/40 animate-pulse" />
         </div>
       </section>
-    </main>
+    </div>
   );
 }

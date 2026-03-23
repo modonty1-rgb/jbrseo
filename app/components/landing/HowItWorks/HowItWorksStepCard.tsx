@@ -1,3 +1,6 @@
+import { Icon } from "@/app/components/Icon";
+import { Card } from "@/app/components/ui/card";
+
 type Step = { num: string; icon: string; title: string; line: string; tag: string };
 
 type Props = { step: Step; index: number };
@@ -6,7 +9,7 @@ export function HowItWorksStepCard({ step, index }: Props) {
   const isHighlight = index === 1;
 
   return (
-    <div
+    <Card
       id={`hiw-card-${index}`}
       className="
         group relative flex flex-col overflow-hidden
@@ -53,7 +56,7 @@ export function HowItWorksStepCard({ step, index }: Props) {
           border:     `1.5px solid ${isHighlight ? "color-mix(in oklch, var(--accent) 32%, transparent)" : "color-mix(in oklch, var(--accent) 22%, transparent)"}`,
         }}
       >
-        {step.icon}
+        <Icon emoji={step.icon} className="w-7 h-7" />
       </div>
 
       <p className="mb-2 text-[10.5px] font-black uppercase tracking-[.08em] text-accent">
@@ -73,8 +76,8 @@ export function HowItWorksStepCard({ step, index }: Props) {
           color:      "var(--primary)",
         }}
       >
-        ⏱ {step.tag}
+        {step.tag}
       </span>
-    </div>
+    </Card>
   );
 }

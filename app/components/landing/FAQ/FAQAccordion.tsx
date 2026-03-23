@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/app/components/ui/button";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/app/components/ui/collapsible";
 import type { FaqItem } from "@/app/content/landing/types";
 import { TAG_TOKENS } from "@/app/content/landing/types";
@@ -19,11 +20,13 @@ export function FAQAccordion({ faqs }: FAQAccordionProps) {
             key={i}
             role="listitem"
           >
-            <Collapsible className="group overflow-hidden rounded-[18px] border border-border bg-background transition-all duration-200 data-[state=open]:border-[color-mix(in_oklch,var(--accent)_35%,transparent)] data-[state=open]:shadow-[0_6px_28px_color-mix(in_oklch,var(--accent)_8%,transparent)]">
+            <Collapsible className="group overflow-hidden rounded-[18px] border border-border bg-card shadow-sm transition-all duration-200 data-[state=open]:border-[color-mix(in_oklch,var(--accent)_35%,transparent)] data-[state=open]:shadow-[0_6px_28px_color-mix(in_oklch,var(--accent)_8%,transparent)]">
               <CollapsibleTrigger asChild>
-                <button
+                <Button
+                  type="button"
+                  variant="ghost"
                   aria-controls={answerId}
-                  className="flex w-full cursor-pointer items-center gap-3.5 bg-transparent px-5 py-[18px] text-right font-[Tajawal,sans-serif] sm:gap-4"
+                  className="h-auto w-full cursor-pointer justify-start gap-3.5 rounded-none bg-transparent px-5 py-[18px] text-right font-[Tajawal,sans-serif] shadow-none hover:bg-transparent sm:gap-4"
                 >
                 <span
                   className="hidden shrink-0 rounded-full border px-2.5 py-0.5 text-[10px] font-black sm:inline-flex"
@@ -44,7 +47,7 @@ export function FAQAccordion({ faqs }: FAQAccordionProps) {
                 >
                   ▼
                 </span>
-              </button>
+              </Button>
             </CollapsibleTrigger>
             <CollapsibleContent
               id={answerId}

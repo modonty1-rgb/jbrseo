@@ -1,6 +1,7 @@
- "use client";
+"use client";
 
- import type { ReactNode } from "react";
+import type { ReactNode } from "react";
+import { Button } from "@/app/components/ui/button";
 
  type Props = {
   error: Error;
@@ -19,14 +20,14 @@ export default function ErrorBoundary({ error, reset }: Props): ReactNode {
         <p className="text-sm text-muted-foreground">جرّب إعادة المحاولة وسنقوم بتحميل الصفحة مرة أخرى.</p>
       </div>
 
-      <button
+      <Button
         type="button"
         onClick={() => reset()}
-        className="inline-flex items-center justify-center rounded-full bg-accent px-5 py-2.5 text-sm font-black text-accent-foreground shadow-sm transition-colors hover:bg-accent/80"
+        className="rounded-full bg-accent px-5 py-2.5 text-sm font-black text-accent-foreground shadow-sm hover:bg-accent/80"
         aria-label="إعادة المحاولة"
       >
         إعادة المحاولة ←
-      </button>
+      </Button>
 
       {process.env.NODE_ENV === "development" && (
         <details className="w-full max-w-xl">
@@ -38,9 +39,9 @@ export default function ErrorBoundary({ error, reset }: Props): ReactNode {
       )}
     </main>
   );
- }
+}
 
- function formatError(error: Error): ReactNode {
+function formatError(error: Error): ReactNode {
   return error?.message ?? "Unknown error";
- }
+}
 

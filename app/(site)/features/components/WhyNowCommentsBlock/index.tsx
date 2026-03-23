@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
+import { Card } from "@/app/components/ui/card";
 
 export function WhyNowCommentsBlock(): ReactNode {
   return (
-    <div className="mx-auto mb-4 max-w-[960px] overflow-hidden rounded-2xl border border-border bg-card">
+    <Card className="mx-auto mb-4 max-w-[960px] overflow-hidden rounded-2xl border border-border bg-card p-0 shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-2.5 px-7 py-5">
         <span className="text-[18px]" aria-hidden="true">💬</span>
@@ -118,6 +119,6 @@ export function WhyNowCommentsBlock(): ReactNode {
           <p className="text-[12px] font-semibold leading-relaxed text-green-800">كل رد منك = فرصة تحويل عميل محتمل مباشرة من لوحتك.</p>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

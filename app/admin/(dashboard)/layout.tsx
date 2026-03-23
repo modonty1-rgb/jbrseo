@@ -6,6 +6,7 @@ import { AdminSidebar } from "./components/AdminSidebar";
 import { AdminCountryToggle } from "./components/AdminCountryToggle";
 import { AdminCountrySync } from "./components/AdminCountrySync";
 import { AdminSubscribersLink } from "./components/AdminSubscribersLink";
+import { AdminToaster } from "./components/AdminToaster";
 
 export default async function AdminDashboardLayout({
   children,
@@ -16,6 +17,7 @@ export default async function AdminDashboardLayout({
   if (!ok) redirect("/admin/login");
   return (
     <div className="min-h-screen bg-background">
+      <AdminToaster />
       <Suspense fallback={null}>
         <AdminCountrySync />
       </Suspense>

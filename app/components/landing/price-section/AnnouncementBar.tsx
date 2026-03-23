@@ -8,7 +8,7 @@ export function AnnouncementBar({ text }: AnnouncementBarProps) {
       className="py-2.5 px-5 text-center text-xs font-bold text-primary-foreground tracking-wide"
       style={{ background: "var(--pricing-announcement-bg)" }}
     >
-      🎉 {text}
+      {text}
     </div>
   );
 }

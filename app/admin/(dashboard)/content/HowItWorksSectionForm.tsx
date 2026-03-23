@@ -3,6 +3,9 @@
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateHowItWorksSection } from "@/app/actions/content-sections";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 
 type HowItWorksSectionFormProps = {
@@ -46,7 +49,7 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         اسم القسم
-        <input
+        <Input
           name="eyebrow"
           defaultValue={section.eyebrow}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -56,7 +59,7 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان
-          <input
+          <Input
             name="title"
             defaultValue={section.title}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -64,7 +67,7 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان الفرعي
-          <input
+          <Input
             name="subtitle"
             defaultValue={section.subtitle}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -74,7 +77,7 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         نص الضمان
-        <textarea
+        <Textarea
           name="guarantee"
           defaultValue={section.guarantee}
           className="min-h-[70px] rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -94,7 +97,7 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
               </div>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 رقم الخطوة
-                <input
+                <Input
                   name={`steps_${i}_num`}
                   defaultValue={s.num}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -102,7 +105,7 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 الأيقونة
-                <input
+                <Input
                   name={`steps_${i}_icon`}
                   defaultValue={s.icon}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -110,7 +113,7 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 العنوان
-                <input
+                <Input
                   name={`steps_${i}_title`}
                   defaultValue={s.title}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -118,7 +121,7 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 السطر
-                <textarea
+                <Textarea
                   name={`steps_${i}_line`}
                   defaultValue={s.line}
                   className="min-h-[40px] rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -126,7 +129,7 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
               </label>
               <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
                 الوسم
-                <input
+                <Input
                   name={`steps_${i}_tag`}
                   defaultValue={s.tag}
                   className="rounded-md border border-border bg-background px-2 py-1 text-xs"
@@ -137,7 +140,7 @@ export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFor
         })}
       </div>
 
-      <button
+      <Button
         type="submit"
         id="how-it-works-form-submit"
         className="hidden"

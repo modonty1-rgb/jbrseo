@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { Button } from "@/app/components/ui/button";
 
 type Item = { emoji: string; code: string; name?: string };
 
@@ -31,13 +32,15 @@ function EmojiCard({ emoji, code, name }: Item) {
       <span className="text-3xl" aria-hidden>{emoji}</span>
       <code className="text-xs text-muted-foreground font-mono">{code}</code>
       <span className="text-xs text-muted-foreground line-clamp-2 max-w-[120px]" title={name || undefined}>{name || "—"}</span>
-      <button
+      <Button
         type="button"
+        variant="outline"
+        size="sm"
         onClick={copy}
-        className="rounded border border-border px-2 py-1 text-xs hover:bg-muted w-full"
+        className="h-auto w-full px-2 py-1 text-xs"
       >
         {copied ? "تم النسخ" : "نسخ"}
-      </button>
+      </Button>
     </div>
   );
 }

@@ -2,6 +2,9 @@
 
 import type { ReactNode } from "react";
 
+import { Card } from "@/app/components/ui/card";
+import { Input } from "@/app/components/ui/input";
+
 type SliderRowProps = {
   icon: string;
   label: string;
@@ -52,7 +55,7 @@ function SliderRow({
           {fmt(value)} ريال
         </span>
       </div>
-      <input
+      <Input
         type="range"
         min={min}
         max={max}
@@ -67,8 +70,8 @@ function SliderRow({
 
 function CompareCol({ bad, head, items, monthlyTotal, annualTotal }: CompareColProps): ReactNode {
   return (
-    <div
-      className={`rounded-2xl border px-4 py-5 ${
+    <Card
+      className={`rounded-2xl border px-4 py-5 shadow-sm ${
         bad ? "border-destructive/30 bg-destructive/5" : "border-emerald-200 bg-emerald-50"
       }`}
     >
@@ -107,7 +110,7 @@ function CompareCol({ bad, head, items, monthlyTotal, annualTotal }: CompareColP
           </p>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -145,7 +148,7 @@ export function WhyNowSliders({
   setDev,
 }: WhyNowSlidersProps) {
   return (
-    <div className="mx-auto mb-4 max-w-[960px] rounded-3xl border border-border bg-card px-7 py-8 shadow-lg">
+    <Card className="mx-auto mb-4 max-w-[960px] rounded-3xl border border-border bg-card px-7 py-8 shadow-lg">
       <p className="mb-5 text-[11px] font-extrabold uppercase tracking-widest text-muted-foreground">اضبط رواتب فريقك الحالي أو المتوقع</p>
 
       <SliderRow
@@ -247,7 +250,7 @@ export function WhyNowSliders({
           annualTotal="15,588 ر.س"
         />
       </div>
-    </div>
+    </Card>
   );
 }
 

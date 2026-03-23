@@ -3,7 +3,7 @@ import { sanitizeUserFacingString } from "@/lib/sanitize-user-facing";
 import { landingEG } from "./landing-eg";
 import { landingSA } from "./landing-sa";
 import type { StaticLanding } from "./types";
-import type { Plan } from "./price-section-types";
+import type { Plan, PricingContent } from "./price-section-types";
 import {
   STATIC_ONLY_KEYS,
   getLandingSectionOverride,
@@ -23,6 +23,29 @@ function sanitizePricingPlanNames(landing: StaticLanding): StaticLanding {
     name: sanitizeUserFacingString(p.name),
   }));
   return { ...landing, pricing: { ...landing.pricing, PLANS: sanitized } };
+}
+
+/** DB overrides can keep old promo copy; align badge + bar with code when still the retired "20% off" line. */
+function isStaleAnnualBadge(save20: string): boolean {
+  const t = save20.trim();
+  if (!t) return false;
+  return /و?فّ?ر/.test(t) && (/٢٠\s*٪|20\s*%|20٪/.test(t) || /[٢2][٠0]/.test(t));
+}
+
+function isStalePricingAnnouncement(text: string): boolean {
+  return text.includes("وفّر ٢٠٪") || text.includes("وفّر 20%") || /\u0648\u0641\u064f\u0631 \u0662\u0660\u066a/.test(text);
+}
+
+function reconcilePricingFromBase(base: PricingContent, merged: PricingContent): PricingContent {
+  const UI = { ...base.UI, ...merged.UI };
+  if (isStaleAnnualBadge(merged.UI?.save20 ?? "")) {
+    UI.save20 = base.UI.save20;
+  }
+  let { ANNOUNCEMENT } = merged;
+  if (isStalePricingAnnouncement(ANNOUNCEMENT)) {
+    ANNOUNCEMENT = base.ANNOUNCEMENT;
+  }
+  return { ...merged, ANNOUNCEMENT, UI };
 }
 
 export async function getStaticLandingWithOverrides(
@@ -47,6 +70,17 @@ export async function getStaticLandingWithOverrides(
   }
 
   const merged = hasOverride ? mergeStaticWithOverrides(base, overrides) : base;
-  return sanitizePricingPlanNames(merged);
+  const withPricing =
+    hasOverride && merged.pricing && base.pricing
+      ? { ...merged, pricing: reconcilePricingFromBase(base.pricing, merged.pricing) }
+      : merged;
+
+  // Seats are set in code, not admin — prevent stale/wrong admin overrides from showing bad counts.
+  const withSeats =
+    hasOverride && base.finalCta?.seats
+      ? { ...withPricing, finalCta: { ...withPricing.finalCta, seats: base.finalCta.seats } }
+      : withPricing;
+
+  return sanitizePricingPlanNames(withSeats);
 }
 

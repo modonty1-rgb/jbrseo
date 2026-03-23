@@ -50,9 +50,20 @@ export interface PricingUI {
   yearly: string;
   save20: string;
   totalAnnual: string;
+  /** Effective monthly if spread over 18 months (same total ÷ 18); placeholders {n} {c} */
+  annualEquiv18: string;
+  /** Shown under annual total; effective monthly on annual plan — {n} {c} */
+  annualAvgMonthly: string;
   banner12Title: string;
   banner12Sub: string;
   trustTitle: string;
+  /** Line under billing toggle: confirms which cadence applies to prices below */
+  pricingBelowHintMonthly: string;
+  pricingBelowHintAnnual: string;
+  /** `<summary>` for annual price breakdown `<details>` */
+  priceDetailsToggle: string;
+  /** Single link below plan grid → full pricing / comparison page */
+  pricingFullComparisonLabel: string;
 }
 
 export interface PricingContent {

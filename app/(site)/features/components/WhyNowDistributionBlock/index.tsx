@@ -2,6 +2,7 @@ import type { DistributionChannel } from "./content";
 
 import type { ReactNode } from "react";
 
+import { Card } from "@/app/components/ui/card";
 import {
   Table,
   TableBody,
@@ -17,7 +18,7 @@ import { DISTRIBUTION_CHANNELS, WHY_NOW_DISTRIBUTION_COPY } from "./content";
 
 function TopHeader(): ReactNode {
   return (
-    <div className="rounded-t-2xl border border-border border-b border-dashed bg-card px-7 pb-4 pt-5">
+    <div className="border-b border-dashed border-border px-7 pb-4 pt-5">
       <div className="flex items-center gap-2.5">
         <span className="text-lg">{WHY_NOW_DISTRIBUTION_COPY.topIcon}</span>
         <div>
@@ -33,9 +34,9 @@ export function WhyNowDistributionBlock(): ReactNode {
   const channels = DISTRIBUTION_CHANNELS;
 
   return (
-    <div className="mx-auto mb-4 max-w-[960px]">
+    <Card className="mx-auto mb-4 max-w-[960px] overflow-hidden rounded-2xl p-0 shadow-sm">
       <TopHeader />
-      <div className="overflow-hidden rounded-b-2xl border border-border border-t-0 bg-card">
+      <div className="overflow-hidden">
         <Table className="w-full border-collapse">
           <TableCaption className="sr-only">
             {WHY_NOW_DISTRIBUTION_COPY.topTitle}
@@ -129,7 +130,7 @@ export function WhyNowDistributionBlock(): ReactNode {
           </TableFooter>
         </Table>
       </div>
-    </div>
+    </Card>
   );
 }
 

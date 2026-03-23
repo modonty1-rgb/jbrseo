@@ -20,7 +20,7 @@ export function staticPlansToPricingPlans(
     ...(p.price.mo > 0 || p.price.yr > 0
       ? {
           price: formatPrice(p.price.mo, country),
-          annualPrice: p.price.yr > 0 ? formatPrice(p.price.yr, country) : undefined,
+          annualPrice: p.price.yr > 0 ? formatPrice(p.price.yr * 12, country) : undefined,
         }
       : {}),
     ...(p.badge ? { badge: p.badge } : {}),

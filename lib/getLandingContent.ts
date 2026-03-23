@@ -8,6 +8,33 @@ import { prisma } from "./prisma";
 import { staticPlansToPricingPlans } from "./static-plans-to-content";
 import { getLandingSectionOverride } from "./landing-sections";
 
+async function siteSettingsRowSafe(): Promise<Awaited<ReturnType<typeof prisma.siteSettings.findFirst>>> {
+  try {
+    return await prisma.siteSettings.findFirst();
+  } catch (error) {
+    if (process.env.NODE_ENV === "production") throw error;
+    console.warn("[getLandingContent] siteSettings unreachable; using empty tracking.");
+    return null;
+  }
+}
+
+function mergeLandingSeo(
+  base: LandingContent["seo"],
+  override: unknown,
+): LandingContent["seo"] {
+  if (!override || typeof override !== "object" || Array.isArray(override)) {
+    return base;
+  }
+  const o = override as Record<string, unknown>;
+  const merged = { ...base };
+  for (const key of Object.keys(base) as (keyof LandingContent["seo"])[]) {
+    const v = o[key as string];
+    if (v === undefined || v === null) continue;
+    merged[key] = typeof v === "string" ? v : String(v);
+  }
+  return merged;
+}
+
 async function getStaticFallback(): Promise<LandingContent> {
   const [{ landing, seo }, { landingImages }, { footerTexts }] = await Promise.all([
     import("@/app/content/landing"),
@@ -27,17 +54,7 @@ async function getStaticFallback(): Promise<LandingContent> {
     },
     seo: {
       ...seo,
-      ogTitle: "",
-      ogDescription: "",
       ogImage: "",
-      ogImageWidth: "1200",
-      ogImageHeight: "630",
-      ogType: "website",
-      ogSiteName: "JBRSEO",
-      twitterCard: "summary_large_image",
-      twitterTitle: "",
-      twitterDescription: "",
-      twitterImage: "",
     },
     landingImages: {
       contactAvatar: landingImages.contactAvatar,
@@ -78,7 +95,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
   const base = await getStaticFallback();
   const [staticLandingRaw, settingsRow, seoOverride, ctaLabelOverride, pricingTeaserOverride] = await Promise.all([
     getStaticLandingWithOverrides(country),
-    prisma.siteSettings.findFirst(),
+    siteSettingsRowSafe(),
     getLandingSectionOverride(country, "seo"),
     getLandingSectionOverride(country, "ctaLabel"),
     getLandingSectionOverride(country, "pricingTeaser"),
@@ -134,10 +151,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
 
   const whatsappNumber = settingsRow?.whatsappNumber?.trim() ?? "";
 
-  const seo =
-    seoOverride && typeof seoOverride === "object" && !Array.isArray(seoOverride)
-      ? { ...base.seo, ...(seoOverride as Record<string, string>) }
-      : base.seo;
+  const seo = mergeLandingSeo(base.seo, seoOverride);
 
   const rawPricingHeadings =
     pricingTeaserOverride &&
@@ -164,7 +178,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
   return {
     ...base,
     staticLanding,
-    seo: seo as LandingContent["seo"],
+    seo,
     tracking,
     siteSettings: { ctaLabel, whatsappNumber },
     landingImages,

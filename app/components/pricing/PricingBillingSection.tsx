@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { PricingContent } from "@/app/content/landing/price-section-types";
 import { BillingToggle } from "@/app/components/pricing/BillingToggle";
 import { TierCard } from "@/app/components/pricing/TierCard";
+import { buildSignupHrefWithPlanId } from "@/lib/signup-href";
 
 type Props = {
   plans: PricingContent["PLANS"];
@@ -13,7 +14,7 @@ type Props = {
 };
 
 export function PricingBillingSection({ plans, ui, currency, signupHrefBase = "/signup" }: Props) {
-  const [annual, setAnnual] = useState(false);
+  const [annual, setAnnual] = useState(true);
 
   return (
     <div className="space-y-6">
@@ -28,7 +29,13 @@ export function PricingBillingSection({ plans, ui, currency, signupHrefBase = "/
             annual={annual}
             ui={ui}
             currency={currency}
-            href={`${signupHrefBase}?plan=${plan.id}`}
+            href={buildSignupHrefWithPlanId(
+              signupHrefBase,
+              plan.id,
+              annual,
+              plan.price.mo,
+              plan.price.yr
+            )}
           />
         ))}
       </div>

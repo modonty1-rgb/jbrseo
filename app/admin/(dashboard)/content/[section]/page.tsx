@@ -21,6 +21,8 @@ import { PrivacySectionForm } from "../PrivacySectionForm";
 import { TermsSectionForm } from "../TermsSectionForm";
 import { AboutSectionForm } from "../AboutSectionForm";
 import { TeamSectionForm } from "../TeamSectionForm";
+import { Button } from "@/app/components/ui/button";
+import { Textarea } from "@/app/components/ui/textarea";
 
 const CONTENT_KEYS = [
   "hero",
@@ -166,13 +168,20 @@ function humanLabel(key: string, section?: string): string {
     savedYearly: "وفر سنوياً",
     offer12_18: "عرض ١٢–١٨",
     billingAnnual: "الدفع السنوي",
+    annualEquiv18: "مكافئ ١٨ شهر",
+    annualAvgMonthly: "معدّل شهري (سنوي)",
+    totalAnnual: "الإجمالي السنوي",
+    pricingBelowHintMonthly: "تلميح تحت التبديل (شهري)",
+    pricingBelowHintAnnual: "تلميح تحت التبديل (سنوي)",
+    priceDetailsToggle: "عنوان تفاصيل السعر",
+    pricingFullComparisonLabel: "رابط مقارنة الباقات",
     billingMonthly: "الدفع الشهري",
     youGet: "ما تحصل عليه",
     moreDetails: "تفاصيل أكثر",
     whatsapp: "واتساب",
     monthly: "شهري",
     yearly: "سنوي",
-    save20: "وفر ٢٠٪",
+    save20: "اكسب ٦ أشهر مجاناً",
     banner12Title: "عنوان البانر",
     banner12Sub: "نص البانر",
     trustTitle: "عنوان الثقة",
@@ -689,17 +698,14 @@ export default async function AdminContentSectionPage({
                   Load default
                 </a>
               </div>
-              <textarea
+              <Textarea
                 name="data"
                 defaultValue={JSON.stringify(sectionData, null, 2)}
-                className="font-mono text-xs w-full min-h-[260px] rounded-md border border-border bg-background p-2 focus:outline-none focus:ring-2 focus:ring-primary"
+                className="min-h-[260px] w-full font-mono text-xs focus-visible:ring-primary"
               />
-              <button
-                type="submit"
-                className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90"
-              >
+              <Button type="submit" size="sm">
                 Save section
-              </button>
+              </Button>
             </form>
           )}
           {!isLinksSection && section === "howItWorks" && (

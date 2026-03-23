@@ -3,6 +3,9 @@
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateSocialProofSection } from "@/app/actions/content-sections";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 
 type SocialProofSectionFormProps = {
@@ -54,7 +57,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         اسم القسم
-        <input
+        <Input
           name="eyebrow"
           defaultValue={section.eyebrow}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -64,7 +67,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
       <div className="grid gap-3 md:grid-cols-2">
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان
-          <input
+          <Input
             name="title"
             defaultValue={section.title}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -72,7 +75,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
         </label>
         <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
           العنوان الفرعي
-          <input
+          <Input
             name="subtitle"
             defaultValue={section.subtitle}
             className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -82,7 +85,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         نص التأسيس
-        <input
+        <Input
           name="founding"
           defaultValue={section.founding}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -103,7 +106,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
               <div className="grid grid-cols-2 gap-x-2 gap-y-1 sm:grid-cols-3">
                 <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
                   الاسم
-                  <input
+                  <Input
                     name={`testimonials_${i}_name`}
                     defaultValue={t.name}
                     className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
@@ -111,7 +114,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
                 </label>
                 <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
                   الدور
-                  <input
+                  <Input
                     name={`testimonials_${i}_role`}
                     defaultValue={t.role}
                     className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
@@ -119,7 +122,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
                 </label>
                 <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
                   الشركة
-                  <input
+                  <Input
                     name={`testimonials_${i}_company`}
                     defaultValue={t.company}
                     className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
@@ -127,7 +130,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
                 </label>
                 <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:col-span-2">
                   المقياس
-                  <input
+                  <Input
                     name={`testimonials_${i}_metric`}
                     defaultValue={t.metric}
                     className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
@@ -135,7 +138,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
                 </label>
                 <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
                   النجوم
-                  <input
+                  <Input
                     name={`testimonials_${i}_stars`}
                     defaultValue={String(t.stars ?? 5)}
                     className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
@@ -143,7 +146,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
                 </label>
                 <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:col-span-3">
                   الوسم
-                  <input
+                  <Input
                     name={`testimonials_${i}_tag`}
                     defaultValue={t.tag}
                     className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
@@ -152,7 +155,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
               </div>
               <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
                 الاقتباس
-                <textarea
+                <Textarea
                   name={`testimonials_${i}_quote`}
                   defaultValue={t.quote}
                   className="min-h-[44px] rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
@@ -161,7 +164,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
               <div className="grid grid-cols-1 gap-y-1 sm:grid-cols-2">
                 <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
                   صورة
-                  <input
+                  <Input
                     name={`testimonials_${i}_avatarImg`}
                     defaultValue={t.avatarImg}
                     className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
@@ -169,7 +172,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
                 </label>
                 <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground">
                   رابط الموقع
-                  <input
+                  <Input
                     name={`testimonials_${i}_siteLink`}
                     type="text"
                     defaultValue={t.siteLink ?? ""}
@@ -179,7 +182,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
                 </label>
                 <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:col-span-2">
                   فيديو
-                  <input
+                  <Input
                     name={`testimonials_${i}_videoUrl`}
                     defaultValue={t.videoUrl}
                     placeholder="رابط الفيديو"
@@ -188,7 +191,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
                 </label>
                 <label className="flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:col-span-2">
                   نص زر الفيديو
-                  <input
+                  <Input
                     name={`testimonials_${i}_videoLabel`}
                     defaultValue={t.videoLabel}
                     className="rounded border border-border bg-background px-1.5 py-0.5 text-[11px]"
@@ -200,7 +203,7 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
         })}
       </div>
 
-      <button
+      <Button
         type="submit"
         id="social-proof-form-submit"
         className="hidden"

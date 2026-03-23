@@ -1,8 +1,10 @@
 "use client";
 
 import { useActionState } from "react";
+
 import { loginAction } from "@/app/actions/auth";
 import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
 
 export default function AdminLoginPage() {
   const [state, formAction] = useActionState(
@@ -21,7 +23,7 @@ export default function AdminLoginPage() {
           <label htmlFor="password" className="mb-1 block text-sm font-medium text-foreground">
             Password
           </label>
-          <input
+          <Input
             id="password"
             name="password"
             type="password"

@@ -10,9 +10,9 @@ The [app/(site)/layout.tsx](app/(site)/layout.tsx) renders: wrapper → **Landin
 
 ### header
 
-Global site nav: nav links (href, label), CTA label, seats (for the announcement bar), announcement prefix/suffix, and book CTA.
+Global site nav: nav links (href, label), CTA label, **banner line** (single string for the announcement bar — same copy can feed the final CTA), announcement prefix/suffix, and book CTA.
 
-**Used on:** Every public site page, in **LandingHeader** (desktop nav, CTA button, announcement bar, seats). Header reads `staticLanding.header` and `staticLanding.hero.ctaLink` for the CTA link; logo comes from `content.landingImages`.
+**Used on:** Every public site page, in **LandingHeader** (desktop nav, CTA button, announcement bar). Header reads `staticLanding.header` and `staticLanding.hero.ctaLink` for the CTA link; logo comes from `content.landingImages`.
 
 ### footer
 
@@ -70,7 +70,7 @@ Full pricing block: ANNOUNCEMENT banner, HERO (socialProof, headline lines, subh
 
 ### finalCta
 
-Last CTA block: eyebrow, two title lines, subtitle, seats (total/taken), benefits list, CTA label and link, and WhatsApp label and link. Optional `sectionImage`.
+Last CTA block: eyebrow, two title lines, subtitle, optional scarcity line (same **banner** string as the header strip when set), benefits list, CTA label and link, and WhatsApp label and link. Optional `sectionImage`.
 
 **Used on:** Homepage, inside main: **FinalCTA** (section 8).
 

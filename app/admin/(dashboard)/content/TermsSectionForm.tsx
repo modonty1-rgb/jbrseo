@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
+
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateSection } from "@/app/actions/content-sections";
+import { Button } from "@/app/components/ui/button";
+import { Input } from "@/app/components/ui/input";
+import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 
 type Props = {
@@ -66,7 +70,7 @@ export function TermsSectionForm({ section, country }: Props) {
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         عنوان الصفحة
-        <input
+        <Input
           name="title"
           defaultValue={section.title}
           className="rounded-md border border-border bg-background px-2 py-1 text-sm"
@@ -75,7 +79,7 @@ export function TermsSectionForm({ section, country }: Props) {
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         آخر تحديث (اختياري)
-        <input
+        <Input
           name="updatedAt"
           defaultValue={section.updatedAt ?? ""}
           placeholder="2025-01-01"
@@ -85,14 +89,14 @@ export function TermsSectionForm({ section, country }: Props) {
 
       <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
         نص الشروط
-        <textarea
+        <Textarea
           name="body"
           defaultValue={section.body}
           className="min-h-[220px] rounded-md border border-border bg-background px-2 py-1 text-sm leading-relaxed"
         />
       </label>
 
-      <button
+      <Button
         type="submit"
         id="terms-form-submit"
         className="hidden"
