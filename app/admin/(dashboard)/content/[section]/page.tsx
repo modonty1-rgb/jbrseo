@@ -23,6 +23,7 @@ import { AboutSectionForm } from "../AboutSectionForm";
 import { TeamSectionForm } from "../TeamSectionForm";
 import { Button } from "@/app/components/ui/button";
 import { Textarea } from "@/app/components/ui/textarea";
+import { AdminFormFeedback } from "../../components/AdminFormFeedback";
 
 const CONTENT_KEYS = [
   "hero",
@@ -45,13 +46,13 @@ const CONTENT_KEYS = [
 type ContentKey = (typeof CONTENT_KEYS)[number];
 
 const SECTION_LABELS: Record<ContentKey, string> = {
-  hero: "Hero section",
-  whyNow: "Why now section",
-  howItWorks: "How it works section",
-  outcomes: "Outcomes section",
-  socialProof: "Social proof section",
-  faq: "FAQ section",
-  finalCta: "Final CTA section",
+  hero: "قسم الهيرو",
+  whyNow: "قسم لماذا الآن",
+  howItWorks: "قسم كيف يعمل",
+  outcomes: "قسم النتائج",
+  socialProof: "قسم الشهادات",
+  faq: "قسم الأسئلة الشائعة",
+  finalCta: "قسم الدعوة النهائية",
   header: "Header section",
   footer: "Slogan",
   pricing: "Pricing section",
@@ -60,6 +61,14 @@ const SECTION_LABELS: Record<ContentKey, string> = {
   terms: "Terms page",
   about: "About page",
   team: "Team page",
+};
+
+const PAGE_HEADING_OVERRIDES: Partial<
+  Record<ContentKey, { h1: string; tab: string }>
+> = {
+  privacy: { h1: "صفحة الخصوصية", tab: "سياسة الخصوصية" },
+  terms: { h1: "صفحة الشروط", tab: "شروط الاستخدام" },
+  team: { h1: "فريق العمل", tab: "فريق العمل" },
 };
 
 function isContentKey(s: string): s is ContentKey {
@@ -571,19 +580,38 @@ export default async function AdminContentSectionPage({
     sectionData = rest;
   }
 
-  const label = isLinksSection ? "Links section" : SECTION_LABELS[section as ContentKey];
+  const headingOverride = isContentKey(section)
+    ? PAGE_HEADING_OVERRIDES[section]
+    : undefined;
+  const label = headingOverride
+    ? headingOverride.h1
+    : isLinksSection
+      ? "Links section"
+      : SECTION_LABELS[section as ContentKey];
+  const cardTabLabel = headingOverride ? headingOverride.tab : label;
 
   return (
     <div className="p-6">
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <h1 className="text-xl font-bold text-foreground">{label}</h1>
-        <Suspense fallback={null}>
-          <AdminCountryPill />
-        </Suspense>
+        {section !== "hero" &&
+          section !== "whyNow" &&
+          section !== "howItWorks" &&
+          section !== "outcomes" &&
+          section !== "faq" &&
+          section !== "finalCta" &&
+          section !== "socialProof" && (
+          <Suspense fallback={null}>
+            <AdminCountryPill />
+          </Suspense>
+        )}
       </div>
-      <div className="rounded-lg border border-border bg-card shadow-sm overflow-hidden">
+      <Suspense fallback={null}>
+        <AdminFormFeedback />
+      </Suspense>
+      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
         <div className="border-b border-border bg-muted/50 px-4 py-3 text-sm font-semibold text-muted-foreground">
-          {label}
+          {cardTabLabel}
         </div>
         <div className="p-4">
           {!isLinksSection && section === "hero" && (

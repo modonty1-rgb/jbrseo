@@ -4,7 +4,9 @@ import { redirect } from "next/navigation";
 import { revalidatePath, revalidateTag } from "next/cache";
 import type { Prisma } from "@prisma/client";
 import type { SupportedCountry } from "@/lib/landing-content.types";
-import { upsertLandingSection } from "@/lib/landing-sections";
+import { getLandingSectionOverride, upsertLandingSection } from "@/lib/landing-sections";
+import { getStaticLanding } from "@/app/content/landing/get-static-landing";
+import type { StaticLanding } from "@/app/content/landing/types";
 import { isAdmin } from "@/app/actions/auth";
 
 const CONTENT_KEYS = [
@@ -37,6 +39,15 @@ function assertCountry(country: string): asserts country is SupportedCountry {
   if (country !== "SA" && country !== "EG") {
     throw new Error("Invalid country");
   }
+}
+
+async function getMergedHero(country: SupportedCountry): Promise<StaticLanding["hero"]> {
+  const staticHero = (getStaticLanding(country) as StaticLanding).hero;
+  const override = await getLandingSectionOverride(country, "hero");
+  if (override && typeof override === "object" && !Array.isArray(override)) {
+    return { ...staticHero, ...(override as Partial<StaticLanding["hero"]>) };
+  }
+  return staticHero;
 }
 
 /** Accepts `example.com` or `https://example.com`; rejects non-http(s) schemes. */
@@ -137,23 +148,61 @@ export async function updateHeroSection(formData: FormData) {
     .map((l) => l.trim())
     .filter(Boolean);
 
-  const trustBarHeadline = ((formData.get("trustBarHeadline") as string | null) ?? "").trim();
+  const currentHero = await getMergedHero(country);
 
+  const hero = {
+    proof,
+    h1Line1,
+    h1Line2,
+    sub,
+    benefits,
+    trust: trustLines,
+    trustBarHeadline: currentHero.trustBarHeadline ?? "",
+    trustBarClients: currentHero.trustBarClients ?? [],
+  };
+
+  await upsertLandingSection(country, "hero", hero);
+
+  const countrySlug = country === "SA" ? "sa" : "eg";
+  revalidateTag(`landing-${country}`, "default");
+  revalidatePath(`/${countrySlug}`);
+  revalidatePath(`/${countrySlug}/pricing`);
+  revalidatePath("/");
+
+  redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
+}
+
+export async function updateTrustBarSection(formData: FormData) {
+  if (!(await isAdmin())) return;
+  const country = (formData.get("country") as string | null)?.trim() ?? "";
+  const section = (formData.get("section") as string | null)?.trim() ?? "";
+  const redirectTo =
+    (formData.get("redirect") as string | null)?.trim() ??
+    `/admin/content/trustbar?country=${country}`;
+
+  if (!country || section !== "trustbar") {
+    return redirect(redirectTo);
+  }
+
+  try {
+    assertCountry(country);
+  } catch {
+    return redirect(redirectTo);
+  }
+
+  const trustBarHeadline = ((formData.get("trustBarHeadline") as string | null) ?? "").trim();
   const rawClientsJson = (formData.get("trustClientsJson") as string | null) ?? "[]";
+
   let trustBarClients: { name: string; logoUrl: string; href?: string }[] = [];
   try {
     const parsed: unknown = JSON.parse(rawClientsJson);
     if (Array.isArray(parsed)) {
       trustBarClients = parsed
-        .filter((c): c is Record<string, unknown> =>
-          typeof c === "object" && c !== null,
-        )
+        .filter((c): c is Record<string, unknown> => typeof c === "object" && c !== null)
         .filter((c) => typeof c.name === "string" && !!(c.name as string).trim())
         .map((c) => {
-          const logoUrl =
-            typeof c.logoUrl === "string" ? normalizeHttpUrl(c.logoUrl) ?? "" : "";
-          const href =
-            typeof c.href === "string" ? normalizeHttpUrl(c.href) : null;
+          const logoUrl = typeof c.logoUrl === "string" ? normalizeHttpUrl(c.logoUrl) ?? "" : "";
+          const href = typeof c.href === "string" ? normalizeHttpUrl(c.href) : null;
           return {
             name: (c.name as string).trim(),
             logoUrl,
@@ -165,23 +214,29 @@ export async function updateHeroSection(formData: FormData) {
     trustBarClients = [];
   }
 
-  const hero = {
-    proof,
-    h1Line1,
-    h1Line2,
-    sub,
-    benefits,
-    trust: trustLines,
+  const [saHero, egHero] = await Promise.all([getMergedHero("SA"), getMergedHero("EG")]);
+  const saNextHero: StaticLanding["hero"] = {
+    ...saHero,
+    trustBarHeadline,
+    trustBarClients,
+  };
+  const egNextHero: StaticLanding["hero"] = {
+    ...egHero,
     trustBarHeadline,
     trustBarClients,
   };
 
-  await upsertLandingSection(country, "hero", hero);
+  await Promise.all([
+    upsertLandingSection("SA", "hero", saNextHero),
+    upsertLandingSection("EG", "hero", egNextHero),
+  ]);
 
-  const countrySlug = country === "SA" ? "sa" : "eg";
-  revalidateTag(`landing-${country}`, "default");
-  revalidatePath(`/${countrySlug}`);
-  revalidatePath(`/${countrySlug}/pricing`);
+  revalidateTag("landing-SA", "default");
+  revalidateTag("landing-EG", "default");
+  revalidatePath("/sa");
+  revalidatePath("/eg");
+  revalidatePath("/sa/pricing");
+  revalidatePath("/eg/pricing");
   revalidatePath("/");
 
   redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
@@ -473,6 +528,8 @@ export async function updateSocialProofSection(formData: FormData) {
       ((formData.get(`testimonials_${i}_videoUrl`) as string | null) ?? "").trim();
     const videoLabel =
       ((formData.get(`testimonials_${i}_videoLabel`) as string | null) ?? "").trim();
+    const mediaImage =
+      ((formData.get(`testimonials_${i}_mediaImage`) as string | null) ?? "").trim();
     const siteLink =
       ((formData.get(`testimonials_${i}_siteLink`) as string | null) ?? "").trim();
 
@@ -487,6 +544,7 @@ export async function updateSocialProofSection(formData: FormData) {
       !tag &&
       !videoUrl &&
       !videoLabel &&
+      !mediaImage &&
       !siteLink
     ) {
       continue;
@@ -503,6 +561,7 @@ export async function updateSocialProofSection(formData: FormData) {
       tag,
       videoUrl: videoUrl || undefined,
       videoLabel: videoLabel || undefined,
+      mediaImage: mediaImage || undefined,
       siteLink: siteLink || undefined,
     });
   }
@@ -515,9 +574,13 @@ export async function updateSocialProofSection(formData: FormData) {
     founding,
   };
 
-  await upsertLandingSection(country, "socialProof", socialProof);
+  await Promise.all([
+    upsertLandingSection("SA", "socialProof", socialProof),
+    upsertLandingSection("EG", "socialProof", socialProof),
+  ]);
 
-  revalidateTag(`landing-${country}`, "default");
+  revalidateTag("landing-SA", "default");
+  revalidateTag("landing-EG", "default");
   revalidatePath("/");
   revalidatePath("/pricing");
   revalidatePath("/admin/content/socialProof");

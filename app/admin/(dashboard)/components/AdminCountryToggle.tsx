@@ -6,12 +6,14 @@ import { COUNTRIES } from "../_config";
 import { cn } from "@/lib/utils";
 
 export function AdminCountryToggle() {
-  const pathname = usePathname();
+  const pathnameRaw = usePathname();
+  const pathname =
+    pathnameRaw && pathnameRaw.length > 0 ? pathnameRaw : "/admin";
   const searchParams = useSearchParams();
   const current = searchParams.get("country") === "EG" ? "EG" : "SA";
 
   const params = new URLSearchParams(searchParams?.toString() ?? "");
-  const baseHref = pathname ?? "/admin";
+  const baseHref = pathname;
 
   return (
     <div className="flex items-center gap-1 rounded-md bg-muted px-1 py-0.5 text-[11px] font-medium text-foreground">

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import type { Testimonial } from "@/app/content/landing/types";
 import { Avatar } from "@/app/components/Avatar";
 import { Icon } from "@/app/components/Icon";
@@ -11,8 +12,9 @@ type SocialProofCardProps = {
 };
 
 export function SocialProofCard({ testimonial }: SocialProofCardProps) {
-  const { name, role, quote, metric, avatarImg, stars, tag, videoUrl, videoLabel, siteLink } = testimonial;
-  const effectiveVideoUrl = videoUrl ?? "https://www.youtube.com/shorts/6SMagY8K2Jc";
+  const { name, role, quote, metric, avatarImg, stars, tag, videoUrl, videoLabel, mediaImage, siteLink } = testimonial;
+  const effectiveVideoUrl = (videoUrl ?? "").trim();
+  const effectiveMediaImage = (mediaImage ?? "").trim();
   const effectiveSiteLink = (siteLink ?? "").trim();
   const siteLinkHref =
     effectiveSiteLink && !/^https?:\/\//i.test(effectiveSiteLink)
@@ -35,7 +37,19 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
       >
         "
       </span>
-      {effectiveVideoUrl && <SocialProofVideo url={effectiveVideoUrl} title={videoLabel ?? name} />}
+      {effectiveVideoUrl ? (
+        <SocialProofVideo url={effectiveVideoUrl} title={videoLabel ?? name} />
+      ) : effectiveMediaImage ? (
+        <div className="mb-5 overflow-hidden rounded-xl border border-border/60 sm:mb-7">
+          <Image
+            src={effectiveMediaImage}
+            alt={videoLabel ?? `صورة الشهادة - ${name}`}
+            width={960}
+            height={540}
+            className="h-auto w-full object-cover"
+          />
+        </div>
+      ) : null}
       <p className="mb-3 text-[14px] tracking-[2px] text-accent sm:mb-5 sm:text-[16px]">
         <Icon emoji={"★".repeat(stars)} label={`${stars} نجوم`} />
       </p>
@@ -73,7 +87,7 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
         >
           {tag}
         </span>
-        {effectiveVideoUrl && (
+        {effectiveVideoUrl ? (
           <a
             href={effectiveVideoUrl}
             target="_blank"
@@ -83,7 +97,7 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
             <Icon emoji="▶" label="تشغيل الفيديو" />
             <span>{videoLabel ?? "شاهد القصة"}</span>
           </a>
-        )}
+        ) : null}
         {effectiveSiteLink ? (
           <a
             href={siteLinkHref}

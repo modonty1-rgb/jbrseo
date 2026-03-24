@@ -4,6 +4,7 @@ export const ADMIN_NAV = [
   { href: "/admin/settings", label: "الإعدادات" },
   { href: "/admin/subscribers", label: "المشتركون" },
   { href: "/admin/content/hero", label: "قسم الهيرو" },
+  { href: "/admin/content/trustbar", label: "شريط العملاء" },
   { href: "/admin/content/whyNow", label: "قسم لماذا الآن" },
   { href: "/admin/content/howItWorks", label: "قسم كيف يعمل" },
   { href: "/admin/content/outcomes", label: "قسم النتائج" },
@@ -35,7 +36,6 @@ export const SIDEBAR_GROUPS: { label: string; hrefs: readonly string[] }[] = [
       "/admin/content/whyNow",
       "/admin/content/howItWorks",
       "/admin/content/outcomes",
-      "/admin/content/socialProof",
       "/admin/content/faq",
       "/admin/content/finalCta",
     ],
@@ -45,7 +45,14 @@ export const SIDEBAR_GROUPS: { label: string; hrefs: readonly string[] }[] = [
     hrefs: ["/admin/content/pricing"],
   },
   {
-    label: "صفحات جانبية مهمه",
+    label: "محتوى يظهر في السعودية ومصر",
+    hrefs: [
+      "/admin/content/trustbar",
+      "/admin/content/socialProof",
+    ],
+  },
+  {
+    label: "صفحات جانبية مهمة",
     hrefs: ["/admin/content/privacy", "/admin/content/terms", "/admin/content/about", "/admin/content/team"],
   },
   {

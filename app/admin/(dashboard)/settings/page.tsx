@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { getGlobalSiteSettings } from "@/app/actions/landing";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import type { SupportedCountry } from "@/lib/landing-content.types";
-import { GeneralForm } from "../components/GeneralForm";
+import { GeneralSettingsForm } from "../components/GeneralSettingsForm";
 import { TrackingForm } from "../components/TrackingForm";
 import { AdminCountryPill } from "../components/AdminCountryPill";
 import { AdminFormFeedback } from "../components/AdminFormFeedback";
@@ -32,35 +32,35 @@ export default async function AdminSettingsPage({
     <div className="p-6">
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <h1 className="text-xl font-bold text-foreground">الإعدادات</h1>
+        <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-foreground">
+          البلد: {country === "SA" ? "السعودية" : "مصر"}
+        </span>
         <Suspense fallback={null}>
           <AdminCountryPill />
         </Suspense>
       </div>
+      <p className="mb-5 text-sm text-muted-foreground">
+        إعدادات عامة للموقع مثل نص زر الدعوة ورقم التواصل، بالإضافة لرموز التتبع والتحليلات.
+      </p>
       <Suspense fallback={null}>
         <AdminFormFeedback />
       </Suspense>
 
       <div className="space-y-6">
-        <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-          <h2 className="mb-4 text-sm font-semibold text-muted-foreground">عام</h2>
-          <GeneralForm
-            country={country}
-            site={{ showSectionCounter: false, ctaLabel, whatsappNumber: globalRow?.whatsappNumber ?? "" }}
-            redirect={redirect}
-          />
-        </div>
-        <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-          <h2 className="mb-4 text-sm font-semibold text-muted-foreground">التتبع</h2>
-          <TrackingForm
-            country={country}
-            tracking={{
-              gtmId: globalRow?.gtmId ?? "",
-              hotjarId: globalRow?.hotjarId ?? "",
-              fbPixelId: globalRow?.fbPixelId ?? "",
-            }}
-            redirect={redirect}
-          />
-        </div>
+        <GeneralSettingsForm
+          country={country}
+          site={{ showSectionCounter: false, ctaLabel, whatsappNumber: globalRow?.whatsappNumber ?? "" }}
+          redirect={redirect}
+        />
+        <TrackingForm
+          country={country}
+          tracking={{
+            gtmId: globalRow?.gtmId ?? "",
+            hotjarId: globalRow?.hotjarId ?? "",
+            fbPixelId: globalRow?.fbPixelId ?? "",
+          }}
+          redirect={redirect}
+        />
       </div>
     </div>
   );

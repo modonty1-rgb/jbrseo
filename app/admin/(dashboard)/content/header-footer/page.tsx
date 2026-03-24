@@ -4,7 +4,7 @@ import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { StaticLanding } from "@/app/content/landing/types";
 import { AdminCountryPill } from "../../components/AdminCountryPill";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
-import { HeaderFooterCombinedForm } from "../HeaderFooterCombinedForm";
+import { HeaderFooterForm } from "../HeaderFooterForm";
 
 async function getCountry(
   searchParams: Promise<{ country?: string }>,
@@ -56,22 +56,22 @@ export default async function AdminHeaderFooterContentPage({
     }
   }
 
-  const label = "Header & footer sections";
+  const title = "الهيدر + الشعار";
 
   return (
     <div className="p-6">
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <h1 className="text-xl font-bold text-foreground">{label}</h1>
+        <h1 className="text-xl font-bold text-foreground">{title}</h1>
         <Suspense fallback={null}>
           <AdminCountryPill />
         </Suspense>
       </div>
-      <div className="rounded-lg border border-border bg-card shadow-sm overflow-hidden">
+      <div className="overflow-hidden rounded-lg border border-border bg-card shadow-sm">
         <div className="border-b border-border bg-muted/50 px-4 py-3 text-sm font-semibold text-muted-foreground">
-          {label}
+          {title}
         </div>
         <div className="p-4">
-          <HeaderFooterCombinedForm
+          <HeaderFooterForm
             header={headerData}
             footer={footerData}
             country={country}

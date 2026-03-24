@@ -1,16 +1,44 @@
 "use client";
 
+import { useMemo, useState, type ReactElement } from "react";
 import { updateTrackingFormData } from "@/app/actions/landing";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { SiteSettingsJson } from "@/lib/site-settings.types";
-import { Label } from "@/app/components/ui/label";
+import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { ConfirmSaveDialog } from "./ConfirmSaveDialog";
+import { Label } from "@/app/components/ui/label";
+import { UnsavedChangesBar } from "./UnsavedChangesBar";
+
+const TRACKING_FORM_ID = "tracking-form";
 
 const TRACKING_FIELDS = [
-  { key: "gtmId" as const, label: "Google Tag Manager ID", placeholder: "GTM-XXXXXX" },
-  { key: "hotjarId" as const, label: "Hotjar site ID", placeholder: "1234567" },
-  { key: "fbPixelId" as const, label: "Facebook Pixel ID", placeholder: "123456789012345" },
+  {
+    name: "gtmId" as const,
+    id: "tracking-gtmId",
+    label: "Google Tag Manager ID",
+    placeholder: "",
+    hint: "رمز إدارة الوسوم من Google — يبدأ عادة بـ GTM-",
+    icon: "📊",
+    link: "https://tagmanager.google.com",
+  },
+  {
+    name: "hotjarId" as const,
+    id: "tracking-hotjarId",
+    label: "Hotjar site ID",
+    placeholder: "",
+    hint: "معرّف الموقع في Hotjar لتسجيل الجلسات والخريطة الحرارية — أرقام فقط",
+    icon: "🔥",
+    link: "https://insights.hotjar.com",
+  },
+  {
+    name: "fbPixelId" as const,
+    id: "tracking-fbPixelId",
+    label: "Facebook Pixel ID",
+    placeholder: "",
+    hint: "معرّف بكسل Meta/Facebook من مدير الأحداث — غالباً ١٥ رقماً",
+    icon: "📘",
+    link: "https://business.facebook.com/events_manager",
+  },
 ] as const;
 
 export function TrackingForm({
@@ -21,33 +49,107 @@ export function TrackingForm({
   country: SupportedCountry;
   tracking: SiteSettingsJson["tracking"];
   redirect?: string;
-}) {
+}): ReactElement {
+  const [gtmId, setGtmId] = useState(tracking.gtmId ?? "");
+  const [hotjarId, setHotjarId] = useState(tracking.hotjarId ?? "");
+  const [fbPixelId, setFbPixelId] = useState(tracking.fbPixelId ?? "");
+
+  const activeTrackingCount = useMemo(() => {
+    return [gtmId, hotjarId, fbPixelId].filter((v) => v.trim().length > 0).length;
+  }, [gtmId, hotjarId, fbPixelId]);
+
+  const setters: Record<(typeof TRACKING_FIELDS)[number]["name"], (v: string) => void> = {
+    gtmId: setGtmId,
+    hotjarId: setHotjarId,
+    fbPixelId: setFbPixelId,
+  };
+
+  const values: Record<(typeof TRACKING_FIELDS)[number]["name"], string> = {
+    gtmId,
+    hotjarId,
+    fbPixelId,
+  };
+
+  function handleSave(): void {
+    const el = document.getElementById(TRACKING_FORM_ID);
+    if (el instanceof HTMLFormElement) el.requestSubmit();
+  }
+
   return (
-    <form id="tracking-form" action={updateTrackingFormData} className="flex flex-col gap-3">
-      <input type="hidden" name="country" value={country} />
-      {redirect && <input type="hidden" name="redirect" value={redirect} />}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {TRACKING_FIELDS.map(({ key, label, placeholder }) => (
-          <div key={key} className="flex flex-col gap-1.5">
-            <Label htmlFor={`tracking-${key}`} className="text-xs font-medium text-muted-foreground">
-              {label}
-            </Label>
-            <Input
-              id={`tracking-${key}`}
-              type="text"
-              name={key}
-              defaultValue={tracking[key]}
-              placeholder={placeholder}
-              dir="ltr"
-            />
+    <>
+      <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+        <div className="mb-3 flex flex-wrap items-center gap-2 border-b border-border pb-3">
+          <span className="text-base" aria-hidden>
+            📡
+          </span>
+          <h2 className="text-sm font-semibold text-foreground">التتبع والتحليلات</h2>
+          <span className="ms-auto text-xs text-muted-foreground">
+            {activeTrackingCount}/3 خدمات مُفعّلة
+          </span>
+        </div>
+
+        <form id={TRACKING_FORM_ID} action={updateTrackingFormData} className="flex flex-col gap-4">
+          <input type="hidden" name="country" value={country} />
+          {redirect && <input type="hidden" name="redirect" value={redirect} />}
+
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+            {TRACKING_FIELDS.map((field) => {
+              const val = values[field.name];
+              const active = val.trim().length > 0;
+              return (
+                <div key={field.name} className="flex flex-col gap-1.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <Label htmlFor={field.id} className="text-xs font-medium text-muted-foreground">
+                      <span className="me-1" aria-hidden>
+                        {field.icon}
+                      </span>
+                      {field.label}
+                    </Label>
+                    {active ? (
+                      <span className="rounded-full bg-emerald-500/15 px-1.5 py-0.5 text-[10px] font-medium text-emerald-500">
+                        ✓ مُفعّلة
+                      </span>
+                    ) : (
+                      <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
+                        غير مُفعّلة
+                      </span>
+                    )}
+                  </div>
+                  <Input
+                    id={field.id}
+                    type="text"
+                    name={field.name}
+                    value={val}
+                    onChange={(e) => setters[field.name](e.target.value)}
+                    placeholder={field.placeholder}
+                    dir="ltr"
+                    className="font-mono text-xs"
+                  />
+                  <p className="text-xs text-muted-foreground">{field.hint}</p>
+                  <a
+                    href={field.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] font-medium text-primary hover:underline"
+                  >
+                    فتح لوحة الخدمة ↗
+                  </a>
+                </div>
+              );
+            })}
           </div>
-        ))}
+
+          <Button type="button" className="w-full sm:w-auto" onClick={handleSave}>
+            حفظ التتبع
+          </Button>
+        </form>
       </div>
-      <ConfirmSaveDialog
-        formId="tracking-form"
-        triggerLabel="حفظ التتبع"
-        description="سيتم حفظ إعدادات التتبع (GTM, Hotjar, Facebook Pixel) الحالية. هل أنت متأكد من المتابعة؟"
+
+      <UnsavedChangesBar
+        formId={TRACKING_FORM_ID}
+        message="تغييرات غير محفوظة في إعدادات التتبع"
+        className="bottom-20"
       />
-    </form>
+    </>
   );
 }

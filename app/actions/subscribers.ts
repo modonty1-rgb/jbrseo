@@ -65,7 +65,7 @@ export async function createSubscriber(formData: FormData): Promise<CreateSubscr
 
 export type SubscriberListItem = {
   id: string;
-  contactName: string;
+  contactName: string | null;
   email: string;
   phone: string;
   businessName: string | null;
@@ -113,6 +113,7 @@ export async function getSubscribers(options?: {
   const where = searchTrim
     ? {
         OR: [
+          { contactName: { contains: searchTrim, mode: "insensitive" as const } },
           { email: { contains: searchTrim, mode: "insensitive" as const } },
           { phone: { contains: searchTrim, mode: "insensitive" as const } },
           { planName: { contains: searchTrim, mode: "insensitive" as const } },

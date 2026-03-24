@@ -25,22 +25,21 @@ export default async function AdminSettingsSeoPage({
   return (
     <div className="p-6">
       <div className="mb-4 flex flex-row flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <h1 className="text-xl font-bold text-foreground">SEO وبطاقات التواصل</h1>
-          <Suspense fallback={null}>
-            <AdminCountryPill />
-          </Suspense>
+        <div className="flex min-w-0 flex-1 flex-col gap-1">
+          <h1 className="text-xl font-bold text-foreground">الظهور في البحث وبطاقات المشاركة</h1>
+          <p className="text-sm text-muted-foreground">
+            تعديل عنوان ووصف الموقع لنتائج غوغل، والرابط الرسمي، وصورة الرابط عند المشاركة في واتساب
+            وفيسبوك وX.
+          </p>
         </div>
-        <p className="max-w-md text-end text-sm text-muted-foreground">
-          إعدادات ظهور موقعك في محركات البحث (غوغل) وعند مشاركة الرابط في واتساب وفيسبوك وتويتر.
-        </p>
+        <Suspense fallback={null}>
+          <AdminCountryPill />
+        </Suspense>
       </div>
       <Suspense fallback={null}>
         <AdminFormFeedback />
       </Suspense>
-      <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-        <SeoForm country={country} seo={seo} redirect={`/admin/settings/seo?country=${country}`} />
-      </div>
+      <SeoForm country={country} seo={seo} redirect={`/admin/settings/seo?country=${country}`} />
     </div>
   );
 }

@@ -10,7 +10,7 @@ export function AdminSubscribersLink() {
   return (
     <Link
       href={href}
-      className="inline-flex items-center rounded-md border border-border bg-background px-3 py-1.5 text-xs font-semibold text-foreground shadow-sm hover:bg-muted/70"
+      className="inline-flex items-center rounded-md px-2.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
     >
       المشتركون
     </Link>
