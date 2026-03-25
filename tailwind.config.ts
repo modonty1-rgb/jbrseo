@@ -45,6 +45,10 @@ const config: Config = {
         sans:  ["var(--font-tajawal)", "Tajawal", "sans-serif"],
         latin: ["Roboto", "sans-serif"],
       },
+      fontWeight: {
+        extrabold: "700",
+        black: "700",
+      },
       animation: {
         "pulse-slow":     "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "fade-in-up":     "fade-in-up 0.8s ease-out forwards",

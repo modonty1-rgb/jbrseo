@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { GoogleTagManager } from "@next/third-parties/google";
 import { Tajawal } from "next/font/google";
 import Link from "@/app/components/link";
 import { FAVICON_URLS } from "@/lib/constants";
 import { getGlobalSeo } from "@/lib/getGlobalSeo";
+import { getSiteGtmId } from "@/lib/getLandingContent";
 import { resolveSiteOriginFromSeoCanonical } from "@/lib/seo-meta";
 import { ThemeProvider } from "@/app/helpers/useTheme";
 import "./globals.css";
@@ -10,15 +12,12 @@ import "./globals.css";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jbrseo.com";
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#0E065A" },
-    { media: "(prefers-color-scheme: dark)", color: "#0c0c12" },
-  ],
+  themeColor: "#0c0c12",
 };
 
 const tajawal = Tajawal({
   subsets: ["arabic", "latin"],
-  weight: ["400", "700", "800"],
+  weight: ["400", "700"],
   variable: "--font-tajawal",
   display: "swap",
   preload: true,
@@ -55,18 +54,20 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gtmId = await getSiteGtmId();
+
   return (
     <html lang="ar" dir="rtl" className={tajawal.variable} suppressHydrationWarning>
+      {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
         <link rel="dns-prefetch" href="https://static.hotjar.com" />
-        <link rel="dns-prefetch" href="https://connect.facebook.net" />
         <script
           id="theme-init"
           dangerouslySetInnerHTML={{

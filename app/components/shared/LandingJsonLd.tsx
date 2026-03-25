@@ -9,14 +9,15 @@ function buildJsonLd(content: LandingContent) {
 
   const organizationLogoUrl =
     "https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,fl_immutable_cache/v1771971820/jbrSeo_coverPage_du6vsm.png";
+  const social = content.siteSettings?.socialLinks ?? {};
   const socialUrls = [
-    process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK_URL,
-    process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL,
-    process.env.NEXT_PUBLIC_SOCIAL_LINKEDIN_URL,
-    process.env.NEXT_PUBLIC_SOCIAL_TWITTER_X_URL,
-    process.env.NEXT_PUBLIC_SOCIAL_YOUTUBE_URL,
-    process.env.NEXT_PUBLIC_SOCIAL_TIKTOK_URL,
-    process.env.NEXT_PUBLIC_SOCIAL_SNAPCHAT_URL,
+    social.facebook,
+    social.instagram,
+    social.linkedin,
+    social.twitterX,
+    social.youtube,
+    social.tiktok,
+    social.snapchat,
   ].filter(Boolean) as string[];
 
   const organization = {

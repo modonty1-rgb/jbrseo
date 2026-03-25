@@ -1,6 +1,7 @@
 export const ADMIN_NAV = [
   { href: "/admin", label: "لوحة التحكم" },
   { href: "/admin/settings/seo", label: "SEO" },
+  { href: "/admin/settings/social", label: "السوشال ميديا" },
   { href: "/admin/settings", label: "الإعدادات" },
   { href: "/admin/subscribers", label: "المشتركون" },
   { href: "/admin/content/hero", label: "قسم الهيرو" },
@@ -25,6 +26,7 @@ export const SIDEBAR_GROUPS: { label: string; hrefs: readonly string[] }[] = [
     label: "إعدادات الموقع",
     hrefs: [
       "/admin/settings/seo",
+      "/admin/settings/social",
       "/admin/settings",
       "/admin/content/header-footer",
     ],

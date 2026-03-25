@@ -26,7 +26,7 @@ function DesktopNav({ navLinks }: { navLinks: NavLinkItem[] }) {
 function MobileNavRow({ navLinks }: { navLinks: NavLinkItem[] }) {
   return (
     <nav
-      className="grid w-full grid-cols-3 gap-1 border-t border-border/80 px-3 pb-3 pt-2 lg:hidden"
+      className="grid w-full grid-cols-4 gap-1 border-t border-border/80 px-3 pb-3 pt-2 lg:hidden"
       aria-label="القائمة الرئيسية"
     >
       {navLinks.map(({ href, label }) => (
@@ -110,7 +110,7 @@ export function LandingHeader({
       )}
 
       <div className="mx-auto max-w-[1100px]">
-        <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-3 sm:px-8 lg:px-10">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-2 sm:px-8 lg:px-10">
           <HeaderLogo logoHref={logoHref} />
           <DesktopNav navLinks={navLinks} />
           <div className="flex items-center gap-2 sm:gap-2.5">

@@ -1,3 +1,4 @@
+import Link from "@/app/components/link";
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { LandingContent } from "@/lib/landing-content.types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
@@ -48,11 +49,20 @@ export default function Hero({
         <div className="hero-content-reveal w-full">
           <HeroEyebrow proof={h.proof} />
           <div className="mt-2 grid w-full grid-cols-1 gap-8 lg:mt-0 lg:grid-cols-2 lg:items-center lg:gap-12">
-            <div className="order-2 flex w-full flex-col items-center gap-4 lg:order-1 lg:items-start lg:gap-5">
+            <div className="order-1 flex w-full flex-col items-center gap-4 lg:order-1 lg:items-start lg:gap-5">
               <HeroHeadline line1={h.h1Line1} line2={h.h1Line2} />
               <HeroSlogan tagline={staticLanding.footer.tagline} />
+              <div className="mt-6 flex flex-col items-center gap-3 lg:items-start">
+                <Link
+                  href={ctaLink}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:scale-105 hover:bg-violet-700 hover:shadow-xl"
+                >
+                  ابدأ مجاناً — بدون بطاقة ←
+                </Link>
+                <p className="text-xs text-white/50">✓ بدون بطاقة · ✓ ١٤ يوم ضمان كامل</p>
+              </div>
             </div>
-            <div className="order-1 flex w-full justify-center lg:order-2">
+            <div className="order-2 flex w-full justify-center lg:order-2">
               <HeroBrandTag />
             </div>
           </div>

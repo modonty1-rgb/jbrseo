@@ -124,7 +124,8 @@ export default async function CountryHome({
     pricing: baseLanding.pricing,
     pricingPage: baseLanding.pricingPage,
   };
-  const ctaLabel = content.siteSettings.ctaLabel || "ابدأ مجاناً — بدون بطاقة";
+  const signupPrimaryLabel = "ابدأ مجاناً — بدون بطاقة";
+  const signupSecondaryLabel = "ابدأ الحين — ١٤ يوم ضمان كامل ✅";
   const pricingSA = pricingSALanding.pricing;
   const pricingEG = pricingEGLanding.pricing;
   const initialLocale = countryCode === "EG" ? "eg" : "sa";
@@ -134,7 +135,13 @@ export default async function CountryHome({
     <>
       <LandingJsonLd content={content} />
       <section className="relative">
-        <Hero content={content} staticLanding={mergedStaticLanding} country={countryCode} ctaLink={pricingCtaLink} ctaLabel={pricingCtaLabel} />
+        <Hero
+          content={content}
+          staticLanding={mergedStaticLanding}
+          country={countryCode}
+          ctaLink={ctaLink}
+          ctaLabel={signupPrimaryLabel}
+        />
         <HeroTrustBar hero={mergedStaticLanding.hero} />
       </section>
       <section className="relative">
@@ -167,7 +174,13 @@ export default async function CountryHome({
         <FAQ staticLanding={mergedStaticLanding} country={countryCode} ctaLabel="تحدث معنا على واتساب" whatsappNumber={content.siteSettings?.whatsappNumber} />
       </section>
       <section className="relative">
-        <FinalCTA staticLanding={mergedStaticLanding} country={countryCode} ctaLabel={ctaLabel} ctaLink={ctaLink} whatsappNumber={content.siteSettings?.whatsappNumber} />
+        <FinalCTA
+          staticLanding={mergedStaticLanding}
+          country={countryCode}
+          ctaLabel={signupSecondaryLabel}
+          ctaLink={ctaLink}
+          whatsappNumber={content.siteSettings?.whatsappNumber}
+        />
       </section>
     </>
   );

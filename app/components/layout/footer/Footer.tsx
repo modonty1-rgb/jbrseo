@@ -35,14 +35,15 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
   const waLink = getWhatsAppLink(country, content.siteSettings?.whatsappNumber);
   const homeHref = basePath ? `${basePath}#hero` : "/#hero";
 
+  const social = content.siteSettings?.socialLinks ?? {};
   const socialLinks = [
-    { href: process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK_URL,  label: "Facebook",    Icon: SocialFacebookOutline },
-    { href: process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM_URL, label: "Instagram",   Icon: Instagram             },
-    { href: process.env.NEXT_PUBLIC_SOCIAL_LINKEDIN_URL,  label: "LinkedIn",    Icon: Linkedin              },
-    { href: process.env.NEXT_PUBLIC_SOCIAL_TWITTER_X_URL, label: "X (Twitter)", Icon: Twitter               },
-    { href: process.env.NEXT_PUBLIC_SOCIAL_YOUTUBE_URL,   label: "YouTube",     Icon: Youtube               },
-    { href: process.env.NEXT_PUBLIC_SOCIAL_TIKTOK_URL,    label: "TikTok",      Icon: TiktokLogoLight       },
-    { href: process.env.NEXT_PUBLIC_SOCIAL_SNAPCHAT_URL,  label: "Snapchat",    Icon: RoundSnapchat         },
+    { href: social.facebook, label: "Facebook", Icon: SocialFacebookOutline },
+    { href: social.instagram, label: "Instagram", Icon: Instagram },
+    { href: social.linkedin, label: "LinkedIn", Icon: Linkedin },
+    { href: social.twitterX, label: "X (Twitter)", Icon: Twitter },
+    { href: social.youtube, label: "YouTube", Icon: Youtube },
+    { href: social.tiktok, label: "TikTok", Icon: TiktokLogoLight },
+    { href: social.snapchat, label: "Snapchat", Icon: RoundSnapchat },
   ].filter((item) => item.href);
 
   return (

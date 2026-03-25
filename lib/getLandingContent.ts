@@ -3,7 +3,7 @@ import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { cl } from "@/helpers/cloudinary";
-import type { LandingContent, SupportedCountry } from "./landing-content.types";
+import type { LandingContent, SocialLinks, SupportedCountry } from "./landing-content.types";
 import { prisma } from "./prisma";
 import { staticPlansToPricingPlans } from "./static-plans-to-content";
 import { getLandingSectionOverride } from "./landing-sections";
@@ -16,6 +16,12 @@ async function siteSettingsRowSafe(): Promise<Awaited<ReturnType<typeof prisma.s
     console.warn("[getLandingContent] siteSettings unreachable; using empty tracking.");
     return null;
   }
+}
+
+/** `SiteSettings.gtmId` from admin — use in root layout for GTM only. */
+export async function getSiteGtmId(): Promise<string> {
+  const row = await siteSettingsRowSafe();
+  return row?.gtmId?.trim() ?? "";
 }
 
 function mergeLandingSeo(
@@ -33,6 +39,25 @@ function mergeLandingSeo(
     merged[key] = typeof v === "string" ? v : String(v);
   }
   return merged;
+}
+
+function normalizeSocialLinks(input: unknown): SocialLinks {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return {};
+  const raw = input as Record<string, unknown>;
+  const toVal = (v: unknown): string | undefined => {
+    if (typeof v !== "string") return undefined;
+    const s = v.trim();
+    return s ? s : undefined;
+  };
+  return {
+    facebook: toVal(raw.facebook),
+    instagram: toVal(raw.instagram),
+    linkedin: toVal(raw.linkedin),
+    twitterX: toVal(raw.twitterX),
+    youtube: toVal(raw.youtube),
+    tiktok: toVal(raw.tiktok),
+    snapchat: toVal(raw.snapchat),
+  };
 }
 
 async function getStaticFallback(): Promise<LandingContent> {
@@ -70,8 +95,8 @@ async function getStaticFallback(): Promise<LandingContent> {
       faq: "",
       finalCta: "",
     },
-    tracking: { gtmId: "", hotjarId: "", fbPixelId: "" },
-    siteSettings: { ctaLabel: "ابدأ مجاناً — بدون بطاقة", whatsappNumber: "" },
+    tracking: { gtmId: "", hotjarId: "" },
+    siteSettings: { ctaLabel: "ابدأ مجاناً — بدون بطاقة", whatsappNumber: "", socialLinks: {} },
     sectionHeadings: {
       whyNow: { eyebrow: "لماذا الآن", title: "كل شهر تأخير له ثمن" },
       howItWorks: { eyebrow: "الطريقة", title: "كيف نعمل" },
@@ -93,12 +118,13 @@ async function getStaticFallback(): Promise<LandingContent> {
 
 async function fetchLandingContent(country: SupportedCountry): Promise<LandingContent> {
   const base = await getStaticFallback();
-  const [staticLandingRaw, settingsRow, seoOverride, ctaLabelOverride, pricingTeaserOverride] = await Promise.all([
+  const [staticLandingRaw, settingsRow, seoOverride, ctaLabelOverride, pricingTeaserOverride, socialLinksOverride] = await Promise.all([
     getStaticLandingWithOverrides(country),
     siteSettingsRowSafe(),
     getLandingSectionOverride(country, "seo"),
     getLandingSectionOverride(country, "ctaLabel"),
     getLandingSectionOverride(country, "pricingTeaser"),
+    getLandingSectionOverride(country, "socialLinks"),
   ]);
 
   const staticLanding = staticLandingRaw;
@@ -141,8 +167,8 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
   };
 
   const tracking = settingsRow
-    ? { gtmId: settingsRow.gtmId ?? "", hotjarId: settingsRow.hotjarId ?? "", fbPixelId: settingsRow.fbPixelId ?? "" }
-    : { gtmId: "", hotjarId: "", fbPixelId: "" };
+    ? { gtmId: settingsRow.gtmId ?? "", hotjarId: settingsRow.hotjarId ?? "" }
+    : { gtmId: "", hotjarId: "" };
 
   const ctaLabel =
     (ctaLabelOverride && typeof ctaLabelOverride === "object" && "ctaLabel" in ctaLabelOverride && typeof (ctaLabelOverride as { ctaLabel?: string }).ctaLabel === "string"
@@ -150,6 +176,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
       : null) ?? defaultCta;
 
   const whatsappNumber = settingsRow?.whatsappNumber?.trim() ?? "";
+  const socialLinks = normalizeSocialLinks(socialLinksOverride);
 
   const seo = mergeLandingSeo(base.seo, seoOverride);
 
@@ -180,7 +207,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
     staticLanding,
     seo,
     tracking,
-    siteSettings: { ctaLabel, whatsappNumber },
+    siteSettings: { ctaLabel, whatsappNumber, socialLinks },
     landingImages,
     sectionImages: base.sectionImages,
     sectionHeadings: {

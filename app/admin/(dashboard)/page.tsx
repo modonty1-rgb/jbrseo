@@ -1,6 +1,11 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { getSubscriberStats } from "@/app/actions/subscribers";
+import {
+  getAllAnalyticsData,
+  type AllAnalyticsData,
+  type AnalyticsData,
+} from "@/lib/analytics";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { AdminCountryPill } from "./components/AdminCountryPill";
 import { cn } from "@/lib/utils";
@@ -19,6 +24,7 @@ export default async function AdminDashboardPage({
 }) {
   const country = await getCountry(searchParams);
   const stats = await getSubscriberStats();
+  const analytics = await getAllAnalyticsData();
 
   const totalSubscribers = stats?.total ?? 0;
   const saCount = stats?.byCountry.SA ?? 0;
@@ -112,6 +118,7 @@ export default async function AdminDashboardPage({
       icon: "⭐",
     },
     { label: "SEO", href: `/admin/settings/seo?country=${country}`, icon: "🔍" },
+    { label: "السوشال ميديا", href: `/admin/settings/social?country=${country}`, icon: "📱" },
     { label: "الإعدادات", href: `/admin/settings?country=${country}`, icon: "⚙️" },
     {
       label: "المشتركون",
@@ -156,6 +163,74 @@ export default async function AdminDashboardPage({
           </p>
         </div>
       )}
+
+      {/* ── GA4 Analytics ── */}
+      <section className="mb-6 space-y-5">
+        <h2 className="text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          تحليلات GA4 — آخر ٧ أيام
+        </h2>
+
+        {(
+          [
+            { key: 'all', label: '🌍 الكل',       data: analytics.all, valueColor: 'text-primary'   },
+            { key: 'sa',  label: '🇸🇦 السعودية', data: analytics.sa,  valueColor: 'text-green-500' },
+            { key: 'eg',  label: '🇪🇬 مصر',      data: analytics.eg,  valueColor: 'text-blue-500'  },
+          ] satisfies { key: string; label: string; data: AnalyticsData; valueColor: string }[]
+        ).map(group => (
+          <div key={group.key} className="space-y-2">
+
+            <p className="text-right text-xs font-medium text-muted-foreground border-r-2 border-border pr-2">
+              {group.label}
+            </p>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
+              {(
+                [
+                  { label: 'زيارات الصفحات', value: group.data.pageviews7d,     icon: '👁'  },
+                  { label: 'نشطون اليوم',    value: group.data.activeUsersToday, icon: '👤'  },
+                  { label: 'بدأوا التسجيل', value: group.data.signupStart7d,    icon: '✍️' },
+                  { label: 'شاهدوا الأسعار', value: group.data.pricingView7d,   icon: '💰'  },
+                  { label: 'واتساب',         value: group.data.whatsappClick7d,  icon: '💬'  },
+                ] satisfies { label: string; value: number; icon: string }[]
+              ).map(stat => (
+                <div
+                  key={stat.label}
+                  className="block rounded-lg border border-border bg-card p-4 shadow-sm"
+                >
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
+                    <span className="rounded-md bg-primary/10 p-1 text-base" aria-hidden="true">
+                      {stat.icon}
+                    </span>
+                  </div>
+                  <p className={`text-2xl font-bold ${group.valueColor}`}>
+                    {stat.value.toLocaleString('ar-SA')}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            {group.data.topPages.length > 0 && (
+              <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
+                <p className="mb-2 text-right text-xs font-semibold text-muted-foreground">
+                  أكثر الصفحات زيارة
+                </p>
+                <ul className="space-y-1.5">
+                  {group.data.topPages.map(pg => (
+                    <li key={pg.page} className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">
+                        {pg.views.toLocaleString('ar-SA')} زيارة
+                      </span>
+                      <span className="font-mono text-foreground" dir="ltr">{pg.page}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+          </div>
+        ))}
+      </section>
 
       {stats ? (
         <>

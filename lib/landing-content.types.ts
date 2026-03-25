@@ -21,6 +21,16 @@ export type SectionHeadings = {
 
 import type { StaticLanding } from "@/app/content/landing/types";
 
+export type SocialLinks = {
+  facebook?: string;
+  instagram?: string;
+  linkedin?: string;
+  twitterX?: string;
+  youtube?: string;
+  tiktok?: string;
+  snapchat?: string;
+};
+
 export type LandingContent = {
   staticLanding?: StaticLanding;
   landing: {
@@ -63,8 +73,8 @@ export type LandingContent = {
     faq: string;
     finalCta: string;
   };
-  tracking: { gtmId: string; hotjarId: string; fbPixelId: string };
-  siteSettings: { ctaLabel: string; whatsappNumber?: string };
+  tracking: { gtmId: string; hotjarId: string };
+  siteSettings: { ctaLabel: string; whatsappNumber?: string; socialLinks?: SocialLinks };
   sectionHeadings: SectionHeadings;
   footer: { brandName: string; copyright: string };
   pricingPage: { title: string; description: string; h1: string; intro: string };

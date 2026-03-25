@@ -25,11 +25,12 @@ const SECTION_KEYS = [
   "seo",
   "ctaLabel",
   "pricingTeaser",
+  "socialLinks",
 ] as const;
 
 export type LandingSectionKey = (typeof SECTION_KEYS)[number];
 
-const SETTINGS_ONLY_KEYS = ["seo", "ctaLabel", "pricingTeaser"] as const;
+const SETTINGS_ONLY_KEYS = ["seo", "ctaLabel", "pricingTeaser", "socialLinks"] as const;
 export type StaticSectionKey = Exclude<LandingSectionKey, (typeof SETTINGS_ONLY_KEYS)[number]>;
 export const STATIC_ONLY_KEYS: readonly StaticSectionKey[] = SECTION_KEYS.filter(
   (k): k is StaticSectionKey => !SETTINGS_ONLY_KEYS.includes(k as (typeof SETTINGS_ONLY_KEYS)[number]),

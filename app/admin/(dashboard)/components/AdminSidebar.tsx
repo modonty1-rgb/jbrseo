@@ -33,6 +33,7 @@ const LABEL_BY_HREF = Object.fromEntries(ADMIN_NAV.map((n) => [n.href, n.label])
 const HREF_ICON: Partial<Record<string, LucideIcon>> = {
   "/admin": LayoutDashboard,
   "/admin/settings/seo": Search,
+  "/admin/settings/social": Link2,
   "/admin/settings": Settings,
   "/admin/subscribers": Users,
   "/admin/content/hero": Sparkles,
@@ -132,6 +133,18 @@ export function AdminSidebar() {
         >
           <NavIcon href="/admin" />
           لوحة التحكم
+        </Link>
+
+        <Link
+          href="/admin/marketing"
+          className={cn(
+            "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
+            pathname.startsWith("/admin/marketing")
+              ? "bg-muted font-medium text-foreground"
+              : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
+          )}
+        >
+          📊 خطة التسويق
         </Link>
 
         <div className="my-3 border-t border-border/60 pt-3">

@@ -25,6 +25,14 @@ function isSvgUrl(url: string): boolean {
   return /\.svg(\?|#|$)/i.test(url);
 }
 
+function normalizeTrustBarHref(href: string): string {
+  const t = href.trim();
+  if (/^http:\/\/jabrco\.com/i.test(t)) {
+    return t.replace(/^http:/i, "https:");
+  }
+  return t;
+}
+
 function LogoItem({ client }: { client: TrustBarClient }) {
   const unoptimized = isSvgUrl(client.logoUrl);
   const inner = (
@@ -49,7 +57,7 @@ function LogoItem({ client }: { client: TrustBarClient }) {
   if (client.href) {
     return (
       <Link
-        href={client.href}
+        href={normalizeTrustBarHref(client.href)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={client.name}

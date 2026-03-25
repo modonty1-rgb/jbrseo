@@ -30,15 +30,6 @@ const TRACKING_FIELDS = [
     icon: "🔥",
     link: "https://insights.hotjar.com",
   },
-  {
-    name: "fbPixelId" as const,
-    id: "tracking-fbPixelId",
-    label: "Facebook Pixel ID",
-    placeholder: "",
-    hint: "معرّف بكسل Meta/Facebook من مدير الأحداث — غالباً ١٥ رقماً",
-    icon: "📘",
-    link: "https://business.facebook.com/events_manager",
-  },
 ] as const;
 
 export function TrackingForm({
@@ -52,22 +43,19 @@ export function TrackingForm({
 }): ReactElement {
   const [gtmId, setGtmId] = useState(tracking.gtmId ?? "");
   const [hotjarId, setHotjarId] = useState(tracking.hotjarId ?? "");
-  const [fbPixelId, setFbPixelId] = useState(tracking.fbPixelId ?? "");
 
   const activeTrackingCount = useMemo(() => {
-    return [gtmId, hotjarId, fbPixelId].filter((v) => v.trim().length > 0).length;
-  }, [gtmId, hotjarId, fbPixelId]);
+    return [gtmId, hotjarId].filter((v) => v.trim().length > 0).length;
+  }, [gtmId, hotjarId]);
 
   const setters: Record<(typeof TRACKING_FIELDS)[number]["name"], (v: string) => void> = {
     gtmId: setGtmId,
     hotjarId: setHotjarId,
-    fbPixelId: setFbPixelId,
   };
 
   const values: Record<(typeof TRACKING_FIELDS)[number]["name"], string> = {
     gtmId,
     hotjarId,
-    fbPixelId,
   };
 
   function handleSave(): void {
@@ -84,7 +72,7 @@ export function TrackingForm({
           </span>
           <h2 className="text-sm font-semibold text-foreground">التتبع والتحليلات</h2>
           <span className="ms-auto text-xs text-muted-foreground">
-            {activeTrackingCount}/3 خدمات مُفعّلة
+            {activeTrackingCount}/2 خدمات مُفعّلة
           </span>
         </div>
 
@@ -137,6 +125,30 @@ export function TrackingForm({
                 </div>
               );
             })}
+
+            <div className="rounded-lg border border-border bg-muted/30 p-4">
+              <div className="flex items-start gap-3">
+                <span className="text-lg">📘</span>
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    Facebook Pixel — يُدار عبر GTM
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                    جميع بيكسلات Meta/Facebook تُضاف من خلال{' '}
+                    <strong className="text-foreground">Google Tag Manager (GTM-TT25M3GX)</strong>.
+                    لإضافة أو تعديل بيكسل:{' '}
+                    <a
+                      href="https://tagmanager.google.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline underline-offset-2"
+                    >
+                      افتح GTM ↗
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <Button type="button" className="w-full sm:w-auto" onClick={handleSave}>

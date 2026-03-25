@@ -32,7 +32,7 @@ export default async function MarketingShellLayout({
         country={countryCode}
         basePath={basePath}
         pricingHref={`${basePath}/signup`}
-        navPrimaryCtaLabel="ابدأ مجاناً"
+        navPrimaryCtaLabel="ابدأ مجاناً — بدون بطاقة ←"
       />
       <main id="main-content">{children}</main>
     </>

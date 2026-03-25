@@ -28,7 +28,7 @@ export function SocialProofTabs({ testimonials, active, onSelect }: SocialProofT
       <TabsList className="flex h-auto w-full flex-row gap-2 bg-transparent p-0 lg:flex-col lg:gap-2.5">
         {testimonials.map((t, i) => (
           <TabsTrigger key={i} value={String(i)} className={triggerClass}>
-            <span className="relative flex w-full items-center gap-2 px-3 py-3 lg:gap-3 lg:px-4 lg:py-3.5">
+            <span className="relative flex w-full flex-col items-center gap-1.5 px-3 py-3 text-center sm:flex-row sm:items-center sm:gap-2 sm:text-start lg:gap-3 lg:px-4 lg:py-3.5">
               <div
                 className={cn(
                   "shrink-0 rounded-full border-2 transition-colors duration-200",
@@ -37,12 +37,9 @@ export function SocialProofTabs({ testimonials, active, onSelect }: SocialProofT
               >
                 <Avatar name={t.name} src={t.avatarImg} size="sm" className="lg:h-10 lg:w-10" />
               </div>
-              <div className="min-w-0 hidden sm:block lg:block">
+              <div className="min-w-0">
                 <p className="truncate text-[12px] font-black text-foreground lg:text-[13px]">{t.name}</p>
                 <p className="truncate text-[10px] text-muted-foreground lg:text-[11px]">{t.company}</p>
-              </div>
-              <div className="min-w-0 block sm:hidden">
-                <p className="truncate text-[11px] font-black text-foreground">{t.name.split(" ")[0]}</p>
               </div>
               <span
                 aria-hidden

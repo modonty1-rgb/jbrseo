@@ -9,7 +9,6 @@ async function main() {
       data: {
         gtmId: "",
         hotjarId: "",
-        fbPixelId: "",
         whatsappNumber: "",
       },
     });

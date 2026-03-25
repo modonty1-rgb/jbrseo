@@ -14,7 +14,7 @@ export function HeaderLogo({ logoHref = "/#hero" }: HeaderLogoProps): ReactEleme
           alt="JBRSEO"
           width={110}
           height={34}
-          className="h-8 w-[104px] object-contain md:h-9 md:w-[116px]"
+          className="h-7 w-[104px] object-contain md:h-8 md:w-[116px]"
           preload
         />
       </Link>

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import Link from "next/link";
 import { getGlobalSiteSettings } from "@/app/actions/landing";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import type { SupportedCountry } from "@/lib/landing-content.types";
@@ -42,6 +43,18 @@ export default async function AdminSettingsPage({
       <p className="mb-5 text-sm text-muted-foreground">
         إعدادات عامة للموقع مثل نص زر الدعوة ورقم التواصل، بالإضافة لرموز التتبع والتحليلات.
       </p>
+      <Link
+        href={`/admin/settings/social?country=${country}`}
+        className="mb-5 block rounded-lg border border-border bg-card p-4 shadow-sm transition-colors hover:border-primary/40"
+      >
+        <div className="mb-1 flex items-center gap-2">
+          <span aria-hidden>📱</span>
+          <h2 className="text-sm font-semibold text-foreground">قسم السوشال ميديا</h2>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          إدارة روابط الشبكات الاجتماعية، الإثبات الاجتماعي، وبطاقات المشاركة من مكان واحد.
+        </p>
+      </Link>
       <Suspense fallback={null}>
         <AdminFormFeedback />
       </Suspense>
@@ -57,7 +70,6 @@ export default async function AdminSettingsPage({
           tracking={{
             gtmId: globalRow?.gtmId ?? "",
             hotjarId: globalRow?.hotjarId ?? "",
-            fbPixelId: globalRow?.fbPixelId ?? "",
           }}
           redirect={redirect}
         />
