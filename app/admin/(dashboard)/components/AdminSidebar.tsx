@@ -7,9 +7,7 @@ import {
   BookOpen,
   ChevronDown,
   CircleHelp,
-  Eye,
   FileText,
-  Globe,
   ImageIcon,
   LayoutDashboard,
   LayoutGrid,
@@ -144,44 +142,21 @@ export function AdminSidebar() {
               : "text-muted-foreground hover:bg-muted/60 hover:text-foreground",
           )}
         >
-          📊 خطة التسويق
+          📊 خطة التسويق JBRSEO
         </Link>
-
-        <div className="my-3 border-t border-border/60 pt-3">
-          <p className="mb-2 px-3 text-[11px] font-semibold uppercase tracking-wider text-primary">
-            معاينة الموقع
-          </p>
-          <div className="flex flex-col gap-0.5">
-            <Link
-              href={withCountry("/admin/preview", country)}
-              className={cn(
-                "flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-3 py-2 text-sm font-semibold text-primary shadow-sm ring-1 ring-primary/15 transition-colors hover:bg-primary/10",
-                pathMatchesHref(pathname, "/admin/preview") &&
-                  "ring-2 ring-primary/40",
-              )}
-            >
-              <Eye className="size-4 shrink-0" aria-hidden />
-              أداة المعاينة (داخل اللوحة)
-            </Link>
-            <Link
-              href="/sa?country=sa"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-            >
-              <Globe className="size-4 shrink-0 opacity-70" aria-hidden />
-              عرض — السعودية
-            </Link>
-            <Link
-              href="/eg?country=eg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-            >
-              <Globe className="size-4 shrink-0 opacity-70" aria-hidden />
-              عرض — مصر
-            </Link>
-          </div>
+        <div
+          aria-disabled="true"
+          className="flex cursor-not-allowed items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground/50"
+          title="سيتم تفعيلها بعد إنشاء الخطة"
+        >
+          🗒️ خطة تسويق مدونتي
+        </div>
+        <div
+          aria-disabled="true"
+          className="flex cursor-not-allowed items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground/50"
+          title="سيتم تفعيلها بعد إنشاء الخطة"
+        >
+          ⚙️ خطة تشغيل مدونتي
         </div>
 
         {SIDEBAR_GROUPS.map((group) => {

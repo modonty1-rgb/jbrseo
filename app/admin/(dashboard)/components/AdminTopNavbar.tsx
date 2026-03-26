@@ -18,7 +18,6 @@ function resolvePageTitle(pathname: string): string {
       return n.label;
     }
   }
-  if (pathname.startsWith("/admin/preview")) return "معاينة الموقع";
   if (pathname.startsWith("/admin/settings/images")) return "صور الموقع";
   return "لوحة التحكم";
 }
