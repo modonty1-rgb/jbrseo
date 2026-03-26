@@ -12,6 +12,7 @@ import {
 } from "@/lib/site-settings.types";
 import type { Prisma } from "@prisma/client";
 import { getLandingSectionOverride, upsertLandingSection } from "@/lib/landing-sections";
+import { optimizeCloudinaryImageUrl } from "@/helpers/cloudinary";
 import { META_DESCRIPTION_MAX_CHARS } from "@/lib/seo-meta";
 
 const ALLOWED_COUNTRIES: SupportedCountry[] = ["SA", "EG"];
@@ -62,7 +63,9 @@ export async function updateSeoFormData(formData: FormData) {
     title: (formData.get("title") as string)?.trim() ?? "",
     description,
     canonical: (formData.get("canonical") as string)?.trim() ?? "",
-    ogImage: (formData.get("ogImage") as string)?.trim() ?? "",
+    ogImage: optimizeCloudinaryImageUrl((formData.get("ogImage") as string)?.trim() ?? "", {
+      ogImage: true,
+    }),
     ogLocale: country === "EG" ? "ar_EG" : "ar_SA",
   };
   await upsertLandingSection(country as SupportedCountry, "seo", seo as unknown as Prisma.InputJsonValue);

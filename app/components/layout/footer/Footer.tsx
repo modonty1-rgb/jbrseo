@@ -12,7 +12,6 @@ import type { SupportedCountry } from "@/lib/landing-content.types";
 import { getFooterLinks, getWhatsAppLink, LEGAL_LINKS } from "@/lib/site-links";
 import Image from "next/image";
 import { HeaderLogo } from "@/app/components/layout/HeaderLogo";
-import { MODONTY_LOGO_URL } from "@/lib/constants";
 const COPYRIGHT = "© جميع الحقوق محفوظة — JBRSEO";
 const WA_LABEL = "تواصل على واتساب";
 
@@ -110,16 +109,16 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
               href="https://modonty.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center gap-2 opacity-50 transition-opacity hover:opacity-80"
+              className="mt-5 inline-flex items-center gap-2  transition-opacity hover:opacity-80"
               aria-label="مدعوم بـ مدونتي"
             >
               <span className="text-xs text-muted-foreground">مدعوم بـ</span>
               <Image
-                src={MODONTY_LOGO_URL}
+                src="https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,fl_immutable_cache,w_144,c_fit/v1768724643/final-05_ukjgff.png"
                 alt="مدونتي"
-                width={72}
-                height={22}
-                className="h-5 w-[65px] object-contain dark:brightness-0 dark:invert"
+                width={140}
+                height={44}
+                className="h-20 w-auto object-contain"
               />
             </Link>
           </div>

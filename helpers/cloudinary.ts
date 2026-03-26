@@ -7,6 +7,11 @@ export type OptimizeCloudinaryImageUrlOptions = {
    * if the URL contains a version segment (`/v123/`). Skipped for signed URLs.
    */
   immutableCache?: boolean;
+  /**
+   * When true, force Open Graph crop dimensions in the first transformation
+   * component: `w_1200,h_630,c_fill`.
+   */
+  ogImage?: boolean;
 };
 
 function isSignedCloudinaryPath(pathname: string): boolean {
@@ -62,6 +67,18 @@ export function optimizeCloudinaryImageUrl(
 
   if (wantImmutable && !out[0].includes("fl_immutable_cache")) {
     out[0] = `${out[0]},fl_immutable_cache`;
+  }
+
+  if (options?.ogImage) {
+    const tokens = out[0]
+      .split(",")
+      .map((token) => token.trim())
+      .filter(Boolean)
+      .filter(
+        (token) => !token.startsWith("w_") && !token.startsWith("h_") && !token.startsWith("c_"),
+      );
+    tokens.push("w_1200", "h_630", "c_fill");
+    out[0] = Array.from(new Set(tokens)).join(",");
   }
 
   const newPathname = `${pathname.slice(0, uploadIdx + IMAGE_UPLOAD.length)}${out.join("/")}`;

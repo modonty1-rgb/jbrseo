@@ -74,7 +74,7 @@ export function LandingHeader({
   const logoHref = basePath ? `${basePath}#hero` : "/#hero";
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 w-full border-b border-border  backdrop-blur-sm ">
       {showBanner && (
         <div
           className="
@@ -110,7 +110,7 @@ export function LandingHeader({
       )}
 
       <div className="mx-auto max-w-[1100px]">
-        <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-2 sm:px-8 lg:px-10">
+        <div className="flex flex-wrap items-center justify-between gap-2 px-5 py-2  sm:px-8 lg:px-10">
           <HeaderLogo logoHref={logoHref} />
           <DesktopNav navLinks={navLinks} />
           <div className="flex items-center gap-2 sm:gap-2.5">
