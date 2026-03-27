@@ -134,7 +134,7 @@ export function AdminSidebar() {
         </Link>
 
         <Link
-          href="/admin/marketing"
+          href="/admin/marketing/jbrseo-plan"
           className={cn(
             "flex items-center gap-2 rounded-md px-3 py-2 text-sm transition-colors",
             pathname.startsWith("/admin/marketing")
@@ -144,19 +144,18 @@ export function AdminSidebar() {
         >
           📊 خطة التسويق JBRSEO
         </Link>
+        <Link
+          href="/admin/marketing/modony-plan"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+        >
+          🗒️ خطة تسويق Modonty
+        </Link>
         <div
           aria-disabled="true"
           className="flex cursor-not-allowed items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground/50"
           title="سيتم تفعيلها بعد إنشاء الخطة"
         >
-          🗒️ خطة تسويق مدونتي
-        </div>
-        <div
-          aria-disabled="true"
-          className="flex cursor-not-allowed items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground/50"
-          title="سيتم تفعيلها بعد إنشاء الخطة"
-        >
-          ⚙️ خطة تشغيل مدونتي
+          ⚙️ خطة تشغيل Modonty
         </div>
 
         {SIDEBAR_GROUPS.map((group) => {

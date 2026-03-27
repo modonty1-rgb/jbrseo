@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 import type { ReactNode } from "react";
@@ -43,7 +43,12 @@ const STATIC_HTML_PATH = join(
   "modonty-marketing-plan-v1.html",
 );
 
-const STATIC_HTML = readFileSync(STATIC_HTML_PATH, "utf8");
+function getStaticHtml(): string {
+  if (!existsSync(STATIC_HTML_PATH)) return "";
+  return readFileSync(STATIC_HTML_PATH, "utf8");
+}
+
+const STATIC_HTML = getStaticHtml();
 
 const KPI_SECTION_HTML_MATCH =
   /<div id="sec-kpi" class="sec">[\s\S]*?<\/div><\/div><!-- \/KPI -->/;
@@ -394,7 +399,7 @@ export default function MarketingPage() {
         </div>
 
         <a
-          href="/admin/marketing/static"
+          href="/admin/marketing/jbrseo-plan/static"
           target="_blank"
           rel="noopener noreferrer"
           className="text-sm font-semibold text-primary underline underline-offset-4"

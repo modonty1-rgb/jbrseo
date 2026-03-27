@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>خطة تسويق مدونتي — Brand V2</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&display=swap');
+  :root {
+    --bg:#0a0d12; --card:#111620; --card2:#161c28;
+    --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+    --text:#e8eaf2; --muted:#7a85a0;
+    --accent:#d4a853; --green:#2ecc8f; --red:#e05c5c;
+    --blue:#6378ff; --purple:#9b6bff; --mono:'Cairo',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Cairo',sans-serif;font-size:14px;line-height:1.7;min-height:100vh}
+
+  .header{background:linear-gradient(135deg,#0a0d12 0%,#111a2e 50%,#0d1520 100%);border-bottom:0.5px solid var(--border2);padding:22px 28px 18px;position:sticky;top:0;z-index:100;backdrop-filter:blur(20px)}
+  .hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-m{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),#f0c97a);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:17px;color:#0a0d12}
+  .logo-text{font-size:17px;font-weight:700}
+  .logo-sub{font-size:11px;color:var(--muted)}
+
+  .tabs{display:flex;gap:4px;background:rgba(255,255,255,0.04);padding:4px;border-radius:10px;width:fit-content}
+  .tab{padding:8px 18px;border-radius:7px;border:none;cursor:pointer;font-family:'Cairo',sans-serif;font-size:13px;font-weight:600;color:var(--muted);background:transparent;transition:all 0.2s}
+  .tab:hover{color:var(--text)}
+  .tab.t-str{background:rgba(155,107,255,0.15);color:var(--purple)}
+  .tab.t-cnt{background:rgba(212,168,83,0.15);color:var(--accent)}
+  .tab.t-kpi{background:rgba(46,204,143,0.15);color:var(--green)}
+
+  .sec{display:none;padding:24px 28px;max-width:1100px;margin:0 auto}
+  .sec.on{display:block}
+
+  .card{background:var(--card);border:0.5px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:14px}
+  .card2{background:var(--card2);border:0.5px solid var(--border);border-radius:10px;padding:14px 16px}
+  .stitle{font-size:15px;font-weight:700;margin:24px 0 12px;display:flex;align-items:center;gap:9px}
+  .stitle:first-child{margin-top:0}
+  .snum{border-radius:6px;padding:3px 10px;font-size:11px;font-weight:700;font-family:var(--mono)}
+  .sn-p{background:rgba(155,107,255,0.12);border:0.5px solid rgba(155,107,255,0.25);color:var(--purple)}
+  .sn-g{background:rgba(46,204,143,0.1);border:0.5px solid rgba(46,204,143,0.25);color:var(--green)}
+  .sn-a{background:rgba(212,168,83,0.1);border:0.5px solid rgba(212,168,83,0.25);color:var(--accent)}
+  .sn-r{background:rgba(224,92,92,0.1);border:0.5px solid rgba(224,92,92,0.25);color:var(--red)}
+  .sn-b{background:rgba(99,120,255,0.1);border:0.5px solid rgba(99,120,255,0.25);color:var(--blue)}
+
+  .slbl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:0.08em;margin:14px 0 7px;font-family:var(--mono);text-transform:uppercase}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .g4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+  .div{height:0.5px;background:var(--border);margin:20px 0}
+
+  .info{border-radius:9px;padding:11px 15px;font-size:13px;line-height:1.7;margin-bottom:12px}
+  .ip{background:rgba(99,120,255,0.07);border:0.5px solid rgba(99,120,255,0.2);color:#9baef5}
+  .ig{background:rgba(46,204,143,0.06);border:0.5px solid rgba(46,204,143,0.2);color:#7fd4b0}
+  .ia{background:rgba(212,168,83,0.07);border:0.5px solid rgba(212,168,83,0.2);color:#d4a853}
+  .ir{background:rgba(224,92,92,0.07);border:0.5px solid rgba(224,92,92,0.2);color:#e08080}
+
+  .tw{overflow-x:auto;margin-bottom:14px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th{background:var(--card2);padding:8px 12px;text-align:right;font-weight:600;color:var(--muted);border-bottom:0.5px solid var(--border2);font-size:11px}
+  td{padding:8px 12px;border-bottom:0.5px solid var(--border);vertical-align:top;line-height:1.6}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:rgba(255,255,255,0.012)}
+  .th-p thead th{border-bottom-color:rgba(155,107,255,0.3)}
+  .th-g thead th{border-bottom-color:rgba(46,204,143,0.3)}
+  .th-a thead th{border-bottom-color:rgba(212,168,83,0.3)}
+  .th-r thead th{border-bottom-color:rgba(224,92,92,0.3)}
+
+  .kpills{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+  .kp{border-radius:5px;padding:3px 9px;font-size:11px;font-weight:600;font-family:var(--mono)}
+  .kpp{background:rgba(155,107,255,0.1);border:0.5px solid rgba(155,107,255,0.25);color:var(--purple)}
+  .kpg{background:rgba(46,204,143,0.09);border:0.5px solid rgba(46,204,143,0.25);color:var(--green)}
+  .kpa{background:rgba(212,168,83,0.09);border:0.5px solid rgba(212,168,83,0.25);color:var(--accent)}
+  .kpb{background:rgba(99,120,255,0.09);border:0.5px solid rgba(99,120,255,0.25);color:var(--blue)}
+  .kpr{background:rgba(224,92,92,0.09);border:0.5px solid rgba(224,92,92,0.25);color:var(--red)}
+
+  .wk{background:var(--card);border:0.5px solid var(--border);border-radius:11px;margin-bottom:11px}
+  .wk-hd{padding:11px 15px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .wn{font-size:11px;font-weight:700;border-radius:5px;padding:3px 9px;font-family:var(--mono)}
+  .wnp{background:rgba(155,107,255,0.15);color:var(--purple)}
+  .wna{background:rgba(212,168,83,0.15);color:var(--accent)}
+  .wng{background:rgba(46,204,143,0.15);color:var(--green)}
+  .wnb{background:rgba(99,120,255,0.15);color:var(--blue)}
+  .wnr{background:rgba(224,92,92,0.15);color:var(--red)}
+  .wt{font-size:13px;font-weight:700}
+  .wk-bd{padding:13px 15px}
+
+  .task{display:flex;align-items:flex-start;gap:9px;padding:6px 0;border-bottom:0.5px solid var(--border);cursor:pointer}
+  .task:last-child{border-bottom:none}
+  .chk{width:15px;height:15px;border:1.5px solid var(--border2);border-radius:4px;flex-shrink:0;margin-top:2px;transition:all 0.2s}
+  .task.done .chk{background:var(--green);border-color:var(--green)}
+  .task.done .tt{color:var(--muted);text-decoration:line-through}
+  .tt{font-size:12px;flex:1;line-height:1.6}
+  .own{font-size:10px;color:var(--muted);white-space:nowrap;border:0.5px solid var(--border);border-radius:4px;padding:2px 6px;flex-shrink:0}
+
+  .hook{background:var(--card2);border:0.5px solid var(--border);border-radius:9px;padding:11px 13px;margin-bottom:7px}
+  .hook-type{font-size:10px;font-weight:700;color:var(--purple);font-family:var(--mono);margin-bottom:3px}
+  .hook-text{font-size:13px;font-weight:600;color:var(--text)}
+  .hook-note{font-size:11px;color:var(--muted);margin-top:3px}
+
+  .ptag{display:inline-flex;align-items:center;gap:4px;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600}
+  .pt-li{background:rgba(10,102,194,0.12);color:#60a8f5;border:0.5px solid rgba(10,102,194,0.2)}
+  .pt-x{background:rgba(255,255,255,0.07);color:var(--text);border:0.5px solid var(--border2)}
+  .pt-ig{background:rgba(225,48,108,0.1);color:#f06090;border:0.5px solid rgba(225,48,108,0.2)}
+  .pt-tt{background:rgba(0,0,0,0.25);color:#e8e8e8;border:0.5px solid var(--border2)}
+  .pt-sn{background:rgba(255,252,0,0.07);color:#f5e642;border:0.5px solid rgba(255,252,0,0.18)}
+  .pt-em{background:rgba(46,204,143,0.09);color:var(--green);border:0.5px solid rgba(46,204,143,0.2)}
+  .pt-kh{background:rgba(212,168,83,0.1);color:var(--accent);border:0.5px solid rgba(212,168,83,0.2)}
+
+  .mtabs{display:flex;gap:4px;margin-bottom:18px}
+  .mt{padding:7px 15px;border-radius:7px;border:0.5px solid var(--border);cursor:pointer;font-family:'Cairo',sans-serif;font-size:12px;font-weight:600;color:var(--muted);background:transparent;transition:all 0.2s}
+  .mt.on{background:rgba(212,168,83,0.12);border-color:rgba(212,168,83,0.3);color:var(--accent)}
+  .msec{display:none}
+  .msec.on{display:block}
+
+  .kr{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:0.5px solid var(--border)}
+  .kr:last-child{border-bottom:none}
+  .krl{font-size:12px;color:var(--muted)}
+  .krv{font-size:13px;font-weight:700;font-family:var(--mono)}
+  .krvg{color:var(--green)} .krva{color:var(--accent)} .krvp{color:var(--purple)} .krvr{color:var(--red)}
+
+  .fixed-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(46,204,143,0.1);border:0.5px solid rgba(46,204,143,0.25);color:var(--green);border-radius:5px;padding:2px 8px;font-size:10px;font-weight:700;font-family:var(--mono)}
+  .spec-cell{font-size:11px;font-family:var(--mono);color:var(--blue)}
+  .key-cell{font-size:11px;color:var(--purple);font-family:var(--mono)}
+
+  .fly{background:linear-gradient(135deg,rgba(155,107,255,0.07),rgba(212,168,83,0.05));border:0.5px solid rgba(155,107,255,0.18);border-radius:12px;padding:16px 18px;margin-bottom:14px;text-align:center}
+  .fw-chain{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px;font-size:12px}
+  .fw-step{background:var(--card2);border:0.5px solid var(--border2);border-radius:7px;padding:5px 11px;font-weight:600}
+  .fw-arr{color:var(--accent);font-size:15px}
+
+  .critical-box{background:rgba(224,92,92,0.06);border:0.5px solid rgba(224,92,92,0.2);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="hdr-top">
+    <div class="logo">
+      <div class="logo-m">م</div>
+      <div>
+        <div class="logo-text">مدونتي — خطة Brand </div>
+        <div class="logo-sub">خطة تسويقية | 3 أشهر | أبريل – يونيو 2026 </div>
+      </div>
+    </div>
+    
+  </div>
+  <div class="tabs">
+    <button class="tab t-str on" onclick="T('str')">🎯 الاستراتيجية</button>
+    <button class="tab" onclick="T('spc')">📐 المواصفات التقنية</button>
+    <button class="tab" onclick="T('cnt')">📅 خطة المحتوى</button>
+    <button class="tab" onclick="T('kpi')">📊 KPIs والميزانية</button>
+  </div>
+</div>
+
+<!-- ═══ STRATEGY ═══ -->
+<div id="sec-str" class="sec on">
+
+  <div class="fly">
+    <div class="slbl" style="margin:0 0 10px;text-align:center">الـ Flywheel — كيف مدونتي تبني نفسها</div>
+    <div class="fw-chain">
+      <div class="fw-step">📖 قراء يأتون للمقالات</div><span class="fw-arr">←</span>
+      <div class="fw-step">🏆 سلطة للمنصة</div><span class="fw-arr">←</span>
+      <div class="fw-step">💼 شركات تريد النشر</div><span class="fw-arr">←</span>
+      <div class="fw-step">📝 محتوى أجود وأكثر</div><span class="fw-arr">←</span>
+      <div class="fw-step">📖 قراء أكثر</div>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:var(--muted)">الشركات تشترك عبر jbrseo.com لأن مدونتي لديها جمهور حقيقي — القراء هم المنتج الذي يجذب العملاء</div>
+  </div>
+
+  <div class="stitle"><span class="snum sn-r">🔥 مصحّح</span> استراتيجية LinkedIn — الحساب الشخصي لخالد أولاً</div>
+  <div class="critical-box">
+    <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:8px">⛔ الخطأ القديم: بناء الاستراتيجية على Company Page</div>
+    <div style="font-size:12.5px;color:var(--muted);line-height:1.9">
+      Company Pages تصل <strong style="color:var(--text)">1.6% فقط</strong> من المتابعين بعد تغييرات نوفمبر 2024.<br>
+       <strong style="color:var(--green)">خالد ينشر من حسابه الشخصي → يذكر مدونتي → الـ reach يكون 10-20× أكبر.</strong><br>
+      Company Page تبقى لإثبات الوجود (Credibility) فقط — ليست محور الاستراتيجية.
+    </div>
+  </div>
+
+  <div class="stitle"><span class="snum sn-p">01</span> الموقع الاستراتيجي</div>
+  <div class="g2">
+    <div class="card2">
+      <div class="slbl">modonty = Brand المنصة</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:2">
+        ✍️ <strong style="color:var(--text)">منصة قراءة</strong> — مجانية للجميع<br>
+        🎨 <strong style="color:var(--text)">هوية</strong> — ودية، خليجية، تعليمية<br>
+        📚 <strong style="color:var(--text)">محتوى</strong> — SEO + تسويق رقمي عربي<br>
+        🔑 <strong style="color:var(--text)">شعار</strong> — "اقرأ السوق بلهجتنا"
+      </div>
+    </div>
+    <div class="card2">
+      <div class="slbl">jbrseo = الخدمة التجارية</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:2">
+        💰 <strong style="color:var(--text)">خدمة مدفوعة</strong> — 399–2,399 ريال<br>
+        🏢 <strong style="color:var(--text)">هوية</strong> — رسمية، B2B، نتائج<br>
+        🎯 <strong style="color:var(--text)">CTA</strong> — "ابدأ مجاناً · اشترك الآن"<br>
+        🔑 <strong style="color:var(--text)">شعار</strong> — "عميلك يبحثك في جوجل"
+      </div>
+    </div>
+  </div>
+
+  <div class="stitle"><span class="snum sn-p">02</span> الجمهور المستهدف</div>
+  <div class="tw th-p"><table>
+    <thead><tr><th>الشريحة</th><th>الوصف</th><th>ألمه الحقيقي</th><th>المنصة الأنسب</th></tr></thead>
+    <tbody>
+      <tr><td><strong>🎯 مسوق رقمي SA</strong></td><td>يعمل في شركة أو وكالة — يريد محتوى SEO عربي متخصص</td><td>كل ما يجد مترجم أو أجنبي</td><td><span class="ptag pt-li">LinkedIn</span> <span class="ptag pt-x">X</span></td></tr>
+      <tr><td><strong>👤 خالد — Thought Leader</strong><br><span style="font-size:10px;color:var(--green)">✓ المحرك الأساسي</span></td><td>ينشر من حسابه الشخصي — يبني سلطة مدونتي برأس ماله الشخصي</td><td>—</td><td><span class="ptag pt-kh">شخصي LinkedIn</span> <span class="ptag pt-x">X</span></td></tr>
+      <tr><td><strong>📊 صاحب عمل فضولي</strong></td><td>يريد يفهم SEO قبل الاشتراك — يبحث عن مصادر موثوقة</td><td>يقرأ → يثق → يشترك jbrseo</td><td><span class="ptag pt-ig">Instagram</span> <span class="ptag pt-sn">Snapchat</span></td></tr>
+      <tr><td><strong>✍️ كاتب محتوى</strong></td><td>يريد تطوير مهاراته في SEO بالعربي</td><td>لا مصدر عربي متخصص موجود</td><td><span class="ptag pt-tt">TikTok</span></td></tr>
+      <tr><td><strong>🏪 صاحب موقع/متجر</strong></td><td>يريد زيادة الزيارات من جوجل</td><td>"كيف أتصدر جوجل؟" بدون إجابة واضحة</td><td><span class="ptag pt-sn">Snapchat</span> <span class="ptag pt-ig">Instagram</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="stitle"><span class="snum sn-p">03</span> المنصات — الأدوار ال</div>
+  <div class="tw th-p"><table>
+    <thead><tr><th>المنصة</th><th>الحساب</th><th>الدور</th><th>التردد</th><th>هدف 90 يوم </th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="ptag pt-kh">👤 LinkedIn شخصي</span></td>
+        <td>خالد — حسابه الشخصي</td>
+        <td><strong>المنصة الأولى</strong> — Thought Leadership · reach 10x أكبر من Company Page</td>
+        <td>3-4 × / أسبوع</td>
+        <td style="color:var(--green);font-family:var(--mono)">+500 connection</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-li">💼 LinkedIn Page</span></td>
+        <td>صفحة مدونتي الرسمية</td>
+        <td>Credibility فقط — يشير إليها خالد من حسابه الشخصي</td>
+        <td>1-2 × / أسبوع (نفس محتوى خالد)</td>
+        <td style="color:var(--muted);font-family:var(--mono)">50-100 متابع</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-x">𝕏 X/Twitter</span></td>
+        <td>@modonty.sa</td>
+        <td>Threads + نصائح قصيرة + إحصائيات صادمة</td>
+        <td>4-5 × / أسبوع</td>
+        <td style="color:var(--green);font-family:var(--mono)">300-500 متابع</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-ig">📸 Instagram</span></td>
+        <td>@modonty.sa</td>
+        <td>Carousels تعليمية + Reels</td>
+        <td>3-4 × / أسبوع</td>
+        <td style="color:var(--green);font-family:var(--mono)">200-400 متابع</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-tt">🎵 TikTok</span></td>
+        <td>@jbrseo_sa</td>
+        <td>نصائح SEO 60 ثانية — Awareness عضوي فقط</td>
+        <td>3 × / أسبوع</td>
+        <td style="color:var(--green);font-family:var(--mono)">100-300 متابع</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-em">📧 Newsletter</span></td>
+        <td>Resend (أفضل للعربية)</td>
+        <td><strong>أهم قناة</strong> — مشترك النشرة يتحول لـ jbrseo بنسبة 40%+</td>
+        <td>أسبوعياً الأحد 9ص</td>
+        <td style="color:var(--accent);font-family:var(--mono)">200-400 مشترك</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-sn">👻 Snapchat SA</span></td>
+        <td>@modonty</td>
+        <td>Awareness فقط — Stories خلف الكواليس</td>
+        <td>يومي &lt;60 ثانية</td>
+        <td style="color:var(--muted);font-family:var(--mono)">100-200 متابع</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="stitle"><span class="snum sn-p">04</span> قواعد Brand الثابتة</div>
+  <div class="tw th-p"><table>
+    <tbody>
+      <tr><td>①</td><td><strong>خالد ينشر شخصياً على LinkedIn</strong> — الـ Copywriter يكتب المسودة · خالد يراجع وينشر. مستحيل تفويض النشر لشخص آخر على حساب شخصي.</td></tr>
+      <tr><td>②</td><td><strong>لا ذكر للسعر في أي محتوى مدونتي</strong> — المنصة تعليمية بالكامل. jbrseo.com هو مكان البيع الوحيد.</td></tr>
+      <tr><td>③</td><td><strong>رابط jbrseo مرة واحدة فقط</strong> لكل قطعة محتوى — في النهاية فقط وليس في البداية. ويبدأ شهر 2 وليس شهر 1.</td></tr>
+      <tr><td>④</td><td><strong>كل مقال له keyword رئيسية</strong> مستهدفة — يُكتب المقال حولها وليس بشكل عشوائي.</td></tr>
+      <tr><td>⑤</td><td><strong>LinkedIn Posts بدون روابط خارجية</strong> في جسم المنشور — الرابط في أول تعليق. الخوارزمية 2025 تعاقب الروابط الخارجية.</td></tr>
+      <tr><td>⑥</td><td><strong>Carousels على LinkedIn = PDF وليس صور</strong> — PDF يحصل 3-5x reach أكثر من صور عادية.</td></tr>
+      <tr><td>⑦</td><td><strong>رد على كل تعليق في أول ساعتين</strong> — يرفع الـ algorithmic reach لكل المنشور.</td></tr>
+      <tr><td>⑧</td><td><strong>النشرة البريدية لا تنقطع</strong> — حتى لو نشرة قصيرة 3 فقرات. الانتظام = ثقة.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="stitle"><span class="snum sn-r">⚠️</span> Hashtag Strategy — مُضاف جديد</div>
+  <div class="g2">
+    <div class="card2">
+      <div class="slbl">LinkedIn + X/Twitter</div>
+      <div style="font-size:12px;color:var(--muted);line-height:2">
+        <span style="color:var(--purple)">#SEO_العربي</span> &nbsp; <span style="color:var(--purple)">#سيو_السعودية</span><br>
+        <span style="color:var(--purple)">#التسويق_الرقمي_السعودي</span><br>
+        <span style="color:var(--accent)">#مدونتي</span> &nbsp; <span style="color:var(--accent)">#اقرأ_السوق_بلهجتك</span><br>
+        <span style="color:var(--blue)">#جوجل_السعودية</span> &nbsp; <span style="color:var(--blue)">#محتوى_رقمي</span><br>
+        <strong style="color:var(--text);font-size:11px">القاعدة:</strong> 3-5 hashtags للـ LinkedIn · 5-7 للـ X
+      </div>
+    </div>
+    <div class="card2">
+      <div class="slbl">TikTok + Instagram</div>
+      <div style="font-size:12px;color:var(--muted);line-height:2">
+        <span style="color:var(--purple)">#سيو</span> &nbsp; <span style="color:var(--purple)">#تسويق_رقمي</span><br>
+        <span style="color:var(--purple)">#جوجل</span> &nbsp; <span style="color:var(--purple)">#موقع_الكتروني</span><br>
+        <span style="color:var(--accent)">#مدونتي</span> &nbsp; <span style="color:var(--accent)">#محتوى_سعودي</span><br>
+        <span style="color:var(--blue)">#تصدر_جوجل</span> &nbsp; <span style="color:var(--blue)">#ريادة_الأعمال</span><br>
+        <strong style="color:var(--text);font-size:11px">القاعدة:</strong> 5-10 hashtags لـ TikTok · 7-15 لـ IG
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ SPECS ═══ -->
+<div id="sec-spc" class="sec">
+
+  <div class="info ip">
+    كل صورة وفيديو يجب تنتج بهذه المواصفات الدقيقة. المصمم والمونتير يحفظونها عن ظهر قلب. أي مواصفات خاطئة = حذف وإعادة عمل = ضياع وقت الفريق.
+  </div>
+
+  <div class="stitle"><span class="snum sn-b">📐</span> مواصفات الصور — لكل منصة</div>
+  <div class="tw th-r"><table>
+    <thead><tr><th>المنصة</th><th>النوع</th><th>المواصفات</th><th>ملاحظات إلزامية</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><span class="ptag pt-kh">👤 LinkedIn شخصي</span></td>
+        <td>Carousel (PDF)</td>
+        <td class="spec-cell">1080×1350px (4:5) · PDF · max 300MB · 10-20 شريحة</td>
+        <td><strong>PDF وليس صور</strong> — 3-5x reach أكبر · نص لا يتجاوز 30% من الشريحة</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-kh">👤 LinkedIn شخصي</span></td>
+        <td>Post Image</td>
+        <td class="spec-cell">1200×627px (1.91:1) · JPG/PNG · max 5MB</td>
+        <td>لا روابط في المنشور — الرابط في أول تعليق</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-ig">📸 Instagram</span></td>
+        <td>Carousel Posts</td>
+        <td class="spec-cell">1080×1080px (1:1) أو 1080×1350px (4:5) · JPG/PNG · max 30MB</td>
+        <td>نص &lt;20% من المساحة · 7 شرائح مثالية</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-ig">📸 Instagram</span></td>
+        <td>Reels</td>
+        <td class="spec-cell">1080×1920px (9:16) · MP4 · max 1GB · 15-90 ثانية</td>
+        <td>Subtitles عربية إلزامية · Safe zone: 14% أعلى + 20% أسفل</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-tt">🎵 TikTok</span></td>
+        <td>Videos</td>
+        <td class="spec-cell">1080×1920px (9:16) · MP4 · H.264 · max 287.6MB · 15-60 ثانية</td>
+        <td>Subtitles عربية إلزامية · Safe zone: 150px أسفل للـ UI</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-x">𝕏 X/Twitter</span></td>
+        <td>Tweet Image</td>
+        <td class="spec-cell">1200×675px (16:9) · JPG/PNG · max 5MB</td>
+        <td>نص &lt;20% · Header صفحة: 1500×500px</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-sn">👻 Snapchat</span></td>
+        <td>Stories</td>
+        <td class="spec-cell">1080×1920px (9:16) · MP4/JPG · max 5MB · &lt;60 ثانية</td>
+        <td>Safe zone: 14% أعلى + 20% أسفل فارغين</td>
+      </tr>
+      <tr>
+        <td><span class="ptag pt-em">📧 Newsletter</span></td>
+        <td>Header Image</td>
+        <td class="spec-cell">600×200px · PNG/JPG · max 1MB</td>
+        <td>Alt text عربي إلزامي · لا خطوط خاصة (تُبدّل بـ Arial)</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="stitle"><span class="snum sn-b">⏰</span> مواعيد النشر الدقيقة — مُضافة جديد</div>
+  <div class="tw th-r"><table>
+    <thead><tr><th>المنصة</th><th>أفضل أيام</th><th>الأوقات (Riyadh GMT+3)</th><th>المصدر</th></tr></thead>
+    <tbody>
+      <tr><td><span class="ptag pt-kh">👤 LinkedIn خالد</span></td><td>الثلاثاء · الأربعاء · الخميس</td><td><strong>9ص-11ص</strong> أو 12م-2م</td><td>Socialinsider 2026 + Kondo B2B</td></tr>
+      <tr><td><span class="ptag pt-x">𝕏 X/Twitter</span></td><td>كل يوم — يومي</td><td><strong>9م-11م</strong> ذروة SA</td><td>Sprout Social 2025</td></tr>
+      <tr><td><span class="ptag pt-ig">📸 Instagram</span></td><td>الأربعاء + السبت</td><td><strong>6م-9م</strong></td><td>Meltwater SA 2025</td></tr>
+      <tr><td><span class="ptag pt-tt">🎵 TikTok</span></td><td>الأحد + الثلاثاء + الخميس</td><td><strong>7م-10م</strong></td><td>Buffer 2026</td></tr>
+      <tr><td><span class="ptag pt-sn">👻 Snapchat</span></td><td>يومي</td><td><strong>7م-9م</strong></td><td>GMI Saudi 2024</td></tr>
+      <tr><td><span class="ptag pt-em">📧 Newsletter</span></td><td>الأحد ثابت</td><td><strong>9ص بالضبط</strong></td><td>قاعدة ثابتة</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="stitle"><span class="snum sn-b">🔑</span> Keyword Targets للمقالات الـ 8 — مُضافة جديد</div>
+  <div class="tw th-r"><table>
+    <thead><tr><th>#</th><th>موضوع المقال</th><th>الـ Keyword الرئيسية</th><th>هدف SEO</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>ما هو SEO وكيف يشتغل</td><td class="key-cell">سيو السعودية · ما هو السيو</td><td>Informational — يجذب المبتدئين</td></tr>
+      <tr><td>2</td><td>كيف تتصدر جوجل SA</td><td class="key-cell">تصدر جوجل السعودية · كيف أظهر في جوجل</td><td>High intent — يجذب أصحاب الأعمال</td></tr>
+      <tr><td>3</td><td>Core Web Vitals بالخليجي</td><td class="key-cell">Core Web Vitals عربي · سرعة الموقع جوجل</td><td>Technical SEO — يجذب المسوقين</td></tr>
+      <tr><td>4</td><td>Local SEO للعيادات والمطاعم</td><td class="key-cell">SEO محلي السعودية · جوجل ماي بيزنس</td><td>Local — يجذب أصحاب الأعمال المحلية</td></tr>
+      <tr><td>5</td><td>Keyword Research بالعربي</td><td class="key-cell">كيف أختار الكلمات المفتاحية</td><td>How-to — مشاركة عالية</td></tr>
+      <tr><td>6</td><td>E-E-A-T للشركات السعودية</td><td class="key-cell">E-E-A-T جوجل · مصداقية الموقع</td><td>Trust — يبني سلطة مدونتي</td></tr>
+      <tr><td>7</td><td>محتوى SEO خطوة بخطوة</td><td class="key-cell">كيف أكتب مقال SEO · محتوى لجوجل</td><td>Tutorial — يشاركه الكتّاب</td></tr>
+      <tr><td>8</td><td>أخطاء SEO شائعة</td><td class="key-cell">أخطاء السيو · لماذا موقعي لا يظهر</td><td>Problem-solving — انتشار عالي</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="stitle"><span class="snum sn-b">📧</span> استراتيجية النشرة البريدية — مُكتملة</div>
+  <div class="g2">
+    <div class="card2">
+      <div class="slbl">الإعداد التقني</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:2">
+        <strong style="color:var(--text)">الأداة:</strong> Resend (مجاني حتى 3,000 إيميل/شهر · يدعم العربية)<br>
+        <strong style="color:var(--text)">البديل:</strong> Mailchimp Free (حتى 500 مشترك مجاناً)<br>
+        <strong style="color:var(--text)">Template:</strong> بسيط RTL · لوغو مدونتي أعلى · مقال واحد رئيسي · نصيحة SEO · رابط jbrseo في النهاية فقط<br>
+        <strong style="color:var(--text)">Open Rate مستهدف:</strong> 25-35% (B2B average 2025)
+      </div>
+    </div>
+    <div class="card2">
+      <div class="slbl">Lead Magnet — مُضاف جديد ✓</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:2">
+        <strong style="color:var(--accent)">PDF مجاني:</strong> "10 خطوات SEO للشركات السعودية"<br>
+        يوضع في: Footer كل صفحة modonty · Bio السوشيال · أول تعليق LinkedIn · داخل كل مقال<br>
+        <strong style="color:var(--text)">CTA:</strong> "احصل على الدليل مجاناً — اشترك في نشرتنا"<br>
+        <strong style="color:var(--text)">توقع شهر 1:</strong> 30-80 مشترك بالـ Lead Magnet (بدلاً من 5-15 بدونه)
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ CONTENT ═══ -->
+<div id="sec-cnt" class="sec">
+
+  <div class="info ia">
+    <strong>مبدأ modonty Content:</strong> المقال على المنصة هو القلب. كل قطعة سوشيال هي مقتطف من مقال حقيقي. القارئ يقرأ المنشور → يذهب للمقال → يشترك في النشرة → يتحول لعميل jbrseo في شهر 2-3.
+  </div>
+
+  <div class="stitle"><span class="snum sn-a">هوكات</span> 8 هوكات مُثبتة الفاعلية</div>
+  <div class="g2">
+    <div>
+      <div class="hook"><div class="hook-type">هوك 1 — الجهل كخسارة</div><div class="hook-text">"كل يوم ما عندك محتوى SEO = يوم منافسك يتقدم في جوجل"</div><div class="hook-note">LinkedIn + X · FOMO قوي · Carousel مناسب</div></div>
+      <div class="hook"><div class="hook-type">هوك 2 — الرقم الصادم</div><div class="hook-text">"8.5 مليار بحث يومياً في جوجل — وش نصيب موقعك؟"</div><div class="hook-note">TikTok + Reels · أول 3 ثوانٍ حاسمة</div></div>
+      <div class="hook"><div class="hook-type">هوك 3 — السؤال الاستفزازي</div><div class="hook-text">"ابحث عن نشاطك الآن في جوجل — تلاقيه؟"</div><div class="hook-note">Instagram Stories Poll · نعم/لا</div></div>
+      <div class="hook"><div class="hook-type">هوك 4 — قبل/بعد</div><div class="hook-text">"قبل SEO: 50 زيارة. بعد 90 يوم مع مدونتي: 3,700 زيارة"</div><div class="hook-note">LinkedIn PDF Carousel · بيانات حقيقية</div></div>
+    </div>
+    <div>
+      <div class="hook"><div class="hook-type">هوك 5 — الخطأ الشائع</div><div class="hook-text">"5 أشياء تدمر SEO موقعك وأنت مش عارف"</div><div class="hook-note">X Thread · ينتشر لأنه "يكشف"</div></div>
+      <div class="hook"><div class="hook-type">هوك 6 — الادعاء الجريء</div><div class="hook-text">"كل ما تعلمته عن SEO في اليوتيوب — ناقصه شيء واحد"</div><div class="hook-note">TikTok · فضول فوري</div></div>
+      <div class="hook"><div class="hook-type">هوك 7 — القصة الشخصية</div><div class="hook-text">"6 أشهر بدون نتيجة — لحد ما جربت هذا"</div><div class="hook-note">TikTok + Reels · أعلى completion rate</div></div>
+      <div class="hook"><div class="hook-type">هوك 8 — الخلاف المقصود</div><div class="hook-text">"SEO ميت — قالوا. وهذه الأرقام ردت عليهم"</div><div class="hook-note">LinkedIn + X · engagement طبيعي</div></div>
+    </div>
+  </div>
+
+  <div class="stitle"><span class="snum sn-a">كلندر</span> 3 أشهر — خطة المحتوى</div>
+  <div class="mtabs">
+    <button class="mt on" onclick="M(1,this)">أبريل — التأسيس</button>
+    <button class="mt" onclick="M(2,this)">مايو — النمو</button>
+    <button class="mt" onclick="M(3,this)">يونيو — الحصاد</button>
+  </div>
+
+  <!-- M1 -->
+  <div id="m1" class="msec on">
+    <div class="info ig">🎯 <strong>هدف أبريل:</strong> بناء الهوية + أول قراء حقيقيون + اختبار المحتوى بدون إنفاق مدفوع. </div>
+
+    <div class="wk">
+      <div class="wk-hd"><span class="wn wnr">أسبوع 0</span><span class="wt">التحضير — قبل 1 أبريل (إلزامي)</span></div>
+      <div class="wk-bd">
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>① حذف المحتوى التجريبي</strong> من modonty.com — لا يظهر للزوار العامين حتى تكون المقالات الحقيقية جاهزة</span><span class="own">Dev</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>② كتابة 8 مقالات تأسيسية</strong> بكلماتها المفتاحية المحددة (انظر تاب المواصفات) — SEO-optimized · 1,200+ كلمة لكل مقال</span><span class="own">Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>③ إنشاء Lead Magnet</strong> "10 خطوات SEO للشركات السعودية" — PDF · 10 صفحات · مصمم باحترافية</span><span class="own">Designer + Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>④ إعداد Resend + Newsletter template</strong> عربي RTL · ربط بـ modonty.com · تجربة الإرسال والتسليم</span><span class="own">Dev</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>⑤ ربط GA4 + Google Search Console</strong> على modonty.com · تأكيد تتبع الأحداث · Index طلب للمقالات</span><span class="own">Dev</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>⑥ تحديث Bio كل الحسابات:</strong> "منصة SEO عربية | اقرأ السوق بلهجتنا | modonty.com | 🎁 دليل SEO مجاني ↓"</span><span class="own">Media Buyer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>⑦ إعداد أداة جدولة</strong> (Buffer Free أو Publer) — ربط IG + X + LinkedIn Page + TikTok</span><span class="own">Media Buyer</span></div>
+        <div class="kpills" style="margin-top:8px">
+          <span class="kp kpr">⚠️ لا يُطلق أي محتوى قبل اكتمال هذه القائمة</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wk">
+      <div class="wk-hd"><span class="wn wnp">أسبوع 1 · 1-7 أبريل</span><span class="wt">الإطلاق — "من هي مدونتي؟"</span></div>
+      <div class="wk-bd">
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn خالد (الثلاثاء 9ص):</strong> "أطلقنا أول منصة SEO عربية متخصصة — قصتها وسبب إنشائها" · نص شخصي 400 كلمة · رابط modonty.com في أول تعليق · هوك 1</span><span class="own">خالد + Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn PDF Carousel (الأربعاء 10ص):</strong> "5 أسباب تجعل موقعك غير مرئي في جوجل SA" · 7 شرائح PDF · 1080×1350px</span><span class="own">Designer + Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>X Thread (الأربعاء 9م):</strong> "ما هو SEO وليش يهمك؟ — شرح بالخليجي" · 7 تغريدات · رابط في رد 1</span><span class="own">Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Instagram Reel (الأربعاء 6م):</strong> هوك 6 · "كل ما تعلمته عن SEO ناقصه هذا" · 45 ثانية · 1080×1920 · Subtitles عربية</span><span class="own">Video Editor</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>TikTok (الخميس 8م):</strong> "ما هو SEO؟ — 60 ثانية بالخليجي" · هوك 2 · Trending sound عربي</span><span class="own">Video Editor</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Newsletter (الأحد 9ص):</strong> أول نشرة — "أهلاً في مدونتي" · مقالان مختاران · Link PDF مجاني</span><span class="own">Copywriter</span></div>
+      </div>
+    </div>
+
+    <div class="wk">
+      <div class="wk-hd"><span class="wn wna">أسبوع 2 · 8-14 أبريل</span><span class="wt">شم النسيم 13 أبريل — "تعلّم وأنت مرتاح"</span></div>
+      <div class="wk-bd">
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn PDF (الثلاثاء):</strong> "كيف تختار الكلمات المفتاحية لموقعك SA" · 8 شرائح · هوك 5</span><span class="own">Designer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn خالد (الأربعاء 9ص):</strong> "ما تعلمته من 100 موقع سعودي في جوجل" · رأي شخصي · سؤال مفتوح في النهاية</span><span class="own">خالد + Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>X Thread (الأربعاء 9م):</strong> "ليش جوجل يتجاهل موقعك؟ — 7 أسباب" · حوار مفتوح</span><span class="own">Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>TikTok + Reel (الثلاثاء 8م):</strong> هوك 3 · "ابحث عن نشاطك الآن — وش تلاقي؟" · تحدي للمشاهد</span><span class="own">Video Editor</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Instagram Story Poll (كل يوم):</strong> "هل تعرف الفرق بين SEO و SEM؟" · "هل موقعك في جوجل؟" · 5 polls هذا الأسبوع</span><span class="own">Media Buyer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Newsletter (الأحد 9ص):</strong> "درس SEO — Keyword Research خطوة بخطوة" · مقال مباشر + PDF reminder</span><span class="own">Copywriter</span></div>
+      </div>
+    </div>
+
+    <div class="wk">
+      <div class="wk-hd"><span class="wn wnp">أسبوع 3</span><span class="wt">دراسة حالة — "الأرقام الحقيقية"</span></div>
+      <div class="wk-bd">
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn خالد:</strong> "نتائج جبر العقارية بعد 90 يوم مع مدونتي — بالأرقام والـ screenshots" · هوك 4 · Personal post</span><span class="own">خالد + Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Instagram Carousel (7 شرائح):</strong> "Local SEO للعيادات في SA — 7 خطوات تطبقها اليوم" · 1080×1080px</span><span class="own">Designer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>TikTok + Reel:</strong> هوك 7 · "قبل/بعد — صاحب مطعم في جدة قبل وبعد SEO" · 60 ثانية</span><span class="own">Video Editor</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>X Thread:</strong> "مقتطف من مقال Core Web Vitals" · رابط modonty.com في رد 1</span><span class="own">Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Newsletter:</strong> "دراسة الأسبوع — كيف تصدّر موقع سعودي" · CTA: "اقرأ القصة الكاملة في modonty"</span><span class="own">Copywriter</span></div>
+      </div>
+    </div>
+
+    <div class="wk">
+      <div class="wk-hd"><span class="wn wna">أسبوع 4</span><span class="wt">المجتمع — "نسمعكم"</span></div>
+      <div class="wk-bd">
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn خالد (Poll):</strong> "أكبر تحدي في التسويق الرقمي لديك؟" · الأجوبة = محتوى مايو</span><span class="own">خالد</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn Groups (5 مجموعات):</strong> نشر مقتطف من مقال E-E-A-T في مجموعات التسويق SA — قيمة حقيقية لا ترويج</span><span class="own">Media Buyer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>TikTok:</strong> هوك 5 "5 أخطاء SEO يسويها الجميع" · 45 ثانية</span><span class="own">Video Editor</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Newsletter + IG Carousel:</strong> "ملخص أبريل — أفضل مقالات مدونتي" + CTA: "اشترك في النشرة" · PDF reminder</span><span class="own">Copywriter</span></div>
+        <div class="kpills" style="margin-top:8px">
+          <span class="kp kpg">هدف أبريل: 50-150 connection LinkedIn · 100-200 متابع X · 50-100 مشترك newsletter · 500-1,500 قارئ شهري</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- M2 -->
+  <div id="m2" class="msec">
+    <div class="info ia">🎯 <strong>هدف مايو:</strong> 1,500–3,000 قارئ شهري + 200+ مشترك newsletter + بدء الربط بـ jbrseo. ⚠️ عيد الأضحى 26-29 مايو: محتوى قيمة فقط — لا ترويج ولا boost.</div>
+    <div class="info ip"> 200-500 ريال على أفضل منشور LinkedIn حصل على أعلى engagement في أبريل — تعلمنا من البيانات قبل الإنفاق.</div>
+
+    <div class="wk">
+      <div class="wk-hd"><span class="wn wnp">أسبوع 5-6</span><span class="wt">التوسع — LinkedIn Groups + تعاونات</span></div>
+      <div class="wk-bd">
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn Groups (10 مجموعات):</strong> الانضمام لمجموعات تسويق رقمي SA — نشر محتوى قيمة فقط. لا ترويج مباشر.</span><span class="own">Media Buyer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn Boost (200-500 ريال):</strong> أفضل PDF Carousel من أبريل — استهداف (Marketing Managers + Business Owners + Saudi Arabia)</span><span class="own">Media Buyer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Guest Mentions:</strong> التواصل مع 3 حسابات X نشطة في التسويق SA — تبادل ذكر (ليس إعلان)</span><span class="own">Biz Dev</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>TikTok Series (4 فيديوهات):</strong> "SEO للمبتدئ — الدرس 1-4" متسلسلة · كل فيديو يُحيل للتالي</span><span class="own">Video Editor</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn PDF Carousel:</strong> "SEO في رمضان والأعياد — كيف تستفيد" · موضوع موسمي · هوك 1</span><span class="own">Designer + Copywriter</span></div>
+      </div>
+    </div>
+
+    <div class="wk">
+      <div class="wk-hd"><span class="wn wna">أسبوع 7-8</span><span class="wt">الربط الأول — من القارئ إلى jbrseo</span></div>
+      <div class="wk-bd">
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Newsletter Bridge:</strong> "قرأت 4 أسابيع عن SEO؟ — حان وقت التطبيق. مدونتي تكتب عنك" · <strong>أول رابط jbrseo في النشرة</strong></span><span class="own">Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn خالد:</strong> "من يقرأ مدونتي كل أسبوع — بعد 90 يوم يعرف SEO أكثر من 80% من المنافسين" · قصة شخصية</span><span class="own">خالد + Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Instagram Carousel Bridge:</strong> "كيف تتحول من قارئ SEO إلى صاحب موقع يتصدر" · 7 شرائح · CTA: تجربة مجانية jbrseo</span><span class="own">Designer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Case Study Reel:</strong> نتائج حقيقية بـ screenshots — "+380% زيارات" · بيانات GA4 حقيقية · 60 ثانية</span><span class="own">Video Editor</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>⛔ 26-29 مايو:</strong> أوقف كل Boost. محتوى عيد فقط. "عيد مبارك من مدونتي" · لا CTA. لا ترويج.</span><span class="own">Media Buyer</span></div>
+        <div class="kpills" style="margin-top:8px">
+          <span class="kp kpg">هدف مايو: 1,500-3,000 قارئ + 200+ newsletter + 3-7 اشتراك jbrseo من القراء</span>
+          <span class="kp kpa">ميزانية مايو: 200-500 ريال (LinkedIn Boost فقط)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- M3 -->
+  <div id="m3" class="msec">
+    <div class="info ig">🎯 <strong>هدف يونيو:</strong> 4,000–8,000 قارئ شهري + 15–25 اشتراك jbrseo من القراء. 🚀 25 يونيو: إجازة الصيف SA — ارفع الميزانية فوراً.</div>
+
+    <div class="wk">
+      <div class="wk-hd"><span class="wn wng">أسبوع 9-10</span><span class="wt">الحصاد — تحويل القراء لعملاء</span></div>
+      <div class="wk-bd">
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Newsletter Retargeting:</strong> رسالة خاصة لمن قرأ 3 مقالات أو أكثر — "أنت مهتم بالتطبيق — أول مقال مجاني عبر jbrseo"</span><span class="own">Copywriter + Dev</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn خالد — Article طويل:</strong> "ما تعلمته من 3 أشهر مع مدونتي — بالأرقام" · Thought Leadership · يجذب Press</span><span class="own">خالد + Copywriter</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn Paid (500-700 ريال):</strong> استهداف (SEO Managers + Digital Marketing SA + Business Owners) · CTA: "اقرأ أول مقال مجاناً → modonty.com"</span><span class="own">Media Buyer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>TikTok Blast (5 فيديوهات أسبوع):</strong> "SEO Challenge أسبوع" · كل فيديو يُكمل التالي · سلسلة متكاملة</span><span class="own">Video Editor</span></div>
+      </div>
+    </div>
+
+    <div class="wk">
+      <div class="wk-hd"><span class="wn wng">أسبوع 11-12 · من 25 يونيو</span><span class="wt">🚀 ذروة الصيف SA — إجازة المدارس</span></div>
+      <div class="wk-bd">
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn Paid (800-1000 ريال):</strong> رفع الميزانية يوم 25 يونيو مباشرة — إجازة الصيف = قراء بوقت فراغ + أصحاب أعمال يخططون</span><span class="own">Media Buyer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>Snapchat SA (يومي):</strong> "في الصيف، وقتك الحر = تتعلم SEO" · Stories قصيرة يومية &lt;60 ثانية</span><span class="own">Video Editor</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>LinkedIn Community:</strong> "مين قرأ +5 مقالات في مدونتي؟ Tag someone" · Engagement عالي + awareness</span><span class="own">Media Buyer</span></div>
+        <div class="task" onclick="X(this)"><div class="chk"></div><span class="tt"><strong>ملخص Q2 (Newsletter + LinkedIn):</strong> "مدونتي — 3 أشهر بالأرقام الحقيقية" · يجذب شراكات + Press</span><span class="own">خالد + Copywriter</span></div>
+        <div class="kpills" style="margin-top:8px">
+          <span class="kp kpg">هدف يونيو: 4,000-8,000 قارئ + 15-25 اشتراك jbrseo</span>
+          <span class="kp kpa">ميزانية يونيو: 1,300-1,700 ريال</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ KPI ═══ -->
+<div id="sec-kpi" class="sec">
+
+  <div class="stitle"><span class="snum sn-g">90 يوم</span> الأهداف —  وواقعية</div>
+  <div class="g2" style="margin-bottom:18px">
+    <div class="card">
+      <div class="slbl">المنصة — القراء</div>
+      <div class="kr"><span class="krl">قراء شهريون (MAR) نهاية يونيو</span><span class="krv krvg">4,000–8,000</span></div>
+      <div class="kr"><span class="krl">مشتركو Newsletter</span><span class="krv krvg">200–400 </span></div>
+      <div class="kr"><span class="krl">معدل Open Rate النشرة</span><span class="krv krvg">25–35%</span></div>
+      <div class="kr"><span class="krl">متوسط وقت المقال</span><span class="krv krvg">&gt;3 دقائق</span></div>
+      <div class="kr"><span class="krl">Return Visitors</span><span class="krv krvg">&gt;25%</span></div>
+      <div class="kr"><span class="krl">مقالات منشورة</span><span class="krv krvg">20–30 مقال</span></div>
+      <div class="kr"><span class="krl">كلمات مفتاحية في صفحة 1 جوجل</span><span class="krv krvg">5–15 كلمة</span></div>
+    </div>
+    <div class="card">
+      <div class="slbl">السوشيال —  وواقعي</div>
+      <div class="kr"><span class="krl">LinkedIn connections خالد الشخصي</span><span class="krv krvg">+300–500 </span></div>
+      <div class="kr"><span class="krl">LinkedIn Company Page متابعون</span><span class="krv krvg">50–100 </span></div>
+      <div class="kr"><span class="krl">X/Twitter متابعون</span><span class="krv krvg">300–500</span></div>
+      <div class="kr"><span class="krl">Instagram @modonty.sa</span><span class="krv krvg">200–400</span></div>
+      <div class="kr"><span class="krl">TikTok متابعون</span><span class="krv krvg">100–300</span></div>
+      <div class="kr"><span class="krl">Reach منشور LinkedIn خالد</span><span class="krv krvg">2,000–10,000/منشور</span></div>
+      <div class="kr"><span class="krl">Engagement Rate LinkedIn</span><span class="krv krvg">&gt;4% (Personal Profile)</span></div>
+    </div>
+  </div>
+
+  <div class="card" style="background:rgba(212,168,83,0.06);border-color:rgba(212,168,83,0.2);margin-bottom:18px">
+    <div style="text-align:center;padding:8px 0">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">الـ KPI الأهم — تحويل القراء لعملاء jbrseo</div>
+      <div style="font-size:30px;font-weight:700;color:var(--accent);font-family:var(--mono)">15–25</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">اشتراك jbrseo من قراء مدونتي — 90 يوم</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px">معدل تحويل 0.5% من القراء = 8,000 × 0.5% = 40 → نأخذ 15-25 كهدف محافظ</div>
+    </div>
+  </div>
+
+  <div class="stitle"><span class="snum sn-g">ميزانية</span> الميزانية ال — مدفوع فقط بعد البيانات</div>
+  <div class="critical-box">
+    <div style="font-size:12.5px;color:var(--muted);line-height:1.9">
+       <strong style="color:var(--text)">شهر 1 = صفر ميزانية مدفوعة.</strong> نتعلم من البيانات العضوية أولاً ثم نضخ المال على ما يشتغل. هذا يوفر 200 ريال + يعطي نتائج أفضل.
+    </div>
+  </div>
+  <div class="tw th-g"><table>
+    <thead><tr><th>الشهر</th><th>القناة</th><th>المبلغ</th><th>الهدف</th><th>الشرط</th></tr></thead>
+    <tbody>
+      <tr><td>أبريل</td><td>—</td><td style="font-family:var(--mono);color:var(--muted)">0 ريال</td><td>اختبار عضوي — نتعلم من البيانات</td><td>لا إنفاق حتى نعرف المحتوى الأفضل</td></tr>
+      <tr><td>مايو</td><td>LinkedIn Boost (أفضل PDF Carousel من أبريل)</td><td style="font-family:var(--mono);color:var(--accent)">200-500 ريال</td><td>توسيع نطاق المحتوى الرابح</td><td>اختيار المنشور الأعلى engagement في أبريل فقط</td></tr>
+      <tr><td>يونيو 1-24</td><td>LinkedIn Paid SA</td><td style="font-family:var(--mono);color:var(--accent)">500-700 ريال</td><td>جذب قراء جدد + حصاد jbrseo</td><td>CTR &gt;1.5% على التجارب الأولى</td></tr>
+      <tr><td>يونيو 25+</td><td>LinkedIn Paid + Snap SA</td><td style="font-family:var(--mono);color:var(--green)">800-1,000 ريال</td><td>ذروة إجازة الصيف SA</td><td>إجازة المدارس 25 يونيو رسمياً</td></tr>
+      <tr style="background:var(--card2)"><td><strong>الإجمالي 3 أشهر</strong></td><td>—</td><td style="font-family:var(--mono);font-weight:700;font-size:14px;color:var(--accent)">1,500–2,200 ريال</td><td>بجانب jbrseo (10,675 ريال)</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="stitle"><span class="snum sn-g">فريق</span> مهام الفريق الإضافية لـ modonty</div>
+  <div class="g2">
+    <div class="card">
+      <div class="slbl">خالد — Thought Leader</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:2">
+        • <strong style="color:var(--text)">LinkedIn:</strong> ينشر 2-3 مرات/أسبوع من حسابه الشخصي · Copywriter يكتب المسودة<br>
+        • <strong style="color:var(--text)">X:</strong> يراجع ويُقرّ الـ Threads قبل النشر<br>
+        • <strong style="color:var(--text)">مراجعة المقالات:</strong> يعتمد كل مقال قبل نشره على modonty<br>
+        • <strong style="color:var(--text)">الإغلاق:</strong> يغلق شخصياً كل عميل jbrseo &gt;باقة النمو
+      </div>
+    </div>
+    <div class="card">
+      <div class="slbl">Copywriter — مهام إضافية</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:2">
+        • مقال/أسبوع للمنصة (1,200+ كلمة · SEO-optimized بالـ keyword المحدد)<br>
+        • مسودة LinkedIn خالد (3 منشورات/أسبوع)<br>
+        • Newsletter أسبوعية (الأحد 9ص)<br>
+        • 3 X Threads من محتوى المقالات
+      </div>
+    </div>
+    <div class="card">
+      <div class="slbl">Designer — مهام إضافية</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:2">
+        • 1 LinkedIn PDF Carousel/أسبوع (7-10 شرائح · PDF 1080×1350px)<br>
+        • 1 Instagram Carousel/أسبوع (7 شرائح · 1080×1080px)<br>
+        • Cover image للمقال الجديد<br>
+        • 3 Quote cards للـ X + Stories
+      </div>
+    </div>
+    <div class="card">
+      <div class="slbl">Video Editor — مهام إضافية</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:2">
+        • 2 Reels/TikTok مدونتي/أسبوع (1080×1920 · H.264 · Subtitles إلزامية)<br>
+        • 1 YouTube Short من نفس الفيديو<br>
+        • Snapchat Story SA يومي (&lt;60 ثانية)<br>
+        • Script كل فيديو يكتبه Copywriter أولاً
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+  function T(t) {
+    ['str','spc','cnt','kpi'].forEach(id => {
+      document.getElementById('sec-'+id).classList.remove('on');
+    });
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('t-str','t-cnt','t-kpi','t-fix'));
+    document.getElementById('sec-'+t).classList.add('on');
+    const map = {str:0,spc:1,cnt:2,kpi:3};
+    const tabs = document.querySelectorAll('.tab');
+    const clsMap = {str:'t-str',spc:'',cnt:'t-cnt',kpi:'t-kpi'};
+    if(clsMap[t]) tabs[map[t]].classList.add(clsMap[t]);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+  function M(n,btn) {
+    [1,2,3].forEach(i => { const el=document.getElementById('m'+i); if(el) el.classList.remove('on'); });
+    document.getElementById('m'+n).classList.add('on');
+    document.querySelectorAll('.mt').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+  }
+  function X(el) { el.classList.toggle('done'); }
+</script>
+</body>
+</html>
