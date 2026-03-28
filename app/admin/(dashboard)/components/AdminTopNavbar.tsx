@@ -6,6 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { ADMIN_NAV, COUNTRIES } from "../_config";
 import { AdminCountryToggle } from "./AdminCountryToggle";
 import { AdminSubscribersLink } from "./AdminSubscribersLink";
+import { RefreshButton } from "./RefreshButton";
 
 function withCountry(href: string, country: string): string {
   return href + (href.includes("?") ? "&" : "?") + "country=" + country;
@@ -95,6 +96,8 @@ export function AdminTopNavbar(): ReactElement {
         <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />
 
         <AdminSubscribersLink />
+
+        <RefreshButton />
 
         <AdminCountryToggle />
       </div>

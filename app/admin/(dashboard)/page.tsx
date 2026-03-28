@@ -1,20 +1,168 @@
-import { Suspense } from "react";
+import { Suspense, type ReactElement } from "react";
 import Link from "next/link";
 import { getSubscriberStats } from "@/app/actions/subscribers";
-import {
-  getAllAnalyticsData,
-  type AllAnalyticsData,
-  type AnalyticsData,
-} from "@/lib/analytics";
+import { getAllAnalyticsData, getCountryBreakdown } from "@/lib/analytics";
+import type { AnalyticsData } from "@/lib/analytics";
 import type { SupportedCountry } from "@/lib/landing-content.types";
-import { AdminCountryPill } from "./components/AdminCountryPill";
 import { cn } from "@/lib/utils";
+import { AdminCountryPill } from "./components/AdminCountryPill";
+import { DashboardCharts } from "./components/DashboardCharts";
 
 async function getCountry(
   searchParams: Promise<{ country?: string }>,
 ): Promise<SupportedCountry> {
   const params = await searchParams;
   return params.country === "EG" ? "EG" : "SA";
+}
+
+type MetricKey = keyof Pick<
+  AnalyticsData,
+  "pageviews7d" | "activeUsersToday" | "signupStart7d" | "pricingView7d" | "whatsappClick7d"
+>;
+
+const ALL_METRIC_CONFIG: {
+  label: string;
+  key: MetricKey;
+  icon: string;
+  stripe: string;
+  iconBg: string;
+  iconColor: string;
+  hoverBorder: string;
+  detailBorder: string;
+  detailNumber: string;
+}[] = [
+  {
+    label: "زيارات الصفحات",
+    key: "pageviews7d",
+    icon: "👁",
+    stripe: "bg-blue-500",
+    iconBg: "bg-blue-500/10",
+    iconColor: "text-blue-400",
+    hoverBorder: "hover:border-blue-500/50",
+    detailBorder: "border-r-2 border-r-blue-500",
+    detailNumber: "text-blue-400",
+  },
+  {
+    label: "نشطون (٧ أيام)",
+    key: "activeUsersToday",
+    icon: "👤",
+    stripe: "bg-purple-500",
+    iconBg: "bg-purple-500/10",
+    iconColor: "text-purple-400",
+    hoverBorder: "hover:border-purple-500/50",
+    detailBorder: "border-r-2 border-r-purple-500",
+    detailNumber: "text-purple-400",
+  },
+  {
+    label: "بدأوا التسجيل",
+    key: "signupStart7d",
+    icon: "✍️",
+    stripe: "bg-green-500",
+    iconBg: "bg-green-500/10",
+    iconColor: "text-green-400",
+    hoverBorder: "hover:border-green-500/50",
+    detailBorder: "border-r-2 border-r-green-500",
+    detailNumber: "text-green-400",
+  },
+  {
+    label: "شاهدوا الأسعار",
+    key: "pricingView7d",
+    icon: "💰",
+    stripe: "bg-amber-500",
+    iconBg: "bg-amber-500/10",
+    iconColor: "text-amber-400",
+    hoverBorder: "hover:border-amber-500/50",
+    detailBorder: "border-r-2 border-r-amber-500",
+    detailNumber: "text-amber-400",
+  },
+  {
+    label: "واتساب",
+    key: "whatsappClick7d",
+    icon: "💬",
+    stripe: "bg-emerald-600",
+    iconBg: "bg-emerald-500/10",
+    iconColor: "text-emerald-400",
+    hoverBorder: "hover:border-emerald-500/50",
+    detailBorder: "border-r-2 border-r-emerald-500",
+    detailNumber: "text-emerald-400",
+  },
+];
+
+function GaMetricCard({
+  label,
+  value,
+  icon,
+  stripe,
+  iconBg,
+  iconColor,
+  hoverBorder,
+}: {
+  label: string;
+  value: number;
+  icon: string;
+  stripe: string;
+  iconBg: string;
+  iconColor: string;
+  hoverBorder: string;
+}): ReactElement {
+  return (
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-colors",
+        hoverBorder,
+      )}
+    >
+      <div className={cn("absolute inset-y-0 end-0 w-1 rounded-s", stripe)} aria-hidden />
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs text-muted-foreground">{label}</p>
+          <p className="mt-1 text-3xl font-black text-foreground">
+            {value.toLocaleString("ar-SA")}
+          </p>
+        </div>
+        <div className={cn("rounded-lg p-2 text-xl", iconBg, iconColor)} aria-hidden>
+          {icon}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MarketColumn({
+  title,
+  badge,
+  data,
+}: {
+  title: string;
+  badge: string;
+  data: AnalyticsData;
+}): ReactElement {
+  return (
+    <div className="rounded-xl border border-border bg-card p-5">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h3 className="text-sm font-bold text-foreground">{title}</h3>
+        <span className="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground">
+          {badge}
+        </span>
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {ALL_METRIC_CONFIG.map((m) => (
+          <div
+            key={m.key}
+            className={cn(
+              "rounded-lg border border-border/80 bg-muted/20 px-3 py-2.5",
+              m.detailBorder,
+            )}
+          >
+            <p className="text-[11px] text-muted-foreground">{m.label}</p>
+            <p className={cn("text-3xl font-black", m.detailNumber)}>
+              {data[m.key].toLocaleString("ar-SA")}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export default async function AdminDashboardPage({
@@ -24,7 +172,10 @@ export default async function AdminDashboardPage({
 }) {
   const country = await getCountry(searchParams);
   const stats = await getSubscriberStats();
-  const analytics = await getAllAnalyticsData();
+  const [{ all, sa, eg }, countryBreakdown] = await Promise.all([
+    getAllAnalyticsData(),
+    getCountryBreakdown(),
+  ]);
 
   const totalSubscribers = stats?.total ?? 0;
   const saCount = stats?.byCountry.SA ?? 0;
@@ -39,9 +190,7 @@ export default async function AdminDashboardPage({
   const pctSaBar = maxCountry > 0 ? Math.round((saCount / maxCountry) * 100) : 0;
   const pctEgBar = maxCountry > 0 ? Math.round((egCount / maxCountry) * 100) : 0;
   const pctRecentOfTotal =
-    totalSubscribers > 0
-      ? Math.round((recentCount / totalSubscribers) * 100)
-      : 0;
+    totalSubscribers > 0 ? Math.round((recentCount / totalSubscribers) * 100) : 0;
 
   const statCards: {
     label: string;
@@ -79,10 +228,8 @@ export default async function AdminDashboardPage({
       label: "آخر ٧ أيام",
       value: recentCount,
       icon: "📈",
-      color:
-        recentCount > 0 ? "text-green-500" : "text-muted-foreground",
-      bgIcon:
-        recentCount > 0 ? "bg-green-500/10" : "bg-muted",
+      color: recentCount > 0 ? "text-green-500" : "text-muted-foreground",
+      bgIcon: recentCount > 0 ? "bg-green-500/10" : "bg-muted",
       href: null,
     },
   ];
@@ -130,9 +277,9 @@ export default async function AdminDashboardPage({
 
   return (
     <div className="p-6">
-      <div className="mb-6">
-        <div className="mb-1 flex flex-wrap items-center gap-2">
-          <h1 className="text-xl font-bold text-foreground">لوحة التحكم</h1>
+      <div className="mb-8">
+        <div className="mb-2 flex flex-wrap items-center gap-2">
+          <h1 className="text-2xl font-bold text-foreground">لوحة التحكم</h1>
           <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-foreground">
             البلد: {country === "SA" ? "السعودية" : "مصر"}
           </span>
@@ -140,9 +287,9 @@ export default async function AdminDashboardPage({
             <AdminCountryPill />
           </Suspense>
         </div>
-        <p className="text-sm text-muted-foreground">
-          إجمالي {totalSubscribers} مشترك — ملخص التوزيع حسب البلد ونشاط الأسبوع الأخير،
-          مع روابط سريعة للأقسام الأكثر استخداماً.
+        <p className="text-sm text-muted-foreground">ملخص الأداء — آخر ٧ أيام</p>
+        <p className="mt-2 text-sm text-muted-foreground">
+          إجمالي {totalSubscribers} مشترك — مع روابط سريعة للمحتوى والإعدادات.
           <Link
             href={`/admin/subscribers?country=${country}`}
             className="ms-1 text-primary hover:underline"
@@ -164,72 +311,47 @@ export default async function AdminDashboardPage({
         </div>
       )}
 
-      {/* ── GA4 Analytics ── */}
-      <section className="mb-6 space-y-5">
-        <h2 className="text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          تحليلات GA4 — آخر ٧ أيام
-        </h2>
+      <section className="mb-8">
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <span
+            className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-green-500"
+            aria-hidden
+          />
+          <h2 className="text-lg font-bold text-foreground">تحليلات GA4 — آخر ٧ أيام</h2>
+          <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+            🌍 الكل
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          {ALL_METRIC_CONFIG.map((m) => (
+            <GaMetricCard
+              key={m.key}
+              label={m.label}
+              value={all[m.key]}
+              icon={m.icon}
+              stripe={m.stripe}
+              iconBg={m.iconBg}
+              iconColor={m.iconColor}
+              hoverBorder={m.hoverBorder}
+            />
+          ))}
+        </div>
+      </section>
 
-        {(
-          [
-            { key: 'all', label: '🌍 الكل',       data: analytics.all, valueColor: 'text-primary'   },
-            { key: 'sa',  label: '🇸🇦 السعودية', data: analytics.sa,  valueColor: 'text-green-500' },
-            { key: 'eg',  label: '🇪🇬 مصر',      data: analytics.eg,  valueColor: 'text-blue-500'  },
-          ] satisfies { key: string; label: string; data: AnalyticsData; valueColor: string }[]
-        ).map(group => (
-          <div key={group.key} className="space-y-2">
+      <section className="mb-8">
+        <DashboardCharts
+          all={all}
+          sa={sa}
+          eg={eg}
+          saSubscribers={saCount}
+          egSubscribers={egCount}
+          countryBreakdown={countryBreakdown}
+        />
+      </section>
 
-            <p className="text-right text-xs font-medium text-muted-foreground border-r-2 border-border pr-2">
-              {group.label}
-            </p>
-
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-              {(
-                [
-                  { label: 'زيارات الصفحات', value: group.data.pageviews7d,     icon: '👁'  },
-                  { label: 'نشطون اليوم',    value: group.data.activeUsersToday, icon: '👤'  },
-                  { label: 'بدأوا التسجيل', value: group.data.signupStart7d,    icon: '✍️' },
-                  { label: 'شاهدوا الأسعار', value: group.data.pricingView7d,   icon: '💰'  },
-                  { label: 'واتساب',         value: group.data.whatsappClick7d,  icon: '💬'  },
-                ] satisfies { label: string; value: number; icon: string }[]
-              ).map(stat => (
-                <div
-                  key={stat.label}
-                  className="block rounded-lg border border-border bg-card p-4 shadow-sm"
-                >
-                  <div className="mb-2 flex items-center justify-between">
-                    <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
-                    <span className="rounded-md bg-primary/10 p-1 text-base" aria-hidden="true">
-                      {stat.icon}
-                    </span>
-                  </div>
-                  <p className={`text-2xl font-bold ${group.valueColor}`}>
-                    {stat.value.toLocaleString('ar-SA')}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {group.data.topPages.length > 0 && (
-              <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-                <p className="mb-2 text-right text-xs font-semibold text-muted-foreground">
-                  أكثر الصفحات زيارة
-                </p>
-                <ul className="space-y-1.5">
-                  {group.data.topPages.map(pg => (
-                    <li key={pg.page} className="flex items-center justify-between text-xs">
-                      <span className="text-muted-foreground">
-                        {pg.views.toLocaleString('ar-SA')} زيارة
-                      </span>
-                      <span className="font-mono text-foreground" dir="ltr">{pg.page}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
-          </div>
-        ))}
+      <section className="mb-8 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <MarketColumn title="🇸🇦 السعودية — تفصيل" badge="SA" data={sa} />
+        <MarketColumn title="🇪🇬 مصر — تفصيل" badge="EG" data={eg} />
       </section>
 
       {stats ? (
@@ -239,28 +361,19 @@ export default async function AdminDashboardPage({
               const body = (
                 <>
                   <div className="mb-2 flex items-center justify-between">
-                    <p className="text-xs font-medium text-muted-foreground">
-                      {card.label}
-                    </p>
+                    <p className="text-xs font-medium text-muted-foreground">{card.label}</p>
                     {card.icon ? (
                       <span
-                        className={cn(
-                          "rounded-md p-1 text-base",
-                          card.bgIcon,
-                        )}
+                        className={cn("rounded-md p-1 text-base", card.bgIcon)}
                         aria-hidden
                       >
                         {card.icon}
                       </span>
                     ) : null}
                   </div>
-                  <p className={cn("text-2xl font-bold", card.color)}>
-                    {card.value}
-                  </p>
+                  <p className={cn("text-2xl font-bold", card.color)}>{card.value}</p>
                   {card.href ? (
-                    <p className="mt-1 text-[10px] text-muted-foreground">
-                      انقر للتفاصيل →
-                    </p>
+                    <p className="mt-1 text-[10px] text-muted-foreground">انقر للتفاصيل →</p>
                   ) : null}
                 </>
               );
@@ -281,10 +394,7 @@ export default async function AdminDashboardPage({
               }
 
               return (
-                <div
-                  key={card.label}
-                  className="rounded-lg border border-border bg-card p-4 shadow-sm"
-                >
+                <div key={card.label} className="rounded-lg border border-border bg-card p-4 shadow-sm">
                   {body}
                 </div>
               );
@@ -293,9 +403,7 @@ export default async function AdminDashboardPage({
 
           <div className="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-sm font-semibold text-foreground">
-                المشتركون حسب البلد
-              </h2>
+              <h2 className="text-sm font-semibold text-foreground">المشتركون حسب البلد</h2>
               <Link
                 href={`/admin/subscribers?country=${country}`}
                 className="text-xs text-primary hover:underline"
@@ -306,22 +414,15 @@ export default async function AdminDashboardPage({
             <div className="space-y-3">
               {countryRows.map((row) => (
                 <div key={row.label} className="flex items-center gap-3">
-                  <span className="w-24 shrink-0 text-xs text-muted-foreground">
-                    {row.label}
-                  </span>
+                  <span className="w-24 shrink-0 text-xs text-muted-foreground">{row.label}</span>
                   <div className="h-5 min-w-0 flex-1 rounded-full bg-muted">
                     <div
-                      className={cn(
-                        "h-5 rounded-full transition-all duration-500",
-                        row.barClass,
-                      )}
+                      className={cn("h-5 rounded-full transition-all duration-500", row.barClass)}
                       style={{ width: `${row.barPct}%` }}
                     />
                   </div>
                   <div className="w-20 shrink-0 text-end sm:w-24">
-                    <span className="text-sm font-medium text-foreground">
-                      {row.count}
-                    </span>
+                    <span className="text-sm font-medium text-foreground">{row.count}</span>
                     <span className="ms-1 text-[10px] text-muted-foreground">
                       ({row.totalPct}%)
                     </span>
@@ -333,9 +434,7 @@ export default async function AdminDashboardPage({
 
           <div className="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-sm font-semibold text-foreground">
-                نشاط آخر ٧ أيام
-              </h2>
+              <h2 className="text-sm font-semibold text-foreground">نشاط آخر ٧ أيام</h2>
               <span
                 className={cn(
                   "rounded-full px-2 py-0.5 text-xs font-medium",
@@ -344,9 +443,7 @@ export default async function AdminDashboardPage({
                     : "bg-muted text-muted-foreground",
                 )}
               >
-                {recentCount > 0
-                  ? `+${recentCount} هذا الأسبوع`
-                  : "لا اشتراكات هذا الأسبوع"}
+                {recentCount > 0 ? `+${recentCount} هذا الأسبوع` : "لا اشتراكات هذا الأسبوع"}
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-3">
@@ -357,8 +454,7 @@ export default async function AdminDashboardPage({
                 />
               </div>
               <span className="shrink-0 text-sm text-muted-foreground">
-                {recentCount} من {totalSubscribers} (
-                {pctRecentOfTotal}% من الإجمالي)
+                {recentCount} من {totalSubscribers} ({pctRecentOfTotal}% من الإجمالي)
               </span>
             </div>
             <p className="mt-2 text-[11px] text-muted-foreground">

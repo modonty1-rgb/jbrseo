@@ -18,6 +18,7 @@ import {
 } from "@/lib/pricing-plan-amounts";
 import { ShieldCheck } from "lucide-react";
 import Link from "@/app/components/link";
+import { GTMEvents } from "@/lib/gtm";
 
 function planIndexFromParam(
   param: string | null,
@@ -168,6 +169,8 @@ export function SignupForm({
       } catch {
         /* ignore */
       }
+      const plan = serverPlan?.name;
+      GTMEvents.signupComplete(plan ?? "unknown");
       router.push(withPreview);
       return;
     }
