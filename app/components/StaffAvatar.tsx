@@ -42,7 +42,11 @@ export function StaffAvatar({
       >
         <Image
           src={effectiveUrl}
-          alt=""
+          alt={
+            name.trim()
+              ? `صورة ${name.trim()} — فريق JBRSEO`
+              : "صورة عضو فريق JBRSEO"
+          }
           fill
           className="object-cover"
           sizes={isFull ? "100vw" : "48px"}

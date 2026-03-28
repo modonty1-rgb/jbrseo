@@ -3,21 +3,32 @@ import { headers } from "next/headers";
 import { LegalMarkdownArticle } from "@/app/components/legal/LegalMarkdownArticle";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
+import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
+
+const privacyTitleAbsolute =
+  "سياسة الخصوصية وحماية بياناتك الشخصية — مدونتي | JBRSEO";
+const privacyDescription =
+  "سياسة الخصوصية لمنصة مدونتي. نوضح كيف نجمع بياناتك ونحميها ونستخدمها. بياناتك أمانة عندنا ولن تُشارك مع أي طرف ثالث بدون إذنك.";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const h = await headers();
-  const country = getCountryFromHeaders(h);
-  const landing = await getStaticLandingWithOverrides(country);
-  const { title } = landing.privacy;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jbrseo.com";
-  const description =
-    "تعرف على كيفية تعامل منصة JBRSEO مع بياناتك الشخصية، وحماية خصوصيتك أثناء استخدامك للخدمة.";
+  const canonical = `${DEFAULT_PUBLIC_SITE_ORIGIN}/privacy`;
   return {
-    title,
-    description,
-    alternates: { canonical: `${siteUrl}/privacy` },
-    openGraph: { title, description, url: `${siteUrl}/privacy` },
-    twitter: { title, description },
+    title: { absolute: privacyTitleAbsolute },
+    description: privacyDescription,
+    alternates: {
+      canonical,
+      languages: {
+        "ar-SA": canonical,
+        "ar-EG": canonical,
+      },
+    },
+    robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
+    openGraph: {
+      title: privacyTitleAbsolute,
+      description: privacyDescription,
+      url: canonical,
+    },
+    twitter: { title: privacyTitleAbsolute, description: privacyDescription },
   };
 }
 

@@ -3,13 +3,14 @@ import { headers } from "next/headers";
 import { LegalMarkdownArticle } from "@/app/components/legal/LegalMarkdownArticle";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
+import { DEFAULT_PUBLIC_SITE_ORIGIN } from "@/lib/seo-meta";
 
 export async function generateMetadata(): Promise<Metadata> {
   const h = await headers();
   const country = getCountryFromHeaders(h);
   const landing = await getStaticLandingWithOverrides(country);
   const { title } = landing.terms;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jbrseo.com";
+  const siteUrl = DEFAULT_PUBLIC_SITE_ORIGIN;
   const description =
     "اقرأ شروط وأحكام استخدام منصة JBRSEO، بما في ذلك حقوقك والتزاماتك وحدود مسؤوليتنا.";
   return {

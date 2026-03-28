@@ -169,8 +169,7 @@ export function SignupForm({
       } catch {
         /* ignore */
       }
-      const plan = serverPlan?.name;
-      GTMEvents.signupComplete(plan ?? "unknown");
+      GTMEvents.signupComplete(country);
       router.push(withPreview);
       return;
     }
@@ -246,6 +245,7 @@ export function SignupForm({
                 type="text"
                 autoComplete="name"
                 required
+                maxLength={100}
                 placeholder="مثال: محمد العمري"
                 className="rounded-lg py-2.5 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent"
                 value={name}
@@ -268,6 +268,7 @@ export function SignupForm({
                 type="email"
                 autoComplete="email"
                 required
+                maxLength={254}
                 placeholder="name@company.com"
                 className="rounded-lg py-2.5 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent"
                 value={email}
@@ -320,6 +321,7 @@ export function SignupForm({
                 id="businessName"
                 name="businessName"
                 type="text"
+                maxLength={200}
                 className="rounded-lg py-2.5 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent"
                 placeholder="مثال: متجر كلمات"
                 value={businessName}
@@ -334,6 +336,7 @@ export function SignupForm({
               <Textarea
                 id="businessType"
                 name="businessType"
+                maxLength={500}
                 className="rounded-lg py-2.5 min-h-[80px] focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent"
                 rows={3}
                 placeholder="مثال: عيادة أسنان، متجر إلكتروني، شركة خدمات B2B..."

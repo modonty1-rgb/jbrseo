@@ -1,7 +1,7 @@
 import { Suspense, type ReactElement } from "react";
 import Link from "next/link";
 import { getSubscriberStats } from "@/app/actions/subscribers";
-import { getAllAnalyticsData, getCountryBreakdown } from "@/lib/analytics";
+import { getAllAnalyticsData, getCountryBreakdown, getTopEvents } from "@/lib/analytics";
 import type { AnalyticsData } from "@/lib/analytics";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,7 @@ const ALL_METRIC_CONFIG: {
   detailNumber: string;
 }[] = [
   {
-    label: "زيارات الصفحات",
+    label: "عدد الزيارات",
     key: "pageviews7d",
     icon: "👁",
     stripe: "bg-blue-500",
@@ -43,7 +43,7 @@ const ALL_METRIC_CONFIG: {
     detailNumber: "text-blue-400",
   },
   {
-    label: "نشطون (٧ أيام)",
+    label: "زوار نشطون",
     key: "activeUsersToday",
     icon: "👤",
     stripe: "bg-purple-500",
@@ -54,7 +54,7 @@ const ALL_METRIC_CONFIG: {
     detailNumber: "text-purple-400",
   },
   {
-    label: "بدأوا التسجيل",
+    label: "أبدوا اهتماماً",
     key: "signupStart7d",
     icon: "✍️",
     stripe: "bg-green-500",
@@ -65,7 +65,7 @@ const ALL_METRIC_CONFIG: {
     detailNumber: "text-green-400",
   },
   {
-    label: "شاهدوا الأسعار",
+    label: "تصفّحوا الأسعار",
     key: "pricingView7d",
     icon: "💰",
     stripe: "bg-amber-500",
@@ -172,10 +172,39 @@ export default async function AdminDashboardPage({
 }) {
   const country = await getCountry(searchParams);
   const stats = await getSubscriberStats();
-  const [{ all, sa, eg }, countryBreakdown] = await Promise.all([
-    getAllAnalyticsData(),
-    getCountryBreakdown(),
-  ]);
+
+  const emptyMetrics: AnalyticsData = {
+    pageviews7d: 0,
+    activeUsersToday: 0,
+    signupStart7d: 0,
+    pricingView7d: 0,
+    whatsappClick7d: 0,
+    topPages: [],
+  };
+
+  let analyticsData: {
+    all: AnalyticsData;
+    sa: AnalyticsData;
+    eg: AnalyticsData;
+  } = { all: emptyMetrics, sa: emptyMetrics, eg: emptyMetrics };
+  let countryBreakdown: { country: string; views: number }[] = [];
+  let topEvents: { event: string; count: number }[] = [];
+  let analyticsError = false;
+
+  try {
+    const [data, countries, events] = await Promise.all([
+      getAllAnalyticsData(),
+      getCountryBreakdown(),
+      getTopEvents(),
+    ]);
+    analyticsData = data;
+    countryBreakdown = countries;
+    topEvents = events;
+  } catch {
+    analyticsError = true;
+  }
+
+  const { all, sa, eg } = analyticsData;
 
   const totalSubscribers = stats?.total ?? 0;
   const saCount = stats?.byCountry.SA ?? 0;
@@ -287,9 +316,9 @@ export default async function AdminDashboardPage({
             <AdminCountryPill />
           </Suspense>
         </div>
-        <p className="text-sm text-muted-foreground">ملخص الأداء — آخر ٧ أيام</p>
+        <p className="text-sm text-muted-foreground">أداء موقعك — آخر ٧ أيام</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          إجمالي {totalSubscribers} مشترك — مع روابط سريعة للمحتوى والإعدادات.
+          عندك {totalSubscribers} مشترك — اختر قسماً لتعديله.
           <Link
             href={`/admin/subscribers?country=${country}`}
             className="ms-1 text-primary hover:underline"
@@ -298,6 +327,30 @@ export default async function AdminDashboardPage({
           </Link>
         </p>
       </div>
+
+      {analyticsError && (
+        <div className="mb-4 flex items-center gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-400">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+          >
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+            <path d="M12 9v4" />
+            <path d="M12 17h.01" />
+          </svg>
+          <span>
+            تعذّر الاتصال بـ GA4 — البيانات غير متاحة حالياً. اضغط تحديث للمحاولة مرة أخرى.
+          </span>
+        </div>
+      )}
 
       {totalSubscribers === 0 && (
         <div className="mb-6 rounded-lg border border-dashed border-border bg-muted/10 p-8 text-center">
@@ -314,15 +367,18 @@ export default async function AdminDashboardPage({
       <section className="mb-8">
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <span
-            className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-green-500"
+            className={cn(
+              "h-2 w-2 shrink-0 rounded-full",
+              analyticsError ? "bg-amber-500" : "animate-pulse bg-green-500",
+            )}
             aria-hidden
           />
-          <h2 className="text-lg font-bold text-foreground">تحليلات GA4 — آخر ٧ أيام</h2>
+          <h2 className="text-lg font-bold text-foreground">إحصائيات موقعك — آخر ٧ أيام</h2>
           <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
             🌍 الكل
           </span>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {ALL_METRIC_CONFIG.map((m) => (
             <GaMetricCard
               key={m.key}
@@ -335,6 +391,27 @@ export default async function AdminDashboardPage({
               hoverBorder={m.hoverBorder}
             />
           ))}
+          <div className="relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-colors hover:border-purple-500/50">
+            <div
+              className="absolute inset-y-0 end-0 w-1 rounded-s bg-[#8b5cf6]"
+              aria-hidden
+            />
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="text-xs text-muted-foreground">مشتركون مدفوعون</p>
+                <p className="mt-1 text-3xl font-black text-foreground">
+                  {totalSubscribers.toLocaleString("ar-SA")}
+                </p>
+              </div>
+              <div
+                className="rounded-lg p-2 text-xl text-[#8b5cf6] bg-[#8b5cf6]/20"
+                aria-hidden
+              >
+                👥
+              </div>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">العملاء المشتركون</p>
+          </div>
         </div>
       </section>
 
@@ -346,12 +423,13 @@ export default async function AdminDashboardPage({
           saSubscribers={saCount}
           egSubscribers={egCount}
           countryBreakdown={countryBreakdown}
+          topEvents={topEvents}
         />
       </section>
 
       <section className="mb-8 grid grid-cols-1 gap-5 md:grid-cols-2">
-        <MarketColumn title="🇸🇦 السعودية — تفصيل" badge="SA" data={sa} />
-        <MarketColumn title="🇪🇬 مصر — تفصيل" badge="EG" data={eg} />
+        <MarketColumn title="🇸🇦 أداء السوق السعودي" badge="SA" data={sa} />
+        <MarketColumn title="🇪🇬 أداء السوق المصري" badge="EG" data={eg} />
       </section>
 
       {stats ? (
@@ -403,7 +481,7 @@ export default async function AdminDashboardPage({
 
           <div className="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-sm font-semibold text-foreground">المشتركون حسب البلد</h2>
+              <h2 className="text-sm font-semibold text-foreground">توزيع المشتركين</h2>
               <Link
                 href={`/admin/subscribers?country=${country}`}
                 className="text-xs text-primary hover:underline"
@@ -458,14 +536,14 @@ export default async function AdminDashboardPage({
               </span>
             </div>
             <p className="mt-2 text-[11px] text-muted-foreground">
-              نسبة المشتركين الجدد في الأسبوع الأخير من إجمالي المشتركين
+              من إجمالي {totalSubscribers} مشترك هذا الأسبوع
             </p>
           </div>
         </>
       ) : null}
 
       <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-        <h2 className="mb-3 text-sm font-semibold text-foreground">وصول سريع</h2>
+        <h2 className="mb-3 text-sm font-semibold text-foreground">اختصارات سريعة</h2>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
           {quickLinks.map((item) => (
             <a

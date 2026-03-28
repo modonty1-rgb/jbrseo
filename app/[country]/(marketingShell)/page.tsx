@@ -15,7 +15,12 @@ import {
 import { isAnnualFromBillingParam } from "@/lib/billing-search-param";
 import { getLandingContent } from "@/lib/getLandingContent";
 import { buildLandingOgMetadata } from "@/lib/landing-open-graph";
-import { resolveCanonicalForMetadata, resolveSiteOriginFromSeoCanonical } from "@/lib/seo-meta";
+import {
+  DEFAULT_PUBLIC_SITE_ORIGIN,
+  PUBLIC_INDEX_FOLLOW_ROBOTS,
+  resolveCanonicalForMetadata,
+  resolveSiteOriginFromSeoCanonical,
+} from "@/lib/seo-meta";
 import { getWhatsAppLink } from "@/lib/site-links";
 
 const sectionFallback = () => <section className="min-h-[200px]" aria-hidden />;
@@ -38,7 +43,7 @@ const FinalCTA = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/
 );
 
 const HOME_SA_DESCRIPTION =
-  "مدونتي — منصة المحتوى العربي. مقالات تتصدر جوجل، صفحة شركتك في الشبكة، وقاعدة Leads مصنّفة — بدون كتابة حرف واحد.";
+  "مدونتي — منصة المحتوى العربي. مقالات تتصدر جوجل، صفحة شركتك في الشبكة، وقاعدة Leads مصنّفة — بدون كتابة حرف واحد. ابدأ مجاناً بدون بطاقة ائتمان.";
 
 export async function generateMetadata({
   params,
@@ -53,9 +58,7 @@ export async function generateMetadata({
   const countryCode = getCountryCodeFromSlug(slug as "sa" | "eg");
   const content = await getLandingContent(countryCode);
   const { seo: s } = content;
-  const envSiteBase =
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "").trim() || "https://www.jbrseo.com";
-  const siteBase = resolveSiteOriginFromSeoCanonical(s.canonical, envSiteBase);
+  const siteBase = resolveSiteOriginFromSeoCanonical(s.canonical, DEFAULT_PUBLIC_SITE_ORIGIN);
   const fallbackCanonical = `${siteBase}/${slug}`;
   const canonical = resolveCanonicalForMetadata(s.canonical, fallbackCanonical);
   const baseMeta = buildLandingOgMetadata({
@@ -64,18 +67,30 @@ export async function generateMetadata({
     siteBase,
     documentTitle: s.title,
   });
+  const hreflang = {
+    "ar-SA": `${siteBase}/sa`,
+    "ar-EG": `${siteBase}/eg`,
+  };
+  const merged: Metadata = {
+    ...baseMeta,
+    alternates: {
+      canonical,
+      languages: hreflang,
+    },
+    robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
+  };
   if (slug !== "sa") {
-    return baseMeta;
+    return merged;
   }
   return {
-    ...baseMeta,
+    ...merged,
     description: HOME_SA_DESCRIPTION,
-    openGraph: baseMeta.openGraph
-      ? { ...baseMeta.openGraph, description: HOME_SA_DESCRIPTION }
-      : baseMeta.openGraph,
-    twitter: baseMeta.twitter
-      ? { ...baseMeta.twitter, description: HOME_SA_DESCRIPTION }
-      : baseMeta.twitter,
+    openGraph: merged.openGraph
+      ? { ...merged.openGraph, description: HOME_SA_DESCRIPTION }
+      : merged.openGraph,
+    twitter: merged.twitter
+      ? { ...merged.twitter, description: HOME_SA_DESCRIPTION }
+      : merged.twitter,
   };
 }
 
@@ -133,7 +148,7 @@ export default async function CountryHome({
 
   return (
     <>
-      <LandingJsonLd content={content} />
+      <LandingJsonLd content={content} countrySlug={countrySlug} />
       <section className="relative">
         <Hero
           content={content}

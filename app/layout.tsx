@@ -5,11 +5,13 @@ import Link from "@/app/components/link";
 import { FAVICON_URLS } from "@/lib/constants";
 import { getGlobalSeo } from "@/lib/getGlobalSeo";
 import { getSiteGtmId } from "@/lib/getLandingContent";
-import { resolveSiteOriginFromSeoCanonical } from "@/lib/seo-meta";
+import { ensureWwwJbrseoUrl, resolveSiteOriginFromSeoCanonical } from "@/lib/seo-meta";
 import { ThemeProvider } from "@/app/helpers/useTheme";
 import "./globals.css";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jbrseo.com";
+const SITE_URL = ensureWwwJbrseoUrl(
+  (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jbrseo.com").replace(/\/$/, ""),
+);
 
 export const viewport: Viewport = {
   themeColor: "#0c0c12",

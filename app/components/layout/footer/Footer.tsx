@@ -115,7 +115,7 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
               <span className="text-xs text-muted-foreground">مدعوم بـ</span>
               <Image
                 src="https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,fl_immutable_cache,w_144,c_fit/v1768724643/final-05_ukjgff.png"
-                alt="مدونتي"
+                alt="شعار مدونتي — منصة المحتوى العربي"
                 width={140}
                 height={44}
                 className="h-20 w-auto object-contain"

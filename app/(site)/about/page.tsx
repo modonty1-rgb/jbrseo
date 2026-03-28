@@ -1,21 +1,33 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import Link from "@/app/components/link";
+import { AboutPageJsonLd } from "@/app/components/shared/AboutPageJsonLd";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { StaffAvatar } from "@/app/components/StaffAvatar";
 import { Card } from "@/app/components/ui/card";
+import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jbrseo.com";
-const aboutTitle = "عن منصة JBRSEO | من نحن وسبب وجودنا";
+const aboutTitle = "من نحن — مدونتي منصة المحتوى العربي لجذب العملاء";
 const aboutDescription =
-  "تعرف على قصة منصة JBRSEO، مهمتنا لمساعدة المتاجر الإلكترونية في السعودية ومصر على الاعتماد على المحتوى والـ SEO للنمو المستدام بعيداً عن الاعتماد الكامل على الإعلانات.";
+  "تعرف على قصة منصة JBRSEO ومهمتنا لمساعدة المتاجر في السعودية ومصر على النمو بالمحتوى والـ SEO بعيداً عن الاعتماد الكامل على الإعلانات.";
 
 export const metadata: Metadata = {
   title: aboutTitle,
   description: aboutDescription,
-  alternates: { canonical: `${siteUrl}/about` },
-  openGraph: { title: aboutTitle, description: aboutDescription, url: `${siteUrl}/about` },
+  alternates: {
+    canonical: `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
+    languages: {
+      "ar-SA": `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
+      "ar-EG": `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
+    },
+  },
+  robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
+  openGraph: {
+    title: aboutTitle,
+    description: aboutDescription,
+    url: `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
+  },
   twitter: { title: aboutTitle, description: aboutDescription },
 };
 
@@ -29,6 +41,7 @@ export default async function AboutPage() {
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-12 px-4 py-10 sm:px-6 lg:px-0 lg:py-14">
+      <AboutPageJsonLd />
       {/* Hero */}
       <section className="space-y-4 text-center">
         <p className="text-xs font-semibold tracking-widest text-primary/70">عن منصة JBRSEO</p>

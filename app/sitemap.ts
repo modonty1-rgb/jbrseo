@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { SUPPORTED_COUNTRY_SLUGS } from "@/lib/country-config";
+import { DEFAULT_PUBLIC_SITE_ORIGIN } from "@/lib/seo-meta";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jbrseo.com";
+  const siteUrl = DEFAULT_PUBLIC_SITE_ORIGIN;
   const now = new Date();
 
   const countryEntries: MetadataRoute.Sitemap = SUPPORTED_COUNTRY_SLUGS.flatMap((slug) => [

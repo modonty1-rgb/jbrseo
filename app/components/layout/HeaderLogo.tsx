@@ -11,11 +11,10 @@ export function HeaderLogo({ logoHref = "/#hero" }: HeaderLogoProps): ReactEleme
       <Link href={logoHref} aria-label="الرئيسية">
         <Image
           src={SITE_LOGO_URL}
-          alt="JBRSEO"
+          alt="شعار JBRSEO — منصة مدونتي"
           width={110}
           height={34}
           className="h-7 w-[104px] object-contain md:h-8 md:w-[116px]"
-          preload
         />
       </Link>
       <Link

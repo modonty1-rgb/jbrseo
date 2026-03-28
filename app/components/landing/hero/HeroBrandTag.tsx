@@ -30,7 +30,7 @@ export function HeroBrandTag(): ReactElement {
           <span className="hv-btag-dot" />
           <Image
             src="https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,fl_immutable_cache,w_144,c_fit/v1774521188/%D8%A7%D9%84%D9%84%D9%88%D8%AC%D9%88_%D8%A7%D9%84%D8%A7%D8%B3%D8%A7%D8%B3%D9%89_%D8%B9%D9%84%D9%89_%D8%AE%D9%84%D9%81%D9%8A%D8%A9_%D8%BA%D8%A7%D9%85%D9%82_%D8%A7%D8%A8%D9%8A%D8%B6_%D9%88%D8%A7%D8%B2%D8%B1%D9%82_zedma6.png"
-            alt="modonty"
+            alt="شعار مدونتي JBRSEO"
             width={72}
             height={20}
             className="h-4 w-auto shrink-0 opacity-80"
@@ -47,7 +47,7 @@ export function HeroBrandTag(): ReactElement {
         <div className="hv-orb">
           <Image
             src="https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,fl_immutable_cache,w_184,h_184,c_fit/v1774521638/%D8%A7%D9%84%D8%A7%D9%8A%D9%83%D9%88%D9%86_%D9%85%D9%86%D8%BA%D9%8A%D9%8A%D8%B1_%D8%AE%D9%84%D9%81%D9%8A%D8%A9_%D8%B9%D9%84%D9%89_%D8%A7%D9%84%D9%84%D9%88%D9%86_%D8%A7%D9%84%D8%BA%D8%A7%D9%85%D9%82_hrw1cn.png"
-            alt="لوحة تحكم مدونتي"
+            alt="شعار مدونتي JBRSEO — أيقونة المنصة"
             width={68}
             height={68}
             sizes="68px"

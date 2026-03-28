@@ -1,13 +1,23 @@
 import type { Metadata } from "next";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { PricingPageShell } from "@/app/components/pricing/PricingPageShell";
+import { PricingPageJsonLd } from "@/app/components/shared/PricingPageJsonLd";
 import { DEFAULT_OG_IMAGE_URL } from "@/lib/constants";
 import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
 } from "@/lib/country-config";
 import { getLandingContent } from "@/lib/getLandingContent";
+import {
+  DEFAULT_PUBLIC_SITE_ORIGIN,
+  PUBLIC_INDEX_FOLLOW_ROBOTS,
+} from "@/lib/seo-meta";
 import { getWhatsAppLink } from "@/lib/site-links";
+
+const SA_PRICING_TITLE_ABSOLUTE =
+  "أسعار خدمة السيو العربي — اختر خطتك وابدأ | مدونتي";
+const SA_PRICING_DESCRIPTION =
+  "اكتشف خطط أسعار مدونتي لخدمة السيو بالعربي. مقالات تتصدر جوجل، صفحة نشاطك في محركات البحث، وعملاء جدد كل شهر — اختر خطتك وابدأ مجاناً.";
 
 export async function generateMetadata({
   params,
@@ -22,18 +32,27 @@ export async function generateMetadata({
   const countryCode = getCountryCodeFromSlug(slug as "sa" | "eg");
   const landing = await getStaticLandingWithOverrides(countryCode);
   const { title, description } = landing.pricingPage;
-  const siteBase =
-    process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "").trim() || "https://www.jbrseo.com";
+  const siteBase = DEFAULT_PUBLIC_SITE_ORIGIN;
   const canonical = `${siteBase}/${slug}/pricing`;
-  const ogImages = [{ url: DEFAULT_OG_IMAGE_URL, width: 1200, height: 630, alt: title }];
+  const isSa = slug === "sa";
+  const docTitle = isSa ? { absolute: SA_PRICING_TITLE_ABSOLUTE } : title;
+  const docDescription = isSa ? SA_PRICING_DESCRIPTION : description;
+  const ogImages = [
+    { url: DEFAULT_OG_IMAGE_URL, width: 1200, height: 630, alt: isSa ? SA_PRICING_TITLE_ABSOLUTE : title },
+  ];
+  const hreflang = {
+    "ar-SA": `${siteBase}/sa/pricing`,
+    "ar-EG": `${siteBase}/eg/pricing`,
+  };
 
   return {
-    title,
-    description,
-    alternates: { canonical, languages: { ar: canonical } },
+    title: docTitle,
+    description: docDescription,
+    alternates: { canonical, languages: hreflang },
+    robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
     openGraph: {
-      title,
-      description,
+      title: isSa ? SA_PRICING_TITLE_ABSOLUTE : title,
+      description: docDescription,
       url: canonical,
       type: "website",
       locale: "ar_SA",
@@ -42,8 +61,8 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title,
-      description,
+      title: isSa ? SA_PRICING_TITLE_ABSOLUTE : title,
+      description: docDescription,
       images: [DEFAULT_OG_IMAGE_URL],
     },
   };
@@ -76,14 +95,17 @@ export default async function CountryPricingPage({
   const whatsappHref = getWhatsAppLink(countryCode, content.siteSettings?.whatsappNumber);
 
   return (
-    <PricingPageShell
-      pricing={landing.pricing}
-      pricingPage={landing.pricingPage}
-      faq={landing.faq}
-      country={countryCode}
-      highlightPlanId={plan ?? null}
-      signupHrefBase={`/${countrySlug}/signup${previewQuery}`}
-      whatsappHref={whatsappHref}
-    />
+    <>
+      <PricingPageJsonLd countrySlug={countrySlug} countryCode={countryCode} landing={landing} />
+      <PricingPageShell
+        pricing={landing.pricing}
+        pricingPage={landing.pricingPage}
+        faq={landing.faq}
+        country={countryCode}
+        highlightPlanId={plan ?? null}
+        signupHrefBase={`/${countrySlug}/signup${previewQuery}`}
+        whatsappHref={whatsappHref}
+      />
+    </>
   );
 }

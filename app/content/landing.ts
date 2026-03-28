@@ -84,6 +84,6 @@ export const seo = {
   title: "مدونتي — محتوى يجلِب عملاءً | شريك نمو للشركات والتجارة الإلكترونية",
   description:
     "اشتراك شهري لمحتوى مدونة محسّن لـ SEO، منصة قوية، وتقارير شفافة. ادعم نموك بعيداً عن الاعتماد الكامل على الإعلانات. ادفع 12، استلم 18 شهراً.",
-  canonical: "https://jbrseo.com",
+  canonical: "https://www.jbrseo.com",
   ogLocale: "ar_SA",
 } as const;

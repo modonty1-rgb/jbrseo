@@ -5,8 +5,9 @@ import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-
 import Link from "@/app/components/link";
 import { StaffAvatar } from "@/app/components/StaffAvatar";
 import { Card } from "@/app/components/ui/card";
+import { DEFAULT_PUBLIC_SITE_ORIGIN } from "@/lib/seo-meta";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jbrseo.com";
+const siteUrl = DEFAULT_PUBLIC_SITE_ORIGIN;
 const teamTitle = "فريق JBRSEO | الأشخاص وراء المنصة";
 const teamDescription =
   "تعرّف على الفريق الذي يقف وراء منصة JBRSEO، خبرات في المتاجر الإلكترونية، SEO والمحتوى، يعملون معاً لبناء نمو مستدام لمشروعك.";

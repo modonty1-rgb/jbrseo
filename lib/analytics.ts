@@ -206,12 +206,24 @@ export type AllAnalyticsData = {
 };
 
 export async function getAllAnalyticsData(): Promise<AllAnalyticsData> {
-  const [all, sa, eg] = await Promise.all([
-    getAnalyticsData(),
-    getAnalyticsData("SA"),
-    getAnalyticsData("EG"),
-  ]);
-  return { all, sa, eg };
+  try {
+    const [all, sa, eg] = await Promise.all([
+      getAnalyticsData(),
+      getAnalyticsData("SA"),
+      getAnalyticsData("EG"),
+    ]);
+    return { all, sa, eg };
+  } catch {
+    const empty: AnalyticsData = {
+      pageviews7d: 0,
+      activeUsersToday: 0,
+      signupStart7d: 0,
+      pricingView7d: 0,
+      whatsappClick7d: 0,
+      topPages: [],
+    };
+    return { all: { ...empty }, sa: { ...empty }, eg: { ...empty } };
+  }
 }
 
 export async function getCountryBreakdown(): Promise<{ country: string; views: number }[]> {
@@ -242,6 +254,50 @@ export async function getCountryBreakdown(): Promise<{ country: string; views: n
   } catch (error) {
     console.error(
       "[Analytics] getCountryBreakdown failed:",
+      error instanceof Error ? error.message : String(error),
+    );
+    return [];
+  }
+}
+
+export async function getTopEvents(): Promise<{ event: string; count: number }[]> {
+  const rawId = (process.env.GA4_PROPERTY_ID ?? "").trim();
+  const propertyId = rawId.startsWith("properties/") ? rawId : `properties/${rawId}`;
+
+  try {
+    const token = await getAccessToken();
+    const res = await runReport(token, propertyId, {
+      dateRanges: [{ startDate: "7daysAgo", endDate: "today" }],
+      dimensions: [{ name: "eventName" }],
+      metrics: [{ name: "eventCount" }],
+      orderBys: [{ metric: { metricName: "eventCount" }, desc: true }],
+      limit: 10,
+    });
+
+    type GADimRow = {
+      dimensionValues: { value: string }[];
+      metricValues: { value: string }[];
+    };
+    const rows = (res.rows as GADimRow[] | undefined) ?? [];
+
+    const noiseEvents = [
+      "page_view",
+      "session_start",
+      "first_visit",
+      "user_engagement",
+      "scroll",
+      "click",
+    ];
+
+    return rows
+      .map((r) => ({
+        event: r.dimensionValues[0].value,
+        count: parseInt(r.metricValues[0].value, 10),
+      }))
+      .filter((e) => !noiseEvents.includes(e.event));
+  } catch (error) {
+    console.error(
+      "[Analytics] getTopEvents failed:",
       error instanceof Error ? error.message : String(error),
     );
     return [];
