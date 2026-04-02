@@ -22,7 +22,14 @@ export default async function AdminDashboardPage({
   const country = await getCountry(searchParams);
   const stats = await getSubscriberStats();
 
-  const emptyAnalytics = {
+  const emptyAnalytics: {
+    pageviews7d: number;
+    activeUsersToday: number;
+    signupStart7d: number;
+    pricingView7d: number;
+    whatsappClick7d: number;
+    topPages: { page: string; views: number }[];
+  } = {
     pageviews7d: 0,
     activeUsersToday: 0,
     signupStart7d: 0,
