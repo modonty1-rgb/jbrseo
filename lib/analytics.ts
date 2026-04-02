@@ -92,7 +92,7 @@ async function runReport(
 
 // ─── Step 3: getAnalyticsData ─────────────────────────────────────────────────
 
-export async function getAnalyticsData(country?: string): Promise<AnalyticsData> {
+export async function getAnalyticsData(country?: string, days = 7): Promise<AnalyticsData> {
   const rawId = (process.env.GA4_PROPERTY_ID ?? "").trim();
   const propertyId = rawId.startsWith("properties/") ? rawId : `properties/${rawId}`;
 
@@ -105,7 +105,7 @@ export async function getAnalyticsData(country?: string): Promise<AnalyticsData>
       }
     : undefined;
 
-  const dateRange = { startDate: "7daysAgo", endDate: "today" };
+  const dateRange = { startDate: `${days}daysAgo`, endDate: "today" };
 
   try {
     const token = await getAccessToken();
@@ -205,12 +205,12 @@ export type AllAnalyticsData = {
   eg: AnalyticsData;
 };
 
-export async function getAllAnalyticsData(): Promise<AllAnalyticsData> {
+export async function getAllAnalyticsData(days = 7): Promise<AllAnalyticsData> {
   try {
     const [all, sa, eg] = await Promise.all([
-      getAnalyticsData(),
-      getAnalyticsData("SA"),
-      getAnalyticsData("EG"),
+      getAnalyticsData(undefined, days),
+      getAnalyticsData("SA", days),
+      getAnalyticsData("EG", days),
     ]);
     return { all, sa, eg };
   } catch {
@@ -226,7 +226,7 @@ export async function getAllAnalyticsData(): Promise<AllAnalyticsData> {
   }
 }
 
-export async function getCountryBreakdown(): Promise<{ country: string; views: number }[]> {
+export async function getCountryBreakdown(days = 7): Promise<{ country: string; views: number }[]> {
   const rawId = (process.env.GA4_PROPERTY_ID ?? "").trim();
   const propertyId = rawId.startsWith("properties/") ? rawId : `properties/${rawId}`;
 
@@ -234,7 +234,7 @@ export async function getCountryBreakdown(): Promise<{ country: string; views: n
     const token = await getAccessToken();
 
     const res = await runReport(token, propertyId, {
-      dateRanges: [{ startDate: "7daysAgo", endDate: "today" }],
+      dateRanges: [{ startDate: `${days}daysAgo`, endDate: "today" }],
       dimensions: [{ name: "country" }],
       metrics: [{ name: "screenPageViews" }],
       orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
@@ -260,14 +260,14 @@ export async function getCountryBreakdown(): Promise<{ country: string; views: n
   }
 }
 
-export async function getTopEvents(): Promise<{ event: string; count: number }[]> {
+export async function getTopEvents(days = 7): Promise<{ event: string; count: number }[]> {
   const rawId = (process.env.GA4_PROPERTY_ID ?? "").trim();
   const propertyId = rawId.startsWith("properties/") ? rawId : `properties/${rawId}`;
 
   try {
     const token = await getAccessToken();
     const res = await runReport(token, propertyId, {
-      dateRanges: [{ startDate: "7daysAgo", endDate: "today" }],
+      dateRanges: [{ startDate: `${days}daysAgo`, endDate: "today" }],
       dimensions: [{ name: "eventName" }],
       metrics: [{ name: "eventCount" }],
       orderBys: [{ metric: { metricName: "eventCount" }, desc: true }],

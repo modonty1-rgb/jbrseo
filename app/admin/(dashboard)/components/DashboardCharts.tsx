@@ -33,6 +33,7 @@ interface DashboardChartsProps {
   egSubscribers: number;
   countryBreakdown: { country: string; views: number }[];
   topEvents: { event: string; count: number }[];
+  days?: number;
 }
 
 const COLORS = {
@@ -98,7 +99,9 @@ export function DashboardCharts({
   egSubscribers,
   countryBreakdown,
   topEvents,
+  days = 7,
 }: DashboardChartsProps): ReactElement {
+  const periodLabel = `آخر ${days} يوم`;
   const EVENT_LABELS: Record<string, string> = {
     signup_start: "ضغط زر التسجيل",
     signup_complete: "أكمل التسجيل فعلياً ✅",
@@ -166,9 +169,9 @@ export function DashboardCharts({
             },
             {
               label: "زيارة يومية (متوسط)",
-              value: hasData ? Math.round(all.pageviews7d / 7).toString() : "—",
+              value: hasData ? Math.round(all.pageviews7d / days).toString() : "—",
               color: "text-blue-400",
-              sub: "آخر ٧ أيام",
+              sub: periodLabel,
               topBorder: "border-t-2 border-t-blue-500",
             },
             {
@@ -205,7 +208,7 @@ export function DashboardCharts({
         <div className="rounded-xl border border-border bg-card p-5">
           <div className="mb-4 flex items-center justify-between">
             <span className="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground">
-              آخر ٧ أيام
+              {periodLabel}
             </span>
             <h3 className="flex items-center gap-2 text-sm font-bold text-foreground">
               رحلة العميل — من زيارة لتسجيل
@@ -334,7 +337,7 @@ export function DashboardCharts({
         <div className="rounded-xl border border-border bg-card p-5">
           <div className="mb-4 flex items-center justify-between">
             <span className="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground">
-              آخر ٧ أيام
+              {periodLabel}
             </span>
             <h3 className="flex items-center gap-2 text-sm font-bold text-foreground">
               الزوار حسب الدولة
@@ -388,7 +391,7 @@ export function DashboardCharts({
                 className="inline-block h-2 w-2 animate-pulse rounded-full bg-blue-500"
                 aria-hidden
               />
-              <h3 className="text-sm font-bold text-foreground">تفاعلات الزوار — آخر ٧ أيام</h3>
+              <h3 className="text-sm font-bold text-foreground">تفاعلات الزوار — {periodLabel}</h3>
             </div>
             <span className="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground">
               يتحدث تلقائياً

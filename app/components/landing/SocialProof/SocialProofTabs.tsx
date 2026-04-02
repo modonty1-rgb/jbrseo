@@ -21,6 +21,7 @@ const triggerClass =
 export function SocialProofTabs({ testimonials, active, onSelect }: SocialProofTabsProps): ReactElement {
   return (
     <Tabs
+      id="social-proof-tabs"
       value={String(active)}
       onValueChange={(v) => onSelect(Number(v))}
       className="flex w-full flex-row gap-2 lg:flex-col lg:gap-2.5"

@@ -38,6 +38,12 @@ export default function Loading() {
           ))}
         </div>
       </section>
+
+      {/* Bottom CTA */}
+      <div className="mt-16 flex flex-col items-center gap-4 text-center">
+        <Skeleton className="h-4 w-48 rounded-md" />
+        <Skeleton className="h-10 w-32 rounded-xl" />
+      </div>
     </div>
   );
 }
