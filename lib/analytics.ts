@@ -260,7 +260,13 @@ export async function getCountryBreakdown(days = 7): Promise<{ country: string; 
   }
 }
 
-export async function getRealtimeUsers(): Promise<number> {
+export type RealtimeData = {
+  total: number;
+  sa: number;
+  eg: number;
+};
+
+export async function getRealtimeUsers(): Promise<RealtimeData> {
   const rawId = (process.env.GA4_PROPERTY_ID ?? "").trim();
   const propertyId = rawId.startsWith("properties/") ? rawId : `properties/${rawId}`;
 
@@ -275,19 +281,35 @@ export async function getRealtimeUsers(): Promise<number> {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          dimensions: [{ name: "countryId" }],
           metrics: [{ name: "activeUsers" }],
         }),
       },
     );
     if (!res.ok) throw new Error(`Realtime API error ${res.status}`);
-    const data = (await res.json()) as { rows?: { metricValues: { value: string }[] }[] };
-    return parseInt(data.rows?.[0]?.metricValues[0]?.value ?? "0", 10);
+    type RTRow = { dimensionValues: { value: string }[]; metricValues: { value: string }[] };
+    const data = (await res.json()) as { rows?: RTRow[] };
+    const rows = data.rows ?? [];
+
+    let total = 0;
+    let sa = 0;
+    let eg = 0;
+
+    for (const row of rows) {
+      const countryId = row.dimensionValues[0].value.toUpperCase();
+      const count = parseInt(row.metricValues[0].value, 10);
+      total += count;
+      if (countryId === "SA") sa += count;
+      if (countryId === "EG") eg += count;
+    }
+
+    return { total, sa, eg };
   } catch (error) {
     console.error(
       "[Analytics] getRealtimeUsers failed:",
       error instanceof Error ? error.message : String(error),
     );
-    return 0;
+    return { total: 0, sa: 0, eg: 0 };
   }
 }
 

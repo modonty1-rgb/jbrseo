@@ -1,7 +1,7 @@
 "use server";
 
 import { isAdmin } from "@/app/actions/auth";
-import { getAllAnalyticsData, getCountryBreakdown, getTopEvents, getTrafficSources, getRealtimeUsers } from "@/lib/analytics";
+import { getAllAnalyticsData, getCountryBreakdown, getTopEvents, getTrafficSources, getRealtimeUsers, type RealtimeData } from "@/lib/analytics";
 
 const VALID_DAYS = [7, 14, 30, 60, 90] as const;
 type ValidDays = (typeof VALID_DAYS)[number];
@@ -26,7 +26,7 @@ export async function fetchAnalyticsAction(rawDays: number) {
   return { ...analyticsData, countryBreakdown, topEvents, trafficSources };
 }
 
-export async function getRealtimeUsersAction(): Promise<number> {
+export async function getRealtimeUsersAction(): Promise<RealtimeData> {
   const admin = await isAdmin();
   if (!admin) throw new Error("Unauthorized");
   return getRealtimeUsers();
