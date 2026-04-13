@@ -1,6 +1,7 @@
 import Link from "@/app/components/link";
 import { Button } from "@/app/components/ui/button";
 import { WhatsApp } from "./PriceSectionIcons";
+import { WhatsAppTrackLink } from "@/app/components/shared/WhatsAppTrackLink";
 
 interface BottomCtaContent {
   headline: string;
@@ -41,14 +42,14 @@ export function PriceSectionBottomCta({ BOTTOM_CTA, signupHref = "/signup", what
           {BOTTOM_CTA.primaryBtn}
         </Link>
         {whatsappLink ? (
-          <a
+          <WhatsAppTrackLink
             href={whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
             className={secondaryBtnClass}
           >
             <WhatsApp /> {BOTTOM_CTA.secondaryBtn}
-          </a>
+          </WhatsAppTrackLink>
         ) : (
           <Button type="button" className={secondaryBtnClass}>
             <WhatsApp /> {BOTTOM_CTA.secondaryBtn}

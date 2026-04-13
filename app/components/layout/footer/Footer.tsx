@@ -10,6 +10,7 @@ import { RoundSnapchat } from "@/app/components/icons/snapchat";
 import { TiktokLogoLight } from "@/app/components/icons/tiktok";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { getFooterLinks, getWhatsAppLink, LEGAL_LINKS } from "@/lib/site-links";
+import { WhatsAppTrackLink } from "@/app/components/shared/WhatsAppTrackLink";
 import Image from "next/image";
 import { HeaderLogo } from "@/app/components/layout/HeaderLogo";
 const COPYRIGHT = "© جميع الحقوق محفوظة — JBRSEO";
@@ -88,7 +89,7 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
               {footer.desc}
             </p>
 
-            <Link
+            <WhatsAppTrackLink
               href={waLink}
               target="_blank"
               rel="noopener noreferrer"
@@ -96,7 +97,7 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
             >
               <WhatsAppIcon />
               {WA_LABEL}
-            </Link>
+            </WhatsAppTrackLink>
 
             <a
               href="mailto:support@jbrseo.com"

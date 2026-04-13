@@ -1,5 +1,6 @@
 import Link from "@/app/components/link";
 import { Button } from "@/app/components/ui/button";
+import { WhatsAppTrackLink } from "@/app/components/shared/WhatsAppTrackLink";
 
 type Props = {
   cta: string;
@@ -38,7 +39,7 @@ export function HeroCTASection({ cta, ctaLink, secondaryCta }: Props) {
           </Link>
         </Button>
         {secondaryCta?.href && secondaryCta?.label && (
-          <a
+          <WhatsAppTrackLink
             href={secondaryCta.href}
             target="_blank"
             rel="noopener noreferrer"
@@ -49,7 +50,7 @@ export function HeroCTASection({ cta, ctaLink, secondaryCta }: Props) {
             "
           >
             {secondaryCta.label}
-          </a>
+          </WhatsAppTrackLink>
         )}
       </div>
     </div>

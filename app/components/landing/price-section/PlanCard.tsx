@@ -8,6 +8,7 @@ import { Icon } from "@/app/components/Icon";
 import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
 import { Check, WhatsApp } from "./PriceSectionIcons";
+import { WhatsAppTrackLink } from "@/app/components/shared/WhatsAppTrackLink";
 
 interface PlanCardProps {
   plan: Plan;
@@ -229,7 +230,7 @@ export function PlanCard({
         {plan.id === "scale" && (
           <div className="flex justify-center mt-2">
             {whatsappLink ? (
-              <a
+              <WhatsAppTrackLink
                 href={whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -241,7 +242,7 @@ export function PlanCard({
               >
                 <WhatsApp />
                 <span className="text-start leading-snug">{ui.whatsapp}</span>
-              </a>
+              </WhatsAppTrackLink>
             ) : (
               <span
                 className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold max-w-full opacity-80 ${

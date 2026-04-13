@@ -83,6 +83,7 @@ export function SignupForm({
 
   useEffect(() => {
     setMounted(true);
+    GTMEvents.signupStart();
   }, []);
 
   const countryCode = country === "SA" ? "+966" : "+20";

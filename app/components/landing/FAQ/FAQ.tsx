@@ -2,6 +2,7 @@ import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { getWhatsAppLink } from "@/lib/site-links";
 import { FAQAccordion } from "./FAQAccordion";
+import { WhatsAppTrackLink } from "@/app/components/shared/WhatsAppTrackLink";
 
 const WhatsAppIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -83,7 +84,7 @@ export default function FAQ({ staticLanding, country, ctaLabel = DEFAULT_CTA, wh
           }}
         >
           <p className="mb-3.5 text-[15px] font-bold text-foreground">{f.ctaLabel}</p>
-          <a
+          <WhatsAppTrackLink
             href={waLink}
             target="_blank"
             rel="noopener noreferrer"
@@ -100,7 +101,7 @@ export default function FAQ({ staticLanding, country, ctaLabel = DEFAULT_CTA, wh
           >
             <WhatsAppIcon />
             {ctaLabel}
-          </a>
+          </WhatsAppTrackLink>
         </div>
         </div>
       </div>

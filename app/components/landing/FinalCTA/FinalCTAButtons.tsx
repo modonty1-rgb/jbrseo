@@ -1,4 +1,5 @@
 import Link from "@/app/components/link";
+import { WhatsAppTrackLink } from "@/app/components/shared/WhatsAppTrackLink";
 
 const WhatsAppIcon = () => (
   <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden className="text-primary-foreground/80">
@@ -49,7 +50,7 @@ export function FinalCTAButtons({ cta, ctaLink, wa, waLink }: FinalCTAButtonsPro
       </Link>
       <span className="hidden self-center text-[12px] font-bold text-primary-foreground/30 sm:block">أو</span>
       <span className="block self-center text-[12px] font-bold text-primary-foreground/30 sm:hidden">— أو —</span>
-      <a
+      <WhatsAppTrackLink
         href={waLink}
         target="_blank"
         rel="noopener noreferrer"
@@ -68,7 +69,7 @@ export function FinalCTAButtons({ cta, ctaLink, wa, waLink }: FinalCTAButtonsPro
       >
         <WhatsAppIcon />
         {wa}
-      </a>
+      </WhatsAppTrackLink>
     </div>
   );
 }
