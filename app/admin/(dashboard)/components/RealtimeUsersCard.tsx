@@ -57,13 +57,13 @@ export function RealtimeUsersCard() {
       {/* SA / EG breakdown */}
       <div className="flex gap-3">
         <div className="flex-1 rounded-lg bg-muted/30 px-2.5 py-1.5 text-center">
-          <p className="text-[10px] text-muted-foreground mb-0.5">🇸🇦 السعودية</p>
+          <p className="text-base mb-0.5" aria-hidden>🇸🇦</p>
           <p className="text-lg font-black text-green-400">
             {loading ? "…" : sa.toLocaleString("ar-SA")}
           </p>
         </div>
         <div className="flex-1 rounded-lg bg-muted/30 px-2.5 py-1.5 text-center">
-          <p className="text-[10px] text-muted-foreground mb-0.5">🇪🇬 مصر</p>
+          <p className="text-base mb-0.5" aria-hidden>🇪🇬</p>
           <p className="text-lg font-black text-blue-400">
             {loading ? "…" : eg.toLocaleString("ar-SA")}
           </p>
