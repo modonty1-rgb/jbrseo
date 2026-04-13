@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import type { AnalyticsData } from "@/lib/analytics";
 import { fetchAnalyticsAction } from "@/app/actions/analytics";
 import { DashboardCharts } from "./DashboardCharts";
+import { RealtimeUsersCard } from "./RealtimeUsersCard";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -19,6 +20,7 @@ type AnalyticsPayload = {
   eg: AnalyticsData;
   countryBreakdown: { country: string; views: number }[];
   topEvents: { event: string; count: number }[];
+  trafficSources: { channel: string; views: number }[];
 };
 
 const VALID_DAYS = [7, 14, 30, 60, 90] as const;
@@ -57,7 +59,7 @@ const ALL_METRIC_CONFIG: {
     detailNumber: "text-blue-400",
   },
   {
-    label: "زوار نشطون",
+    label: "زوار الفترة",
     key: "activeUsersToday",
     icon: "👤",
     stripe: "bg-purple-500",
@@ -262,6 +264,7 @@ export function AnalyticsSection({
   eg: initialEg,
   countryBreakdown: initialBreakdown,
   topEvents: initialEvents,
+  trafficSources: initialSources,
   saSubscribers,
   egSubscribers,
   initialError = false,
@@ -273,6 +276,7 @@ export function AnalyticsSection({
     eg: initialEg,
     countryBreakdown: initialBreakdown,
     topEvents: initialEvents,
+    trafficSources: initialSources,
   });
   const [isLoading, setIsLoading] = useState(false);
   const [fetchError, setFetchError] = useState(initialError);
@@ -303,7 +307,7 @@ export function AnalyticsSection({
     void fetchData(days);
   }, [days, fetchData]);
 
-  const { all, sa, eg, countryBreakdown, topEvents } = data;
+  const { all, sa, eg, countryBreakdown, topEvents, trafficSources } = data;
   const { start: rangeStart, end: rangeEnd } = getDateRange(days);
   const periodLabel = `آخر ${days} يوم`;
   const isEmpty = !fetchError && isDataEmpty(all);
@@ -369,7 +373,7 @@ export function AnalyticsSection({
       {isEmpty && !isLoading && <NoDataBanner startDate={rangeStart} />}
 
       {/* Metric cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
         {ALL_METRIC_CONFIG.map((m) => (
           <GaMetricCard
             key={m.key}
@@ -396,6 +400,7 @@ export function AnalyticsSection({
             </div>
           </div>
         </div>
+        <RealtimeUsersCard />
       </div>
 
       {/* Charts — only when there's data */}
@@ -409,6 +414,7 @@ export function AnalyticsSection({
             egSubscribers={egSubscribers}
             countryBreakdown={countryBreakdown}
             topEvents={topEvents}
+            trafficSources={trafficSources}
             days={days}
           />
         </div>

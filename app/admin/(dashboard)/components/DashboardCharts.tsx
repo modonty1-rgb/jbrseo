@@ -33,6 +33,7 @@ interface DashboardChartsProps {
   egSubscribers: number;
   countryBreakdown: { country: string; views: number }[];
   topEvents: { event: string; count: number }[];
+  trafficSources: { channel: string; views: number }[];
   days?: number;
 }
 
@@ -91,6 +92,20 @@ const PIE_COLORS = [
   "#f97316",
 ];
 
+const CHANNEL_LABELS: Record<string, { ar: string; icon: string; color: string }> = {
+  "Organic Search":  { ar: "بحث جوجل — نتائج طبيعية",        icon: "🔍", color: "#3b82f6" },
+  "Direct":          { ar: "زيارة مباشرة — كتب الرابط بنفسه", icon: "🔗", color: "#8b5cf6" },
+  "Referral":        { ar: "جاء من موقع آخر أحال إليك",       icon: "↗️", color: "#f59e0b" },
+  "Paid Search":     { ar: "إعلان جوجل مدفوع",                icon: "💰", color: "#10b981" },
+  "Organic Social":  { ar: "منشور سوشيال ميديا مجاني",        icon: "📱", color: "#ec4899" },
+  "Paid Social":     { ar: "إعلان سوشيال ميديا مدفوع",        icon: "📣", color: "#f43f5e" },
+  "Email":           { ar: "جاء من رسالة إيميل",              icon: "📧", color: "#06b6d4" },
+  "Display":         { ar: "إعلان بانر ظهور",                 icon: "🖼️", color: "#84cc16" },
+  "Video":           { ar: "إعلان فيديو",                     icon: "🎬", color: "#f97316" },
+  "Affiliates":      { ar: "شريك تسويقي",                     icon: "🤝", color: "#6366f1" },
+  "(not set)":       { ar: "مصدر غير محدد",                   icon: "❓", color: "#4b5563" },
+};
+
 export function DashboardCharts({
   all,
   sa,
@@ -99,6 +114,7 @@ export function DashboardCharts({
   egSubscribers,
   countryBreakdown,
   topEvents,
+  trafficSources,
   days = 7,
 }: DashboardChartsProps): ReactElement {
   const periodLabel = `آخر ${days} يوم`;
@@ -157,6 +173,52 @@ export function DashboardCharts({
 
   return (
     <div className="space-y-6" dir="rtl">
+      <div className="rounded-xl border border-border bg-card p-5">
+        <div className="mb-4 flex items-center justify-between">
+          <span className="rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground">
+            {periodLabel}
+          </span>
+          <h3 className="flex items-center gap-2 text-sm font-bold text-foreground">
+            من أين جاء الزوار؟
+            <span className="h-2 w-2 rounded-full bg-blue-500 opacity-80" aria-hidden />
+          </h3>
+        </div>
+        {trafficSources.length === 0 ? (
+          <p className="py-4 text-center text-sm text-muted-foreground">
+            لا توجد بيانات لهذه الفترة — جرّب فترة أطول
+          </p>
+        ) : (
+          <div className="space-y-2">
+            {trafficSources.map((src, i) => {
+              const meta = CHANNEL_LABELS[src.channel] ?? { ar: src.channel, icon: "🌐", color: "#6b7280" };
+              const maxViews = trafficSources[0]?.views ?? 1;
+              const pct = Math.max(Math.round((src.views / maxViews) * 100), 5);
+              const totalViews = trafficSources.reduce((s, r) => s + r.views, 0);
+              const sharePct = totalViews > 0 ? Math.round((src.views / totalViews) * 100) : 0;
+              return (
+                <div key={i} className="flex items-center gap-3">
+                  <div className="w-44 shrink-0 text-right">
+                    <span className="text-xs text-muted-foreground">{meta.icon} {meta.ar}</span>
+                  </div>
+                  <div className="relative h-8 flex-1 overflow-hidden rounded-full bg-muted/30">
+                    <div
+                      className="flex h-full items-center justify-end rounded-full pr-3 transition-all duration-700"
+                      style={{ width: `${pct}%`, backgroundColor: meta.color, minWidth: "3rem" }}
+                    >
+                      <span className="text-xs font-bold text-white">{src.views}</span>
+                    </div>
+                  </div>
+                  <div className="w-20 shrink-0 text-left">
+                    <span className="text-sm font-bold text-foreground">{src.views}</span>
+                    <span className="text-xs text-muted-foreground ms-1">({sharePct}%)</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {(
           [

@@ -260,6 +260,69 @@ export async function getCountryBreakdown(days = 7): Promise<{ country: string; 
   }
 }
 
+export async function getRealtimeUsers(): Promise<number> {
+  const rawId = (process.env.GA4_PROPERTY_ID ?? "").trim();
+  const propertyId = rawId.startsWith("properties/") ? rawId : `properties/${rawId}`;
+
+  try {
+    const token = await getAccessToken();
+    const res = await fetch(
+      `https://analyticsdata.googleapis.com/v1beta/${propertyId}:runRealtimeReport`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          metrics: [{ name: "activeUsers" }],
+        }),
+      },
+    );
+    if (!res.ok) throw new Error(`Realtime API error ${res.status}`);
+    const data = (await res.json()) as { rows?: { metricValues: { value: string }[] }[] };
+    return parseInt(data.rows?.[0]?.metricValues[0]?.value ?? "0", 10);
+  } catch (error) {
+    console.error(
+      "[Analytics] getRealtimeUsers failed:",
+      error instanceof Error ? error.message : String(error),
+    );
+    return 0;
+  }
+}
+
+export async function getTrafficSources(days = 7): Promise<{ channel: string; views: number }[]> {
+  const rawId = (process.env.GA4_PROPERTY_ID ?? "").trim();
+  const propertyId = rawId.startsWith("properties/") ? rawId : `properties/${rawId}`;
+
+  try {
+    const token = await getAccessToken();
+    const res = await runReport(token, propertyId, {
+      dateRanges: [{ startDate: `${days}daysAgo`, endDate: "today" }],
+      dimensions: [{ name: "sessionDefaultChannelGroup" }],
+      metrics: [{ name: "screenPageViews" }],
+      orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
+    });
+
+    type GADimRow = {
+      dimensionValues: { value: string }[];
+      metricValues: { value: string }[];
+    };
+    const rows = (res.rows as GADimRow[] | undefined) ?? [];
+
+    return rows.map((r) => ({
+      channel: r.dimensionValues[0].value,
+      views: parseInt(r.metricValues[0].value, 10),
+    }));
+  } catch (error) {
+    console.error(
+      "[Analytics] getTrafficSources failed:",
+      error instanceof Error ? error.message : String(error),
+    );
+    return [];
+  }
+}
+
 export async function getTopEvents(days = 7): Promise<{ event: string; count: number }[]> {
   const rawId = (process.env.GA4_PROPERTY_ID ?? "").trim();
   const propertyId = rawId.startsWith("properties/") ? rawId : `properties/${rawId}`;

@@ -1,7 +1,7 @@
 import { Suspense, type ReactElement } from "react";
 import Link from "next/link";
 import { getSubscriberStats } from "@/app/actions/subscribers";
-import { getAllAnalyticsData, getCountryBreakdown, getTopEvents } from "@/lib/analytics";
+import { getAllAnalyticsData, getCountryBreakdown, getTopEvents, getTrafficSources } from "@/lib/analytics";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { cn } from "@/lib/utils";
 import { AdminCountryPill } from "./components/AdminCountryPill";
@@ -45,17 +45,20 @@ export default async function AdminDashboardPage({
   };
   let countryBreakdown: { country: string; views: number }[] = [];
   let topEvents: { event: string; count: number }[] = [];
+  let trafficSources: { channel: string; views: number }[] = [];
   let analyticsError = false;
 
   try {
-    const [data, countries, events] = await Promise.all([
+    const [data, countries, events, sources] = await Promise.all([
       getAllAnalyticsData(),
       getCountryBreakdown(),
       getTopEvents(),
+      getTrafficSources(),
     ]);
     analyticsData = data;
     countryBreakdown = countries;
     topEvents = events;
+    trafficSources = sources;
   } catch {
     analyticsError = true;
   }
@@ -189,6 +192,7 @@ export default async function AdminDashboardPage({
           eg={eg}
           countryBreakdown={countryBreakdown}
           topEvents={topEvents}
+          trafficSources={trafficSources}
           saSubscribers={saCount}
           egSubscribers={egCount}
           initialError={analyticsError}
