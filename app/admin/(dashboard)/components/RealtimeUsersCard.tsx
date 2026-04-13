@@ -33,25 +33,18 @@ export function RealtimeUsersCard() {
   const loading = data === null;
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-colors hover:border-teal-500/50">
+    <div className="relative overflow-hidden rounded-xl border border-border bg-card px-3 py-2.5 transition-colors hover:border-teal-500/50">
       <div className="absolute inset-y-0 end-0 w-1 rounded-s bg-teal-500" aria-hidden />
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-xs text-muted-foreground">متصلون الآن</p>
-          <p className={cn("mt-1 text-3xl font-black text-foreground", isRefreshing && "opacity-60")}>
-            {loading ? "…" : total.toLocaleString("ar-SA")}
-          </p>
-          <p className="mt-1 text-[11px] text-muted-foreground/70">
-            🇸🇦 {loading ? "…" : sa} &nbsp;·&nbsp; 🇪🇬 {loading ? "…" : eg}
-          </p>
-        </div>
-        <div className="relative shrink-0 rounded-lg p-2 text-xl bg-teal-500/10 text-teal-400" aria-hidden>
-          🟢
-          {!isRefreshing && (
-            <span className="absolute -top-0.5 -end-0.5 h-2.5 w-2.5 rounded-full bg-teal-400 animate-ping opacity-75" />
-          )}
-        </div>
-      </div>
+      <p className="text-[11px] font-medium text-teal-400 flex items-center gap-1">
+        <span className={cn("h-1.5 w-1.5 rounded-full bg-teal-400 shrink-0", !isRefreshing && "animate-ping")} aria-hidden />
+        متصلون الآن
+      </p>
+      <p className={cn("mt-1 text-2xl font-black text-foreground leading-none", isRefreshing && "opacity-60")}>
+        {loading ? "…" : total.toLocaleString("ar-SA")}
+      </p>
+      <p className="mt-1 text-[11px] font-medium text-muted-foreground">
+        🇸🇦 {loading ? "…" : sa} · 🇪🇬 {loading ? "…" : eg}
+      </p>
     </div>
   );
 }

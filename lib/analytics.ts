@@ -281,7 +281,7 @@ export async function getRealtimeUsers(): Promise<RealtimeData> {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          dimensions: [{ name: "countryId" }],
+          dimensions: [{ name: "country" }],
           metrics: [{ name: "activeUsers" }],
         }),
       },
@@ -296,11 +296,11 @@ export async function getRealtimeUsers(): Promise<RealtimeData> {
     let eg = 0;
 
     for (const row of rows) {
-      const countryId = row.dimensionValues[0].value.toUpperCase();
+      const country = row.dimensionValues[0].value;
       const count = parseInt(row.metricValues[0].value, 10);
       total += count;
-      if (countryId === "SA") sa += count;
-      if (countryId === "EG") eg += count;
+      if (country === "Saudi Arabia") sa += count;
+      if (country === "Egypt") eg += count;
     }
 
     return { total, sa, eg };

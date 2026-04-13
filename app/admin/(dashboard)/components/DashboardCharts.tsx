@@ -171,6 +171,9 @@ export function DashboardCharts({
     زيارات: p.views,
   }));
 
+  const trafficMaxViews = trafficSources[0]?.views ?? 1;
+  const trafficTotalViews = trafficSources.reduce((s, r) => s + r.views, 0);
+
   return (
     <div className="space-y-6" dir="rtl">
       <div className="rounded-xl border border-border bg-card p-5">
@@ -191,26 +194,22 @@ export function DashboardCharts({
           <div className="space-y-2">
             {trafficSources.map((src, i) => {
               const meta = CHANNEL_LABELS[src.channel] ?? { ar: src.channel, icon: "🌐", color: "#6b7280" };
-              const maxViews = trafficSources[0]?.views ?? 1;
-              const pct = Math.max(Math.round((src.views / maxViews) * 100), 5);
-              const totalViews = trafficSources.reduce((s, r) => s + r.views, 0);
-              const sharePct = totalViews > 0 ? Math.round((src.views / totalViews) * 100) : 0;
+              const pct = Math.max(Math.round((src.views / trafficMaxViews) * 100), 5);
+              const sharePct = trafficTotalViews > 0 ? Math.round((src.views / trafficTotalViews) * 100) : 0;
               return (
                 <div key={i} className="flex items-center gap-3">
                   <div className="w-44 shrink-0 text-right">
                     <span className="text-xs text-muted-foreground">{meta.icon} {meta.ar}</span>
                   </div>
-                  <div className="relative h-8 flex-1 overflow-hidden rounded-full bg-muted/30">
+                  <div className="relative h-9 flex-1 overflow-hidden rounded-full bg-muted/30">
                     <div
-                      className="flex h-full items-center justify-end rounded-full pr-3 transition-all duration-700"
+                      className="h-full rounded-full transition-all duration-700"
                       style={{ width: `${pct}%`, backgroundColor: meta.color, minWidth: "3rem" }}
-                    >
-                      <span className="text-xs font-bold text-white">{src.views}</span>
-                    </div>
+                    />
                   </div>
-                  <div className="w-20 shrink-0 text-left">
-                    <span className="text-sm font-bold text-foreground">{src.views}</span>
-                    <span className="text-xs text-muted-foreground ms-1">({sharePct}%)</span>
+                  <div className="w-24 shrink-0 text-left">
+                    <span className="text-base font-black text-foreground">{src.views}</span>
+                    <span className="text-sm text-muted-foreground ms-1">({sharePct}%)</span>
                   </div>
                 </div>
               );
@@ -287,7 +286,7 @@ export function DashboardCharts({
                   <div className="w-32 shrink-0 text-right text-xs text-muted-foreground">
                     {item.name}
                   </div>
-                  <div className="relative h-8 flex-1 overflow-hidden rounded-full bg-muted/30">
+                  <div className="relative h-9 flex-1 overflow-hidden rounded-full bg-muted/30">
                     <div
                       className="flex h-full items-center justify-end rounded-full pr-3 transition-all duration-700"
                       style={{
@@ -296,10 +295,10 @@ export function DashboardCharts({
                         minWidth: "2.5rem",
                       }}
                     >
-                      <span className="text-xs font-bold text-white">{item.value}</span>
+                      <span className="text-sm font-black text-white">{item.value}</span>
                     </div>
                   </div>
-                  <div className="w-10 shrink-0 text-left text-xs text-muted-foreground">
+                  <div className="w-12 shrink-0 text-left text-sm font-bold text-muted-foreground">
                     {pct}%
                   </div>
                 </div>
@@ -370,7 +369,7 @@ export function DashboardCharts({
                   >
                     {i + 1}
                   </div>
-                  <div className="relative h-7 flex-1 overflow-hidden rounded-full bg-muted/30">
+                  <div className="relative h-9 flex-1 overflow-hidden rounded-full bg-muted/30">
                     <div
                       className="flex h-full items-center rounded-full px-3 transition-all duration-700"
                       style={{
@@ -379,7 +378,7 @@ export function DashboardCharts({
                         minWidth: "3rem",
                       }}
                     >
-                      <span className="whitespace-nowrap text-xs font-bold text-white">
+                      <span className="whitespace-nowrap text-sm font-black text-white">
                         {item.زيارات}
                       </span>
                     </div>
@@ -485,12 +484,12 @@ export function DashboardCharts({
                   >
                     {i + 1}
                   </div>
-                  <div className="h-7 flex-1 overflow-hidden rounded-full bg-muted/30">
+                  <div className="h-9 flex-1 overflow-hidden rounded-full bg-muted/30">
                     <div
                       className="flex h-full items-center rounded-full px-3 transition-all duration-700"
                       style={{ width: `${pct}%`, backgroundColor: color, minWidth: "3rem" }}
                     >
-                      <span className="whitespace-nowrap text-xs font-bold text-white">
+                      <span className="whitespace-nowrap text-sm font-black text-white">
                         {ev.count}
                       </span>
                     </div>

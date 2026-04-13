@@ -137,7 +137,6 @@ function GaMetricCard({
   value,
   icon,
   stripe,
-  iconBg,
   iconColor,
   hoverBorder,
 }: {
@@ -152,22 +151,17 @@ function GaMetricCard({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-colors",
+        "relative overflow-hidden rounded-xl border border-border bg-card px-3 py-2.5 transition-colors",
         hoverBorder,
       )}
     >
       <div className={cn("absolute inset-y-0 end-0 w-1 rounded-s", stripe)} aria-hidden />
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs text-muted-foreground">{label}</p>
-          <p className="mt-1 text-3xl font-black text-foreground">
-            {value.toLocaleString("ar-SA")}
-          </p>
-        </div>
-        <div className={cn("rounded-lg p-2 text-xl", iconBg, iconColor)} aria-hidden>
-          {icon}
-        </div>
-      </div>
+      <p className={cn("text-[11px] font-medium", iconColor)}>
+        {icon} {label}
+      </p>
+      <p className="mt-1 text-2xl font-black text-foreground leading-none">
+        {value.toLocaleString("ar-SA")}
+      </p>
     </div>
   );
 }
@@ -373,7 +367,7 @@ export function AnalyticsSection({
       {isEmpty && !isLoading && <NoDataBanner startDate={rangeStart} />}
 
       {/* Metric cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
         {ALL_METRIC_CONFIG.map((m) => (
           <GaMetricCard
             key={m.key}
@@ -386,19 +380,12 @@ export function AnalyticsSection({
             hoverBorder={m.hoverBorder}
           />
         ))}
-        <div className="relative overflow-hidden rounded-xl border border-border bg-card p-4 transition-colors hover:border-purple-500/50">
+        <div className="relative overflow-hidden rounded-xl border border-border bg-card px-3 py-2.5 transition-colors hover:border-purple-500/50">
           <div className="absolute inset-y-0 end-0 w-1 rounded-s bg-[#8b5cf6]" aria-hidden />
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <p className="text-xs text-muted-foreground">إجمالي المشتركين</p>
-              <p className="mt-1 text-3xl font-black text-foreground">
-                {(saSubscribers + egSubscribers).toLocaleString("ar-SA")}
-              </p>
-            </div>
-            <div className="rounded-lg p-2 text-xl text-[#8b5cf6] bg-[#8b5cf6]/20" aria-hidden>
-              👥
-            </div>
-          </div>
+          <p className="text-[11px] font-medium text-[#8b5cf6]">👥 إجمالي المشتركين</p>
+          <p className="mt-1 text-2xl font-black text-foreground leading-none">
+            {(saSubscribers + egSubscribers).toLocaleString("ar-SA")}
+          </p>
         </div>
         <RealtimeUsersCard />
       </div>
