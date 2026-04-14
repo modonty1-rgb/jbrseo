@@ -72,6 +72,7 @@ export default async function AdminHeaderFooterContentPage({
         </div>
         <div className="p-4">
           <HeaderFooterForm
+            key={country}
             header={headerData}
             footer={footerData}
             country={country}

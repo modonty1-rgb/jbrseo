@@ -1,3 +1,5 @@
+import type { SupportedCountry } from "@/lib/landing-content.types";
+
 export const ADMIN_NAV = [
   { href: "/admin", label: "لوحة التحكم" },
   { href: "/admin/settings/seo", label: "SEO" },
@@ -21,49 +23,39 @@ export const ADMIN_NAV = [
   { href: "/admin/content/emojis", label: "مرجع الرموز (Emoji)" },
 ] as const;
 
-export const SIDEBAR_GROUPS: { label: string; hrefs: readonly string[] }[] = [
-  {
-    label: "إعدادات الموقع",
-    hrefs: [
-      "/admin/settings/seo",
-      "/admin/settings/social",
-      "/admin/settings",
-      "/admin/content/header-footer",
-    ],
-  },
-  {
-    label: "المحتوى الرئيسي",
-    hrefs: [
-      "/admin/content/hero",
-      "/admin/content/whyNow",
-      "/admin/content/howItWorks",
-      "/admin/content/outcomes",
-      "/admin/content/faq",
-      "/admin/content/finalCta",
-    ],
-  },
-  {
-    label: "التسعير",
-    hrefs: ["/admin/content/pricing"],
-  },
-  {
-    label: "محتوى يظهر في السعودية ومصر",
-    hrefs: [
-      "/admin/content/trustbar",
-      "/admin/content/socialProof",
-    ],
-  },
-  {
-    label: "صفحات جانبية مهمة",
-    hrefs: ["/admin/content/privacy", "/admin/content/terms", "/admin/content/about", "/admin/content/team"],
-  },
-  {
-    label: "مركز المساعدة",
-    hrefs: ["/admin/content/emojis"],
-  },
+
+/** صفحات per-country — تظهر في قائمة 🇸🇦 و 🇪🇬 في الـ top bar */
+export const COUNTRY_NAV_ITEMS: { href: string; label: string; icon: string }[] = [
+  { href: "/admin/settings/seo",           label: "SEO",                 icon: "🔍" },
+  { href: "/admin/settings/social",        label: "السوشال ميديا",       icon: "📱" },
+  { href: "/admin/content/header-footer",  label: "الهيدر + الشعار",     icon: "🔗" },
+  { href: "/admin/content/hero",           label: "الهيرو",              icon: "✨" },
+  { href: "/admin/content/whyNow",         label: "لماذا الآن",          icon: "📢" },
+  { href: "/admin/content/howItWorks",     label: "كيف يعمل",            icon: "⚡" },
+  { href: "/admin/content/outcomes",       label: "النتائج",             icon: "🎯" },
+  { href: "/admin/content/faq",            label: "الأسئلة الشائعة",     icon: "❓" },
+  { href: "/admin/content/finalCta",       label: "الدعوة النهائية",     icon: "🚀" },
+  { href: "/admin/content/pricing",        label: "التسعير",             icon: "💰" },
 ];
 
-import type { SupportedCountry } from "@/lib/landing-content.types";
+/** خطط التسويق — تظهر في قائمة 📊 في الـ top bar */
+export const MARKETING_TOP_NAV: { href: string; label: string; icon: string; disabled?: boolean }[] = [
+  { href: "/admin/marketing/jbrseo-plan",  label: "خطة JBRSEO",      icon: "📊" },
+  { href: "/admin/marketing/modony-plan",  label: "خطة Modonty",     icon: "🗒️" },
+  { href: "",                              label: "تشغيل Modonty",    icon: "⚙️", disabled: true },
+];
+
+/** صفحات عالمية — تؤثر في السعودية ومصر معاً — تظهر في قائمة 🌍 في الـ top bar */
+export const GLOBAL_TOP_NAV: { href: string; label: string; icon: string }[] = [
+  { href: "/admin/settings",             label: "الإعدادات العامة",   icon: "⚙️" },
+  { href: "/admin/content/socialProof",  label: "التستيمونيل",        icon: "⭐" },
+  { href: "/admin/content/trustbar",     label: "شريط العملاء",       icon: "🏢" },
+  { href: "/admin/content/about",        label: "من نحن",             icon: "📖" },
+  { href: "/admin/content/team",         label: "فريق العمل",         icon: "👥" },
+  { href: "/admin/content/privacy",      label: "سياسة الخصوصية",    icon: "🔒" },
+  { href: "/admin/content/terms",        label: "شروط الاستخدام",     icon: "📄" },
+  { href: "/admin/content/emojis",       label: "مرجع الرموز",        icon: "😀" },
+];
 
 export const COUNTRIES: { value: SupportedCountry; label: string }[] = [
   { value: "SA", label: "السعودية" },

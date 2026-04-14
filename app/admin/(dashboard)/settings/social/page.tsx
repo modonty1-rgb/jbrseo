@@ -38,7 +38,7 @@ export default async function AdminSettingsSocialPage({
         <AdminFormFeedback />
       </Suspense>
 
-      <SocialLinksForm country={country} socialLinks={socialLinks} redirect={redirect} />
+      <SocialLinksForm key={country} country={country} socialLinks={socialLinks} redirect={redirect} />
     </div>
   );
 }

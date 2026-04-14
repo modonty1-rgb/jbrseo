@@ -61,11 +61,13 @@ export default async function AdminSettingsPage({
 
       <div className="space-y-6">
         <GeneralSettingsForm
+          key={country}
           country={country}
           site={{ showSectionCounter: false, ctaLabel, whatsappNumber: globalRow?.whatsappNumber ?? "" }}
           redirect={redirect}
         />
         <TrackingForm
+          key={country}
           country={country}
           tracking={{
             gtmId: globalRow?.gtmId ?? "",

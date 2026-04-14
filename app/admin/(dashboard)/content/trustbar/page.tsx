@@ -39,6 +39,7 @@ export default async function AdminTrustBarPage({
         </div>
         <div className="p-4">
           <TrustBarSectionForm
+            key={country}
             country={country}
             headline={heroData.trustBarHeadline ?? ""}
             clients={heroData.trustBarClients ?? []}

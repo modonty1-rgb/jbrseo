@@ -53,8 +53,9 @@ export async function getLandingSectionOverride(
     }
     if (!landingDbUnavailableLogged) {
       landingDbUnavailableLogged = true;
-      console.warn(
-        "[landing-sections] Database unreachable (timeout / Atlas). Using static landing until the connection works.",
+      console.error(
+        "[landing-sections] Database unreachable — check MongoDB Atlas connection string and network access list.",
+        error,
       );
     }
     return null;

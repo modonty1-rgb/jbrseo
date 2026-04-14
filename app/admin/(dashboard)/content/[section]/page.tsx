@@ -300,15 +300,7 @@ export default async function AdminContentSectionPage({
       if (override !== null && override !== undefined) {
         heroData = override as StaticLanding["hero"];
       } else {
-        heroData = {
-          sectionImage: "",
-          proof: "",
-          h1Line1: "",
-          h1Line2: "",
-          sub: "",
-          benefits: [],
-          trust: [],
-        };
+        heroData = staticHero;
       }
     }
 
@@ -330,18 +322,7 @@ export default async function AdminContentSectionPage({
       if (override !== null && override !== undefined) {
         whyNowData = override as StaticLanding["whyNow"];
       } else {
-        whyNowData = {
-          sectionImage: "",
-          eyebrow: "",
-          title1: "",
-          title2: "",
-          subtitle: "",
-          costs: [],
-          reasons: [],
-          ctaText: "",
-          ctaHighlight: "",
-          daysTarget: 0,
-        };
+        whyNowData = staticWhyNow;
       }
     }
 
@@ -616,78 +597,91 @@ export default async function AdminContentSectionPage({
         <div className="p-4">
           {!isLinksSection && section === "hero" && (
             <HeroSectionForm
+              key={country}
               hero={sectionData as StaticLanding["hero"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "whyNow" && (
             <WhyNowSectionForm
+              key={country}
               section={sectionData as StaticLanding["whyNow"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "outcomes" && (
             <OutcomesSectionForm
+              key={country}
               section={sectionData as StaticLanding["outcomes"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "socialProof" && (
             <SocialProofSectionForm
+              key={country}
               section={sectionData as StaticLanding["socialProof"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "faq" && (
             <FaqSectionForm
+              key={country}
               section={sectionData as StaticLanding["faq"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "finalCta" && (
             <FinalCtaSectionForm
+              key={country}
               section={sectionData as StaticLanding["finalCta"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "header" && (
             <HeaderSectionForm
+              key={country}
               section={sectionData as StaticLanding["header"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "footer" && (
             <FooterSectionForm
+              key={country}
               section={sectionData as StaticLanding["footer"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "pricing" && (
             <PricingSectionForm
+              key={country}
               section={sectionData as StaticLanding["pricing"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "privacy" && (
             <PrivacySectionForm
+              key={country}
               section={sectionData as StaticLanding["privacy"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "terms" && (
             <TermsSectionForm
+              key={country}
               section={sectionData as StaticLanding["terms"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "about" && (
             <AboutSectionForm
+              key={country}
               section={sectionData as StaticLanding["about"]}
               country={country}
             />
           )}
           {!isLinksSection && section === "team" && (
             <TeamSectionForm
+              key={country}
               section={sectionData as StaticLanding["team"]}
               country={country}
             />
@@ -707,7 +701,7 @@ export default async function AdminContentSectionPage({
             section !== "pricing" &&
             section !== "privacy" &&
             section !== "terms" && (
-            <form action={updateSection} className="space-y-3">
+            <form key={country} action={updateSection} className="space-y-3">
               <input type="hidden" name="country" value={country} />
               <input type="hidden" name="section" value={section} />
               <input
@@ -738,6 +732,7 @@ export default async function AdminContentSectionPage({
           )}
           {!isLinksSection && section === "howItWorks" && (
             <HowItWorksSectionForm
+              key={country}
               section={sectionData as StaticLanding["howItWorks"]}
               country={country}
             />

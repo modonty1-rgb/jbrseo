@@ -247,6 +247,7 @@ function NoDataBanner({ startDate }: { startDate: Date }): ReactElement {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 type Props = AnalyticsPayload & {
+  totalSubscribers: number;
   saSubscribers: number;
   egSubscribers: number;
   initialError?: boolean;
@@ -259,6 +260,7 @@ export function AnalyticsSection({
   countryBreakdown: initialBreakdown,
   topEvents: initialEvents,
   trafficSources: initialSources,
+  totalSubscribers,
   saSubscribers,
   egSubscribers,
   initialError = false,
@@ -384,7 +386,7 @@ export function AnalyticsSection({
           <div className="absolute inset-y-0 end-0 w-1 rounded-s bg-[#8b5cf6]" aria-hidden />
           <p className="text-[11px] font-medium text-[#8b5cf6]">👥 إجمالي المشتركين</p>
           <p className="mt-1 text-2xl font-black text-foreground leading-none">
-            {(saSubscribers + egSubscribers).toLocaleString("ar-SA")}
+            {totalSubscribers.toLocaleString("ar-SA")}
           </p>
         </div>
         <RealtimeUsersCard />

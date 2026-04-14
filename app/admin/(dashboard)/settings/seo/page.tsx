@@ -39,7 +39,7 @@ export default async function AdminSettingsSeoPage({
       <Suspense fallback={null}>
         <AdminFormFeedback />
       </Suspense>
-      <SeoForm country={country} seo={seo} redirect={`/admin/settings/seo?country=${country}`} />
+      <SeoForm key={country} country={country} seo={seo} redirect={`/admin/settings/seo?country=${country}`} />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/app/actions/auth";
-import { AdminSidebar } from "./components/AdminSidebar";
 import { AdminCountrySync } from "./components/AdminCountrySync";
 import { AdminTopNavbar } from "./components/AdminTopNavbar";
+import { AdminCountryBanner } from "./components/AdminCountryBanner";
 import { AdminToaster } from "./components/AdminToaster";
 
 export default async function AdminDashboardLayout({
@@ -21,7 +21,7 @@ export default async function AdminDashboardLayout({
       </Suspense>
       <Suspense
         fallback={
-          <header className="sticky top-0 z-20 flex min-h-[52px] items-center justify-between border-b border-border bg-card/95 px-6 py-3 backdrop-blur">
+          <header className="sticky top-0 z-20 flex min-h-13 items-center justify-between border-b border-border bg-card/95 px-6 py-3 backdrop-blur">
             <div className="h-4 w-40 animate-pulse rounded bg-muted" />
             <div className="h-8 w-48 animate-pulse rounded bg-muted" />
           </header>
@@ -29,14 +29,10 @@ export default async function AdminDashboardLayout({
       >
         <AdminTopNavbar />
       </Suspense>
-      <div className="flex">
-        <div className="sticky top-[52px] flex min-h-[calc(100vh-52px)] w-[240px] shrink-0 flex-col overflow-hidden border-e border-border bg-muted/30">
-          <Suspense fallback={null}>
-            <AdminSidebar />
-          </Suspense>
-        </div>
-        <main className="min-w-0 flex-1">{children}</main>
-      </div>
+      <Suspense fallback={null}>
+        <AdminCountryBanner />
+      </Suspense>
+      <main className="min-w-0 flex-1">{children}</main>
     </div>
   );
 }

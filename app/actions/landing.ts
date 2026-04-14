@@ -69,7 +69,6 @@ export async function updateSeoFormData(formData: FormData) {
     ogLocale: country === "EG" ? "ar_EG" : "ar_SA",
   };
   await upsertLandingSection(country as SupportedCountry, "seo", seo as unknown as Prisma.InputJsonValue);
-  if (country === "SA") revalidateTag("global-seo", "default");
   revalidatePath("/admin");
   revalidateLanding(country);
   if (redirectBase) redirect(redirectBase + (redirectBase.includes("?") ? "&" : "?") + "saved=1");

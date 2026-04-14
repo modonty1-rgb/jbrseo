@@ -155,12 +155,6 @@ export default async function AdminDashboardPage({
       <div className="mb-8">
         <div className="mb-2 flex flex-wrap items-center gap-2">
           <h1 className="text-2xl font-bold text-foreground">لوحة التحكم</h1>
-          <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-foreground">
-            {country === "SA" ? "🇸🇦 السعودية" : "🇪🇬 مصر"}
-          </span>
-          <Suspense fallback={null}>
-            <AdminCountryPill />
-          </Suspense>
         </div>
         <p className="text-sm text-muted-foreground">
           لديك{" "}
@@ -193,6 +187,7 @@ export default async function AdminDashboardPage({
           countryBreakdown={countryBreakdown}
           topEvents={topEvents}
           trafficSources={trafficSources}
+          totalSubscribers={totalSubscribers}
           saSubscribers={saCount}
           egSubscribers={egCount}
           initialError={analyticsError}
