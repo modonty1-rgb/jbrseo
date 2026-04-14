@@ -105,25 +105,16 @@ export function PlanCard({
             </div>
           ) : annual && annualTotal > 0 ? (
             <>
-              {totalAnnualEyebrow ? (
-                <p className={`text-xs font-bold tracking-wide mb-1 ${F ? "text-primary-foreground/75" : "text-muted-foreground"}`}>
-                  {totalAnnualEyebrow}
-                </p>
-              ) : null}
-              <div className="flex items-end gap-1.5 flex-wrap">
+              <div className="flex items-end gap-1">
                 <span className={`text-5xl font-black leading-none tracking-tight tabular-nums ${F ? "text-primary-foreground" : "text-foreground"}`}>
-                  {annualTotal.toLocaleString()}
+                  {price.toLocaleString()}
                 </span>
-                <span className={`text-base font-bold pb-2 ${F ? "text-primary-foreground/85" : "text-muted-foreground"}`}>
-                  {currency}
+                <span className={`text-sm pb-2 ${F ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                  {currency} {ui.perMonth}
                 </span>
               </div>
               <p className={`text-xs mt-1.5 ${F ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
-                {applyPricingUiPlaceholders(ui.billingAnnual, {
-                  n: price.toLocaleString(),
-                  c: currency,
-                  total: annualTotal.toLocaleString(),
-                })}
+                {totalAnnualEyebrow ? `${totalAnnualEyebrow}: ` : ""}{annualTotal.toLocaleString()} {currency}
               </p>
 
               <details className={`mt-2 group ${F ? "text-primary-foreground/90" : "text-foreground"}`}>

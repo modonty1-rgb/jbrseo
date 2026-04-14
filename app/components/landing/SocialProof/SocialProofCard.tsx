@@ -87,17 +87,6 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
         >
           {tag}
         </span>
-        {effectiveVideoUrl ? (
-          <a
-            href={effectiveVideoUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="ms-auto inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[10px] font-semibold text-primary transition hover:bg-primary/10 sm:text-[11px]"
-          >
-            <Icon emoji="▶" label="تشغيل الفيديو" />
-            <span>{videoLabel ?? "شاهد القصة"}</span>
-          </a>
-        ) : null}
         {effectiveSiteLink ? (
           <a
             href={siteLinkHref}

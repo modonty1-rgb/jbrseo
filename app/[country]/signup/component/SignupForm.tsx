@@ -207,7 +207,11 @@ export function SignupForm({
         <div className="mb-6 flex flex-col items-center gap-2 text-center">
           <p className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="h-2 w-2 shrink-0 rounded-full bg-primary" aria-hidden />
-            خطوة ١ من ٢ — بياناتك الأساسية
+            <span>
+              <span className="font-semibold text-foreground">خطوة ١:</span> بياناتك
+              <span className="mx-1.5 opacity-40">·</span>
+              <span className="font-semibold text-foreground">خطوة ٢:</span> اختر خطتك
+            </span>
           </p>
           <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
             ابدأ اليوم — مضمون أو نرد لك فلوسك كاملة

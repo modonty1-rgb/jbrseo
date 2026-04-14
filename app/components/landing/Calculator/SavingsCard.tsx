@@ -44,6 +44,9 @@ export default function SavingsCard({
           {CALCULATOR_SAVINGS_CARD.title}:{" "}
           <span className="text-success">{pct}%</span>
         </h3>
+        <p className="mt-2 text-xs text-muted-foreground">
+          * المقارنة مبنية على متوسط رواتب السوق لفريق من ٦ أشخاص — عدّل الأرقام بنفسك من الأعلى
+        </p>
       </div>
 
       <div className="relative mb-8 overflow-x-auto rounded-2xl border border-border bg-background">

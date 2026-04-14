@@ -22,6 +22,7 @@ import {
   resolveSiteOriginFromSeoCanonical,
 } from "@/lib/seo-meta";
 import { getWhatsAppLink } from "@/lib/site-links";
+import { StickyMobileCTA } from "@/app/components/landing/StickyMobileCTA";
 
 const sectionFallback = () => <section className="min-h-[200px]" aria-hidden />;
 
@@ -197,6 +198,7 @@ export default async function CountryHome({
           whatsappNumber={content.siteSettings?.whatsappNumber}
         />
       </section>
+      <StickyMobileCTA ctaLink={ctaLink} whatsappLink={whatsappLink} />
     </>
   );
 }
