@@ -383,7 +383,7 @@ export function SignupForm({
           </h2>
           <div className="mb-4 min-h-14 rounded-xl border-2 border-accent/30 bg-primary/10 px-4 py-3 text-center">
             <p className="text-xs font-bold text-muted-foreground mb-1">
-              {isAnnual ? "فوترة سنوية — إجمالي سنوي" : "فوترة شهرية"}
+              {isAnnual ? "اشتراك سنوي — إجمالي سنوي" : "اشتراك شهري"}
             </p>
             <p className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl tabular-nums">
               {priceRow.mo > 0 ? <CurrencyIcon country={country} /> : null}

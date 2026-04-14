@@ -40,3 +40,14 @@ model LandingSection {
 
   @@unique([country, section])
 }
+
+model ExitReason {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  reason    String
+  country   String
+  createdAt DateTime @default(now())
+
+  @@index([country])
+  @@index([reason])
+  @@index([createdAt])
+}

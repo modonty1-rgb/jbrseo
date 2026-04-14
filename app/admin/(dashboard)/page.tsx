@@ -1,6 +1,7 @@
 import { Suspense, type ReactElement } from "react";
 import Link from "next/link";
 import { getSubscriberStats } from "@/app/actions/subscribers";
+import { getExitReasonStats } from "@/app/actions/exitReason";
 import { getAllAnalyticsData, getCountryBreakdown, getTopEvents, getTrafficSources } from "@/lib/analytics";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { cn } from "@/lib/utils";
@@ -20,7 +21,10 @@ export default async function AdminDashboardPage({
   searchParams: Promise<{ country?: string }>;
 }): Promise<ReactElement> {
   const country = await getCountry(searchParams);
-  const stats = await getSubscriberStats();
+  const [stats, exitStats] = await Promise.all([
+    getSubscriberStats(),
+    getExitReasonStats(),
+  ]);
 
   const emptyAnalytics: {
     pageviews7d: number;
@@ -300,6 +304,35 @@ export default async function AdminDashboardPage({
           </div>
         </>
       ) : null}
+
+      {/* Exit Reasons */}
+      {exitStats && exitStats.total > 0 && (
+        <div className="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-sm font-semibold text-foreground">أسباب الخروج — نتائج البوب-آب</h2>
+            <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
+              {exitStats.total} إجابة · 🇸🇦 {exitStats.byCountry.SA} · 🇪🇬 {exitStats.byCountry.EG}
+            </span>
+          </div>
+          <div className="space-y-3">
+            {exitStats.byReason.map((row) => (
+              <div key={row.reason} className="flex items-center gap-3">
+                <span className="w-44 shrink-0 text-xs text-muted-foreground">{row.reason}</span>
+                <div className="h-5 min-w-0 flex-1 rounded-full bg-muted">
+                  <div
+                    className="h-5 rounded-full bg-primary/70 transition-all duration-500"
+                    style={{ width: `${row.pct}%` }}
+                  />
+                </div>
+                <div className="w-16 shrink-0 text-end">
+                  <span className="text-sm font-medium text-foreground">{row.count}</span>
+                  <span className="ms-1 text-[10px] text-muted-foreground">({row.pct}%)</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Quick links */}
       <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
