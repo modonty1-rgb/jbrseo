@@ -118,7 +118,6 @@ export default function CountrySignupThankYouPage(): ReactElement | null {
           </CardContent>
         </Card>
 
-        {/* TODO: Remove after payment gateway setup */}
         <div className="mt-6 rounded-2xl border border-border/60 bg-muted/20 p-6 text-right">
           <p className="mb-4 text-sm font-medium text-muted-foreground">
             لتفعيل اشتراكك، أرسل المبلغ المحدد على الحساب التالي:

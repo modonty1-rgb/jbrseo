@@ -10,7 +10,6 @@ datasource db {
 model SiteSettings {
   id              String   @id @default(auto()) @map("_id") @db.ObjectId
   gtmId           String   @default("")
-  hotjarId        String   @default("")
   whatsappNumber  String   @default("")
   updatedAt       DateTime @default(now())
 }

@@ -41,7 +41,6 @@ export async function getGlobalSiteSettings(): Promise<GlobalSiteSettings | null
   if (!row) return null;
   return {
     gtmId: row.gtmId ?? "",
-    hotjarId: row.hotjarId ?? "",
     whatsappNumber: row.whatsappNumber ?? "",
   };
 }
@@ -82,16 +81,15 @@ export async function updateImagesFormData(_formData: FormData) {
 export async function updateTrackingFormData(formData: FormData) {
   if (!(await isAdmin())) return;
   const gtmId = (formData.get("gtmId") as string)?.trim() ?? "";
-  const hotjarId = (formData.get("hotjarId") as string)?.trim() ?? "";
   const row = await prisma.siteSettings.findFirst();
   if (row) {
     await prisma.siteSettings.update({
       where: { id: row.id },
-      data: { gtmId, hotjarId },
+      data: { gtmId },
     });
   } else {
     await prisma.siteSettings.create({
-      data: { gtmId, hotjarId, whatsappNumber: "" },
+      data: { gtmId, whatsappNumber: "" },
     });
   }
   revalidatePath("/admin");
@@ -105,7 +103,6 @@ export async function updateSiteSettingsFormData(formData: FormData) {
   const country = formData.get("country") as string;
   if (!country) return;
   assertCountry(country);
-  const ctaLabel = (formData.get("ctaLabel") as string)?.trim() || "ابدأ مجاناً — بدون بطاقة";
   const whatsappNumber = (formData.get("whatsappNumber") as string)?.trim() ?? "";
   const row = await prisma.siteSettings.findFirst();
   if (row) {
@@ -115,10 +112,9 @@ export async function updateSiteSettingsFormData(formData: FormData) {
     });
   } else {
     await prisma.siteSettings.create({
-      data: { gtmId: "", hotjarId: "", whatsappNumber },
+      data: { gtmId: "", whatsappNumber },
     });
   }
-  await upsertLandingSection(country as SupportedCountry, "ctaLabel", { ctaLabel });
   revalidatePath("/admin");
   revalidatePath("/");
   revalidateAllLanding();

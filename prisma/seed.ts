@@ -8,7 +8,6 @@ async function main() {
     await prisma.siteSettings.create({
       data: {
         gtmId: "",
-        hotjarId: "",
         whatsappNumber: "",
       },
     });

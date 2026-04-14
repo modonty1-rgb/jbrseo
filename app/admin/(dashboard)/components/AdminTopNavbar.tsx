@@ -37,6 +37,10 @@ type TopNavDropdownProps = {
   country?: string;
   /** Highlight button when active */
   activeHrefs?: string[];
+  /** If set, button is only active when currentCountry matches this value */
+  countryKey?: string;
+  /** Current ?country= value from URL */
+  currentCountry?: string;
 };
 
 function TopNavDropdown({
@@ -46,6 +50,8 @@ function TopNavDropdown({
   pathname,
   country,
   activeHrefs,
+  countryKey,
+  currentCountry,
 }: TopNavDropdownProps): ReactElement {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -61,8 +67,9 @@ function TopNavDropdown({
   // Close on route change
   useEffect(() => { setOpen(false); }, [pathname]);
 
-  const hrefs = activeHrefs ?? items.map((i) => i.href);
-  const isActive = hrefs.some((h) => pathname === h || pathname.startsWith(`${h}/`));
+  const hrefs = (activeHrefs ?? items.map((i) => i.href)).filter(Boolean);
+  const pathMatches = hrefs.some((h) => pathname === h || pathname.startsWith(`${h}/`));
+  const isActive = pathMatches && (countryKey === undefined || currentCountry === countryKey);
 
   return (
     <div ref={ref} className="relative">
@@ -101,7 +108,8 @@ function TopNavDropdown({
               );
             }
             const href = country ? withCountry(item.href, country) : item.href;
-            const isItemActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const isItemActive = (pathname === item.href || pathname.startsWith(`${item.href}/`))
+              && (countryKey === undefined || currentCountry === countryKey);
             return (
               <Link
                 key={item.href}
@@ -215,6 +223,8 @@ export function AdminTopNavbar(): ReactElement {
           items={COUNTRY_NAV_ITEMS}
           pathname={pathname}
           country="SA"
+          countryKey="SA"
+          currentCountry={country}
         />
 
         {/* 🇪🇬 مصر */}
@@ -224,6 +234,8 @@ export function AdminTopNavbar(): ReactElement {
           items={COUNTRY_NAV_ITEMS}
           pathname={pathname}
           country="EG"
+          countryKey="EG"
+          currentCountry={country}
         />
 
         {/* 🌍 مشترك */}

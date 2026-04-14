@@ -21,15 +21,6 @@ const TRACKING_FIELDS = [
     icon: "📊",
     link: "https://tagmanager.google.com",
   },
-  {
-    name: "hotjarId" as const,
-    id: "tracking-hotjarId",
-    label: "Hotjar site ID",
-    placeholder: "",
-    hint: "معرّف الموقع في Hotjar لتسجيل الجلسات والخريطة الحرارية — أرقام فقط",
-    icon: "🔥",
-    link: "https://insights.hotjar.com",
-  },
 ] as const;
 
 export function TrackingForm({
@@ -42,20 +33,17 @@ export function TrackingForm({
   redirect?: string;
 }): ReactElement {
   const [gtmId, setGtmId] = useState(tracking.gtmId ?? "");
-  const [hotjarId, setHotjarId] = useState(tracking.hotjarId ?? "");
 
   const activeTrackingCount = useMemo(() => {
-    return [gtmId, hotjarId].filter((v) => v.trim().length > 0).length;
-  }, [gtmId, hotjarId]);
+    return [gtmId].filter((v) => v.trim().length > 0).length;
+  }, [gtmId]);
 
   const setters: Record<(typeof TRACKING_FIELDS)[number]["name"], (v: string) => void> = {
     gtmId: setGtmId,
-    hotjarId: setHotjarId,
   };
 
   const values: Record<(typeof TRACKING_FIELDS)[number]["name"], string> = {
     gtmId,
-    hotjarId,
   };
 
   function handleSave(): void {
@@ -71,8 +59,11 @@ export function TrackingForm({
             📡
           </span>
           <h2 className="text-sm font-semibold text-foreground">التتبع والتحليلات</h2>
+          <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+            🌍 ينطبق على كل البلدان
+          </span>
           <span className="ms-auto text-xs text-muted-foreground">
-            {activeTrackingCount}/2 خدمات مُفعّلة
+            {activeTrackingCount}/1 خدمات مُفعّلة
           </span>
         </div>
 

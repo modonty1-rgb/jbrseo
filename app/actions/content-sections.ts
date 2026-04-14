@@ -148,6 +148,8 @@ export async function updateHeroSection(formData: FormData) {
     .map((l) => l.trim())
     .filter(Boolean);
 
+  const ctaLabel = ((formData.get("ctaLabel") as string | null) ?? "").trim() || "ابدأ مجاناً — بدون بطاقة";
+
   const currentHero = await getMergedHero(country);
 
   const hero = {
@@ -162,6 +164,7 @@ export async function updateHeroSection(formData: FormData) {
   };
 
   await upsertLandingSection(country, "hero", hero);
+  await upsertLandingSection(country, "ctaLabel", { ctaLabel });
 
   const countrySlug = country === "SA" ? "sa" : "eg";
   revalidateTag(`landing-${country}`, "default");

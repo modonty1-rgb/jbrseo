@@ -95,7 +95,7 @@ async function getStaticFallback(): Promise<LandingContent> {
       faq: "",
       finalCta: "",
     },
-    tracking: { gtmId: "", hotjarId: "" },
+    tracking: { gtmId: "" },
     siteSettings: { ctaLabel: "ابدأ مجاناً — بدون بطاقة", whatsappNumber: "", socialLinks: {} },
     sectionHeadings: {
       whyNow: { eyebrow: "لماذا الآن", title: "كل شهر تأخير له ثمن" },
@@ -167,8 +167,8 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
   };
 
   const tracking = settingsRow
-    ? { gtmId: settingsRow.gtmId ?? "", hotjarId: settingsRow.hotjarId ?? "" }
-    : { gtmId: "", hotjarId: "" };
+    ? { gtmId: settingsRow.gtmId ?? "" }
+    : { gtmId: "" };
 
   const ctaLabel =
     (ctaLabelOverride && typeof ctaLabelOverride === "object" && "ctaLabel" in ctaLabelOverride && typeof (ctaLabelOverride as { ctaLabel?: string }).ctaLabel === "string"

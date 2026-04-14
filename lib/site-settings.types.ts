@@ -8,12 +8,10 @@ export type SiteSettingsSeo = {
 
 export type SiteSettingsTracking = {
   gtmId: string;
-  hotjarId: string;
 };
 
 export type GlobalSiteSettings = {
   gtmId: string;
-  hotjarId: string;
   whatsappNumber: string;
 };
 
@@ -80,7 +78,7 @@ export const DEFAULT_SITE_SETTINGS_JSON: SiteSettingsJson = {
     ogImage: "",
     ogLocale: "ar_SA",
   },
-  tracking: { gtmId: "", hotjarId: "" },
+  tracking: { gtmId: "" },
   site: { showSectionCounter: false, ctaLabel: "ابدأ مجاناً — بدون بطاقة", whatsappNumber: "" },
   images: {
     logoWhite: "",

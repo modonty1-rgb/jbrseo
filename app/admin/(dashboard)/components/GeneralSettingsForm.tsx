@@ -3,7 +3,6 @@
 import { useState, type ReactElement } from "react";
 import { updateSiteSettingsFormData } from "@/app/actions/landing";
 import type { SupportedCountry } from "@/lib/landing-content.types";
-import type { SiteSettingsJson } from "@/lib/site-settings.types";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Label } from "@/app/components/ui/label";
@@ -23,10 +22,9 @@ export function GeneralSettingsForm({
   redirect,
 }: {
   country: SupportedCountry;
-  site: SiteSettingsJson["site"];
+  site: { showSectionCounter: boolean; whatsappNumber?: string };
   redirect?: string;
 }): ReactElement {
-  const [ctaVal, setCtaVal] = useState(site.ctaLabel ?? "ابدأ مجاناً — بدون بطاقة");
   const [waVal, setWaVal] = useState(site.whatsappNumber ?? "");
 
   const waOk = isValidWhatsappDigits(waVal);
@@ -51,34 +49,6 @@ export function GeneralSettingsForm({
         <form id={GENERAL_FORM_ID} action={updateSiteSettingsFormData} className="flex flex-col gap-4">
           <input type="hidden" name="country" value={country} />
           {redirect && <input type="hidden" name="redirect" value={redirect} />}
-
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="ctaLabel" className="text-xs font-medium text-muted-foreground">
-              نص زر الدعوة الرئيسي
-            </Label>
-            <Input
-              id="ctaLabel"
-              type="text"
-              name="ctaLabel"
-              value={ctaVal}
-              onChange={(e) => setCtaVal(e.target.value)}
-              dir="rtl"
-            />
-            <p className="mt-1 text-xs text-muted-foreground">
-              يُستخدم في الهيدر، البطل، وأزرار الدعوة في كل الأقسام.
-            </p>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="text-xs text-muted-foreground">معاينة:</span>
-              <button
-                type="button"
-                tabIndex={-1}
-                className="pointer-events-none inline-flex items-center rounded-md bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow"
-              >
-                {ctaVal.trim() || "نص الزر…"}
-              </button>
-            </div>
-            <p className="text-[10px] text-muted-foreground">للمعاينة فقط — لا يُرسل أي إجراء.</p>
-          </div>
 
           <div className="flex flex-col gap-1.5 pt-2">
             <Label htmlFor="whatsappNumber" className="text-xs font-medium text-muted-foreground">

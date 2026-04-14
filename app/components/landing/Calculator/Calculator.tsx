@@ -22,8 +22,10 @@ import { Badge } from "@/app/components/ui/badge";
 import { Card } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
 
-const SUB_M = 1299;
-const SUB_Y = SUB_M * 12;
+const SUB_BY_COUNTRY: Record<string, number> = {
+  SA: 1299,
+  EG: 3999,
+};
 
 function fmt(n: number): string {
   return n.toLocaleString("ar-SA");
@@ -89,13 +91,18 @@ type WhyNowProps = {
   featuresLink?: string;
   ctaLink?: string;
   ctaLabel?: string;
+  country?: string;
 };
 
 export default function Calculator({
   featuresLink = "/features",
   ctaLink = "/signup",
   ctaLabel = CALCULATOR_DEFAULT_CTA_LABEL,
+  country = "SA",
 }: WhyNowProps) {
+  const subM = SUB_BY_COUNTRY[country] ?? SUB_BY_COUNTRY.SA;
+  const subY = subM * 12;
+
   const [writer, setWriter] = useState(4500);
   const [designer, setDesigner] = useState(7000);
   const [seo, setSeo] = useState(6000);
@@ -105,8 +112,8 @@ export default function Calculator({
 
   const totalM = writer + designer + seo + social + video + dev;
   const totalY = totalM * 12;
-  const saveM = totalM - SUB_M;
-  const saveY = totalY - SUB_Y;
+  const saveM = totalM - subM;
+  const saveY = totalY - subY;
   const pct = Math.round((saveM / totalM) * 100);
 
   const badItems: MoneyPair[] = [
@@ -216,8 +223,8 @@ export default function Calculator({
             />
             <WithPlanCard
               goodItems={goodItems}
-              subM={SUB_M}
-              subY={SUB_Y}
+              subM={subM}
+              subY={subY}
               formatMoney={fmt}
             />
           </div>
@@ -226,8 +233,8 @@ export default function Calculator({
         <SavingsCard
           totalM={totalM}
           totalY={totalY}
-          subM={SUB_M}
-          subY={SUB_Y}
+          subM={subM}
+          subY={subY}
           saveM={saveM}
           saveY={saveY}
           pct={pct}

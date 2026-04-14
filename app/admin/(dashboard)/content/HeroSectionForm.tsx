@@ -16,9 +16,10 @@ const HERO_FORM_ID = "hero-section-form";
 type HeroSectionFormProps = {
   hero: StaticLanding["hero"];
   country: SupportedCountry;
+  ctaLabel: string;
 };
 
-export function HeroSectionForm({ hero, country }: HeroSectionFormProps): ReactElement {
+export function HeroSectionForm({ hero, country, ctaLabel }: HeroSectionFormProps): ReactElement {
   const benefits = hero.benefits ?? [];
   const benefitsCount = benefits.length || 3;
 
@@ -28,6 +29,7 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps): ReactE
 
   const [isPending, startTransition] = useTransition();
   const [subCharCount, setSubCharCount] = useState(() => (hero.sub ?? "").length);
+  const [ctaVal, setCtaVal] = useState(ctaLabel);
 
   useEffect(() => {
     const form = document.getElementById(HERO_FORM_ID);
@@ -180,6 +182,33 @@ export function HeroSectionForm({ hero, country }: HeroSectionFormProps): ReactE
         <div className="flex flex-col gap-1">
           <span className="text-xs font-semibold text-muted-foreground">عناصر الثقة</span>
           <TrustLinesEditor defaultValue={trustText} />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-muted-foreground" htmlFor="hero-ctaLabel">
+            نص زر الدعوة الرئيسي
+          </label>
+          <Input
+            id="hero-ctaLabel"
+            name="ctaLabel"
+            value={ctaVal}
+            onChange={(e) => setCtaVal(e.target.value)}
+            dir="rtl"
+            className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+          />
+          <p className="mt-0.5 text-[10px] text-muted-foreground">
+            يُستخدم في الهيدر والبطل وأزرار الدعوة في كل الأقسام.
+          </p>
+          <div className="mt-1 flex flex-wrap items-center gap-2">
+            <span className="text-xs text-muted-foreground">معاينة:</span>
+            <button
+              type="button"
+              tabIndex={-1}
+              className="pointer-events-none inline-flex items-center rounded-md bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow"
+            >
+              {ctaVal.trim() || "نص الزر…"}
+            </button>
+          </div>
         </div>
 
         <ConfirmSaveDialog

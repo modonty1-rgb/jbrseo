@@ -30,6 +30,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...countryEntries,
     {
+      url: `${siteUrl}/features`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    },
+    {
       url: `${siteUrl}/about`,
       lastModified: now,
       changeFrequency: "monthly" as const,

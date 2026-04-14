@@ -163,7 +163,7 @@ export default async function CountryHome({
         <HowItWorks staticLanding={mergedStaticLanding} ctaLabel={pricingCtaLabel} ctaLink={pricingCtaLink} />
       </section>
       <section className="relative">
-        <WhyNowCalculator ctaLabel={pricingCtaLabel} ctaLink={pricingCtaLink} />
+        <WhyNowCalculator ctaLabel={pricingCtaLabel} ctaLink={pricingCtaLink} country={countryCode} />
       </section>
       <section className="relative">
         <Outcomes staticLanding={mergedStaticLanding} ctaLabel={pricingCtaLabel} ctaLink={outcomesCtaLink} />

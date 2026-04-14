@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { getGlobalSiteSettings } from "@/app/actions/landing";
-import { getLandingSectionOverride } from "@/lib/landing-sections";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { GeneralSettingsForm } from "../components/GeneralSettingsForm";
 import { TrackingForm } from "../components/TrackingForm";
@@ -19,14 +18,7 @@ export default async function AdminSettingsPage({
   searchParams: Promise<{ country?: string }>;
 }) {
   const country = await getCountry(searchParams);
-  const [globalRow, ctaLabelOverride] = await Promise.all([
-    getGlobalSiteSettings(),
-    getLandingSectionOverride(country, "ctaLabel"),
-  ]);
-  const ctaLabel =
-    (ctaLabelOverride && typeof ctaLabelOverride === "object" && "ctaLabel" in ctaLabelOverride && typeof (ctaLabelOverride as { ctaLabel?: string }).ctaLabel === "string"
-      ? (ctaLabelOverride as { ctaLabel: string }).ctaLabel
-      : null) ?? "ابدأ مجاناً — بدون بطاقة";
+  const globalRow = await getGlobalSiteSettings();
   const redirect = `/admin/settings?country=${country}`;
 
   return (
@@ -60,7 +52,7 @@ export default async function AdminSettingsPage({
         <GeneralSettingsForm
           key={`general-${country}`}
           country={country}
-          site={{ showSectionCounter: false, ctaLabel, whatsappNumber: globalRow?.whatsappNumber ?? "" }}
+          site={{ showSectionCounter: false, whatsappNumber: globalRow?.whatsappNumber ?? "" }}
           redirect={redirect}
         />
         <TrackingForm
@@ -68,7 +60,6 @@ export default async function AdminSettingsPage({
           country={country}
           tracking={{
             gtmId: globalRow?.gtmId ?? "",
-            hotjarId: globalRow?.hotjarId ?? "",
           }}
           redirect={redirect}
         />

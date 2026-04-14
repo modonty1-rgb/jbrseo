@@ -289,6 +289,7 @@ export default async function AdminContentSectionPage({
   // - If DB override exists (and useDefault !== "1") → use DB.
   // - Else if useDefault === "1" → use static TS hero.
   // - Else (no override, no default requested) → start from empty hero.
+  let heroCtaLabel = "ابدأ مجاناً — بدون بطاقة";
   if (!isLinksSection && section === "hero") {
     const staticHero = data.hero;
     let heroData: StaticLanding["hero"];
@@ -302,6 +303,11 @@ export default async function AdminContentSectionPage({
       } else {
         heroData = staticHero;
       }
+    }
+
+    const ctaLabelOverride = await getLandingSectionOverride(country as SupportedCountry, "ctaLabel");
+    if (ctaLabelOverride && typeof ctaLabelOverride === "object" && "ctaLabel" in ctaLabelOverride && typeof (ctaLabelOverride as { ctaLabel?: string }).ctaLabel === "string") {
+      heroCtaLabel = (ctaLabelOverride as { ctaLabel: string }).ctaLabel;
     }
 
     sectionData = heroData;
@@ -600,6 +606,7 @@ export default async function AdminContentSectionPage({
               key={country}
               hero={sectionData as StaticLanding["hero"]}
               country={country}
+              ctaLabel={heroCtaLabel}
             />
           )}
           {!isLinksSection && section === "whyNow" && (
