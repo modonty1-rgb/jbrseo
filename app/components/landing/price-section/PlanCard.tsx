@@ -9,6 +9,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
 import { Check, WhatsApp } from "./PriceSectionIcons";
 import { WhatsAppTrackLink } from "@/app/components/shared/WhatsAppTrackLink";
+import { GTMEvents } from "@/lib/gtm";
 
 interface PlanCardProps {
   plan: Plan;
@@ -19,6 +20,7 @@ interface PlanCardProps {
   id?: string;
   signupHrefBase?: string;
   whatsappLink?: string;
+  country?: string;
   className?: string;
 }
 
@@ -47,6 +49,7 @@ export function PlanCard({
   id,
   signupHrefBase = "/signup",
   whatsappLink,
+  country = "SA",
   className,
 }: PlanCardProps) {
   const [expanded, setExpanded] = useState(false);
@@ -208,7 +211,13 @@ export function PlanCard({
 
         <div className={`h-px w-full mb-4 ${F ? "bg-primary-foreground/10" : "bg-border"}`} />
 
-        <Link href={signupHref} scroll={false} className={ctaCls} style={ctaStyle}>
+        <Link
+          href={signupHref}
+          scroll={false}
+          className={ctaCls}
+          style={ctaStyle}
+          onClick={() => GTMEvents.planClick({ plan: plan.name, price, billing: annual ? "annual" : "monthly", country })}
+        >
           {plan.cta}
         </Link>
 

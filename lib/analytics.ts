@@ -345,6 +345,99 @@ export async function getTrafficSources(days = 7): Promise<{ channel: string; vi
   }
 }
 
+export type PlanInterestData = {
+  byPlan: { name: string; clicks: number; signups: number }[];
+  billing: { annual: number; monthly: number };
+};
+
+export async function getPlanInterestData(days = 7): Promise<PlanInterestData> {
+  const rawId = (process.env.GA4_PROPERTY_ID ?? "").trim();
+  const propertyId = rawId.startsWith("properties/") ? rawId : `properties/${rawId}`;
+
+  const empty: PlanInterestData = { byPlan: [], billing: { annual: 0, monthly: 0 } };
+
+  try {
+    const token = await getAccessToken();
+    type GADimRow = {
+      dimensionValues: { value: string }[];
+      metricValues: { value: string }[];
+    };
+
+    const [planClicksRes, signupPlansRes, billingRes] = await Promise.all([
+      // plan_click breakdown by plan_name
+      runReport(token, propertyId, {
+        dateRanges: [{ startDate: `${days}daysAgo`, endDate: "today" }],
+        dimensions: [{ name: "customEvent:plan_name" }],
+        metrics: [{ name: "eventCount" }],
+        dimensionFilter: {
+          filter: { fieldName: "eventName", stringFilter: { matchType: "EXACT", value: "plan_click" } },
+        },
+        orderBys: [{ metric: { metricName: "eventCount" }, desc: true }],
+      }),
+      // signup_start breakdown by plan_name
+      runReport(token, propertyId, {
+        dateRanges: [{ startDate: `${days}daysAgo`, endDate: "today" }],
+        dimensions: [{ name: "customEvent:plan_name" }],
+        metrics: [{ name: "eventCount" }],
+        dimensionFilter: {
+          filter: { fieldName: "eventName", stringFilter: { matchType: "EXACT", value: "signup_start" } },
+        },
+        orderBys: [{ metric: { metricName: "eventCount" }, desc: true }],
+      }),
+      // billing_mode breakdown
+      runReport(token, propertyId, {
+        dateRanges: [{ startDate: `${days}daysAgo`, endDate: "today" }],
+        dimensions: [{ name: "customEvent:billing_mode" }],
+        metrics: [{ name: "eventCount" }],
+        dimensionFilter: {
+          filter: { fieldName: "eventName", stringFilter: { matchType: "EXACT", value: "plan_click" } },
+        },
+      }),
+    ]);
+
+    const clickRows = (planClicksRes.rows as GADimRow[] | undefined) ?? [];
+    const signupRows = (signupPlansRes.rows as GADimRow[] | undefined) ?? [];
+    const billingRows = (billingRes.rows as GADimRow[] | undefined) ?? [];
+
+    // merge clicks + signups by plan name
+    const planMap = new Map<string, { clicks: number; signups: number }>();
+    for (const r of clickRows) {
+      const name = r.dimensionValues[0].value;
+      if (name && name !== "(not set)") {
+        planMap.set(name, { clicks: parseInt(r.metricValues[0].value, 10), signups: 0 });
+      }
+    }
+    for (const r of signupRows) {
+      const name = r.dimensionValues[0].value;
+      if (name && name !== "(not set)") {
+        const existing = planMap.get(name) ?? { clicks: 0, signups: 0 };
+        planMap.set(name, { ...existing, signups: parseInt(r.metricValues[0].value, 10) });
+      }
+    }
+    const byPlan = Array.from(planMap.entries())
+      .map(([name, v]) => ({ name, ...v }))
+      .sort((a, b) => b.clicks - a.clicks);
+
+    // billing mode
+    let annual = 0;
+    let monthly = 0;
+    for (const r of billingRows) {
+      const mode = r.dimensionValues[0].value;
+      const count = parseInt(r.metricValues[0].value, 10);
+      if (mode === "annual") annual = count;
+      if (mode === "monthly") monthly = count;
+    }
+
+    return { byPlan, billing: { annual, monthly } };
+  } catch (error) {
+    console.error(
+      "[Analytics] getPlanInterestData failed:",
+      error instanceof Error ? error.message : String(error),
+    );
+    return empty;
+  }
+}
+
 export async function getTopEvents(days = 7): Promise<{ event: string; count: number }[]> {
   const rawId = (process.env.GA4_PROPERTY_ID ?? "").trim();
   const propertyId = rawId.startsWith("properties/") ? rawId : `properties/${rawId}`;

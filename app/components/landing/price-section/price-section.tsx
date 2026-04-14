@@ -41,6 +41,7 @@ export default function ModontyPricing({ pricingSA, pricingEG, initialLocale, an
               id={`plan-${p.id}`}
               signupHrefBase={signupHrefBase}
               whatsappLink={whatsappLink}
+              country={initialLocale.toUpperCase()}
               className={["animate-fade-in-up", "animate-fade-in-up delay-200", "animate-fade-in-up delay-400", "animate-fade-in-up delay-600"][i]}
             />
           ))}

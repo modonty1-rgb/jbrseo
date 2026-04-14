@@ -83,7 +83,13 @@ export function SignupForm({
 
   useEffect(() => {
     setMounted(true);
-    GTMEvents.signupStart();
+    GTMEvents.signupStart({
+      plan: serverPlan?.name,
+      price: isAnnual ? priceRow.yr : priceRow.mo,
+      billing: isAnnual ? "annual" : "monthly",
+      country,
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const countryCode = country === "SA" ? "+966" : "+20";

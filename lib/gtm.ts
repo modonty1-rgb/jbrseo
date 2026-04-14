@@ -9,7 +9,13 @@ export function trackEvent(event: string, payload?: Record<string, unknown>): vo
 type DataLayerWindow = Window & { dataLayer?: Record<string, unknown>[] };
 
 export const GTMEvents = {
-  signupStart: () => trackEvent("signup_start"),
+  signupStart: (params?: { plan?: string; price?: number; billing?: string; country?: string }) =>
+    trackEvent("signup_start", {
+      plan_name: params?.plan,
+      plan_price: params?.price,
+      billing_mode: params?.billing,
+      country: params?.country,
+    }),
   signupComplete: (country?: string) => {
     if (typeof window === "undefined") return;
     const w = window as DataLayerWindow;
@@ -21,6 +27,14 @@ export const GTMEvents = {
       value: 1,
     });
   },
-  pricingView: () => trackEvent("pricing_view"),
+  pricingView: (params?: { country?: string }) =>
+    trackEvent("pricing_view", { country: params?.country }),
   whatsappClick: () => trackEvent("whatsapp_click"),
+  planClick: (params: { plan: string; price: number; billing: string; country: string }) =>
+    trackEvent("plan_click", {
+      plan_name: params.plan,
+      plan_price: params.price,
+      billing_mode: params.billing,
+      country: params.country,
+    }),
 };
