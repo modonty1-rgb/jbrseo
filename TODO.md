@@ -19,11 +19,10 @@
 
 ## 🟡 IMPORTANT — Fix This Week
 
-- [ ] **Add admin notification when new subscriber signs up**
-  - `createSubscriber` action saves to DB only — no email / SMS / WhatsApp alert to team
-  - Team must manually check dashboard daily to find new subscribers
-  - Suggested: send WhatsApp or email to admin on every new signup
-  - File: [`app/actions/subscribers.ts`](app/actions/subscribers.ts#L43)
+- [x] **Add admin notification when new subscriber signs up**
+  - Implemented: Telegram Bot (`@Jbrseo_bot`) sends Arabic message to group on every signup
+  - Group includes owner + sales team (عليان)
+  - File: [`app/actions/subscribers.ts`](app/actions/subscribers.ts#L43), [`lib/telegram.ts`](lib/telegram.ts)
 
 - [x] **Add `/features` page to sitemap** — added with priority 0.8
 
@@ -39,10 +38,9 @@
 
 ## 🟠 ARCHITECTURE — Refactor (After Campaign)
 
-- [ ] **Fix WhatsApp number: global vs per-country confusion**
-  - UI in `/admin/settings` has country selector (SA/EG) but `whatsappNumber` saves globally to `SiteSettings`
-  - Decision pending from owner: same number for both countries or different?
-  - File: [`app/admin/(dashboard)/components/GeneralSettingsForm.tsx`](app/admin/(dashboard)/components/GeneralSettingsForm.tsx)
+- [x] **Fix WhatsApp number: global vs per-country confusion**
+  - Decision: نفس الرقم للسعودية ومصر — global save مقصود ✅
+  - No code change needed
 
 - [x] **Move TrackingForm to a dedicated "Global Settings" page**
   - Decision: Hotjar stays global (one site, filter by country inside Hotjar dashboard)

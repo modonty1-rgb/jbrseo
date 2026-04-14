@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/app/actions/auth";
 import { parseSignupFormData, signupSchema } from "@/app/actions/subscriber-signup-schema";
+import { sendTelegramMessage } from "@/lib/telegram";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_REGEX = /^\+?\d[\d\s-]{7,14}$/;
@@ -54,6 +55,19 @@ export async function createSubscriber(formData: FormData): Promise<CreateSubscr
         isAnnual,
       },
     });
+
+    const flag = country === "EG" ? "🇪🇬" : "🇸🇦";
+    const billing = isAnnual ? "سنوي" : "شهري";
+    await sendTelegramMessage(
+      `🔔 <b>مشترك جديد!</b>\n\n` +
+      `👤 <b>الاسم:</b> ${contactName}\n` +
+      `📧 <b>الإيميل:</b> ${email}\n` +
+      `📱 <b>الجوال:</b> ${phone}\n` +
+      `${businessName ? `🏢 <b>النشاط:</b> ${businessName}\n` : ""}` +
+      `📦 <b>الخطة:</b> ${planName} — ${billing}\n` +
+      `${flag} <b>الدولة:</b> ${country}`
+    );
+
     return { success: true };
   } catch (e) {
     const msg = e && typeof e === "object" && "code" in e && (e as { code: string }).code === "P2002"
