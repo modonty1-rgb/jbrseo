@@ -33,9 +33,6 @@ export default async function AdminSettingsPage({
     <div className="p-6">
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <h1 className="text-xl font-bold text-foreground">الإعدادات</h1>
-        <span className="inline-flex items-center rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-foreground">
-          البلد: {country === "SA" ? "السعودية" : "مصر"}
-        </span>
         <Suspense fallback={null}>
           <AdminCountryPill />
         </Suspense>

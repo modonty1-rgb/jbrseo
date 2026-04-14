@@ -14,7 +14,7 @@ const GENERAL_FORM_ID = "general-settings-form";
 
 function isValidWhatsappDigits(val: string): boolean {
   if (!val.trim()) return true;
-  return /^[0-9]{10,15}$/.test(val.trim());
+  return /^\+?[0-9]{10,15}$/.test(val.trim());
 }
 
 export function GeneralSettingsForm({
@@ -99,7 +99,7 @@ export function GeneralSettingsForm({
             />
             {waVal.trim() !== "" && !waOk ? (
               <p className="mt-1 text-xs text-destructive">
-                الرقم يجب أن يحتوي أرقاماً فقط (١٠–١٥ رقماً) — مثال: 966554113107
+                الرقم يجب أن يحتوي أرقاماً فقط (١٠–١٥ رقماً) — مثال: 966554113107 أو +966554113107
               </p>
             ) : (
               <p className="mt-1 text-xs text-muted-foreground">
