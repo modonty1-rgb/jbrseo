@@ -1,5 +1,6 @@
 export function HeroHeadline({ line1, line2 }: { line1: string; line2: string }) {
   return (
+    <>
     <h1
       id="hero-title"
       className="
@@ -11,7 +12,7 @@ export function HeroHeadline({ line1, line2 }: { line1: string; line2: string })
         mb-0
       "
     >
-      {line1}
+      <span className="hero-h1-gradient whitespace-nowrap">{line1}</span>
       <br />
       <span className="relative inline-block text-primary">
         {line2}
@@ -25,5 +26,14 @@ export function HeroHeadline({ line1, line2 }: { line1: string; line2: string })
         />
       </span>
     </h1>
+    <style>{`
+      .dark .hero-h1-gradient {
+        background-image: linear-gradient(to bottom left, #ffffff 20%, #c4b5fd 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+    `}</style>
+    </>
   );
 }

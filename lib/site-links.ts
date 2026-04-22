@@ -4,17 +4,19 @@ export type NavLinkItem = { href: string; label: string };
 export type FooterLinkItem = { label: string; href: string };
 
 const NAV_SA: NavLinkItem[] = [
-  { href: "/#how-it-works", label: "كيف نعمل" },
-  { href: "/#outcomes", label: "النتائج" },
-  { href: "/#pricing", label: "الأسعار" },
-  { href: "/#faq", label: "الأسئلة" },
+  { href: "/#how-it-works", label: "الخطوات" },
+  { href: "/#outcomes", label: "أثبتنا" },
+  { href: "/features", label: "نظامنا" },
+  { href: "/#pricing", label: "الخطط" },
+  { href: "/#faq", label: "اقتنع" },
 ];
 
 const NAV_EG: NavLinkItem[] = [
-  { href: "/#how-it-works", label: "كيف نعمل" },
-  { href: "/#outcomes", label: "النتائج" },
-  { href: "/#pricing", label: "الأسعار" },
-  { href: "/#faq", label: "الأسئلة" },
+  { href: "/#how-it-works", label: "الخطوات" },
+  { href: "/#outcomes", label: "أثبتنا" },
+  { href: "/features", label: "نظامنا" },
+  { href: "/#pricing", label: "الخطط" },
+  { href: "/#faq", label: "اقتنع" },
 ];
 
 function withBasePath<T extends { href: string }>(items: T[], basePath?: string): T[] {

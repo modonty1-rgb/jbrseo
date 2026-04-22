@@ -39,12 +39,12 @@ const FAQ = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landi
   () => import("@/app/components/landing/FAQ/FAQ"),
   { loading: sectionFallback }
 );
-const FinalCTA = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel?: string; ctaLink?: string; whatsappNumber?: string }>(
+const FinalCTA = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel: string; ctaLink?: string; whatsappNumber?: string }>(
   () => import("@/app/components/landing/FinalCTA/FinalCTA"),
   { loading: sectionFallback }
 );
 
-const HOME_SA_DESCRIPTION =
+const HOME_SA_DESCRIPTION_FALLBACK =
   "مدونتي — منصة المحتوى العربي. مقالات تتصدر جوجل، صفحة شركتك في الشبكة، وقاعدة Leads مصنّفة — بدون كتابة حرف واحد. ابدأ مجاناً بدون بطاقة ائتمان.";
 
 export async function generateMetadata({
@@ -84,14 +84,15 @@ export async function generateMetadata({
   if (slug !== "sa") {
     return merged;
   }
+  const saDescription = s.description?.trim() || HOME_SA_DESCRIPTION_FALLBACK;
   return {
     ...merged,
-    description: HOME_SA_DESCRIPTION,
+    description: saDescription,
     openGraph: merged.openGraph
-      ? { ...merged.openGraph, description: HOME_SA_DESCRIPTION }
+      ? { ...merged.openGraph, description: saDescription }
       : merged.openGraph,
     twitter: merged.twitter
-      ? { ...merged.twitter, description: HOME_SA_DESCRIPTION }
+      ? { ...merged.twitter, description: saDescription }
       : merged.twitter,
   };
 }

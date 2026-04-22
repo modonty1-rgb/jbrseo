@@ -40,3 +40,15 @@ next-env.d.ts
 
 # Added by code-review-graph
 .code-review-graph/
+
+# playwright mcp artifacts
+.playwright-mcp/
+
+# temp files
+dev.log
+*.png
+!public/**/*.png
+
+# claude code
+.claude/
+.mcp.json

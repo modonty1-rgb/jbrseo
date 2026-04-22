@@ -3,11 +3,37 @@ import Link from "next/link";
 
 import { FeaturesStepperSection } from "@/app/components/features/FeaturesStepperSection";
 import { Button } from "@/app/components/ui/button";
+import { PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
+
+const CANONICAL = "https://www.jbrseo.com/features";
+const TITLE = "كل ما تحصل عليه مع مدونتي";
+const DESCRIPTION =
+  "استكشف كل الميزات: نشر المقالات، صفحة الشركة، قاعدة Leads، حملات الإيميل والواتساب، ولوحة التحكم الكاملة.";
 
 export const metadata: Metadata = {
-  title: "كل ما تحصل عليه مع مدونتي",
-  description:
-    "استكشف كل الميزات: نشر المقالات، صفحة الشركة، قاعدة Leads، حملات الإيميل والواتساب، ولوحة التحكم الكاملة.",
+  title: TITLE,
+  description: DESCRIPTION,
+  robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
+  alternates: {
+    canonical: CANONICAL,
+    languages: {
+      "ar-SA": "https://www.jbrseo.com/sa",
+      "ar-EG": "https://www.jbrseo.com/eg",
+    },
+  },
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: CANONICAL,
+    siteName: "JBRSEO",
+    locale: "ar_SA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function FeaturesPage() {

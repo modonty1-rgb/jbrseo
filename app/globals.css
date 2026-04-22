@@ -171,6 +171,7 @@
   --animate-arrow-move:    arrow-move 1.5s ease-in-out infinite;
   --animate-glow-pulse:    glow-pulse 4s ease-in-out infinite;
   --animate-shimmer:       shimmer 0.6s ease;
+  --animate-marquee:       marquee 28s linear infinite;
 }
 
 /* ─── ANIMATIONS ─────────────────────────────── */
@@ -252,6 +253,11 @@
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
 @media (hover: hover) {
   .outcomes-card.group:hover { transform: translateY(-6px); }
 }
@@ -271,6 +277,7 @@
 .animate-float         { animation: float 6s ease-in-out infinite; }
 .animate-diamond-pulse { animation: diamond-pulse 1.8s ease-in-out infinite; }
 .animate-arrow-move    { animation: arrow-move 1.5s ease-in-out infinite; }
+.animate-marquee       { animation: marquee 28s linear infinite; }
 
 .hero-glow-pulse      { animation: glow-pulse 4s ease-in-out infinite; }
 .hero-glow-pulse-delay { animation: glow-pulse 5s 1s ease-in-out infinite; }
@@ -278,6 +285,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .animate-float,
+  .animate-marquee,
   .hero-glow-pulse,
   .hero-glow-pulse-delay,
   .hero-scanline { animation: none; }

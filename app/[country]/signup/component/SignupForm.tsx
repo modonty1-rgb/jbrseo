@@ -19,6 +19,7 @@ import {
 import { ShieldCheck } from "lucide-react";
 import Link from "@/app/components/link";
 import { GTMEvents } from "@/lib/gtm";
+import { BankTrustBadge } from "@/app/components/shared/BankTrustBadge";
 
 function planIndexFromParam(
   param: string | null,
@@ -459,6 +460,7 @@ export function SignupForm({
             <p>كنا نصرف على إعلانات بدون نتيجة — اشتركنا وأول شهر جاب عملاء جدد</p>
             <p className="mt-1 not-italic">— صاحب متجر إلكتروني، الرياض</p>
           </div>
+          <BankTrustBadge className="mt-4 justify-start" />
         </section>
       </Card>
       </div>

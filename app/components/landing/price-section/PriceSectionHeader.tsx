@@ -41,7 +41,7 @@ export function PriceSectionHeader({ UI, annual, basePath }: PriceSectionHeaderP
         </div>
 
         {(annual ? UI.pricingBelowHintAnnual : UI.pricingBelowHintMonthly) ? (
-          <p className="text-xs text-muted-foreground font-medium max-w-md leading-relaxed">
+          <p className="text-xs text-foreground/60 font-medium max-w-md leading-relaxed">
             {annual ? UI.pricingBelowHintAnnual : UI.pricingBelowHintMonthly}
           </p>
         ) : null}
@@ -50,7 +50,7 @@ export function PriceSectionHeader({ UI, annual, basePath }: PriceSectionHeaderP
           <span className="text-xl text-primary"><Gift size={24} strokeWidth={2.5} /></span>
           <div className="text-right">
             <div className="text-sm font-extrabold text-foreground leading-snug">{UI.banner12Title}</div>
-            <div className="text-xs text-muted-foreground mt-0.5 font-medium">{UI.banner12Sub}</div>
+            <div className="text-xs text-foreground/60 mt-0.5 font-medium">{UI.banner12Sub}</div>
           </div>
         </div>
       </div>

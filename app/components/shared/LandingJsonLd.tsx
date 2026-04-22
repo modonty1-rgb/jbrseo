@@ -41,7 +41,6 @@ function buildJsonLd(content: LandingContent, countrySlug: "sa" | "eg") {
       height: 60,
     },
     description: "منصة المحتوى العربي — مقالات تتصدر جوجل وعملاء جدد لنشاطك التجاري",
-    telephone: "+966-XX-XXX-XXXX",
     address: {
       "@type": "PostalAddress",
       addressCountry: "SA",
@@ -135,7 +134,22 @@ function buildJsonLd(content: LandingContent, countrySlug: "sa" | "eg") {
       },
     }));
 
-  const scripts: object[] = [organization, webSite, breadcrumbHome];
+  const localBusiness = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `${siteOrigin}#localbusiness`,
+    name: "مدونتي | JBRSEO",
+    url: siteOrigin,
+    description: "منصة المحتوى العربي — مقالات تتصدر جوجل وعملاء جدد لنشاطك التجاري",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: countrySlug === "eg" ? "EG" : "SA",
+      addressRegion: countrySlug === "eg" ? "القاهرة" : "الرياض",
+    },
+    sameAs,
+  };
+
+  const scripts: object[] = [organization, webSite, breadcrumbHome, localBusiness];
   if (faqPage) scripts.push(faqPage);
   if (reviewsList.length > 0) {
     scripts.push({

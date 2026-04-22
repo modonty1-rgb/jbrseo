@@ -21,7 +21,7 @@ export function HeaderLogo({ logoHref = "/#hero" }: HeaderLogoProps): ReactEleme
         href="https://modonty.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="hidden text-[10px] text-muted-foreground transition-colors hover:text-foreground sm:inline-block"
+        className="hidden text-[11px] text-foreground/55 transition-colors hover:text-foreground sm:inline-block"
       >
         مدعوم بـ modonty
       </Link>

@@ -222,7 +222,7 @@ export function PlanCard({
         </Link>
 
         {plan.guarantee && (
-          <p className={`text-xs text-center mt-2 mb-2 leading-relaxed ${F ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+          <p className={`text-xs text-center mt-2 mb-2 leading-relaxed ${F ? "text-primary-foreground/85" : "text-foreground/60"}`}>
             {ui.guarantee}
           </p>
         )}
@@ -260,7 +260,7 @@ export function PlanCard({
       </Card>
 
       <Card className={featuresCardCls}>
-        <p className="text-xs font-bold tracking-widest uppercase mb-3 text-muted-foreground">{ui.youGet}</p>
+        <p className="text-xs font-bold tracking-widest uppercase mb-3 text-foreground/60">{ui.youGet}</p>
         <div className="flex flex-col gap-2.5">
           {(expanded ? plan.highlights : plan.highlights.slice(0, 3)).map((feat, i) => (
             <div key={i} className="flex items-start gap-2.5">
@@ -295,7 +295,7 @@ export function PlanCard({
         )}
         <Link
           href="/features"
-          className="block text-center text-xs text-muted-foreground hover:text-foreground transition-colors underline mb-3"
+          className="block text-center text-xs text-foreground/55 hover:text-foreground transition-colors underline mb-3"
         >
           شوف كل ما تشمله الخطة ←
         </Link>

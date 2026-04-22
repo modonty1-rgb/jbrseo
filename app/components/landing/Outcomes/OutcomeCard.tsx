@@ -46,7 +46,7 @@ export function OutcomeCard({ item, index }: OutcomeCardProps) {
         {item.title}
       </p>
       <div className="mb-3 h-px bg-border transition-colors duration-200" />
-      <p className="flex-1 text-[13px] leading-[1.75] text-muted-foreground">
+      <p className="flex-1 text-[13px] leading-[1.75] text-foreground/65">
         {item.line}
       </p>
     </Card>

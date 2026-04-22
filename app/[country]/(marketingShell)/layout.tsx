@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { LandingHeader } from "@/app/components/layout/header/LandingHeader";
+import { FloatingContact } from "@/app/components/shared/FloatingContact";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getLandingContent } from "@/lib/getLandingContent";
 import { getCountryCodeFromSlug, isSupportedCountrySlug } from "@/lib/country-config";
@@ -33,8 +34,10 @@ export default async function MarketingShellLayout({
         basePath={basePath}
         pricingHref={`${basePath}/signup`}
         navPrimaryCtaLabel="ابدأ مجاناً — بدون بطاقة ←"
+        whatsappNumber={content.siteSettings?.whatsappNumber}
       />
       <main id="main-content">{children}</main>
+      <FloatingContact whatsappNumber={content.siteSettings?.whatsappNumber} />
     </>
   );
 }

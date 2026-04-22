@@ -1,6 +1,7 @@
 import type { TrustItem } from "@/app/content/landing/price-section-types";
 import { Icon } from "@/app/components/Icon";
 import { Card } from "@/app/components/ui/card";
+import { BankTrustBadge } from "@/app/components/shared/BankTrustBadge";
 
 interface TrustBarProps {
   items: TrustItem[];
@@ -12,6 +13,7 @@ export function TrustBar({ items, title }: TrustBarProps) {
   return (
     <Card className="mb-14 flex flex-col items-center rounded-2xl border border-border bg-background px-8 py-7 shadow-sm">
       <p className="text-center text-xs font-bold text-muted-foreground tracking-widest uppercase mb-5">{title}</p>
+      <BankTrustBadge className="mb-5" />
       <div
         className="w-full grid gap-2.5 grid-cols-[repeat(var(--trust-cols),minmax(0,1fr))] max-sm:grid-cols-2"
         style={{ "--trust-cols": colCount } as React.CSSProperties}

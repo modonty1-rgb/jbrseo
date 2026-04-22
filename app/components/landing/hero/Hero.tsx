@@ -39,9 +39,9 @@ export default function Hero({
       aria-describedby="hero-description"
       className="
         landing-grain relative overflow-hidden bg-background
-        px-5 pt-10 pb-16
-        sm:px-8 sm:pt-14 sm:pb-20
-        lg:px-12 lg:pt-[64px] lg:pb-[100px]
+        px-5 pt-6 pb-10
+        sm:px-8 sm:pt-8 sm:pb-14
+        lg:px-12 lg:pt-10 lg:pb-15
       "
     >
       <HeroBackground />
@@ -52,14 +52,14 @@ export default function Hero({
             <div className="order-1 flex w-full flex-col items-center gap-4 lg:order-1 lg:items-start lg:gap-5">
               <HeroHeadline line1={h.h1Line1} line2={h.h1Line2} />
               <HeroSlogan tagline={staticLanding.footer.tagline} />
-              <div className="mt-6 flex flex-col items-center gap-3 lg:items-start">
+              <div className="mt-3 flex flex-col items-center gap-3 lg:items-start">
                 <Link
                   href={ctaLink}
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:scale-105 hover:bg-violet-700 hover:shadow-xl"
                 >
                   ابدأ مجاناً — بدون بطاقة ←
                 </Link>
-                <p className="text-xs text-white/50">✓ بدون بطاقة · ✓ ١٤ يوم ضمان كامل</p>
+                <p className="text-xs text-foreground/55">✓ بدون بطاقة · ✓ ١٤ يوم ضمان كامل</p>
               </div>
             </div>
             <div className="order-2 flex w-full justify-center lg:order-2">
@@ -68,7 +68,7 @@ export default function Hero({
           </div>
           <p
             id="hero-description"
-            className="landing-hero-sub landing-reveal-content mx-auto mt-8 mb-8 max-w-[490px] text-base font-normal leading-[1.85] text-muted-foreground sm:text-[17.5px] lg:mt-10"
+            className="landing-hero-sub landing-reveal-content mx-auto mt-4 mb-4 max-w-[490px] text-base font-normal leading-[1.85] text-foreground/75 sm:text-[17.5px] lg:mt-6"
           >
             {h.sub}
           </p>

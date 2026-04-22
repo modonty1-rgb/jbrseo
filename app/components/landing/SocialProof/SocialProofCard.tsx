@@ -75,7 +75,7 @@ export function SocialProofCard({ testimonial }: SocialProofCardProps) {
         />
         <div>
           <p className="text-[13px] font-black text-foreground sm:text-[15px]">{name}</p>
-          <p className="text-[11px] text-muted-foreground sm:text-[12px]">{role}</p>
+          <p className="text-[11px] text-foreground/60 sm:text-[12px]">{role}</p>
         </div>
         <span
           className="rounded-full px-2.5 py-1 text-[10px] font-black sm:px-3 sm:text-[11px]"

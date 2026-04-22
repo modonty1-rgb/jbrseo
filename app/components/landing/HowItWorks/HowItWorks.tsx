@@ -4,9 +4,7 @@ import { HowItWorksHeader } from "./HowItWorksHeader";
 import { HowItWorksSteps } from "./HowItWorksSteps";
 import { HowItWorksCTA } from "./HowItWorksCTA";
 
-const DEFAULT_CTA = "ابدأ مجاناً — بدون بطاقة";
-
-export default function HowItWorks({ staticLanding, ctaLabel = DEFAULT_CTA, ctaLink = "/signup" }: { staticLanding: StaticLanding; ctaLabel?: string; ctaLink?: string }) {
+export default function HowItWorks({ staticLanding, ctaLabel, ctaLink = "/signup" }: { staticLanding: StaticLanding; ctaLabel: string; ctaLink?: string }) {
   const h = staticLanding.howItWorks;
   return (
     <section

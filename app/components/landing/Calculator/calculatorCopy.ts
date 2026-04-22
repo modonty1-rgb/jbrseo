@@ -1,5 +1,3 @@
-export const CALCULATOR_DEFAULT_CTA_LABEL = "وفّر هذا الرقم ابتداءً من اليوم ←";
-
 export const CALCULATOR_INTRO = {
   pillText: "قبل السعر: احسب تكلفة البديل",
   titlePrefix: "قبل ما تقارن الأسعار: ",
@@ -29,7 +27,6 @@ export const CALCULATOR_SAVINGS_CARD = {
   differenceColumnTitle: "الفرق (التوفير)",
   monthly: "شهرياً",
   yearly: "سنوياً",
-  primaryCta: "وفّر هذا الرقم ابتداءً من اليوم ←",
   secondaryCta: "شوف جزء مما ستحصل عليه مع مدونتي ←",
 };
 

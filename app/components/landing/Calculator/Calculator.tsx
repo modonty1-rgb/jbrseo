@@ -7,7 +7,6 @@ import {
   CALCULATOR_BAD_EXTRA_ITEM,
   CALCULATOR_BAD_ITEM_LABELS,
   CALCULATOR_FOOTER_BADGES,
-  CALCULATOR_DEFAULT_CTA_LABEL,
   CALCULATOR_GOOD_ITEMS,
   CALCULATOR_SLIDER_LABELS,
   CALCULATOR_SET_TEAM_TEXT,
@@ -90,14 +89,14 @@ function SliderRow({
 type WhyNowProps = {
   featuresLink?: string;
   ctaLink?: string;
-  ctaLabel?: string;
+  ctaLabel: string;
   country?: string;
 };
 
 export default function Calculator({
   featuresLink = "/features",
   ctaLink = "/signup",
-  ctaLabel = CALCULATOR_DEFAULT_CTA_LABEL,
+  ctaLabel,
   country = "SA",
 }: WhyNowProps) {
   const subM = SUB_BY_COUNTRY[country] ?? SUB_BY_COUNTRY.SA;

@@ -13,9 +13,9 @@ export function FinalCTABenefits({ benefits }: FinalCTABenefitsProps) {
       {benefits.map((b, i) => (
         <span
           key={i}
-          className="flex items-center gap-1.5 text-[13px] font-semibold text-primary-foreground/65"
+          className="flex items-center gap-1.5 text-[13px] font-semibold text-primary-foreground/85"
         >
-          <span className="text-primary-foreground/70">
+          <span className="text-primary-foreground/90">
             <Icon emoji="✓" />
           </span>
           {b}

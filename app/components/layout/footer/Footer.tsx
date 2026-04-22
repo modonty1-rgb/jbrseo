@@ -1,4 +1,5 @@
 import Link from "@/app/components/link";
+import { version } from "@/package.json";
 import type { LandingContent } from "@/lib/landing-content.types";
 import type { StaticLanding } from "@/app/content/landing/types";
 import { SocialFacebookOutline } from "@/app/components/icons/facebook";
@@ -66,7 +67,7 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
         aria-hidden
         className="pointer-events-none absolute -bottom-20 left-1/2 h-[200px] w-[600px] -translate-x-1/2 rounded-full bg-foreground/5 blur-[80px]"
       />
-      <div className="relative z-10 mx-auto max-w-[1100px] px-5 pt-14 pb-10 sm:px-8 lg:px-10">
+      <div className="relative z-10 mx-auto max-w-[1100px] px-5 pt-14 pb-24 sm:px-8 lg:px-10">
 
         {/* ── TOP GRID ── */}
         <div className="grid grid-cols-1 gap-8 pb-10 border-b border-border sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
@@ -169,7 +170,35 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
 
         {/* ── BOTTOM ROW ── */}
         <div className="flex flex-col items-center justify-between gap-3 pt-6 sm:flex-row">
-          <p className="text-sm text-foreground/75">{COPYRIGHT}</p>
+          <div className="flex flex-col items-center gap-1 sm:items-start">
+            <p className="text-sm text-foreground/75">{COPYRIGHT}</p>
+            {country === "SA" && (
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/logos/mc-saudi.svg"
+                  alt="وزارة التجارة — المملكة العربية السعودية"
+                  width={300}
+                  height={104}
+                  className="h-5 w-auto opacity-40 grayscale dark:opacity-60 dark:grayscale-0 dark:invert"
+                  unoptimized
+                />
+                <span className="h-3 w-px bg-border/50" aria-hidden />
+                <Image
+                  src="/logos/business-sa.svg"
+                  alt="المركز السعودي للتنافسية والأعمال"
+                  width={300}
+                  height={58}
+                  className="h-5 w-auto opacity-40 grayscale dark:opacity-60 dark:grayscale-0 dark:invert"
+                  unoptimized
+                />
+                <span className="h-3 w-px bg-border/50" aria-hidden />
+                <p className="text-xs text-muted-foreground/75">
+                  سجل تجاري: ٧٠٤٠٦٠٢٠٩١
+                </p>
+              </div>
+            )}
+          </div>
+          <span className="text-xs text-muted-foreground/40 font-mono">v{version}</span>
           <nav className="flex gap-5">
             {LEGAL_LINKS.map((l, i) => (
               <Link

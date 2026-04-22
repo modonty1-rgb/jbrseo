@@ -1,7 +1,7 @@
 import type { StaticLanding } from "@/app/content/landing/types";
 import { SocialProofBackground } from "./SocialProofBackground";
 import { SocialProofHeader } from "./SocialProofHeader";
-import { SocialProofCarousel } from "./SocialProofCarousel";
+import { SocialProofCarouselClient } from "./SocialProofCarouselClient";
 import { SocialProofFounding } from "./SocialProofFounding";
 
 export default function SocialProof({ staticLanding }: { staticLanding: StaticLanding }) {
@@ -21,7 +21,7 @@ export default function SocialProof({ staticLanding }: { staticLanding: StaticLa
       <div className="relative mx-auto max-w-[1000px]">
         <div className="relative z-10">
           <SocialProofHeader eyebrow={s.eyebrow} title={s.title} subtitle={s.subtitle} />
-          <SocialProofCarousel testimonials={s.testimonials} />
+          <SocialProofCarouselClient testimonials={s.testimonials} />
           <SocialProofFounding text={s.founding} />
         </div>
       </div>

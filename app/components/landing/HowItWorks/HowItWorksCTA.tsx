@@ -33,11 +33,11 @@ export function HowItWorksCTA({ ctaLink, cta, guarantee }: Props) {
           ←
         </span>
       </Link>
-      <p className="text-xs text-muted-foreground">{guarantee}</p>
+      <p className="text-xs text-foreground/55">{guarantee}</p>
       <div className="mt-3 text-center">
         <Link
           href="/features"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors underline"
+          className="text-sm text-foreground/65 hover:text-foreground transition-colors underline"
         >
           شوف كيف يعمل بالتفصيل ←
         </Link>

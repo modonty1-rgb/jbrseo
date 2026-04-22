@@ -8,9 +8,7 @@ import { FinalCTAButtons } from "./FinalCTAButtons";
 import { FinalCTABenefits } from "./FinalCTABenefits";
 import { FinalCTAKeyframes } from "./FinalCTAKeyframes";
 
-const DEFAULT_CTA = "احجز مقعدك — مجاناً";
-
-export default function FinalCTA({ staticLanding, country, ctaLabel = DEFAULT_CTA, ctaLink = "/signup", whatsappNumber }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel?: string; ctaLink?: string; whatsappNumber?: string }) {
+export default function FinalCTA({ staticLanding, country, ctaLabel, ctaLink = "/signup", whatsappNumber }: { staticLanding: StaticLanding; country: SupportedCountry; ctaLabel: string; ctaLink?: string; whatsappNumber?: string }) {
   const c = staticLanding.finalCta;
   const bannerLine = sanitizeUserFacingString((staticLanding.header.bannerText ?? "").trim());
   const waLink = getWhatsAppLink(country, whatsappNumber);

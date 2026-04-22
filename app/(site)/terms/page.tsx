@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { LegalMarkdownArticle } from "@/app/components/legal/LegalMarkdownArticle";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
-import { DEFAULT_PUBLIC_SITE_ORIGIN } from "@/lib/seo-meta";
+import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
 
 export async function generateMetadata(): Promise<Metadata> {
   const h = await headers();
@@ -16,6 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title,
     description,
+    robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
     alternates: { canonical: `${siteUrl}/terms` },
     openGraph: { title, description, url: `${siteUrl}/terms` },
     twitter: { title, description },

@@ -60,7 +60,7 @@ export function FAQAccordion({ faqs }: FAQAccordionProps) {
                   style={{ background: `var(--${token})` }}
                   aria-hidden
                 />
-                <p className="text-[14px] leading-[1.82] text-muted-foreground">
+                <p className="text-[14px] leading-[1.82] text-foreground/75">
                   {item.a}
                 </p>
               </div>

@@ -33,6 +33,8 @@ export function HeroBrandTag(): ReactElement {
             alt="شعار مدونتي JBRSEO"
             width={72}
             height={20}
+            fetchPriority="high"
+            loading="eager"
             className="h-4 w-auto shrink-0 opacity-80"
           />
           <span className="hv-btag-prefix">مدونتي — أقوى موظف مبيعات عندك</span>
@@ -52,7 +54,7 @@ export function HeroBrandTag(): ReactElement {
             height={68}
             sizes="68px"
             loading="lazy"
-            className="h-[68px] w-[68px] object-contain object-center"
+            className="h-17 w-17 object-contain object-center"
           />
         </div>
 
