@@ -72,6 +72,7 @@ export async function generateMetadata({
   const hreflang = {
     "ar-SA": `${siteBase}/sa`,
     "ar-EG": `${siteBase}/eg`,
+    "x-default": `${siteBase}/sa`,
   };
   const merged: Metadata = {
     ...baseMeta,

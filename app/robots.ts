@@ -9,6 +9,8 @@ export default function robots(): MetadataRoute.Robots {
         "/admin",
         "/admin/",
         "/api/",
+        "/_next/static/",
+        "/_next/image/",
         "/sa/signup/thank-you",
         "/eg/signup/thank-you",
       ],

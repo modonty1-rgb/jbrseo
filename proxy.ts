@@ -82,11 +82,8 @@ export function proxy(request: NextRequest) {
   if (RESERVED_FIRST_SEGMENTS.includes(firstSegment as (typeof RESERVED_FIRST_SEGMENTS)[number])) {
     // continue to admin check and next()
   } else if (SUPPORTED_COUNTRY_SLUGS.includes(firstSegment as "sa" | "eg")) {
-    if (firstSegment !== effectiveGeoSlug) {
-      const dest = new URL(`/${effectiveGeoSlug}${rest}`, request.url);
-      copySearchParams(request.nextUrl, dest);
-      return NextResponse.redirect(dest);
-    }
+    // User explicitly visited /sa or /eg — serve as-is (no geo-redirect).
+    // Geo-redirect applies only to / (root) above to preserve indexability.
   } else {
     const dest = new URL(`/${effectiveGeoSlug}${rest}`, request.url);
     copySearchParams(request.nextUrl, dest);

@@ -12,18 +12,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 1,
+      alternates: {
+        languages: {
+          "ar-SA": `${siteUrl}/sa`,
+          "ar-EG": `${siteUrl}/eg`,
+          "x-default": `${siteUrl}/sa`,
+        },
+      },
     },
     {
       url: `${siteUrl}/${slug}/pricing`,
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.9,
+      alternates: {
+        languages: {
+          "ar-SA": `${siteUrl}/sa/pricing`,
+          "ar-EG": `${siteUrl}/eg/pricing`,
+          "x-default": `${siteUrl}/sa/pricing`,
+        },
+      },
     },
     {
       url: `${siteUrl}/${slug}/signup`,
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
+      alternates: {
+        languages: {
+          "ar-SA": `${siteUrl}/sa/signup`,
+          "ar-EG": `${siteUrl}/eg/signup`,
+          "x-default": `${siteUrl}/sa/signup`,
+        },
+      },
     },
   ]);
 

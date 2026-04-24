@@ -43,6 +43,7 @@ export async function generateMetadata({
   const hreflang = {
     "ar-SA": `${siteBase}/sa/pricing`,
     "ar-EG": `${siteBase}/eg/pricing`,
+    "x-default": `${siteBase}/sa/pricing`,
   };
 
   return {
