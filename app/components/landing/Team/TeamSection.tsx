@@ -29,10 +29,6 @@ export default function TeamSection({ staticLanding }: TeamSectionProps) {
   const { coreTeam, executionTeam } = staticLanding.team;
   if (!coreTeam?.length && !executionTeam?.length) return null;
 
-  const totalCount = (coreTeam?.length ?? 0) + (executionTeam?.length ?? 0);
-  const departmentsCount = new Set(
-    [...(coreTeam ?? []), ...(executionTeam ?? [])].map((m) => extractDepartment(m.role)),
-  ).size;
 
   return (
     <section
@@ -99,15 +95,15 @@ export default function TeamSection({ staticLanding }: TeamSectionProps) {
               </span>
             </h2>
             <p className="landing-reveal-content mt-5 max-w-[560px] text-[15px] leading-[1.85] text-muted-foreground">
-              فريق من المتخصصين، كل واحد عنده دور محدد في رحلة نمو نشاطك. مش outsourcing،
-              مش مكتب وسيط — هذول هم الناس اللي شغل عليهم اليوم وأنت بتقرأ.
+              هؤلاء أبرز الوجوه — ووراءهم فريق توسع من الكُتّاب والمحررين والمصممين والمحللين،
+              يدعمون كل عميل. مش outsourcing، مش مكتب وسيط — منظومة كاملة تشتغل معاك.
             </p>
           </div>
 
           {/* Stats pill column */}
           <div className="flex gap-3 md:flex-col md:items-end md:gap-4">
-            <StatPill value={toArabicNumeral(totalCount)} label="متخصص" highlight />
-            <StatPill value={toArabicNumeral(departmentsCount)} label="تخصص" />
+            <StatPill value="+٢٠" label="متخصص" highlight />
+            <StatPill value="٨" label="تخصصات" />
             <StatPill value="٢٤/٧" label="جاهزية" />
           </div>
         </div>
@@ -149,7 +145,7 @@ export default function TeamSection({ staticLanding }: TeamSectionProps) {
             aria-hidden
           />
           <span className="text-[12px] font-medium tracking-[.18em] text-muted-foreground">
-            نشتغل معاك مباشرة. بدون وسطاء.
+            +٢٠ متخصص يشتغلون معاك مباشرة — بدون وسطاء.
           </span>
           <span
             className="h-[1px] w-16"
