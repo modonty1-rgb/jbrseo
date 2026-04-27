@@ -57,7 +57,7 @@ export function WhyNowSavingsBand({ saveM, saveY, pct }: WhyNowSavingsBandProps)
         وفّر هذا الرقم ابتداءً من اليوم ←
       </Button>
       <br />
-      <p className="text-[12px] text-white/40">أول ١٤ يوم مجاناً · بدون بطاقة بنكية · إلغاء في أي وقت</p>
+      <p className="text-[12px] text-white/40">أول ١٤ يوم مجاناً · بدون بطاقة بنكية · رفع الباقة بضغطة زر</p>
     </div>
   );
 }

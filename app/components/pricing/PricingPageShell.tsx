@@ -61,7 +61,7 @@ export function PricingPageShell({
           </p>
         
           <p className="mb-6 text-[11px] text-muted-foreground">
-            بدون بطاقة ائتمان · إلغاء في أي وقت · ضمان استرجاع ١٤ يوم
+            بدون بطاقة ائتمان · رفع الباقة بضغطة زر · ضمان استرجاع ١٤ يوم
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a

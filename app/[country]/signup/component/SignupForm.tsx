@@ -369,7 +369,7 @@ export function SignupForm({
               <span aria-hidden>·</span>
               <span>بيانات آمنة</span>
               <span aria-hidden>·</span>
-              <span>إلغاء وقت ما تبي</span>
+              <span>رفع الباقة بضغطة زر</span>
             </div>
             <p className="mt-2 text-center text-xs text-muted-foreground">
               بالتسجيل أنت توافق على{" "}

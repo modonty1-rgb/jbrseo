@@ -111,7 +111,7 @@ export function FeaturesStepperSection(): ReactElement {
         <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border/60 bg-muted/10 px-5 py-3">
         <div>
           <p className="text-sm font-medium text-foreground">انضم للشبكة اليوم</p>
-          <p className="text-xs text-muted-foreground">ضمان ١٤ يوم · إلغاء في أي وقت · بدون بطاقة</p>
+          <p className="text-xs text-muted-foreground">ضمان ١٤ يوم · رفع الباقة بضغطة زر · بدون بطاقة</p>
         </div>
         <div className="flex items-center gap-3">
           <Link href="/sa/pricing" className="text-xs text-muted-foreground underline underline-offset-2">
