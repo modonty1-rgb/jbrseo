@@ -85,10 +85,10 @@ function PillCard({ name }: { name: string }) {
 
 function LogoMarquee({ clients }: { clients: TrustBarClient[] }) {
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden" dir="ltr">
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-linear-to-r from-background to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-linear-to-l from-background to-transparent" />
-      <div className={cn("flex w-max gap-4 animate-marquee hover:[animation-play-state:paused]")}>
+      <div className={cn("flex w-max gap-4 animate-marquee will-change-transform hover:[animation-play-state:paused]")}>
         {clients.map((client, i) => (
           <LogoCard key={`a-${i}`} client={client} />
         ))}
@@ -102,10 +102,10 @@ function LogoMarquee({ clients }: { clients: TrustBarClient[] }) {
 
 function PillMarquee({ names }: { names: string[] }) {
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative overflow-hidden" dir="ltr">
       <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-linear-to-r from-background to-transparent" />
       <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-linear-to-l from-background to-transparent" />
-      <div className={cn("flex w-max gap-3 animate-marquee hover:[animation-play-state:paused]")}>
+      <div className={cn("flex w-max gap-3 animate-marquee will-change-transform hover:[animation-play-state:paused]")}>
         {names.map((name, i) => (
           <PillCard key={`a-${i}`} name={name} />
         ))}
