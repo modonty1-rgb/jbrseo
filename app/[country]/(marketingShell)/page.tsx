@@ -43,6 +43,10 @@ const FinalCTA = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/
   () => import("@/app/components/landing/FinalCTA/FinalCTA"),
   { loading: sectionFallback }
 );
+const TeamSection = dynamic<{ staticLanding: StaticLanding }>(
+  () => import("@/app/components/landing/Team/TeamSection"),
+  { loading: sectionFallback }
+);
 
 const HOME_SA_DESCRIPTION_FALLBACK =
   "مدونتي — منصة المحتوى العربي. مقالات تتصدر جوجل، صفحة شركتك في الشبكة، وقاعدة Leads مصنّفة — بدون كتابة حرف واحد. ابدأ مجاناً بدون بطاقة ائتمان.";
@@ -191,6 +195,9 @@ export default async function CountryHome({
       </section>
       <section className="relative">
         <FAQ staticLanding={mergedStaticLanding} country={countryCode} ctaLabel="تحدث معنا على واتساب" whatsappNumber={content.siteSettings?.whatsappNumber} />
+      </section>
+      <section className="relative">
+        <TeamSection staticLanding={mergedStaticLanding} />
       </section>
       <section className="relative">
         <FinalCTA
