@@ -151,6 +151,9 @@ export default async function CountryHome({
   const signupSecondaryLabel = "ابدأ الحين — ١٤ يوم ضمان كامل ✅";
   const pricingSA = pricingSALanding.pricing;
   const pricingEG = pricingEGLanding.pricing;
+  const currentPricing = countryCode === "EG" ? pricingEG : pricingSA;
+  const featuredPlan = currentPricing?.PLANS?.find((p) => p.featured) ?? null;
+  const calculatorMonthlyPrice = featuredPlan?.price?.mo;
   const initialLocale = countryCode === "EG" ? "eg" : "sa";
   const whatsappLink = getWhatsAppLink(countryCode, content.siteSettings?.whatsappNumber);
 
@@ -171,7 +174,12 @@ export default async function CountryHome({
         <HowItWorks staticLanding={mergedStaticLanding} ctaLabel={pricingCtaLabel} ctaLink={pricingCtaLink} />
       </section>
       <section className="relative">
-        <WhyNowCalculator ctaLabel={pricingCtaLabel} ctaLink={pricingCtaLink} country={countryCode} />
+        <WhyNowCalculator
+          ctaLabel={pricingCtaLabel}
+          ctaLink={pricingCtaLink}
+          country={countryCode}
+          monthlySubPrice={calculatorMonthlyPrice}
+        />
       </section>
       <section className="relative">
         <Outcomes staticLanding={mergedStaticLanding} ctaLabel={pricingCtaLabel} ctaLink={outcomesCtaLink} />

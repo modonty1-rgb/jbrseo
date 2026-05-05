@@ -21,7 +21,8 @@ import { Badge } from "@/app/components/ui/badge";
 import { Card } from "@/app/components/ui/card";
 import { Input } from "@/app/components/ui/input";
 
-const SUB_BY_COUNTRY: Record<string, number> = {
+/** Last-resort fallback if the featured plan price isn't passed in. Should rarely fire. */
+const SUB_BY_COUNTRY_FALLBACK: Record<string, number> = {
   SA: 1299,
   EG: 3999,
 };
@@ -91,6 +92,8 @@ type WhyNowProps = {
   ctaLink?: string;
   ctaLabel: string;
   country?: string;
+  /** Monthly price of the featured (most-popular) plan, sourced from pricing CMS. */
+  monthlySubPrice?: number;
 };
 
 export default function Calculator({
@@ -98,8 +101,9 @@ export default function Calculator({
   ctaLink = "/signup",
   ctaLabel,
   country = "SA",
+  monthlySubPrice,
 }: WhyNowProps) {
-  const subM = SUB_BY_COUNTRY[country] ?? SUB_BY_COUNTRY.SA;
+  const subM = monthlySubPrice ?? SUB_BY_COUNTRY_FALLBACK[country] ?? SUB_BY_COUNTRY_FALLBACK.SA;
   const subY = subM * 12;
 
   const [writer, setWriter] = useState(4500);
