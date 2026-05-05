@@ -122,7 +122,7 @@ export default function Calculator({
   const totalY = totalM * 12;
   const saveM = totalM - subM;
   const saveY = totalY - subY;
-  const pct = Math.round((saveM / totalM) * 100);
+  const pct = totalM > 0 ? Math.max(0, Math.round((saveM / totalM) * 100)) : 0;
 
   const badItems: MoneyPair[] = [
     [CALCULATOR_BAD_ITEM_LABELS[0], fmt(writer)],
@@ -166,7 +166,7 @@ export default function Calculator({
                 label={CALCULATOR_SLIDER_LABELS.writer}
                 iconBgClass="bg-primary/5 text-primary"
                 value={writer}
-                min={2000}
+                min={0}
                 max={12000}
                 step={500}
                 onChange={setWriter}
@@ -176,7 +176,7 @@ export default function Calculator({
                 label={CALCULATOR_SLIDER_LABELS.designer}
                 iconBgClass="bg-accent/5 text-accent"
                 value={designer}
-                min={2000}
+                min={0}
                 max={15000}
                 step={500}
                 onChange={setDesigner}
@@ -186,7 +186,7 @@ export default function Calculator({
                 label={CALCULATOR_SLIDER_LABELS.seo}
                 iconBgClass="bg-success/5 text-success"
                 value={seo}
-                min={2000}
+                min={0}
                 max={15000}
                 step={500}
                 onChange={setSeo}
@@ -196,7 +196,7 @@ export default function Calculator({
                 label={CALCULATOR_SLIDER_LABELS.social}
                 iconBgClass="bg-destructive/5 text-destructive"
                 value={social}
-                min={2000}
+                min={0}
                 max={12000}
                 step={500}
                 onChange={setSocial}
@@ -206,7 +206,7 @@ export default function Calculator({
                 label={CALCULATOR_SLIDER_LABELS.video}
                 iconBgClass="bg-secondary/10 text-secondary-foreground"
                 value={video}
-                min={2000}
+                min={0}
                 max={15000}
                 step={500}
                 onChange={setVideo}
@@ -216,7 +216,7 @@ export default function Calculator({
                 label={CALCULATOR_SLIDER_LABELS.dev}
                 iconBgClass="bg-muted/40 text-foreground"
                 value={dev}
-                min={4000}
+                min={0}
                 max={20000}
                 step={500}
                 onChange={setDev}
