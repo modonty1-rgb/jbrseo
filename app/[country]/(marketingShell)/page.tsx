@@ -154,6 +154,7 @@ export default async function CountryHome({
   const currentPricing = countryCode === "EG" ? pricingEG : pricingSA;
   const featuredPlan = currentPricing?.PLANS?.find((p) => p.featured) ?? null;
   const calculatorMonthlyPrice = featuredPlan?.price?.mo;
+  const calculatorAnnualPerMonth = featuredPlan?.price?.yr;
   const initialLocale = countryCode === "EG" ? "eg" : "sa";
   const whatsappLink = getWhatsAppLink(countryCode, content.siteSettings?.whatsappNumber);
 
@@ -179,6 +180,7 @@ export default async function CountryHome({
           ctaLink={pricingCtaLink}
           country={countryCode}
           monthlySubPrice={calculatorMonthlyPrice}
+          annualBillingPerMonth={calculatorAnnualPerMonth}
         />
       </section>
       <section className="relative">

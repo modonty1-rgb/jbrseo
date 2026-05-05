@@ -92,8 +92,10 @@ type WhyNowProps = {
   ctaLink?: string;
   ctaLabel: string;
   country?: string;
-  /** Monthly price of the featured (most-popular) plan, sourced from pricing CMS. */
+  /** Monthly billing rate of the featured (most-popular) plan, sourced from pricing CMS. */
   monthlySubPrice?: number;
+  /** Annual-billing per-month rate of the same featured plan; used for the yearly total. */
+  annualBillingPerMonth?: number;
 };
 
 export default function Calculator({
@@ -102,9 +104,12 @@ export default function Calculator({
   ctaLabel,
   country = "SA",
   monthlySubPrice,
+  annualBillingPerMonth,
 }: WhyNowProps) {
   const subM = monthlySubPrice ?? SUB_BY_COUNTRY_FALLBACK[country] ?? SUB_BY_COUNTRY_FALLBACK.SA;
-  const subY = subM * 12;
+  // Yearly total reflects the actual annual-billing cost (with discount), not monthly × 12.
+  // Falls back to subM × 12 when the annual rate isn't provided.
+  const subY = (annualBillingPerMonth ?? subM) * 12;
 
   const [writer, setWriter] = useState(4500);
   const [designer, setDesigner] = useState(7000);
