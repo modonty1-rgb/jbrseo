@@ -12,7 +12,7 @@ export function HeroHeadline({ line1, line2 }: { line1: string; line2: string })
         mb-0
       "
     >
-      <span className="hero-h1-gradient whitespace-nowrap">{line1}</span>
+      <span className="hero-h1-gradient">{line1}</span>
       <br />
       <span className="relative inline-block text-primary">
         {line2}
