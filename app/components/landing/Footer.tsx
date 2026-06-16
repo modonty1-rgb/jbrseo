@@ -38,19 +38,19 @@ type Props = {
 };
 
 const HEADING_CLS =
-  "text-[11px] text-muted-foreground tracking-[1.5px] mb-4 font-semibold";
+  "text-[11px] text-background/55 tracking-[1.5px] mb-4 font-semibold";
 const HEADING_STYLE: React.CSSProperties = {
   fontFamily: "'IBM Plex Mono',monospace",
 };
 
 const LINK_CLS =
-  "text-sm text-muted-foreground hover:text-card-foreground no-underline inline-flex items-center min-h-[44px] py-[10px] transition-colors duration-150";
+  "text-sm text-background/70 hover:text-background no-underline inline-flex items-center min-h-[44px] py-[10px] transition-colors duration-150";
 
 const LINK_DARK_HOVER_CLS =
-  "text-sm text-muted-foreground hover:text-card-foreground no-underline inline-flex items-center min-h-[44px] py-[10px] transition-colors duration-150";
+  "text-sm text-background/70 hover:text-background no-underline inline-flex items-center min-h-[44px] py-[10px] transition-colors duration-150";
 
 const SOCIAL_CLS =
-  "w-11 h-11 sm:w-[var(--tap)] sm:h-[var(--tap)] rounded-[var(--radius-md)] bg-card/5 border border-white/10 inline-flex items-center justify-center text-muted-foreground hover:text-card-foreground hover:bg-card/10 hover:border-white/40 transition-all duration-150";
+  "w-11 h-11 sm:w-[var(--tap)] sm:h-[var(--tap)] rounded-[var(--radius-md)] bg-background/5 border border-background/10 inline-flex items-center justify-center text-background/70 hover:text-background hover:bg-background/10 hover:border-background/40 transition-all duration-150";
 
 function formatPhone(raw?: string | null): string {
   const digits = (raw || "").replace(/\D/g, "");
@@ -106,7 +106,7 @@ export function Footer({
   ].filter((s) => !!s.href);
 
   return (
-    <footer className="bg-foreground text-muted-foreground">
+    <footer className="bg-foreground text-background/70">
       <div className="max-w-[1080px] mx-auto pt-12 sm:pt-[72px] px-5 sm:px-7 pb-7">
         <div className="prev-footer-grid grid grid-cols-2 sm:grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1fr] gap-x-6 gap-y-8 md:gap-[var(--space-9)] mb-10 md:mb-14">
           {/* Brand column */}
@@ -121,17 +121,16 @@ export function Footer({
                 alt="شعار JBRSEO — منصة مدونتي"
                 width={120}
                 height={36}
-                className="h-[34px] w-auto object-contain"
-                style={{ filter: "brightness(0) invert(1)" }}
+                className="h-[34px] w-auto object-contain brightness-0 invert dark:invert-0"
               />
             </NextLink>
             {footerTagline && (
-              <div className="text-[15px] font-semibold text-card-foreground mb-[10px]">
+              <div className="text-[15px] font-semibold text-background mb-[10px]">
                 {footerTagline}
               </div>
             )}
             {footerDesc && (
-              <p className="text-[13px] text-muted-foreground leading-[1.8] max-w-[320px]">
+              <p className="text-[13px] text-background/70 leading-[1.8] max-w-[320px]">
                 {footerDesc}
               </p>
             )}
@@ -207,7 +206,7 @@ export function Footer({
         </div>
 
         {/* Bottom bar: social + copyright + legal */}
-        <div className="prev-footer-bottom flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-[18px] pt-6 border-t border-t-white/10">
+        <div className="prev-footer-bottom flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-[18px] pt-6 border-t border-t-background/10">
           {socials.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {socials.map((s) => (
@@ -226,12 +225,12 @@ export function Footer({
             </div>
           )}
 
-          <div className="sm:ms-auto flex flex-wrap items-center gap-x-[18px] gap-y-2 text-[13px] text-muted-foreground">
+          <div className="sm:ms-auto flex flex-wrap items-center gap-x-[18px] gap-y-2 text-[13px] text-background/70">
             {legalLinks.map((l) => (
               <NextLink
                 key={l.label}
                 href={l.href}
-                className="text-muted-foreground hover:text-card-foreground no-underline transition-colors duration-150"
+                className="text-background/70 hover:text-background no-underline transition-colors duration-150"
               >
                 {l.label}
               </NextLink>

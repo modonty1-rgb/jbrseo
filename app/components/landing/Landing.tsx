@@ -386,7 +386,7 @@ export function Landing(props: Props) {
           {staticLanding.hero?.sub ?? "فريقنا يكتب محتوى سيو وينشره على موقعك. أنت توافق بضغطة — وجوجل يجيب لك العملاء كل يوم."}
         </p>
         <div className="flex gap-[18px] justify-center items-center mt-8 flex-wrap">
-          <Link href={signupHref} className="bg-foreground text-card-foreground px-7 py-[15px] rounded-xl text-base font-medium no-underline">
+          <Link href={signupHref} className="bg-foreground text-background px-7 py-[15px] rounded-xl text-base font-medium no-underline">
             {ctaLabel}
           </Link>
           <a
@@ -445,7 +445,7 @@ export function Landing(props: Props) {
 
               const rankClass = cn(
                 "w-[30px] h-[30px] rounded-lg flex items-center justify-center font-mono text-[13px] font-semibold shrink-0",
-                won ? "bg-success text-card-foreground" : isYou ? "bg-success/10 text-success" : "bg-muted text-muted-foreground",
+                won ? "bg-success text-success-foreground" : isYou ? "bg-success/10 text-success" : "bg-muted text-muted-foreground",
               );
 
               const titleClass = cn(
@@ -945,38 +945,38 @@ export function Landing(props: Props) {
                 className={cn(
                   "rounded-[18px] px-[22px] py-[26px] relative border",
                   featured
-                    ? "bg-foreground border-foreground text-card-foreground shadow-[0_24px_50px_-22px_color-mix(in oklch, var(--foreground) 50%, transparent)]"
+                    ? "bg-foreground border-foreground text-background shadow-[0_24px_50px_-22px_color-mix(in oklch, var(--foreground) 50%, transparent)]"
                     : "bg-card border-border text-foreground",
                 )}
               >
                 {featured && (
-                  <span className="absolute -top-[11px] right-[22px] bg-success text-card-foreground text-[10.5px] font-semibold px-2.5 py-1 rounded-full tracking-[.3px]">
+                  <span className="absolute -top-[11px] right-[22px] bg-success text-success-foreground text-[10.5px] font-semibold px-2.5 py-1 rounded-full tracking-[.3px]">
                     {p.featuredBadge}
                   </span>
                 )}
-                <div className={cn("text-sm font-semibold", featured ? "text-card-foreground" : "text-foreground")}>{p.name}</div>
-                <p className={cn("text-[12.5px] mt-2 mb-5 leading-[1.6] min-h-[50px]", featured ? "text-muted-foreground" : "text-muted-foreground")}>
+                <div className={cn("text-sm font-semibold", featured ? "text-background" : "text-foreground")}>{p.name}</div>
+                <p className={cn("text-[12.5px] mt-2 mb-5 leading-[1.6] min-h-[50px]", featured ? "text-background/70" : "text-muted-foreground")}>
                   {p.tagline || p.hook || ""}
                 </p>
                 <div className="flex items-baseline gap-1.5">
-                  <span className={cn("font-mono text-4xl font-semibold tracking-[-1.5px]", featured ? "text-card-foreground" : "text-foreground")}>{price}</span>
-                  <span className={cn("text-xs", featured ? "text-muted-foreground" : "text-muted-foreground")}>{currency}/شهر</span>
+                  <span className={cn("font-mono text-4xl font-semibold tracking-[-1.5px]", featured ? "text-background" : "text-foreground")}>{price}</span>
+                  <span className={cn("text-xs", featured ? "text-background/70" : "text-muted-foreground")}>{currency}/شهر</span>
                 </div>
-                <div className={cn("text-[11.5px] mt-1.5 min-h-4 font-mono", featured ? "text-muted-foreground" : "text-muted-foreground")}>
+                <div className={cn("text-[11.5px] mt-1.5 min-h-4 font-mono", featured ? "text-background/70" : "text-muted-foreground")}>
                   {billing === "annual" && p.priceYearly > 0 ? `سنوياً ${formatNum(annualTotal)}` : " "}
                 </div>
                 <Link
                   href={`${signupHref}?plan=${p.slug}`}
                   className={cn(
                     "block text-center p-[11px] rounded-[10px] text-[13.5px] no-underline mt-[18px] mb-[22px] border",
-                    featured ? "bg-success text-card-foreground font-semibold border-transparent" : "bg-background text-foreground font-medium border-border",
+                    featured ? "bg-success text-success-foreground font-semibold border-transparent" : "bg-background text-foreground font-medium border-border",
                   )}
                 >
                   {p.ctaText || (featured ? `ابدأ بـ${p.name}` : "ابدأ الحين")}
                 </Link>
-                <div className={cn("border-t mb-[18px]", featured ? "border-t-white/10" : "border-t-[var(--border)]")} />
+                <div className={cn("border-t mb-[18px]", featured ? "border-t-background/10" : "border-t-[var(--border)]")} />
                 {(p.highlights ?? []).slice(0, 5).map((h, i) => (
-                  <div key={i} className={cn("flex gap-[9px] mb-[11px] text-[13px] leading-[1.5]", featured ? "text-muted-foreground" : "text-muted-foreground")}>
+                  <div key={i} className={cn("flex gap-[9px] mb-[11px] text-[13px] leading-[1.5]", featured ? "text-background/70" : "text-muted-foreground")}>
                     <span className="text-success shrink-0">✓</span>
                     <span>{h}</span>
                   </div>
@@ -1250,18 +1250,18 @@ export function Landing(props: Props) {
         className="max-w-[1080px] mx-auto pt-[60px] px-7 pb-[90px]"
       >
         <div className="bg-foreground rounded-[26px] px-10 py-[72px] text-center">
-          <h2 className="prev-cta-h2 text-[44px] font-semibold text-card-foreground tracking-[-1.5px] leading-[1.15] mb-4">
+          <h2 className="prev-cta-h2 text-[44px] font-semibold text-background tracking-[-1.5px] leading-[1.15] mb-4">
             {finalCtaData?.title1 ?? "منافسك يتصدّر الحين."}<br />
             {finalCtaData?.title2 ?? "وأنت؟"}
           </h2>
-          <p className="text-[17px] text-muted-foreground max-w-[460px] mx-auto mb-8 leading-[1.7] font-light">
+          <p className="text-[17px] text-background/70 max-w-[460px] mx-auto mb-8 leading-[1.7] font-light">
             {finalCtaData?.subtitle ?? "انضم لأوائل الشركات اللي اختارت المحتوى طريقاً للنمو — لا الإعلانات."}
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href={signupHref} className="bg-card text-foreground px-[30px] py-4 rounded-[13px] text-base font-semibold no-underline">
+            <Link href={signupHref} className="bg-background text-foreground px-[30px] py-4 rounded-[13px] text-base font-semibold no-underline">
               {ctaLabel}
             </Link>
-            <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="bg-card/10 text-card-foreground px-[26px] py-4 rounded-[13px] text-base font-medium no-underline border border-white/15">
+            <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="bg-background/10 text-background px-[26px] py-4 rounded-[13px] text-base font-medium no-underline border border-background/15">
               {finalCtaData?.wa ?? "كلّمنا على واتساب"}
             </a>
           </div>
@@ -1273,7 +1273,7 @@ export function Landing(props: Props) {
         onClick={() => setCalcOpen(true)}
         aria-label="حاسبة التوفير"
         className={cn(
-          "prev-fab fixed bottom-6 left-6 z-[60] flex items-center gap-2.5 bg-foreground text-card-foreground border-none cursor-pointer px-[18px] py-[14px] rounded-full shadow-[0_16px_36px_-10px_color-mix(in oklch, var(--foreground) 50%, transparent)] text-sm font-medium font-[inherit] transition-[transform,opacity] duration-200 ease-out",
+          "prev-fab fixed bottom-6 left-6 z-[60] flex items-center gap-2.5 bg-foreground text-background border-none cursor-pointer px-[18px] py-[14px] rounded-full shadow-[0_16px_36px_-10px_color-mix(in oklch, var(--foreground) 50%, transparent)] text-sm font-medium font-[inherit] transition-[transform,opacity] duration-200 ease-out",
           fabVisible ? "translate-y-0 opacity-100 pointer-events-auto" : "translate-y-[120%] opacity-0 pointer-events-none",
         )}
       >
@@ -1334,7 +1334,7 @@ export function Landing(props: Props) {
             </div>
 
             {/* Result strip — compact, on top so visible without scroll */}
-            <div className="pt-4 px-[22px] pb-[18px] bg-foreground text-card-foreground">
+            <div className="pt-4 px-[22px] pb-[18px] bg-foreground text-background">
               <div className="flex items-center justify-between gap-[18px]">
                 {/* RIGHT (RTL start): Modonty — emphasized */}
                 <div>
@@ -1344,18 +1344,18 @@ export function Landing(props: Props) {
                       مدونتي · {mathPlanName}
                     </span>
                   </div>
-                  <div className="font-mono text-[22px] font-semibold text-card-foreground">
-                    {formatNum(calcModontyAnnual)} <span className="text-xs text-muted-foreground font-normal">{currency}/سنة</span>
+                  <div className="font-mono text-[22px] font-semibold text-background">
+                    {formatNum(calcModontyAnnual)} <span className="text-xs text-background/60 font-normal">{currency}/سنة</span>
                   </div>
-                  <div className="text-[13px] text-muted-foreground mt-1.5 font-mono">
-                    بدلاً من <span className="line-through decoration-destructive text-muted-foreground font-medium">{formatNum(teamAnnual)}</span>
+                  <div className="text-[13px] text-background/60 mt-1.5 font-mono">
+                    بدلاً من <span className="line-through decoration-destructive text-background/50 font-medium">{formatNum(teamAnnual)}</span>
                   </div>
                 </div>
                 {/* LEFT (RTL end): Saving % */}
-                <div className="text-left ps-[14px] border-s border-s-white/10">
-                  <div className="text-[11px] text-muted-foreground font-mono tracking-[.5px] mb-[3px]">التوفير</div>
+                <div className="text-left ps-[14px] border-s border-s-background/10">
+                  <div className="text-[11px] text-background/60 font-mono tracking-[.5px] mb-[3px]">التوفير</div>
                   <div className="font-mono text-[26px] font-semibold text-success leading-none">{calcSavePct}٪</div>
-                  <div className="text-xs text-muted-foreground mt-[5px] font-mono">
+                  <div className="text-xs text-background/60 mt-[5px] font-mono">
                     = {formatNum(calcSaveAmt)}
                   </div>
                 </div>
@@ -1428,7 +1428,7 @@ export function Landing(props: Props) {
               <a
                 href="#pricing"
                 onClick={() => setCalcOpen(false)}
-                className="block text-center bg-success text-card-foreground p-3 rounded-[10px] text-[14.5px] font-semibold no-underline"
+                className="block text-center bg-success text-success-foreground p-3 rounded-[10px] text-[14.5px] font-semibold no-underline"
               >
                 شوف الباقة المناسبة لك ←
               </a>

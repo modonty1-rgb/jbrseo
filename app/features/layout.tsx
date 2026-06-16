@@ -43,7 +43,7 @@ export default async function FeaturesLayout({ children }: { children: ReactNode
   const ctaLabel = content.siteSettings?.ctaLabel?.trim() || "ابدأ الحين";
 
   return (
-    <div dir="rtl" className="marketing-surface text-[#0A0A0A] overflow-x-clip" lang="ar">
+    <div dir="rtl" className="marketing-surface text-foreground overflow-x-clip" lang="ar">
       <AnnouncementBar message={meta?.announcement ?? ""} />
       <Navbar
         country={country}

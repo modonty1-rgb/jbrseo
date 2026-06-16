@@ -81,9 +81,9 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
             <div className="mb-3 flex max-w-[min(100%,22rem)] items-start gap-1.5">
               <span
                 aria-hidden
-                className="mt-1.5 inline-block h-[1.5px] w-4 shrink-0 rounded-full bg-emerald-400 sm:mt-2"
+                className="mt-1.5 inline-block h-[1.5px] w-4 shrink-0 rounded-full bg-success sm:mt-2"
               />
-              <p className="text-balance text-sm font-bold tracking-wider text-emerald-400">{footer.tagline}</p>
+              <p className="text-balance text-sm font-bold tracking-wider text-success">{footer.tagline}</p>
             </div>
 
             <p className="mb-5 max-w-[240px] text-sm leading-[1.75] text-foreground/80">
@@ -94,7 +94,7 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
               href={waLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-emerald-500 bg-emerald-500 px-4 py-2.5 text-sm font-bold text-white transition-all duration-200 hover:bg-emerald-400 hover:border-emerald-400 dark:border-emerald-500 dark:bg-emerald-500 dark:text-white dark:hover:bg-emerald-400"
+              className="inline-flex items-center gap-2 rounded-full border border-success bg-success px-4 py-2.5 text-sm font-bold text-success-foreground transition-all duration-200 hover:bg-success/90 hover:border-success/90"
             >
               <WhatsAppIcon />
               {WA_LABEL}
@@ -135,7 +135,7 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
                 <li key={i}>
                   <Link
                     href={l.href}
-                    className="group flex items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors duration-200 hover:text-foreground before:content-[''] before:inline-block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-transparent before:transition-colors group-hover:before:bg-emerald-400"
+                    className="group flex items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors duration-200 hover:text-foreground before:content-[''] before:inline-block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-transparent before:transition-colors group-hover:before:bg-success"
                   >
                     {l.label}
                   </Link>

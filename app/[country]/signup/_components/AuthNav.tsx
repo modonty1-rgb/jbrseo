@@ -11,7 +11,7 @@ type AuthNavProps = {
 export function AuthNav({ homeHref, helpHref }: AuthNavProps): ReactElement {
   return (
     <nav
-      className="flex items-center gap-4 px-7 py-[14px] bg-[rgba(250,250,247,.92)] backdrop-blur-md border-b border-b-[#E5E5DC] sticky top-0 z-50"
+      className="flex items-center gap-4 px-7 py-[14px] bg-[color-mix(in_oklch,var(--background)_92%,transparent)] backdrop-blur-md border-b border-b-border sticky top-0 z-50"
       aria-label="التسجيل"
     >
       <Link href={homeHref} className="inline-flex shrink-0 no-underline" aria-label="الرئيسية">
@@ -25,8 +25,8 @@ export function AuthNav({ homeHref, helpHref }: AuthNavProps): ReactElement {
         />
       </Link>
 
-      <div className="inline-flex items-center gap-[7px] mx-auto font-['IBM_Plex_Mono',monospace] text-[11px] text-[#6B6B62] px-3 py-[5px] rounded-full border border-[#E5E5DC] bg-white">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <div className="inline-flex items-center gap-[7px] mx-auto font-['IBM_Plex_Mono',monospace] text-[11px] text-muted-foreground px-3 py-[5px] rounded-full border border-border bg-card">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
           <rect x="3" y="11" width="18" height="11" rx="2" />
           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
@@ -36,7 +36,7 @@ export function AuthNav({ homeHref, helpHref }: AuthNavProps): ReactElement {
       <Link
         href={helpHref}
         target="_blank"
-        className="shrink-0 text-[13px] font-medium text-[#3F3F38] no-underline px-3 py-1.5 rounded-lg transition-all duration-150"
+        className="shrink-0 text-[13px] font-medium text-muted-foreground no-underline px-3 py-1.5 rounded-lg transition-all duration-150"
       >
         تحتاج مساعدة؟
       </Link>
