@@ -6,7 +6,7 @@ import { updateAboutSection } from "@/app/actions/content-sections";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
-import { ConfirmSaveDialog } from "../_components/ConfirmSaveDialog";
+import { ConfirmSaveDialog } from "../../../_components/ConfirmSaveDialog";
 
 type AboutSectionFormProps = {
   section: StaticLanding["about"];

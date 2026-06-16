@@ -7,8 +7,8 @@ import { updateHeroSection } from "@/app/actions/content-sections";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
 import { autoResize } from "@/lib/autoResize";
-import { ConfirmSaveDialog } from "../_components/ConfirmSaveDialog";
-import { UnsavedChangesBar } from "../_components/UnsavedChangesBar";
+import { ConfirmSaveDialog } from "../../../_components/ConfirmSaveDialog";
+import { UnsavedChangesBar } from "../../../_components/UnsavedChangesBar";
 import { TrustLinesEditor } from "./TrustLinesEditor";
 import {
   TrustBarClientsEditor,

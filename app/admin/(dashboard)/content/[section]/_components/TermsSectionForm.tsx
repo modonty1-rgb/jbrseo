@@ -6,7 +6,7 @@ import type { StaticLanding } from "@/app/content/landing/types";
 
 const MarkdownPageForm = dynamic(
   () =>
-    import("../_components/MarkdownPageForm").then((mod) => ({
+    import("../../../_components/MarkdownPageForm").then((mod) => ({
       default: mod.MarkdownPageForm,
     })),
   {
@@ -23,24 +23,24 @@ const MarkdownPageForm = dynamic(
 );
 
 type Props = {
-  section: StaticLanding["privacy"];
+  section: StaticLanding["terms"];
 };
 
-export function PrivacySectionForm({ section }: Props): ReactElement {
-  const redirectPath = `/admin/content/privacy`;
+export function TermsSectionForm({ section }: Props): ReactElement {
+  const redirectPath = `/admin/content/terms`;
   return (
     <MarkdownPageForm
-      formId="privacy-form"
-      submitButtonId="privacy-form-submit"
-      sectionValue="privacy"
+      formId="terms-form"
+      submitButtonId="terms-form-submit"
+      sectionValue="terms"
       defaultTitle={section.title}
       defaultUpdatedAt={section.updatedAt ?? ""}
       defaultBody={section.body}
       redirectPath={redirectPath}
-      sectionHeading="سياسة الخصوصية"
-      bodyLabel="نص السياسة"
-      saveLabel="حفظ سياسة الخصوصية"
-      idPrefix="privacy"
+      sectionHeading="شروط الاستخدام"
+      bodyLabel="نص الشروط"
+      saveLabel="حفظ شروط الاستخدام"
+      idPrefix="terms"
     />
   );
 }
