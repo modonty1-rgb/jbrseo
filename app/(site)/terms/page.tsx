@@ -5,7 +5,7 @@ import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/se
 
 export async function generateMetadata(): Promise<Metadata> {
   const landing = await getStaticLandingWithOverrides();
-  const { title } = landing.terms;
+  const title = landing.terms?.title ?? "شروط الاستخدام لمنصة مدونتي";
   const siteUrl = DEFAULT_PUBLIC_SITE_ORIGIN;
   const description =
     "اقرأ شروط وأحكام استخدام منصة JBRSEO، بما في ذلك حقوقك والتزاماتك وحدود مسؤوليتنا.";
@@ -21,7 +21,18 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TermsPage() {
   const landing = await getStaticLandingWithOverrides();
-  const { title, updatedAt, body } = landing.terms;
+  const terms = landing.terms;
+  if (!terms) {
+    return (
+      <main className="bg-background text-foreground">
+        <section className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6 lg:px-8">
+          <h1 className="text-2xl font-black tracking-tight sm:text-3xl">شروط الاستخدام</h1>
+          <p className="mt-4 text-sm text-muted-foreground">هذه الصفحة قيد التحديث. يرجى المحاولة لاحقاً.</p>
+        </section>
+      </main>
+    );
+  }
+  const { title, updatedAt, body } = terms;
 
   return (
     <main className="bg-background text-foreground">

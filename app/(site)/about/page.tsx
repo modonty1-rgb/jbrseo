@@ -32,8 +32,18 @@ export const metadata: Metadata = {
 export default async function AboutPage() {
   const staticLanding = await getStaticLandingWithOverrides();
   const about = staticLanding.about;
+  if (!about) {
+    return (
+      <div className="mx-auto max-w-3xl px-4 py-16 text-center">
+        <h1 className="text-2xl font-bold text-foreground">من نحن</h1>
+        <p className="mt-4 text-sm text-muted-foreground">
+          هذه الصفحة قيد التحديث. يرجى المحاولة لاحقاً.
+        </p>
+      </div>
+    );
+  }
   const { hero, storyBlocks, values, fitFor, notFitFor, legalInfo, cta } = about;
-  const teamPreview = staticLanding.team.coreTeam.slice(0, 3);
+  const teamPreview = staticLanding.team?.coreTeam?.slice(0, 3) ?? [];
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col gap-12 px-4 py-10 sm:px-6 lg:px-0 lg:py-14">
