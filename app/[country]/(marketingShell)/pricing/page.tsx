@@ -24,6 +24,14 @@ const SA_PRICING_TITLE_ABSOLUTE =
 const SA_PRICING_DESCRIPTION =
   "اكتشف خطط أسعار مدونتي لخدمة السيو بالعربي. مقالات تتصدر جوجل، صفحة نشاطك في محركات البحث، وعملاء جدد كل شهر — اختر خطتك وابدأ مجاناً.";
 
+const PRICING_PAGE_FALLBACK = {
+  title: "الأسعار — JBRSEO",
+  description:
+    "خطط أسعار مدونتي — اختر اللي يناسبك وابدأ تحصل على عملاء جدد من جوجل.",
+  h1: "اختر خطتك",
+  intro: "خطط بسيطة بدون عقود طويلة.",
+};
+
 export async function generateMetadata({
   params,
 }: {
@@ -37,7 +45,7 @@ export async function generateMetadata({
   // ROUND-1: content (incl. pricingPage copy) is unified — no country param needed.
   // Per-country currency/whatsapp is handled in the page component below.
   const landing = await getStaticLandingWithOverrides();
-  const { title, description } = landing.pricingPage;
+  const { title, description } = landing.pricingPage ?? PRICING_PAGE_FALLBACK;
   const siteBase = DEFAULT_PUBLIC_SITE_ORIGIN;
   const canonical = `${siteBase}/${slug}/pricing`;
   const isSa = slug === "sa";
@@ -122,11 +130,11 @@ export default async function CountryPricingPage({
         countrySlug={countrySlug}
         countryCode={countryCode}
         plans={pricing.PLANS}
-        pricingPageTitle={landing.pricingPage.title}
+        pricingPageTitle={landing.pricingPage?.title ?? PRICING_PAGE_FALLBACK.title}
       />
       <PricingPageShell
         pricing={pricing}
-        pricingPage={landing.pricingPage}
+        pricingPage={landing.pricingPage ?? PRICING_PAGE_FALLBACK}
         faq={landing.faq}
         country={countryCode}
         highlightPlanId={plan ?? null}
