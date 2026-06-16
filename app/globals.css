@@ -198,8 +198,8 @@
    Do NOT set font-family or color here so the global Tajawal + Tailwind text utilities win.
 ───────────────────────────────────────────── */
 .marketing-surface {
-  color-scheme: light;
-  background: #FAFAF7;
+  background: var(--background);
+  color: var(--foreground);
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   word-wrap: break-word;

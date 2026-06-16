@@ -39,7 +39,7 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
   const closeMenu = () => setMenuOpen(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0A0A0A] border-b border-[rgba(255,255,255,.08)]">
+    <header className="sticky top-0 z-50 bg-card text-card-foreground border-b border-border">
       <div className="max-w-[1080px] mx-auto px-4 md:px-7 py-[14px] flex items-center justify-between gap-3 md:gap-[14px]">
         {/* Right (RTL start): Hamburger (mobile) + Logo + nav (desktop) */}
         <div className="preview-nav-brand flex items-center gap-3 md:gap-7 min-w-0 flex-1">
@@ -50,7 +50,7 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
             aria-label={menuOpen ? "إغلاق القائمة" : "فتح القائمة"}
             aria-expanded={menuOpen}
             aria-controls="mobile-nav-menu"
-            className="md:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] -ms-2 rounded-lg text-white hover:bg-[rgba(255,255,255,.08)] transition-colors"
+            className="md:hidden inline-flex items-center justify-center min-w-[44px] min-h-[44px] -ms-2 rounded-lg hover:bg-muted transition-colors"
           >
             <svg
               viewBox="0 0 24 24"
@@ -102,7 +102,7 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
               <NextLink
                 key={link.href}
                 href={link.href}
-                className="preview-nav-link text-sm font-medium text-[rgba(255,255,255,.75)] no-underline py-[6px] px-[10px] rounded-lg transition-[color,background] duration-150"
+                className="preview-nav-link text-sm font-medium text-card-foreground/75 no-underline py-[6px] px-[10px] rounded-lg transition-[color,background] duration-150"
               >
                 {link.label}
               </NextLink>
@@ -144,13 +144,13 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
             </a>
           )}
 
-          <div className="preview-nav-theme [&_button]:!h-9 [&_button]:!w-9 [&_button]:!border-[rgba(255,255,255,.18)] [&_button]:!bg-[rgba(255,255,255,.06)] [&_button]:!text-white hover:[&_button]:!bg-[rgba(255,255,255,.12)] hover:[&_button]:!border-[rgba(255,255,255,.32)]">
+          <div className="preview-nav-theme [&_button]:!h-9 [&_button]:!w-9 [&_button]:!border-border [&_button]:!bg-muted [&_button]:!text-card-foreground hover:[&_button]:!bg-muted/70">
             <ThemeToggle />
           </div>
 
           <NextLink
             href={pricingHref}
-            className="bg-white text-[#0A0A0A] py-[10px] px-3 md:px-[18px] rounded-[var(--radius-md)] text-[13px] md:text-sm font-semibold no-underline whitespace-nowrap min-h-[44px] inline-flex items-center hover:bg-[#FAFAF7]"
+            className="bg-card-foreground text-card py-[10px] px-3 md:px-[18px] rounded-[var(--radius-md)] text-[13px] md:text-sm font-semibold no-underline whitespace-nowrap min-h-[44px] inline-flex items-center hover:bg-card-foreground/90"
           >
             ابدأ الحين
           </NextLink>
@@ -160,7 +160,7 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
       {/* Mobile dropdown menu */}
       <div
         id="mobile-nav-menu"
-        className={`md:hidden overflow-hidden border-t border-[rgba(255,255,255,.08)] bg-[#0A0A0A] transition-[max-height,opacity] duration-300 ease-out ${
+        className={`md:hidden overflow-hidden border-t border-border bg-card transition-[max-height,opacity] duration-300 ease-out ${
           menuOpen ? "max-h-[480px] opacity-100" : "max-h-0 opacity-0 pointer-events-none"
         }`}
         aria-hidden={!menuOpen}
@@ -174,7 +174,7 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
               key={link.href}
               href={link.href}
               onClick={closeMenu}
-              className="text-[15px] font-medium text-white no-underline py-3 px-3 rounded-lg hover:bg-[rgba(255,255,255,.08)] min-h-[44px] inline-flex items-center"
+              className="text-[15px] font-medium text-card-foreground no-underline py-3 px-3 rounded-lg hover:bg-muted min-h-[44px] inline-flex items-center"
             >
               {link.label}
             </NextLink>
@@ -184,7 +184,7 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
 
       <style>{`
         .preview-nav-link { white-space: nowrap; }
-        .preview-nav-links a:hover { color: #fff !important; background: rgba(255,255,255,.08); }
+        .preview-nav-links a:hover { color: var(--card-foreground); background: var(--muted); }
         .preview-nav-links { scrollbar-width: none; }
         .preview-nav-links::-webkit-scrollbar { display: none; }
         .preview-nav-wa {
@@ -192,9 +192,9 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
           gap: 8px;
           padding: 7px 10px 7px 12px;
           border-radius: 99px;
-          border: 1px solid rgba(61,220,140,.35);
-          background: rgba(14,159,110,.12);
-          color: #3DDC8C;
+          border: 1px solid color-mix(in oklch, var(--success) 35%, transparent);
+          background: color-mix(in oklch, var(--success) 12%, transparent);
+          color: var(--success);
           font-family: 'IBM Plex Mono', monospace;
           font-size: 12.5px;
           font-weight: 500;
@@ -203,10 +203,10 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
           transition: all .15s ease;
         }
         .preview-nav-wa:hover {
-          background: #0E9F6E;
-          border-color: #0E9F6E;
-          color: #fff;
-          box-shadow: 0 10px 24px -12px rgba(14,159,110,.6);
+          background: var(--success);
+          border-color: var(--success);
+          color: var(--success-foreground);
+          box-shadow: 0 10px 24px -12px color-mix(in oklch, var(--success) 60%, transparent);
           transform: translateY(-1px);
         }
         .preview-nav-wa-icon {
@@ -216,14 +216,14 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
           align-items: center;
           justify-content: center;
           border-radius: 99px;
-          background: #25D366;
-          color: #fff;
+          background: var(--success);
+          color: var(--success-foreground);
           flex-shrink: 0;
           transition: all .15s ease;
         }
         .preview-nav-wa:hover .preview-nav-wa-icon {
-          background: #fff;
-          color: #0E9F6E;
+          background: var(--success-foreground);
+          color: var(--success);
         }
       `}</style>
     </header>
