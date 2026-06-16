@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { LegalMarkdownArticle } from "@/app/components/legal/LegalMarkdownArticle";
+import { LegalMarkdownArticle } from "@/app/(site)/_components/LegalMarkdownArticle";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
 

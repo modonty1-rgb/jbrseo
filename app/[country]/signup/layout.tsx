@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { AuthNav } from "@/app/components/auth/AuthNav";
+import { AuthNav } from "@/app/[country]/signup/_components/AuthNav";
 import { getLandingContent } from "@/lib/getLandingContent";
 import { getWhatsAppLink } from "@/lib/site-links";
 import { getCountryCodeFromSlug, isSupportedCountrySlug } from "@/lib/country-config";

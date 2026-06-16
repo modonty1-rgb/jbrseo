@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { Suspense, type ReactElement, type ReactNode } from "react";
-import { MarketingPageSkeleton } from "@/app/components/skeletons/MarketingPageSkeleton";
+import { MarketingPageSkeleton } from "@/app/[country]/_components/MarketingPageSkeleton";
 import {
   isSupportedCountrySlug,
   SUPPORTED_COUNTRY_SLUGS,

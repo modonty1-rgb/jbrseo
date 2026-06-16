@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "@/app/components/link";
-import { AboutPageJsonLd } from "@/app/components/shared/AboutPageJsonLd";
+import { AboutPageJsonLd } from "@/app/(site)/about/_components/AboutPageJsonLd";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
-import { StaffAvatar } from "@/app/components/StaffAvatar";
+import { StaffAvatar } from "@/app/(site)/_components/StaffAvatar";
 import { Card } from "@/app/components/ui/card";
 import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
 

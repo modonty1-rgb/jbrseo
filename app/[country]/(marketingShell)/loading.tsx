@@ -1,4 +1,4 @@
-import { MarketingPageSkeleton } from "@/app/components/skeletons/MarketingPageSkeleton";
+import { MarketingPageSkeleton } from "@/app/[country]/_components/MarketingPageSkeleton";
 
 export default function MarketingShellPageLoading() {
   return <MarketingPageSkeleton />;

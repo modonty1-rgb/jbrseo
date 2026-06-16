@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import Link from "@/app/components/link";
-import { StaffAvatar } from "@/app/components/StaffAvatar";
+import { StaffAvatar } from "@/app/(site)/_components/StaffAvatar";
 import { Card } from "@/app/components/ui/card";
 import { DEFAULT_PUBLIC_SITE_ORIGIN } from "@/lib/seo-meta";
 
