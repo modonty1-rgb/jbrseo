@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { DEFAULT_SITE_SETTINGS_JSON } from "@/lib/site-settings.types";
-import { SeoForm } from "../../components/SeoForm";
-import { AdminFormFeedback } from "../../components/AdminFormFeedback";
+import { SeoForm } from "../../_components/SeoForm";
+import { AdminFormFeedback } from "../../_components/AdminFormFeedback";
 
 export default async function AdminSettingsSeoPage() {
   const override = await getLandingSectionOverride("seo");

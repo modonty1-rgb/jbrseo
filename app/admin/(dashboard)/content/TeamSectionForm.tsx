@@ -6,9 +6,9 @@ import type { SupportedCountry } from "@/lib/landing-content.types";
 import { DEFAULT_TEAM_AVATAR_GRADIENT } from "@/lib/teamPresets";
 import { updateTeamSection } from "@/app/actions/content-sections";
 import { Button } from "@/app/components/ui/button";
-import { TeamSectionEditor } from "../components/TeamSectionEditor";
-import { UnsavedChangesBar } from "../components/UnsavedChangesBar";
-import type { MemberCardMember } from "../components/MemberCard";
+import { TeamSectionEditor } from "../_components/TeamSectionEditor";
+import { UnsavedChangesBar } from "../_components/UnsavedChangesBar";
+import type { MemberCardMember } from "../_components/MemberCard";
 
 const TEAM_FORM_ID = "team-form";
 

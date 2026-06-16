@@ -4,7 +4,7 @@ import { getSubscriberStats } from "@/app/actions/subscribers";
 import { getExitReasonStats } from "@/app/actions/exitReason";
 import { getAllAnalyticsData, getCountryBreakdown, getTopEvents, getTrafficSources } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
-import { AnalyticsSection } from "./components/AnalyticsSection";
+import { AnalyticsSection } from "./_components/AnalyticsSection";
 
 export default async function AdminDashboardPage(): Promise<ReactElement> {
   const [stats, exitStats] = await Promise.all([

@@ -6,7 +6,7 @@ import type { StaticLanding } from "@/app/content/landing/types";
 
 const MarkdownPageForm = dynamic(
   () =>
-    import("../components/MarkdownPageForm").then((mod) => ({
+    import("../_components/MarkdownPageForm").then((mod) => ({
       default: mod.MarkdownPageForm,
     })),
   {

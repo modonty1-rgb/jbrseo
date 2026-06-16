@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
 import { getPlan } from "@/app/actions/pricing";
-import { AdminCountryPill } from "../../components/AdminCountryPill";
+import { AdminCountryPill } from "../../_components/AdminCountryPill";
 import { PlanEditForm } from "./PlanEditForm";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 

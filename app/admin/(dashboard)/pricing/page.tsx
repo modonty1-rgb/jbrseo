@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { getAllPlans } from "@/app/actions/pricing";
 import { getMeta } from "@/app/actions/pricing-meta";
-import { AdminCountryPill } from "../components/AdminCountryPill";
+import { AdminCountryPill } from "../_components/AdminCountryPill";
 import { AdminBillingToggle } from "./AdminBillingToggle";
 import { AdminPlanCardWrapper } from "./AdminPlanCardWrapper";
 import { PricingMetaInline } from "./PricingMetaInline";

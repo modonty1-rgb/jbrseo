@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { getSocialLinksSettings } from "@/app/actions/landing";
-import { AdminFormFeedback } from "../../components/AdminFormFeedback";
-import { SocialLinksForm } from "../../components/SocialLinksForm";
+import { AdminFormFeedback } from "../../_components/AdminFormFeedback";
+import { SocialLinksForm } from "../../_components/SocialLinksForm";
 
 export default async function AdminSettingsSocialPage() {
   const socialLinks = await getSocialLinksSettings();

@@ -8,9 +8,9 @@ import { autoResize } from "@/lib/autoResize";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
-import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
-import { FaqTagSelector } from "../components/FaqTagSelector";
-import { UnsavedChangesBar } from "../components/UnsavedChangesBar";
+import { ConfirmSaveDialog } from "../_components/ConfirmSaveDialog";
+import { FaqTagSelector } from "../_components/FaqTagSelector";
+import { UnsavedChangesBar } from "../_components/UnsavedChangesBar";
 
 const FAQ_FORM_ID = "faq-form";
 

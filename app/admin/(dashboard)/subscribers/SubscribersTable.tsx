@@ -41,7 +41,7 @@ import {
 } from "@/app/components/ui/alert-dialog";
 import { planBadgeClass } from "@/lib/planStyles";
 import { cn } from "@/lib/utils";
-import { fieldClass, labelClass } from "../components/AdminFormShared";
+import { fieldClass, labelClass } from "../_components/AdminFormShared";
 import type { SubscriberListItem } from "@/app/actions/subscribers";
 
 const COUNTRIES = [

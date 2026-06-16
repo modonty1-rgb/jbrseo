@@ -1,11 +1,11 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/app/actions/auth";
-import { AdminCountrySync } from "./components/AdminCountrySync";
-import { AdminTopNavbar } from "./components/AdminTopNavbar";
-import { AdminCountryBanner } from "./components/AdminCountryBanner";
-import { AdminToaster } from "./components/AdminToaster";
-import { AdminThemeProvider } from "./components/AdminThemeProvider";
+import { AdminCountrySync } from "./_components/AdminCountrySync";
+import { AdminTopNavbar } from "./_components/AdminTopNavbar";
+import { AdminCountryBanner } from "./_components/AdminCountryBanner";
+import { AdminToaster } from "./_components/AdminToaster";
+import { AdminThemeProvider } from "./_components/AdminThemeProvider";
 
 export default async function AdminDashboardLayout({
   children,

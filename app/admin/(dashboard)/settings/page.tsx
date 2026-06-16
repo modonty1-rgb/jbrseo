@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { getGlobalSiteSettings } from "@/app/actions/landing";
-import { GeneralSettingsForm } from "../components/GeneralSettingsForm";
-import { TrackingForm } from "../components/TrackingForm";
-import { AdminFormFeedback } from "../components/AdminFormFeedback";
+import { GeneralSettingsForm } from "../_components/GeneralSettingsForm";
+import { TrackingForm } from "../_components/TrackingForm";
+import { AdminFormFeedback } from "../_components/AdminFormFeedback";
 
 export default async function AdminSettingsPage() {
   const globalRow = await getGlobalSiteSettings();

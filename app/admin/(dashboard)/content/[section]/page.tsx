@@ -17,7 +17,7 @@ import { AboutSectionForm } from "../AboutSectionForm";
 import { TeamSectionForm } from "../TeamSectionForm";
 import { Button } from "@/app/components/ui/button";
 import { Textarea } from "@/app/components/ui/textarea";
-import { AdminFormFeedback } from "../../components/AdminFormFeedback";
+import { AdminFormFeedback } from "../../_components/AdminFormFeedback";
 
 const CONTENT_KEYS = [
   "hero",
