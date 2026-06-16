@@ -6,6 +6,7 @@ import Image from "next/image";
 import type { LandingContent, SupportedCountry } from "@/lib/landing-content.types";
 import { getNavLinks } from "@/lib/site-links";
 import { SITE_LOGO_URL } from "@/lib/constants";
+import { ThemeToggle } from "@/app/components/layout/header/ThemeToggle";
 
 type Props = {
   country: SupportedCountry;
@@ -142,6 +143,10 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
               </svg>
             </a>
           )}
+
+          <div className="preview-nav-theme [&_button]:!h-9 [&_button]:!w-9 [&_button]:!border-[rgba(255,255,255,.18)] [&_button]:!bg-[rgba(255,255,255,.06)] [&_button]:!text-white hover:[&_button]:!bg-[rgba(255,255,255,.12)] hover:[&_button]:!border-[rgba(255,255,255,.32)]">
+            <ThemeToggle />
+          </div>
 
           <NextLink
             href={pricingHref}
