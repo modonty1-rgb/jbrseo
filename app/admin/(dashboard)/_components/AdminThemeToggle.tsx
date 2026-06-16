@@ -1,11 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useAdminTheme } from "./AdminThemeProvider";
 
 export function AdminThemeToggle() {
   const { theme, toggle } = useAdminTheme();
-  const isDark = theme === "dark";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  // SSR + initial client render show neutral state (Moon).
+  // Real theme icon swaps in via post-mount state update (no hydration mismatch).
+  const isDark = mounted && theme === "dark";
 
   return (
     <button
