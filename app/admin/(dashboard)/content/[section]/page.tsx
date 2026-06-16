@@ -1,22 +1,16 @@
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { getStaticLanding } from "@/app/content/landing/get-static-landing";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { StaticLanding } from "@/app/content/landing/types";
 import { getNavLinks, getFooterLinks, LEGAL_LINKS } from "@/lib/site-links";
-import { AdminCountryPill } from "../../components/AdminCountryPill";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { updateSection } from "@/app/actions/content-sections";
 import { HeroSectionForm } from "../HeroSectionForm";
 import { WhyNowSectionForm } from "../WhyNowSectionForm";
 import { HowItWorksSectionForm } from "../HowItWorksSectionForm";
-import { OutcomesSectionForm } from "../OutcomesSectionForm";
 import { SocialProofSectionForm } from "../SocialProofSectionForm";
 import { FaqSectionForm } from "../FaqSectionForm";
 import { FinalCtaSectionForm } from "../FinalCtaSectionForm";
-import { HeaderSectionForm } from "../HeaderSectionForm";
-import { FooterSectionForm } from "../FooterSectionForm";
-import { PricingSectionForm } from "../PricingSectionForm";
 import { PrivacySectionForm } from "../PrivacySectionForm";
 import { TermsSectionForm } from "../TermsSectionForm";
 import { AboutSectionForm } from "../AboutSectionForm";
@@ -29,13 +23,11 @@ const CONTENT_KEYS = [
   "hero",
   "whyNow",
   "howItWorks",
-  "outcomes",
   "socialProof",
   "faq",
   "finalCta",
   "header",
   "footer",
-  "pricing",
   "pricingPage",
   "privacy",
   "terms",
@@ -49,13 +41,11 @@ const SECTION_LABELS: Record<ContentKey, string> = {
   hero: "قسم الهيرو",
   whyNow: "قسم لماذا الآن",
   howItWorks: "قسم كيف يعمل",
-  outcomes: "قسم النتائج",
   socialProof: "قسم الشهادات",
   faq: "قسم الأسئلة الشائعة",
   finalCta: "قسم الدعوة النهائية",
   header: "Header section",
   footer: "Slogan",
-  pricing: "Pricing section",
   pricingPage: "Pricing page section",
   privacy: "Privacy page",
   terms: "Terms page",
@@ -272,299 +262,38 @@ export default async function AdminContentSectionPage({
   searchParams,
 }: {
   params: Promise<{ section: string }>;
-  searchParams: Promise<{ country?: string; useDefault?: string }>;
+  searchParams: Promise<{ country?: string }>;
 }) {
   const { section } = await params;
   const country = await getCountry(searchParams);
-  const { useDefault } = await searchParams;
-  const data = getStaticLanding(country) as StaticLanding;
   const isLinksSection = section === "links";
   if (!isLinksSection && !isContentKey(section)) notFound();
 
-  let sectionData: unknown = isLinksSection
-    ? { navLinks: getNavLinks(country as SupportedCountry), footerLinks: getFooterLinks(country as SupportedCountry), legal: LEGAL_LINKS }
-    : data[section];
-
-  // HERO: special flow
-  // - If DB override exists (and useDefault !== "1") → use DB.
-  // - Else if useDefault === "1" → use static TS hero.
-  // - Else (no override, no default requested) → start from empty hero.
+  // DB is the single source of truth. Missing section → empty object, admin fills it.
+  let sectionData: unknown;
   let heroCtaLabel = "ابدأ مجاناً — بدون بطاقة";
-  if (!isLinksSection && section === "hero") {
-    const staticHero = data.hero;
-    let heroData: StaticLanding["hero"];
 
-    if (useDefault === "1") {
-      heroData = staticHero;
-    } else {
-      const override = await getLandingSectionOverride(country as SupportedCountry, "hero");
-      if (override !== null && override !== undefined) {
-        heroData = override as StaticLanding["hero"];
-      } else {
-        heroData = staticHero;
+  if (isLinksSection) {
+    sectionData = {
+      navLinks: getNavLinks(country as SupportedCountry),
+      footerLinks: getFooterLinks(country as SupportedCountry),
+      legal: LEGAL_LINKS,
+    };
+  } else {
+    const override = await getLandingSectionOverride(section as ContentKey);
+    sectionData = override ?? {};
+
+    if (section === "hero") {
+      const ctaLabelOverride = await getLandingSectionOverride("ctaLabel");
+      if (
+        ctaLabelOverride &&
+        typeof ctaLabelOverride === "object" &&
+        "ctaLabel" in ctaLabelOverride &&
+        typeof (ctaLabelOverride as { ctaLabel?: string }).ctaLabel === "string"
+      ) {
+        heroCtaLabel = (ctaLabelOverride as { ctaLabel: string }).ctaLabel;
       }
     }
-
-    const ctaLabelOverride = await getLandingSectionOverride(country as SupportedCountry, "ctaLabel");
-    if (ctaLabelOverride && typeof ctaLabelOverride === "object" && "ctaLabel" in ctaLabelOverride && typeof (ctaLabelOverride as { ctaLabel?: string }).ctaLabel === "string") {
-      heroCtaLabel = (ctaLabelOverride as { ctaLabel: string }).ctaLabel;
-    }
-
-    sectionData = heroData;
-  }
-
-  // WHY NOW: same pattern as hero
-  if (!isLinksSection && section === "whyNow") {
-    const staticWhyNow = data.whyNow;
-    let whyNowData: StaticLanding["whyNow"];
-
-    if (useDefault === "1") {
-      whyNowData = staticWhyNow;
-    } else {
-      const override = await getLandingSectionOverride(
-        country as SupportedCountry,
-        "whyNow",
-      );
-      if (override !== null && override !== undefined) {
-        whyNowData = override as StaticLanding["whyNow"];
-      } else {
-        whyNowData = staticWhyNow;
-      }
-    }
-
-    sectionData = whyNowData;
-  }
-
-  // HOW IT WORKS: use override if present, otherwise static
-  if (!isLinksSection && section === "howItWorks") {
-    const staticHowItWorks = data.howItWorks;
-    let howItWorksData: StaticLanding["howItWorks"];
-
-    if (useDefault === "1") {
-      howItWorksData = staticHowItWorks;
-    } else {
-      const override = await getLandingSectionOverride(
-        country as SupportedCountry,
-        "howItWorks",
-      );
-      if (override !== null && override !== undefined) {
-        howItWorksData = override as StaticLanding["howItWorks"];
-      } else {
-        howItWorksData = staticHowItWorks;
-      }
-    }
-
-    sectionData = howItWorksData;
-  }
-
-  // OUTCOMES: use override if present, otherwise static
-  if (!isLinksSection && section === "outcomes") {
-    const staticOutcomes = data.outcomes;
-    let outcomesData: StaticLanding["outcomes"];
-
-    if (useDefault === "1") {
-      outcomesData = staticOutcomes;
-    } else {
-      const override = await getLandingSectionOverride(
-        country as SupportedCountry,
-        "outcomes",
-      );
-      if (override !== null && override !== undefined) {
-        outcomesData = override as StaticLanding["outcomes"];
-      } else {
-        outcomesData = staticOutcomes;
-      }
-    }
-
-    sectionData = outcomesData;
-  }
-
-  // SOCIAL PROOF: use override if present, otherwise static
-  if (!isLinksSection && section === "socialProof") {
-    const staticSocialProof = data.socialProof;
-    let socialProofData: StaticLanding["socialProof"];
-
-    if (useDefault === "1") {
-      socialProofData = staticSocialProof;
-    } else {
-      const override = await getLandingSectionOverride(
-        country as SupportedCountry,
-        "socialProof",
-      );
-      if (override !== null && override !== undefined) {
-        socialProofData = override as StaticLanding["socialProof"];
-      } else {
-        socialProofData = staticSocialProof;
-      }
-    }
-
-    sectionData = socialProofData;
-  }
-
-  // FAQ: use override if present, otherwise static
-  if (!isLinksSection && section === "faq") {
-    const staticFaq = data.faq;
-    let faqData: StaticLanding["faq"];
-
-    if (useDefault === "1") {
-      faqData = staticFaq;
-    } else {
-      const override = await getLandingSectionOverride(
-        country as SupportedCountry,
-        "faq",
-      );
-      if (override !== null && override !== undefined) {
-        faqData = override as StaticLanding["faq"];
-      } else {
-        faqData = staticFaq;
-      }
-    }
-
-    sectionData = faqData;
-  }
-
-  // FINAL CTA: use override if present, otherwise static
-  if (!isLinksSection && section === "finalCta") {
-    const staticFinalCta = data.finalCta;
-    let finalCtaData: StaticLanding["finalCta"];
-
-    if (useDefault === "1") {
-      finalCtaData = staticFinalCta;
-    } else {
-      const override = await getLandingSectionOverride(
-        country as SupportedCountry,
-        "finalCta",
-      );
-      if (override !== null && override !== undefined) {
-        finalCtaData = override as StaticLanding["finalCta"];
-      } else {
-        finalCtaData = staticFinalCta;
-      }
-    }
-
-    sectionData = finalCtaData;
-  }
-
-  // HEADER: use override if present, otherwise static
-  if (!isLinksSection && section === "header") {
-    const staticHeader = data.header;
-    let headerData: StaticLanding["header"];
-
-    if (useDefault === "1") {
-      headerData = staticHeader;
-    } else {
-      const override = await getLandingSectionOverride(
-        country as SupportedCountry,
-        "header",
-      );
-      if (override !== null && override !== undefined) {
-        headerData = override as StaticLanding["header"];
-      } else {
-        headerData = staticHeader;
-      }
-    }
-
-    sectionData = headerData;
-  }
-
-  // FOOTER: use override if present, otherwise static
-  if (!isLinksSection && section === "footer") {
-    const staticFooter = data.footer;
-    let footerData: StaticLanding["footer"];
-
-    if (useDefault === "1") {
-      footerData = staticFooter;
-    } else {
-      const override = await getLandingSectionOverride(
-        country as SupportedCountry,
-        "footer",
-      );
-      if (override !== null && override !== undefined) {
-        footerData = override as StaticLanding["footer"];
-      } else {
-        footerData = staticFooter;
-      }
-    }
-
-    sectionData = footerData;
-  }
-
-  if (!isLinksSection && section === "pricing") {
-    const staticPricing = data.pricing;
-    let pricingData: StaticLanding["pricing"];
-
-    if (useDefault === "1") {
-      pricingData = staticPricing;
-    } else {
-      const override = await getLandingSectionOverride(
-        country as SupportedCountry,
-        "pricing",
-      );
-      if (override !== null && override !== undefined) {
-        pricingData = override as StaticLanding["pricing"];
-      } else {
-        pricingData = staticPricing;
-      }
-    }
-
-    sectionData = pricingData;
-  }
-
-  if (
-    !isLinksSection &&
-    section !== "hero" &&
-    section !== "whyNow" &&
-    section !== "howItWorks" &&
-    section !== "outcomes" &&
-    section !== "socialProof" &&
-    section !== "faq" &&
-    section !== "finalCta" &&
-    section !== "header" &&
-    section !== "footer" &&
-    section !== "about" &&
-    section !== "team" &&
-    useDefault !== "1" &&
-    isContentKey(section)
-  ) {
-    const override = await getLandingSectionOverride(country as SupportedCountry, section as ContentKey);
-    if (override !== null && override !== undefined) {
-      sectionData = override;
-    }
-  }
-
-  if (!isLinksSection && section === "about") {
-    const defaultAbout = data.about as StaticLanding["about"];
-    if (useDefault === "1") {
-      sectionData = defaultAbout;
-    } else {
-      const override = await getLandingSectionOverride(country as SupportedCountry, "about");
-      if (override !== null && override !== undefined && typeof override === "object") {
-        sectionData = { ...defaultAbout, ...(override as object) } as StaticLanding["about"];
-      } else {
-        sectionData = defaultAbout;
-      }
-    }
-  }
-
-  if (!isLinksSection && section === "team") {
-    const staticTeam = data.team;
-    let teamData: StaticLanding["team"];
-    if (useDefault === "1") {
-      teamData = staticTeam;
-    } else {
-      const override = await getLandingSectionOverride(country as SupportedCountry, "team");
-      if (override !== null && override !== undefined) {
-        teamData = override as StaticLanding["team"];
-      } else {
-        teamData = staticTeam;
-      }
-    }
-    sectionData = teamData;
-  }
-
-  if (section === "footer" && sectionData && typeof sectionData === "object" && !Array.isArray(sectionData)) {
-    const rest = sectionData as Record<string, unknown>;
-    sectionData = rest;
   }
 
   const headingOverride = isContentKey(section)
@@ -581,17 +310,6 @@ export default async function AdminContentSectionPage({
     <div className="p-6">
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <h1 className="text-xl font-bold text-foreground">{label}</h1>
-        {section !== "hero" &&
-          section !== "whyNow" &&
-          section !== "howItWorks" &&
-          section !== "outcomes" &&
-          section !== "faq" &&
-          section !== "finalCta" &&
-          section !== "socialProof" && (
-          <Suspense fallback={null}>
-            <AdminCountryPill />
-          </Suspense>
-        )}
       </div>
       <Suspense fallback={null}>
         <AdminFormFeedback />
@@ -616,13 +334,6 @@ export default async function AdminContentSectionPage({
               country={country}
             />
           )}
-          {!isLinksSection && section === "outcomes" && (
-            <OutcomesSectionForm
-              key={country}
-              section={sectionData as StaticLanding["outcomes"]}
-              country={country}
-            />
-          )}
           {!isLinksSection && section === "socialProof" && (
             <SocialProofSectionForm
               key={country}
@@ -644,39 +355,16 @@ export default async function AdminContentSectionPage({
               country={country}
             />
           )}
-          {!isLinksSection && section === "header" && (
-            <HeaderSectionForm
-              key={country}
-              section={sectionData as StaticLanding["header"]}
-              country={country}
-            />
-          )}
-          {!isLinksSection && section === "footer" && (
-            <FooterSectionForm
-              key={country}
-              section={sectionData as StaticLanding["footer"]}
-              country={country}
-            />
-          )}
-          {!isLinksSection && section === "pricing" && (
-            <PricingSectionForm
-              key={country}
-              section={sectionData as StaticLanding["pricing"]}
-              country={country}
-            />
-          )}
           {!isLinksSection && section === "privacy" && (
             <PrivacySectionForm
               key={country}
               section={sectionData as StaticLanding["privacy"]}
-              country={country}
             />
           )}
           {!isLinksSection && section === "terms" && (
             <TermsSectionForm
               key={country}
               section={sectionData as StaticLanding["terms"]}
-              country={country}
             />
           )}
           {!isLinksSection && section === "about" && (
@@ -697,7 +385,6 @@ export default async function AdminContentSectionPage({
             section !== "hero" &&
             section !== "whyNow" &&
             section !== "howItWorks" &&
-            section !== "outcomes" &&
             section !== "socialProof" &&
             section !== "faq" &&
             section !== "finalCta" &&
@@ -705,7 +392,6 @@ export default async function AdminContentSectionPage({
             section !== "footer" &&
             section !== "about" &&
             section !== "team" &&
-            section !== "pricing" &&
             section !== "privacy" &&
             section !== "terms" && (
             <form key={country} action={updateSection} className="space-y-3">
@@ -716,17 +402,9 @@ export default async function AdminContentSectionPage({
                 name="redirect"
                 value={`/admin/content/${section}?country=${country}`}
               />
-              <div className="flex items-center justify-between gap-2">
-                <h2 className="text-sm font-semibold text-muted-foreground">
-                  Edit raw JSON for this section
-                </h2>
-                <a
-                  href={`/admin/content/${section}?country=${country}&useDefault=1`}
-                  className="text-xs font-semibold text-primary hover:underline"
-                >
-                  Load default
-                </a>
-              </div>
+              <h2 className="text-sm font-semibold text-muted-foreground">
+                Edit raw JSON for this section
+              </h2>
               <Textarea
                 name="data"
                 defaultValue={JSON.stringify(sectionData, null, 2)}

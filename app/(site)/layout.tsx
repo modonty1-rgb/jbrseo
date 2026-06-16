@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { LandingHeader } from "@/app/components/layout/header/LandingHeader";
 import { Footer } from "@/app/components/layout/footer/Footer";
-import { ChatWidgetLazy } from "@/app/components/layout/ChatWidget/ChatWidgetLazy";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getLandingContent } from "@/lib/getLandingContent";
@@ -35,14 +34,13 @@ async function SiteLayoutContent({ children }: { children: ReactNode }) {
   const country = getCountryFromHeaders(h);
   const [content, staticLanding] = await Promise.all([
     getLandingContent(country),
-    getStaticLandingWithOverrides(country),
+    getStaticLandingWithOverrides(),
   ]);
   return (
     <>
       <LandingHeader content={content} staticLanding={staticLanding} country={country} />
       <main id="main-content">{children}</main>
       <Footer content={content} staticLanding={staticLanding} country={country} />
-      <ChatWidgetLazy />
     </>
   );
 }

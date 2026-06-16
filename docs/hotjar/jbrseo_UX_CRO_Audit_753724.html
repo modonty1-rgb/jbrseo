@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تقرير UX/CRO Audit — jbrseo.com (Contentsquare #753724)</title>
+<style>
+  body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;line-height:1.8;color:#1a1a2e;max-width:980px;margin:0 auto;padding:32px;background:#fafafc}
+  h1{color:#5b21b6;border-bottom:3px solid #5b21b6;padding-bottom:10px}
+  h2{color:#6d28d9;margin-top:34px;border-bottom:1px solid #ddd;padding-bottom:6px}
+  h3{color:#4338ca;margin-top:22px}
+  table{border-collapse:collapse;width:100%;margin:16px 0;font-size:14px;background:#fff}
+  th,td{border:1px solid #ddd;padding:9px 12px;text-align:right}
+  th{background:#ede9fe;color:#4c1d95}
+  tr:nth-child(even){background:#f7f5fd}
+  code,pre{background:#f1f0f7;border-radius:6px;font-family:Consolas,monospace;direction:ltr;text-align:left;display:inline-block}
+  pre{display:block;padding:12px;overflow-x:auto;font-size:13px}
+  .crit{color:#dc2626;font-weight:bold}
+  .warn{background:#fef3c7;border-right:4px solid #f59e0b;padding:12px 16px;border-radius:6px;margin:16px 0}
+  .note{font-size:13px;color:#555}
+  blockquote{background:#fee2e2;border-right:4px solid #dc2626;margin:16px 0;padding:12px 16px;border-radius:6px;font-weight:bold}
+  ul{padding-right:22px}
+  .meta{color:#666;font-size:14px}
+</style>
+</head>
+<body>
+<h1>تقرير UX/CRO Audit — jbrseo.com</h1>
+<p class="meta"><b>المشروع:</b> Contentsquare #753724 · <b>الفترة:</b> ٣٠ يوم (١٦ مايو – ١٤ يونيو ٢٠٢٦، أقصى فترة متاحة على الخطة) · <b>النطاق:</b> كل الأجهزة · كل الصفحات · كل المصادر · ٢٢ جلسة مسجّلة + ٣٤٦ جلسة في نطاق الـ Funnel.</p>
+
+<div class="warn">
+<b>⚠️ ملاحظة منهجية عن جودة البيانات:</b>
+<ul>
+<li><b>حجم العيّنة صغير جداً:</b> ٢٢ جلسة Replay و٣٤٦ جلسة Funnel في ٣٠ يوم — يكفي لرصد الأنماط لا للدلالة الإحصائية. النِسب مؤشرات اتجاه لا حقائق نهائية.</li>
+<li><b>AI Summarize ومؤشرات الإحباط محجوبة:</b> لا فلتر مخصص لـ rage/dead clicks في الخطة الحالية (المتاح: User clicks, Gestures, Non-input keystrokes, JS errors).</li>
+<li><b>Score/Frustration مموّه (blurred)</b> في جدول الجلسات.</li>
+<li><b>Voice of Customer فارغ تماماً:</b> "No surveys yet" — لا NPS ولا feedback ولا verbatims.</li>
+<li><b>صفحة الـ Heatmap هي صفحة اختبار</b> ("Page On The Fly") بمحتوى placeholder — دقة الـ selectors محدودة.</li>
+<li><b>RUM impact view محجوب</b>، لكن لوحة "RUM – Core Web Vitals" تحتوي بيانات حقيقية (مُستخدَمة).</li>
+</ul>
+</div>
+
+<h2>١. سلوك الجلسات (تحليل يدوي)</h2>
+<h3>الجلسة A — User 9028435316837753192 (١٧ مايو · SA · Chrome · ٨:٠٥ · ١٢ صفحة)</h3>
+<pre>/eg 00:00 → /eg 00:19 → /eg 02:33 → /eg 03:45 → /sa 04:42 →
+/features 05:49 → /sa 06:03 → /features 06:09 → /sa 06:11 →
+/features 06:13 → /sa 06:15 (exit)</pre>
+<p><b>التصنيف: Confused 🔴.</b> قفز بين الإقليمين (/eg→/sa) + Navigation thrashing: تبديل /sa↔/features أربع مرات خلال ١٢ ثانية.</p>
+<h3>الجلسة B — User 3195870069275571791 (٨ يونيو · EG · iOS Safari · موبايل · ٢٧:٤٤ · صفحتان)</h3>
+<pre>/eg 00:00 → /eg 26:47 (exit)</pre>
+<p><b>التصنيف: Stalled/Abandoned 🔴.</b> ٢٧ دقيقة على /eg واحدة بلا تقدّم — مستخدم عالق، مرتبط ببطء تحميل /eg.</p>
+<p><b>التوزيع العام (٢٢ جلسة):</b> أغلبية مصر مع أقلية سعودية؛ مزيج موبايل (Android/iOS) وديسكتوب (Windows/Linux). معظم الجلسات bounce بصفحة واحدة، والطويلة بقيت داخل صفحة الهبوط.</p>
+
+<h2>٢. الـ Funnel</h2>
+<table>
+<tr><th>الخطوة</th><th>الوصول</th><th>Conversion</th><th>Drop-off</th><th>الوقت</th></tr>
+<tr><td>١. Landing</td><td><b>346 جلسة</b></td><td>100%</td><td>—</td><td>—</td></tr>
+<tr><td>٢. /features</td><td>26</td><td class="crit">7.51%</td><td class="crit">92.5% (٣٢٠ مفقود)</td><td>~3 دقائق</td></tr>
+<tr><td>٣. pricing</td><td>1</td><td>3.85%</td><td class="crit">96.2% (٢٥ مفقود)</td><td>~3 دقائق</td></tr>
+<tr><td>٤. /signup</td><td><b>0</b></td><td>0.00%</td><td class="crit">100%</td><td>—</td></tr>
+<tr><td>٥. /thank-you</td><td>0</td><td>0.00%</td><td>—</td><td>—</td></tr>
+</table>
+<blockquote>التحويل الكلي = 0.00%. صفر مستخدم وصل /signup. الـ funnel يتلاشى: 346 → 26 → 1 → 0.</blockquote>
+<h3>EG vs SA</h3>
+<table>
+<tr><th></th><th>جلسات Landing</th><th>→/features</th><th>/features→pricing</th><th>الوصول لـ pricing</th></tr>
+<tr><td><b>EG</b> (/eg)</td><td>238 (~69%)</td><td>6.72%</td><td>6.25% (بطيء ٥د)</td><td>1</td></tr>
+<tr><td><b>SA</b> (/sa)</td><td>114 (~31%)</td><td>5.26%</td><td><b>16.7% (سريع ٨ث)</b></td><td>1</td></tr>
+</table>
+<p>SA أصغر لكن أكثر حسماً (تحويل /features→pricing ٣× أعلى وأسرع). EG أكبر لكن أبطأ وأكثر تردداً.</p>
+<h3>Mobile vs Desktop</h3>
+<table>
+<tr><th></th><th>جلسات Landing</th><th>→/features</th><th>الوصول لـ pricing</th></tr>
+<tr><td><b>Mobile</b></td><td>183 (~53%)</td><td>7.10%</td><td class="crit">0 (يموت قبل pricing)</td></tr>
+<tr><td><b>Desktop</b></td><td>146 (~42%)</td><td>8.22%</td><td>1</td></tr>
+</table>
+<p><b>الموبايل أسوأ:</b> ترافيك أكبر لكن صفر وصول لـ pricing، ووقت تردد أطول.</p>
+
+<h2>٣. Heatmaps + Zoning (صفحة الهبوط)</h2>
+<ul>
+<li><b>أعلى تفاعل:</b> شريط التنقل العلوي استحوذ على معظم النقرات.</li>
+<li class="crit">CTAs مهملة: الزر البنفسجي الرئيسي حصل على نقرة واحدة فقط (0.52% من كل النقرات).</li>
+<li><b>Scroll depth:</b> "AVERAGE FOLD" مرتفع، ومعظم المستخدمين لا ينزلون تحت الطية الأولى — المحتوى أسفل الهيرو شبه ميت.</li>
+<li><b>Dead zones:</b> نقرات مبعثرة بلا تجمّع على عنصر تحويل واضح.</li>
+</ul>
+
+<h2>٤. الأداء (Performance)</h2>
+<p>بانر CSQ الصريح: <b>"This page's rendering is slow, strongly degrading user experience."</b></p>
+<table>
+<tr><th>المقياس</th><th>القيمة</th><th>التقييم</th></tr>
+<tr><td>LCP (Mobile)</td><td><b>4.61s</b></td><td class="crit">🔴 سيّئ (المطلوب &lt;2.5s) — يقفز لـ ١٢ث أحياناً</td></tr>
+<tr><td>LCP (/eg)</td><td>4.66s</td><td class="crit">🔴 سيّئ</td></tr>
+<tr><td>LCP (مصر)</td><td>4.53s</td><td class="crit">🔴 سيّئ</td></tr>
+<tr><td>TTFB (/eg)</td><td>1,178ms</td><td>🟡 بطيء</td></tr>
+<tr><td>TTFB (مصر — الأبطأ)</td><td>1,065ms</td><td>🟡 بطيء</td></tr>
+<tr><td>INP (Desktop)</td><td>144ms</td><td>🟢 جيد</td></tr>
+<tr><td>CLS (/eg)</td><td>0</td><td>🟢 ممتاز</td></tr>
+</table>
+<p>المشكلة سرعة التحميل (LCP/TTFB) لا التفاعلية. أسوأ تأثير على /eg ومصر — أكبر مصدر ترافيك (٦٩٪).</p>
+
+<h2>٥. Voice of Customer</h2>
+<p><b>لا توجد بيانات.</b> لا surveys ولا NPS ولا feedback. توصية: تفعيل Exit-Survey على /eg و/features فوراً.</p>
+
+<h2>القرارات التنفيذية</h2>
+<p><b>١. أكبر ٣ تسرّبات:</b> Landing→/features (٣٢٠ مفقود، ٩٢.٥٪) · /features→pricing (٢٥ من ٢٦، ٩٦.٢٪) · pricing→/signup (صفر يصل التسجيل).</p>
+<p><b>٢. أكبر ٣ بلوكات تحويل:</b> بطء التحميل (LCP ٤.٦٦ث) · CTA غير فعّال · انعدام وضوح/ثقة الأسعار.</p>
+<p><b>٣. EG vs SA:</b> مختلفون فعلاً — EG حجم أكبر/أبطأ/أكثر تردداً؛ SA أصغر لكن أكثر حسماً وسرعة (٣× تحويل).</p>
+<p><b>٤. Mobile vs Desktop:</b> الموبايل أسوأ — ترافيك أكبر وصفر وصول لـ pricing.</p>
+<p><b>٥. Region confusion:</b> مؤكَّد — قفز /eg↔/sa وثرثرة /sa↔/features ٤ مرات في ١٢ث.</p>
+<p><b>٦. عناصر مُربِكة:</b> Navigation thrashing (قائمة غير واضحة) + CTA مهمَل ضعيف التمييز.</p>
+<p><b>٧. أعلى bounce:</b> /eg — أكبر ترافيك وأبطأ صفحة وأطول جلسات عالقة. البطء = السبب الأرجح.</p>
+
+<h2>أولويات التنفيذ (٣٠ يوم)</h2>
+<ul>
+<li>إصلاح أداء /eg (LCP &lt;2.5s): صور/خطوط، CDN لمصر، تقليل TTFB.</li>
+<li>توحيد/توضيح تجربة الإقليمين (/eg vs /sa) لإنهاء region confusion.</li>
+<li>إعادة تصميم الـ CTA الرئيسي بمسار بصري واحد واضح نحو /features→/signup.</li>
+<li>تفعيل Exit-Survey لسدّ فجوة الـ VoC وتفسير الـ ٩٢٪ drop.</li>
+<li>أولوية تحسين مسار pricing على الموبايل.</li>
+</ul>
+
+<div class="warn"><b>تنبيه الموثوقية:</b> كل ما سبق مبني على عيّنة صغيرة (٢٢ جلسة / ٣٤٦ في الـ funnel). الأنماط متّسقة عبر ٤ مصادر مستقلة (Funnel + Replay + Heatmap + RUM) مما يقوّيها، لكن يُنصح بجمع ٢–٤ أسابيع إضافية قبل أي قرار استثماري كبير، وتفعيل خطة أعلى لكشف rage clicks والبيانات التاريخية >٣٠ يوم.</div>
+
+<p class="note">تقرير مُولَّد آلياً من بيانات Contentsquare المتاحة بتاريخ ١٤ يونيو ٢٠٢٦.</p>
+</body>
+</html>

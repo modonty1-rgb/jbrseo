@@ -1,26 +1,12 @@
-import { Suspense, type ReactElement } from "react";
+import { type ReactElement } from "react";
 import Link from "next/link";
 import { getSubscriberStats } from "@/app/actions/subscribers";
 import { getExitReasonStats } from "@/app/actions/exitReason";
-import { getAllAnalyticsData, getCountryBreakdown, getTopEvents, getTrafficSources, getPlanInterestData, type PlanInterestData } from "@/lib/analytics";
-import type { SupportedCountry } from "@/lib/landing-content.types";
+import { getAllAnalyticsData, getCountryBreakdown, getTopEvents, getTrafficSources } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
-import { AdminCountryPill } from "./components/AdminCountryPill";
 import { AnalyticsSection } from "./components/AnalyticsSection";
 
-async function getCountry(
-  searchParams: Promise<{ country?: string }>,
-): Promise<SupportedCountry> {
-  const params = await searchParams;
-  return params.country === "EG" ? "EG" : "SA";
-}
-
-export default async function AdminDashboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ country?: string }>;
-}): Promise<ReactElement> {
-  const country = await getCountry(searchParams);
+export default async function AdminDashboardPage(): Promise<ReactElement> {
   const [stats, exitStats] = await Promise.all([
     getSubscriberStats(),
     getExitReasonStats(),
@@ -42,8 +28,6 @@ export default async function AdminDashboardPage({
     topPages: [],
   };
 
-  let planInterest: PlanInterestData = { byPlan: [], billing: { annual: 0, monthly: 0 } };
-
   let analyticsData = {
     all: emptyAnalytics,
     sa: emptyAnalytics,
@@ -55,18 +39,16 @@ export default async function AdminDashboardPage({
   let analyticsError = false;
 
   try {
-    const [data, countries, events, sources, plans] = await Promise.all([
+    const [data, countries, events, sources] = await Promise.all([
       getAllAnalyticsData(),
       getCountryBreakdown(),
       getTopEvents(),
       getTrafficSources(),
-      getPlanInterestData(),
     ]);
     analyticsData = data;
     countryBreakdown = countries;
     topEvents = events;
     trafficSources = sources;
-    planInterest = plans;
   } catch {
     analyticsError = true;
   }
@@ -100,7 +82,7 @@ export default async function AdminDashboardPage({
       icon: "👥",
       color: "text-primary",
       bgIcon: "bg-primary/10",
-      href: `/admin/subscribers?country=${country}`,
+      href: `/admin/subscribers`,
     },
     {
       label: "السعودية 🇸🇦",
@@ -146,15 +128,15 @@ export default async function AdminDashboardPage({
   ] as const;
 
   const quickLinks: { label: string; href: string; icon: string }[] = [
-    { label: "الهيرو", href: `/admin/content/hero?country=${country}`, icon: "🏠" },
-    { label: "التسعير", href: `/admin/content/pricing?country=${country}`, icon: "💰" },
-    { label: "الأسئلة الشائعة", href: `/admin/content/faq?country=${country}`, icon: "❓" },
-    { label: "الإثبات الاجتماعي", href: `/admin/content/socialProof?country=${country}`, icon: "⭐" },
-    { label: "SEO", href: `/admin/settings/seo?country=${country}`, icon: "🔍" },
-    { label: "السوشال ميديا", href: `/admin/settings/social?country=${country}`, icon: "📱" },
-    { label: "الإعدادات", href: `/admin/settings?country=${country}`, icon: "⚙️" },
-    { label: "المشتركون", href: `/admin/subscribers?country=${country}`, icon: "👥" },
-    { label: "فريق العمل", href: `/admin/content/team?country=${country}`, icon: "🧑‍💼" },
+    { label: "الهيرو", href: "/admin/content/hero", icon: "🏠" },
+    { label: "التسعير", href: "/admin/pricing?country=SA", icon: "💰" },
+    { label: "الأسئلة الشائعة", href: "/admin/content/faq", icon: "❓" },
+    { label: "الإثبات الاجتماعي", href: "/admin/content/socialProof", icon: "⭐" },
+    { label: "SEO", href: "/admin/settings/seo", icon: "🔍" },
+    { label: "السوشال ميديا", href: "/admin/settings/social", icon: "📱" },
+    { label: "الإعدادات", href: "/admin/settings", icon: "⚙️" },
+    { label: "المشتركون", href: "/admin/subscribers", icon: "👥" },
+    { label: "فريق العمل", href: "/admin/content/team", icon: "🧑‍💼" },
   ];
 
   return (
@@ -167,7 +149,7 @@ export default async function AdminDashboardPage({
         <p className="text-sm text-muted-foreground">
           لديك{" "}
           <Link
-            href={`/admin/subscribers?country=${country}`}
+            href="/admin/subscribers"
             className="text-primary hover:underline"
           >
             {totalSubscribers} مشترك
@@ -248,7 +230,7 @@ export default async function AdminDashboardPage({
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-sm font-semibold text-foreground">توزيع المشتركين</h2>
               <Link
-                href={`/admin/subscribers?country=${country}`}
+                href="/admin/subscribers"
                 className="text-xs text-primary hover:underline"
               >
                 عرض الكل
@@ -308,53 +290,6 @@ export default async function AdminDashboardPage({
           </div>
         </>
       ) : null}
-
-      {/* Plan Interest */}
-      {planInterest.byPlan.length > 0 && (
-        <div className="mb-6 rounded-lg border border-border bg-card p-4 shadow-sm">
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-            <h2 className="text-sm font-semibold text-foreground">اهتمامات الزوار — الخطط</h2>
-            <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">آخر ٧ أيام</span>
-          </div>
-          <div className="mb-4 space-y-3">
-            {planInterest.byPlan.map((row) => {
-              const maxClicks = Math.max(...planInterest.byPlan.map((r) => r.clicks), 1);
-              return (
-                <div key={row.name} className="flex items-center gap-3">
-                  <span className="w-28 shrink-0 truncate text-xs text-muted-foreground">{row.name}</span>
-                  <div className="h-5 min-w-0 flex-1 rounded-full bg-muted">
-                    <div
-                      className="h-5 rounded-full bg-primary/70 transition-all duration-500"
-                      style={{ width: `${Math.round((row.clicks / maxClicks) * 100)}%` }}
-                    />
-                  </div>
-                  <div className="w-28 shrink-0 text-end text-xs text-muted-foreground">
-                    <span className="font-medium text-foreground">{row.clicks}</span> ضغطة
-                    {row.signups > 0 && (
-                      <span className="ms-1.5 text-green-500">· {row.signups} تسجيل</span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-          {(planInterest.billing.annual > 0 || planInterest.billing.monthly > 0) && (
-            <div className="flex flex-wrap gap-3 border-t border-border pt-3">
-              <span className="text-xs text-muted-foreground">طريقة الدفع المفضلة:</span>
-              {planInterest.billing.annual > 0 && (
-                <span className="rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-500">
-                  سنوي: {planInterest.billing.annual}
-                </span>
-              )}
-              {planInterest.billing.monthly > 0 && (
-                <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-                  شهري: {planInterest.billing.monthly}
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Exit Reasons */}
       {exitStats && exitStats.total > 0 && (

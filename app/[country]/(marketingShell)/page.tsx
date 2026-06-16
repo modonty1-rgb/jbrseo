@@ -1,19 +1,22 @@
 import type { Metadata } from "next";
-import dynamic from "next/dynamic";
-import type { StaticLanding } from "@/app/content/landing/types";
-import Hero from "@/app/components/landing/hero/Hero";
-import { HeroTrustBar } from "@/app/components/landing/hero/HeroTrustBar";
-import WhyNowCalculator from "@/app/components/landing/Calculator/Calculator";
-import HowItWorks from "@/app/components/landing/HowItWorks/HowItWorks";
-import Outcomes from "@/app/components/landing/Outcomes/Outcomes";
-import LandingJsonLd from "@/app/components/shared/LandingJsonLd";
+import { notFound } from "next/navigation";
+import { AnnouncementBar } from "@/app/components/landing/AnnouncementBar";
+import { Footer } from "@/app/components/landing/Footer";
+import { LandingJsonLd } from "@/app/components/landing/LandingJsonLd";
+import { Navbar } from "@/app/components/landing/Navbar";
+import { Landing } from "@/app/components/landing/Landing";
+import { StickyMobileCTA } from "@/app/components/landing/StickyMobileCTA";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
+import { getLandingSectionOverride } from "@/lib/landing-sections";
+import { getLandingContent } from "@/lib/getLandingContent";
+import { getAllPlans } from "@/app/actions/pricing";
+import { getMeta } from "@/app/actions/pricing-meta";
 import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
 } from "@/lib/country-config";
 import { isAnnualFromBillingParam } from "@/lib/billing-search-param";
-import { getLandingContent } from "@/lib/getLandingContent";
+import { getWhatsAppLink } from "@/lib/site-links";
 import { buildLandingOgMetadata } from "@/lib/landing-open-graph";
 import {
   DEFAULT_PUBLIC_SITE_ORIGIN,
@@ -21,32 +24,6 @@ import {
   resolveCanonicalForMetadata,
   resolveSiteOriginFromSeoCanonical,
 } from "@/lib/seo-meta";
-import { getWhatsAppLink } from "@/lib/site-links";
-import { StickyMobileCTA } from "@/app/components/landing/StickyMobileCTA";
-import { ExitIntentPopup } from "@/app/components/landing/ExitIntentPopup";
-
-const sectionFallback = () => <section className="min-h-[200px]" aria-hidden />;
-
-const SocialProof = dynamic(
-  () => import("@/app/components/landing/SocialProof/SocialProof"),
-  { loading: sectionFallback }
-);
-const ModontyPricing = dynamic(
-  () => import("@/app/components/landing/price-section/price-section"),
-  { loading: sectionFallback }
-);
-const FAQ = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel?: string; whatsappNumber?: string }>(
-  () => import("@/app/components/landing/FAQ/FAQ"),
-  { loading: sectionFallback }
-);
-const FinalCTA = dynamic<{ staticLanding: StaticLanding; country: import("@/lib/landing-content.types").SupportedCountry; ctaLabel: string; ctaLink?: string; whatsappNumber?: string }>(
-  () => import("@/app/components/landing/FinalCTA/FinalCTA"),
-  { loading: sectionFallback }
-);
-const TeamSection = dynamic<{ staticLanding: StaticLanding }>(
-  () => import("@/app/components/landing/Team/TeamSection"),
-  { loading: sectionFallback }
-);
 
 const HOME_SA_DESCRIPTION_FALLBACK =
   "مدونتي — منصة المحتوى العربي. مقالات تتصدر جوجل، صفحة شركتك في الشبكة، وقاعدة Leads مصنّفة — بدون كتابة حرف واحد. ابدأ مجاناً بدون بطاقة ائتمان.";
@@ -80,10 +57,7 @@ export async function generateMetadata({
   };
   const merged: Metadata = {
     ...baseMeta,
-    alternates: {
-      canonical,
-      languages: hreflang,
-    },
+    alternates: { canonical, languages: hreflang },
     robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
   };
   if (slug !== "sa") {
@@ -112,114 +86,76 @@ export default async function CountryHome({
   searchParams: Promise<{ billing?: string }>;
 }) {
   const { country: raw } = await params;
-  const sp = await searchParams;
-  const annual = isAnnualFromBillingParam(sp?.billing);
   const slug = raw?.toLowerCase();
-  if (!isSupportedCountrySlug(slug)) {
-    return null;
-  }
+  if (!isSupportedCountrySlug(slug)) notFound();
+
   const countrySlug = slug as "sa" | "eg";
   const countryCode = getCountryCodeFromSlug(countrySlug);
-  const basePath = `/${countrySlug}`;
-  const ctaLink = `${basePath}/signup`;
-  const pricingCtaLink = `${basePath}#pricing`;
-  const pricingCtaLabel = "شوف الأسعار والخطة المناسبة";
-  const pricingHrefBase = `${basePath}/pricing`;
-  const signupHrefBase = ctaLink;
-  const outcomesCtaLink = pricingCtaLink;
+  const sp = await searchParams;
+  const annual = isAnnualFromBillingParam(sp?.billing);
 
-  const [content, pricingSALanding, pricingEGLanding] = await Promise.all([
+  const [content, staticLanding, plans, meta, socialLinksRaw, footerRaw] = await Promise.all([
     getLandingContent(countryCode),
-    getStaticLandingWithOverrides("SA"),
-    getStaticLandingWithOverrides("EG"),
+    getStaticLandingWithOverrides(),
+    getAllPlans(countryCode),
+    getMeta(countryCode),
+    getLandingSectionOverride("socialLinks"),
+    getLandingSectionOverride("footer"),
   ]);
-  const baseLanding = content.staticLanding ?? (await getStaticLandingWithOverrides(countryCode));
-  const si = content.sectionImages;
-  const mergedStaticLanding: StaticLanding = {
-    ...baseLanding,
-    hero: { ...baseLanding.hero, sectionImage: si?.hero ?? "" },
-    whyNow: { ...baseLanding.whyNow, sectionImage: si?.whyNow ?? baseLanding.whyNow.sectionImage ?? "" },
-    howItWorks: { ...baseLanding.howItWorks, sectionImage: si?.howItWorks ?? baseLanding.howItWorks.sectionImage ?? "" },
-    outcomes: { ...baseLanding.outcomes, sectionImage: si?.outcomes ?? baseLanding.outcomes.sectionImage ?? "" },
-    socialProof: { ...baseLanding.socialProof, sectionImage: si?.socialProof ?? baseLanding.socialProof.sectionImage ?? "" },
-    faq: { ...baseLanding.faq, sectionImage: si?.faq ?? baseLanding.faq.sectionImage ?? "" },
-    finalCta: { ...baseLanding.finalCta, sectionImage: si?.finalCta ?? baseLanding.finalCta.sectionImage ?? "" },
-    pricing: baseLanding.pricing,
-    pricingPage: baseLanding.pricingPage,
+  const socialLinks = (socialLinksRaw ?? {}) as {
+    facebook?: string;
+    instagram?: string;
+    linkedin?: string;
+    twitterX?: string;
+    youtube?: string;
+    tiktok?: string;
   };
-  const signupPrimaryLabel = "ابدأ مجاناً — بدون بطاقة";
-  const signupSecondaryLabel = "ابدأ الحين — ١٤ يوم ضمان كامل ✅";
-  const pricingSA = pricingSALanding.pricing;
-  const pricingEG = pricingEGLanding.pricing;
-  const currentPricing = countryCode === "EG" ? pricingEG : pricingSA;
-  const featuredPlan = currentPricing?.PLANS?.find((p) => p.featured) ?? null;
-  const calculatorMonthlyPrice = featuredPlan?.price?.mo;
-  const calculatorAnnualPerMonth = featuredPlan?.price?.yr;
-  const initialLocale = countryCode === "EG" ? "eg" : "sa";
+  const footerData = (footerRaw ?? {}) as { tagline?: string; desc?: string };
+
   const whatsappLink = getWhatsAppLink(countryCode, content.siteSettings?.whatsappNumber);
+  const signupHref = `/${countrySlug}/signup`;
+  const basePath = `/${countrySlug}`;
+  const pricingHref = `${basePath}#pricing`;
+  const ctaLabel = content.siteSettings?.ctaLabel?.trim() || "ابدأ مجاناً — بدون بطاقة";
 
   return (
     <>
-      <LandingJsonLd content={content} countrySlug={countrySlug} />
-      <section className="relative">
-        <Hero
-          content={content}
-          staticLanding={mergedStaticLanding}
-          country={countryCode}
-          ctaLink={ctaLink}
-          ctaLabel={signupPrimaryLabel}
-        />
-        <HeroTrustBar hero={mergedStaticLanding.hero} />
-      </section>
-      <section className="relative">
-        <HowItWorks staticLanding={mergedStaticLanding} ctaLabel={pricingCtaLabel} ctaLink={pricingCtaLink} />
-      </section>
-      <section className="relative">
-        <WhyNowCalculator
-          ctaLabel={pricingCtaLabel}
-          ctaLink={pricingCtaLink}
-          country={countryCode}
-          monthlySubPrice={calculatorMonthlyPrice}
-          annualBillingPerMonth={calculatorAnnualPerMonth}
-        />
-      </section>
-      <section className="relative">
-        <Outcomes staticLanding={mergedStaticLanding} ctaLabel={pricingCtaLabel} ctaLink={outcomesCtaLink} />
-      </section>
-      <section className="relative">
-        <SocialProof staticLanding={mergedStaticLanding} />
-      </section>
-      <section className="relative">
-        <div id="pricing">
-          <ModontyPricing
-            pricingSA={pricingSA}
-            pricingEG={pricingEG}
-            initialLocale={initialLocale}
-            annual={annual}
-            basePath={basePath}
-            pricingHrefBase={pricingHrefBase}
-            signupHrefBase={signupHrefBase}
-            whatsappLink={whatsappLink}
-          />
-        </div>
-      </section>
-      <section className="relative">
-        <FAQ staticLanding={mergedStaticLanding} country={countryCode} ctaLabel="تحدث معنا على واتساب" whatsappNumber={content.siteSettings?.whatsappNumber} />
-      </section>
-      <section className="relative">
-        <TeamSection staticLanding={mergedStaticLanding} />
-      </section>
-      <section className="relative">
-        <FinalCTA
-          staticLanding={mergedStaticLanding}
-          country={countryCode}
-          ctaLabel={signupSecondaryLabel}
-          ctaLink={ctaLink}
-          whatsappNumber={content.siteSettings?.whatsappNumber}
-        />
-      </section>
-      <StickyMobileCTA ctaLink={ctaLink} whatsappLink={whatsappLink} />
-      <ExitIntentPopup ctaLink={ctaLink} whatsappLink={whatsappLink} country={countryCode} />
+      <AnnouncementBar message={meta?.announcement ?? "أسعار التأسيس — أول ١٥٠ شركة."} />
+      <Navbar
+        country={countryCode}
+        content={content}
+        basePath={basePath}
+        pricingHref={pricingHref}
+      />
+      <Landing
+        countrySlug={countrySlug}
+        staticLanding={staticLanding}
+        plans={plans}
+        announcement={meta?.announcement ?? ""}
+        whatsappLink={whatsappLink}
+        signupHref={signupHref}
+        initialBilling={annual ? "annual" : "monthly"}
+        ctaLabel={ctaLabel}
+      />
+      <Footer
+        country={countryCode}
+        basePath={basePath}
+        whatsappNumber={content.siteSettings?.whatsappNumber}
+        socialLinks={socialLinks}
+        footerTagline={footerData.tagline}
+        footerDesc={footerData.desc}
+      />
+      <LandingJsonLd
+        countrySlug={countrySlug}
+        siteOrigin={DEFAULT_PUBLIC_SITE_ORIGIN}
+        faqs={staticLanding.faq?.faqs ?? []}
+        socialLinks={socialLinks}
+      />
+      <StickyMobileCTA
+        signupHref={signupHref}
+        whatsappLink={whatsappLink}
+        ctaLabel={ctaLabel}
+      />
     </>
   );
 }

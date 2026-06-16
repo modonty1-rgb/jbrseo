@@ -5,7 +5,6 @@ import Link from "@/app/components/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import {
   BookOpen,
-  ImageIcon,
   LayoutDashboard,
   type LucideIcon,
 } from "lucide-react";
@@ -14,7 +13,6 @@ import { cn } from "@/lib/utils";
 
 const HREF_ICON: Partial<Record<string, LucideIcon>> = {
   "/admin": LayoutDashboard,
-  "/admin/content/emojis": ImageIcon,
   "/admin/marketing/jbrseo-plan": BookOpen,
   "/admin/marketing/modony-plan": BookOpen,
 };
@@ -58,18 +56,8 @@ export function AdminSidebar() {
         </Link>
       </div>
 
-      <nav className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain pe-1">
-        {/* Tools */}
-        <div className="border-t border-border/60 pt-3 mt-2">
-          <p className="mb-1 px-3 text-[10px] font-semibold uppercase tracking-wider text-primary">
-            أدوات
-          </p>
-          <Link href="/admin/content/emojis" className={linkClass("/admin/content/emojis")}>
-            <NavIcon href="/admin/content/emojis" />
-            مرجع الرموز
-          </Link>
-        </div>
-      </nav>
+      <nav className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto overscroll-contain pe-1" />
+      <div className="hidden">{linkClass("/admin")}</div>
     </aside>
   );
 }

@@ -1,23 +1,11 @@
 import { Suspense } from "react";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { DEFAULT_SITE_SETTINGS_JSON } from "@/lib/site-settings.types";
-import type { SupportedCountry } from "@/lib/landing-content.types";
 import { SeoForm } from "../../components/SeoForm";
-import { AdminCountryPill } from "../../components/AdminCountryPill";
 import { AdminFormFeedback } from "../../components/AdminFormFeedback";
 
-async function getCountry(searchParams: Promise<{ country?: string }>): Promise<SupportedCountry> {
-  const params = await searchParams;
-  return params.country === "EG" ? "EG" : "SA";
-}
-
-export default async function AdminSettingsSeoPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ country?: string }>;
-}) {
-  const country = await getCountry(searchParams);
-  const override = await getLandingSectionOverride(country, "seo");
+export default async function AdminSettingsSeoPage() {
+  const override = await getLandingSectionOverride("seo");
   const seo =
     override && typeof override === "object" && !Array.isArray(override)
       ? { ...DEFAULT_SITE_SETTINGS_JSON.seo, ...(override as Record<string, string>) }
@@ -32,14 +20,11 @@ export default async function AdminSettingsSeoPage({
             وفيسبوك وX.
           </p>
         </div>
-        <Suspense fallback={null}>
-          <AdminCountryPill />
-        </Suspense>
       </div>
       <Suspense fallback={null}>
         <AdminFormFeedback />
       </Suspense>
-      <SeoForm key={country} country={country} seo={seo} redirect={`/admin/settings/seo?country=${country}`} />
+      <SeoForm seo={seo} redirect="/admin/settings/seo" />
     </div>
   );
 }

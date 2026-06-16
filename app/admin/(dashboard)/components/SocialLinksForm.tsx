@@ -1,14 +1,17 @@
 "use client";
 
-import { useMemo, useState, type ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 import { updateSocialLinksFormData } from "@/app/actions/landing";
-import type { SocialLinks, SupportedCountry } from "@/lib/landing-content.types";
+import type { SocialLinks } from "@/lib/landing-content.types";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { Label } from "@/app/components/ui/label";
 import { UnsavedChangesBar } from "./UnsavedChangesBar";
 
 const SOCIAL_FORM_ID = "social-links-form";
+
+const LABEL = "text-sm font-medium text-foreground";
+const FIELD = "flex flex-col gap-1.5";
+const INPUT = "rounded-md border border-border bg-background px-3 py-2 text-sm";
 
 type SocialField = {
   key: keyof SocialLinks;
@@ -27,11 +30,9 @@ const FIELDS: SocialField[] = [
 ];
 
 export function SocialLinksForm({
-  country,
   socialLinks,
   redirect,
 }: {
-  country: SupportedCountry;
   socialLinks: SocialLinks;
   redirect?: string;
 }): ReactElement {
@@ -45,11 +46,6 @@ export function SocialLinksForm({
     snapchat: socialLinks.snapchat ?? "",
   });
 
-  const activeCount = useMemo(
-    () => Object.values(values).filter((v) => v.trim().length > 0).length,
-    [values],
-  );
-
   function handleSave(): void {
     const el = document.getElementById(SOCIAL_FORM_ID);
     if (el instanceof HTMLFormElement) el.requestSubmit();
@@ -57,24 +53,13 @@ export function SocialLinksForm({
 
   return (
     <>
-      <div className="rounded-lg border border-border bg-card p-4 shadow-sm">
-        <div className="mb-3 flex flex-wrap items-center gap-2 border-b border-border pb-3">
-          <span className="text-base" aria-hidden>
-            📱
-          </span>
-          <h2 className="text-sm font-semibold text-foreground">روابط السوشال ميديا</h2>
-          <span className="ms-auto text-xs text-muted-foreground">{activeCount}/7 روابط مفعّلة</span>
-        </div>
+      <form id={SOCIAL_FORM_ID} action={updateSocialLinksFormData} className="space-y-5">
+        {redirect ? <input type="hidden" name="redirect" value={redirect} /> : null}
 
-        <form id={SOCIAL_FORM_ID} action={updateSocialLinksFormData} className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <input type="hidden" name="country" value={country} />
-          {redirect ? <input type="hidden" name="redirect" value={redirect} /> : null}
-
+        <div className="grid gap-4 md:grid-cols-2">
           {FIELDS.map((field) => (
-            <div key={field.key} className="space-y-1.5">
-              <Label htmlFor={`social-${field.key}`} className="text-xs font-medium text-muted-foreground">
-                {field.label}
-              </Label>
+            <div key={field.key} className={FIELD}>
+              <label htmlFor={`social-${field.key}`} className={LABEL}>{field.label}</label>
               <Input
                 id={`social-${field.key}`}
                 name={field.key}
@@ -85,18 +70,16 @@ export function SocialLinksForm({
                   setValues((prev) => ({ ...prev, [field.key]: e.target.value }))
                 }
                 placeholder={field.placeholder}
-                className="font-mono text-xs"
+                className={`${INPUT} font-mono text-xs`}
               />
             </div>
           ))}
+        </div>
 
-          <div className="md:col-span-2">
-            <Button type="button" className="w-full sm:w-auto" onClick={handleSave}>
-              حفظ روابط السوشال
-            </Button>
-          </div>
-        </form>
-      </div>
+        <Button type="button" onClick={handleSave}>
+          حفظ
+        </Button>
+      </form>
 
       <UnsavedChangesBar
         formId={SOCIAL_FORM_ID}

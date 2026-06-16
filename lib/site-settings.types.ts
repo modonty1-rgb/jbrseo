@@ -32,27 +32,6 @@ export type SiteSettingsSectionImages = {
   finalCta: string;
 };
 
-export type SiteSettingsImages = {
-  logoWhite: string;
-  logoLight: string;
-  contactAvatar: string;
-  contactAvatarAlt: string;
-  sectionHero: string;
-  sectionHeroAlt: string;
-  sectionWhyNow: string;
-  sectionWhyNowAlt: string;
-  sectionHowItWorks: string;
-  sectionHowItWorksAlt: string;
-  sectionOutcomes: string;
-  sectionOutcomesAlt: string;
-  sectionSocialProof: string;
-  sectionSocialProofAlt: string;
-  sectionFaq: string;
-  sectionFaqAlt: string;
-  sectionFinalCta: string;
-  sectionFinalCtaAlt: string;
-};
-
 export type SiteSettingsPricingTeaser = {
   cta: string;
   sectionHeadings: {
@@ -66,7 +45,6 @@ export type SiteSettingsJson = {
   seo: SiteSettingsSeo;
   tracking: SiteSettingsTracking;
   site: SiteSettingsSite;
-  images: SiteSettingsImages;
   pricingTeaser: SiteSettingsPricingTeaser;
 };
 
@@ -80,26 +58,6 @@ export const DEFAULT_SITE_SETTINGS_JSON: SiteSettingsJson = {
   },
   tracking: { gtmId: "" },
   site: { showSectionCounter: false, ctaLabel: "ابدأ مجاناً — بدون بطاقة", whatsappNumber: "" },
-  images: {
-    logoWhite: "",
-    logoLight: "",
-    contactAvatar: "",
-    contactAvatarAlt: "",
-    sectionHero: "",
-    sectionHeroAlt: "",
-    sectionWhyNow: "",
-    sectionWhyNowAlt: "",
-    sectionHowItWorks: "",
-    sectionHowItWorksAlt: "",
-    sectionOutcomes: "",
-    sectionOutcomesAlt: "",
-    sectionSocialProof: "",
-    sectionSocialProofAlt: "",
-    sectionFaq: "",
-    sectionFaqAlt: "",
-    sectionFinalCta: "",
-    sectionFinalCtaAlt: "",
-  },
   pricingTeaser: {
     cta: "",
     sectionHeadings: { eyebrow: "الخطط", title: "اختر خطتك", highlightBadge: "الأكثر شيوعاً" },

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
+import { LandingHeader } from "@/app/components/layout/header/LandingHeader";
+import { FloatingContact } from "@/app/components/shared/FloatingContact";
 import { PricingPageShell } from "@/app/components/pricing/PricingPageShell";
 import { PricingPageJsonLd } from "@/app/components/shared/PricingPageJsonLd";
 import { DEFAULT_OG_IMAGE_URL } from "@/lib/constants";
@@ -8,6 +10,9 @@ import {
   isSupportedCountrySlug,
 } from "@/lib/country-config";
 import { getLandingContent } from "@/lib/getLandingContent";
+import { getAllPlans } from "@/app/actions/pricing";
+import { getMeta } from "@/app/actions/pricing-meta";
+import { buildPricingContentFromDb } from "@/lib/admin-pricing-adapter";
 import {
   DEFAULT_PUBLIC_SITE_ORIGIN,
   PUBLIC_INDEX_FOLLOW_ROBOTS,
@@ -29,8 +34,9 @@ export async function generateMetadata({
   if (!isSupportedCountrySlug(slug)) {
     return { title: "الأسعار — JBRSEO" };
   }
-  const countryCode = getCountryCodeFromSlug(slug as "sa" | "eg");
-  const landing = await getStaticLandingWithOverrides(countryCode);
+  // ROUND-1: content (incl. pricingPage copy) is unified — no country param needed.
+  // Per-country currency/whatsapp is handled in the page component below.
+  const landing = await getStaticLandingWithOverrides();
   const { title, description } = landing.pricingPage;
   const siteBase = DEFAULT_PUBLIC_SITE_ORIGIN;
   const canonical = `${siteBase}/${slug}/pricing`;
@@ -89,17 +95,37 @@ export default async function CountryPricingPage({
   const { plan } = sp;
   const previewSlug = sp?.country?.toLowerCase();
   const previewQuery = previewSlug === "sa" || previewSlug === "eg" ? `?country=${previewSlug}` : "";
-  const [landing, content] = await Promise.all([
-    getStaticLandingWithOverrides(countryCode),
+
+  // Single source of truth: Plan model (per-country rows) + PriceSectionMeta (per-country meta).
+  // The legacy `landing.pricing` JSON blob is no longer used.
+  const [landing, content, dbPlans, meta] = await Promise.all([
+    getStaticLandingWithOverrides(),
     getLandingContent(countryCode),
+    getAllPlans(countryCode),
+    getMeta(countryCode),
   ]);
+  const pricing = buildPricingContentFromDb(dbPlans, meta);
   const whatsappHref = getWhatsAppLink(countryCode, content.siteSettings?.whatsappNumber);
 
   return (
     <>
-      <PricingPageJsonLd countrySlug={countrySlug} countryCode={countryCode} landing={landing} />
+      <LandingHeader
+        content={content}
+        staticLanding={landing}
+        country={countryCode}
+        basePath={`/${countrySlug}`}
+        pricingHref={`/${countrySlug}/signup${previewQuery}`}
+        navPrimaryCtaLabel={content.siteSettings?.ctaLabel?.trim() || "ابدأ مجاناً — بدون بطاقة"}
+        whatsappNumber={content.siteSettings?.whatsappNumber}
+      />
+      <PricingPageJsonLd
+        countrySlug={countrySlug}
+        countryCode={countryCode}
+        plans={pricing.PLANS}
+        pricingPageTitle={landing.pricingPage.title}
+      />
       <PricingPageShell
-        pricing={landing.pricing}
+        pricing={pricing}
         pricingPage={landing.pricingPage}
         faq={landing.faq}
         country={countryCode}
@@ -107,6 +133,7 @@ export default async function CountryPricingPage({
         signupHrefBase={`/${countrySlug}/signup${previewQuery}`}
         whatsappHref={whatsappHref}
       />
+      <FloatingContact whatsappNumber={content.siteSettings?.whatsappNumber} />
     </>
   );
 }

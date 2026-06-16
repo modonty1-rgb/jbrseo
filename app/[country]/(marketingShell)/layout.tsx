@@ -1,43 +1,17 @@
 import type { ReactNode } from "react";
-import { LandingHeader } from "@/app/components/layout/header/LandingHeader";
-import { FloatingContact } from "@/app/components/shared/FloatingContact";
-import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
-import { getLandingContent } from "@/lib/getLandingContent";
-import { getCountryCodeFromSlug, isSupportedCountrySlug } from "@/lib/country-config";
 
-export default async function MarketingShellLayout({
+// Foundation-layer edit: wrap entire marketing shell (announcement + navbar + landing + footer + sticky)
+// inside .marketing-surface so they all inherit Readex Pro font + correct surface tokens.
+// text-[#0A0A0A] pairs with .marketing-surface (which intentionally does NOT set color) so descendants
+// can still override with text-white etc. overflow-x-clip prevents off-canvas children leaking.
+export default function MarketingShellLayout({
   children,
-  params,
 }: {
   children: ReactNode;
-  params: Promise<{ country: string }>;
 }) {
-  const { country: raw } = await params;
-  const slug = raw?.toLowerCase();
-  if (!isSupportedCountrySlug(slug)) {
-    return null;
-  }
-  const countrySlug = slug as "sa" | "eg";
-  const countryCode = getCountryCodeFromSlug(countrySlug);
-  const [content, staticLanding] = await Promise.all([
-    getLandingContent(countryCode),
-    getStaticLandingWithOverrides(countryCode),
-  ]);
-  const basePath = `/${countrySlug}`;
-
   return (
-    <>
-      <LandingHeader
-        content={content}
-        staticLanding={staticLanding}
-        country={countryCode}
-        basePath={basePath}
-        pricingHref={`${basePath}/signup`}
-        navPrimaryCtaLabel="ابدأ مجاناً — بدون بطاقة ←"
-        whatsappNumber={content.siteSettings?.whatsappNumber}
-      />
+    <div className="marketing-surface text-[#0A0A0A] overflow-x-clip">
       <main id="main-content">{children}</main>
-      <FloatingContact whatsappNumber={content.siteSettings?.whatsappNumber} />
-    </>
+    </div>
   );
 }

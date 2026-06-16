@@ -19,7 +19,6 @@ import {
 import { ShieldCheck } from "lucide-react";
 import Link from "@/app/components/link";
 import { GTMEvents } from "@/lib/gtm";
-import { BankTrustBadge } from "@/app/components/shared/BankTrustBadge";
 
 function planIndexFromParam(
   param: string | null,
@@ -80,7 +79,6 @@ export function SignupForm({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [showAllPlanFeatures, setShowAllPlanFeatures] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -199,38 +197,33 @@ export function SignupForm({
   const reveal = mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6";
 
   return (
-    <div className="relative min-h-[70vh] overflow-hidden px-4 py-20 flex justify-center items-start landing-grain">
-      <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute top-16 start-1/4 h-72 w-72 rounded-full bg-primary/15 blur-3xl" />
-        <div className="absolute bottom-20 end-1/4 h-64 w-64 rounded-full bg-accent/12 blur-3xl" />
-      </div>
-
+    <div
+      className="flex justify-center items-start px-4 pt-14 pb-20 min-h-[70vh]"
+    >
       <div
-        className={cn(
-          "relative z-10 flex w-full max-w-md flex-col lg:max-w-4xl",
-          reveal
-        )}
+        className={cn("w-full max-w-md flex flex-col lg:max-w-4xl", reveal)}
       >
-        <div className="mb-6 flex flex-col items-center gap-2 text-center">
-          <p className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="h-2 w-2 shrink-0 rounded-full bg-primary" aria-hidden />
+        <div className="mb-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 border border-[#E5E5DC] bg-white rounded-full font-['IBM_Plex_Mono',monospace] text-[12.5px] text-[#3F3F38] mb-5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#0E9F6E]" aria-hidden />
             <span>
-              <span className="font-semibold text-foreground">خطوة ١:</span> بياناتك
-              <span className="mx-1.5 opacity-40">·</span>
-              <span className="font-semibold text-foreground">خطوة ٢:</span> اختر خطتك
+              <b className="text-[#0A0A0A]">خطوة ١:</b> بياناتك
+              <span className="mx-2 opacity-40">·</span>
+              <b className="text-[#0A0A0A]">خطوة ٢:</b> اختر خطتك
             </span>
-          </p>
-          <h1 className="text-2xl font-extrabold tracking-tight text-foreground">
-            ابدأ اليوم — مضمون أو نرد لك فلوسك كاملة
+          </div>
+          <h1 className="text-[34px] lg:text-[40px] font-semibold tracking-[-1px] text-[#0A0A0A] leading-[1.15] mb-3">
+            خطوتك الأولى نحو <span className="text-[#0E9F6E]">حضور رقمي متكامل</span>
           </h1>
-          <p className="text-sm text-muted-foreground">
-            أول مقالك جاهز خلال ٧ أيام — وإذا ما عجبك نرد لك كل ريال
+          <p className="text-[16px] text-[#3F3F38] leading-[1.7] max-w-[600px] mx-auto">
+            أكمل بياناتك، اختر الباقة المناسبة، وادخل إلى لوحة تحكّمك مباشرة بعد التفعيل.
           </p>
         </div>
 
         <Card
           className={cn(
-            "w-full rounded-2xl border-border/60 bg-card/80 backdrop-blur-sm shadow-2xl shadow-primary/8 p-6 lg:p-8 flex flex-col gap-6 lg:grid lg:grid-cols-[1fr_1fr] lg:gap-8 bg-linear-to-br from-primary/3 via-transparent to-accent/3 transition-all duration-700 ease-out border"
+            "w-full rounded-[20px] border border-[#E5E5DC] bg-white shadow-[0_24px_60px_-32px_rgba(10,10,10,.15)]",
+            "p-6 lg:p-8 flex flex-col gap-6 lg:grid lg:grid-cols-[1fr_1fr] lg:gap-8 transition-all duration-700 ease-out"
           )}
         >
         <div className="flex flex-col gap-5 min-w-0">
@@ -248,7 +241,7 @@ export function SignupForm({
             <input type="hidden" name="planName" value={serverPlan?.name ?? ""} />
             <input type="hidden" name="country" value={country} />
             <div className="space-y-1">
-              <Label htmlFor="name" className="text-sm font-medium text-foreground">
+              <Label htmlFor="name" className="text-[14px] font-semibold text-[#0A0A0A] mb-2 inline-block">
                 اسمك
               </Label>
               <Input
@@ -259,7 +252,7 @@ export function SignupForm({
                 required
                 maxLength={100}
                 placeholder="مثال: محمد العمري"
-                className="rounded-lg py-2.5 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent"
+                className="bg-white border border-[#E5E5DC] rounded-[10px] px-[14px] py-[11px] text-[15px] text-[#0A0A0A] shadow-none outline-none h-12 placeholder:text-[#B0B0A5] focus-visible:border-[#0E9F6E] focus-visible:ring-2 focus-visible:ring-[#0E9F6E]/15 transition-colors"
                 value={name}
                 onChange={(e) => {
                   setName(e.target.value);
@@ -271,7 +264,7 @@ export function SignupForm({
               )}
             </div>
             <div className="space-y-1">
-              <Label htmlFor="email" className="text-sm font-medium text-foreground">
+              <Label htmlFor="email" className="text-[14px] font-semibold text-[#0A0A0A] mb-2 inline-block">
                 البريد الإلكتروني
               </Label>
               <Input
@@ -282,7 +275,7 @@ export function SignupForm({
                 required
                 maxLength={254}
                 placeholder="name@company.com"
-                className="rounded-lg py-2.5 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent"
+                className="bg-white border border-[#E5E5DC] rounded-[10px] px-[14px] py-[11px] text-[15px] text-[#0A0A0A] shadow-none outline-none h-12 placeholder:text-[#B0B0A5] focus-visible:border-[#0E9F6E] focus-visible:ring-2 focus-visible:ring-[#0E9F6E]/15 transition-colors"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -295,7 +288,7 @@ export function SignupForm({
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="phone" className="text-sm font-medium text-foreground">
+              <Label htmlFor="phone" className="text-[14px] font-semibold text-[#0A0A0A] mb-2 inline-block">
                 رقم الجوال
               </Label>
               <div className="flex gap-2">
@@ -304,8 +297,9 @@ export function SignupForm({
                   name="phone"
                   type="tel"
                   autoComplete="tel"
+                  inputMode="numeric"
                   required
-                  className="rounded-lg py-2.5 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent"
+                  className="bg-white border border-[#E5E5DC] rounded-[10px] px-[14px] py-[11px] text-[15px] text-[#0A0A0A] shadow-none outline-none h-12 placeholder:text-[#B0B0A5] focus-visible:border-[#0E9F6E] focus-visible:ring-2 focus-visible:ring-[#0E9F6E]/15 transition-colors"
                   value={phone}
                   onChange={(e) => {
                     setPhone(e.target.value);
@@ -313,12 +307,12 @@ export function SignupForm({
                   }}
                   placeholder={country === "SA" ? "5XXXXXXXXX" : "01XXXXXXXXX"}
                 />
-                <span className="inline-flex items-center rounded-lg border border-input bg-muted px-3 text-xs font-semibold text-muted-foreground shrink-0">
+                <span className="inline-flex items-center px-4 h-12 bg-[#F4F4EE] border border-[#E5E5DC] rounded-[10px] font-['IBM_Plex_Mono',monospace] text-[13px] font-semibold text-[#3F3F38] shrink-0">
                   {countryCode}
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground">
-                اكتب رقم جوالك فقط بدون مفتاح الدولة، وسنضيفه تلقائياً.
+              <p className="text-[12.5px] text-[#8A8A81] mt-1.5">
+                اكتب الرقم المحلي فقط — يُضاف مفتاح الدولة تلقائياً.
               </p>
               {errors.phone?.[0] && (
                 <p className="mt-1 text-xs text-destructive">{errors.phone[0]}</p>
@@ -326,15 +320,16 @@ export function SignupForm({
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="businessName" className="text-sm font-medium text-foreground">
+              <Label htmlFor="businessName" className="text-[14px] font-semibold text-[#0A0A0A] mb-2 inline-block">
                 اسم النشاط التجاري (اختياري)
               </Label>
               <Input
                 id="businessName"
                 name="businessName"
                 type="text"
+                autoComplete="organization"
                 maxLength={200}
-                className="rounded-lg py-2.5 focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent"
+                className="bg-white border border-[#E5E5DC] rounded-[10px] px-[14px] py-[11px] text-[15px] text-[#0A0A0A] shadow-none outline-none h-12 placeholder:text-[#B0B0A5] focus-visible:border-[#0E9F6E] focus-visible:ring-2 focus-visible:ring-[#0E9F6E]/15 transition-colors"
                 placeholder="مثال: متجر كلمات"
                 value={businessName}
                 onChange={(event) => setBusinessName(event.target.value)}
@@ -342,38 +337,48 @@ export function SignupForm({
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="businessType" className="text-sm font-medium text-foreground">
+              <Label htmlFor="businessType" className="text-[14px] font-semibold text-[#0A0A0A] mb-2 inline-block">
                 نوع النشاط (اختياري)
               </Label>
               <Textarea
                 id="businessType"
                 name="businessType"
                 maxLength={500}
-                className="rounded-lg py-2.5 min-h-[80px] focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:border-accent"
                 rows={3}
                 placeholder="مثال: عيادة أسنان، متجر إلكتروني، شركة خدمات B2B..."
                 value={businessType}
                 onChange={(event) => setBusinessType(event.target.value)}
+                className="bg-white border border-[#E5E5DC] rounded-[10px] px-[14px] py-3 text-[15px] text-[#0A0A0A] min-h-[96px] shadow-none resize-y placeholder:text-[#B0B0A5] focus-visible:border-[#0E9F6E] focus-visible:ring-2 focus-visible:ring-[#0E9F6E]/15 transition-colors"
               />
             </div>
 
             <Button
               type="submit"
               disabled={pending}
-              className="w-full mt-1 rounded-lg transition-all duration-200 hover:scale-[1.02] shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 font-semibold"
+              className={cn(
+                "w-full mt-2 bg-[#0A0A0A] hover:bg-[#1a1a1a] text-white rounded-xl px-[22px] h-14 text-[16px] font-semibold border-none shadow-[0_14px_30px_-14px_rgba(10,10,10,.45)] transition-all",
+                pending ? "cursor-not-allowed opacity-70" : "cursor-pointer opacity-100"
+              )}
             >
               {submitButtonLabel}
             </Button>
-            <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs text-muted-foreground w-full">
-              <span>بدون عقد</span>
-              <span aria-hidden>·</span>
-              <span>بيانات آمنة</span>
-              <span aria-hidden>·</span>
-              <span>رفع الباقة بضغطة زر</span>
+            <div className="flex justify-center gap-5 flex-wrap text-[13px] text-[#3F3F38] mt-1 font-medium">
+              <span className="inline-flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12.5l5 5L20 7"/></svg>
+                بدون التزام طويل
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12.5l5 5L20 7"/></svg>
+                خصوصية محفوظة
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M5 12.5l5 5L20 7"/></svg>
+                مرونة في الترقية
+              </span>
             </div>
-            <p className="mt-2 text-center text-xs text-muted-foreground">
+            <p className="mt-2 text-center text-[12.5px] text-[#8A8A81]">
               بالتسجيل أنت توافق على{" "}
-              <Link href="/privacy" className="underline transition-colors hover:text-foreground">
+              <Link href="/privacy" className="text-[#3F3F38] underline hover:text-[#0A0A0A] transition-colors">
                 سياسة الخصوصية
               </Link>
             </p>
@@ -382,85 +387,88 @@ export function SignupForm({
 
         <section
           key={planIndex}
-          className={`mt-6 pt-6 border-t border-border/60 lg:mt-0 lg:pt-0 lg:border-t-0 lg:border-s lg:border-border/60 lg:ps-8 flex flex-col rounded-xl bg-muted/10 p-5 lg:p-6 transition-all duration-700 delay-300 ease-out ${reveal}`}
+          className={`mt-6 pt-6 border-t border-border/60 lg:mt-0 lg:pt-0 lg:border-t-0 lg:border-s lg:border-border/60 lg:ps-8 flex flex-col transition-all duration-700 delay-300 ease-out ${reveal}`}
           aria-labelledby="plan-detail-heading"
         >
-          <h2 id="plan-detail-heading" className="mb-2 text-xs font-bold uppercase tracking-widest text-accent shrink-0">
-            ما تحصل عليه مع {serverPlan?.name ?? `الخطة ${planIndex + 1}`}
-          </h2>
-          <div className="mb-4 min-h-14 rounded-xl border-2 border-accent/30 bg-primary/10 px-4 py-3 text-center">
-            <p className="text-xs font-bold text-muted-foreground mb-1">
-              {isAnnual ? "اشتراك سنوي — إجمالي سنوي" : "اشتراك شهري"}
-            </p>
-            <p className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl tabular-nums">
-              {priceRow.mo > 0 ? <CurrencyIcon country={country} /> : null}
-              {formattedTotal}
-            </p>
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <h2
+              id="plan-detail-heading"
+              className="text-[15px] font-semibold text-[#0A0A0A]"
+            >
+              محتوى باقة {serverPlan?.name ?? `الخطة ${planIndex + 1}`}
+            </h2>
+            <span className="font-['IBM_Plex_Mono',monospace] text-[10.5px] text-[#0E9F6E] tracking-[1.5px] font-semibold bg-[#E6F7EF] border border-[#B5E5D0] px-2 py-1 rounded-full">
+              YOUR PLAN
+            </span>
           </div>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 list-none">
-            {detailsToShow.slice(0, 3).map((item) => (
-              <li key={item} className="flex items-start gap-2 text-sm text-foreground/90">
-                <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
-                <span className="min-w-0 wrap-break-word">{item}</span>
+
+          {/* Price card */}
+          <div className="relative bg-gradient-to-br from-[#0A0A0A] via-[#141414] to-[#1a1a1a] text-white rounded-[18px] px-6 py-7 mb-5 shadow-[0_24px_48px_-24px_rgba(10,10,10,.6)] overflow-hidden">
+            {/* Decorative glow */}
+            <div className="pointer-events-none absolute -top-16 -left-16 w-40 h-40 rounded-full bg-[#0E9F6E]/15 blur-3xl" aria-hidden />
+
+            <div className="relative flex items-center justify-between gap-4 mb-1">
+              <span className="font-['IBM_Plex_Mono',monospace] text-[11px] text-[#A5A599] tracking-[2px] uppercase">
+                {isAnnual ? "Annual price" : "Monthly price"}
+              </span>
+              {priceRow.mo > 0 && (
+                <span className="font-['IBM_Plex_Mono',monospace] text-[10px] font-semibold tracking-[1.5px] uppercase text-[#3DDC8C] bg-[#0E9F6E]/15 border border-[#0E9F6E]/30 px-2 py-1 rounded-full">
+                  {country === "SA" ? "SAR" : "EGP"}
+                </span>
+              )}
+            </div>
+
+            <div className="relative flex items-baseline gap-2 mt-3">
+              <span dir="ltr" className="font-['IBM_Plex_Mono',monospace] text-[48px] font-bold leading-none text-white tracking-[-1.5px]">
+                {formattedTotal}
+              </span>
+              {priceRow.mo > 0 && (
+                <span className="font-['IBM_Plex_Mono',monospace] text-[13px] text-[#8A8A81] font-medium">
+                  {isAnnual ? "/ سنة" : "/ شهر"}
+                </span>
+              )}
+            </div>
+
+            {priceRow.mo > 0 && isAnnual && (
+              <div className="relative mt-3 pt-3 border-t border-white/10 font-['IBM_Plex_Mono',monospace] text-[11.5px] text-[#A5A599]">
+                <span dir="ltr">{(priceRow.yr).toLocaleString("en-US")}</span> {country === "SA" ? "SAR" : "EGP"} / شهر
+                <span className="opacity-50 mx-2">·</span>
+                <span className="text-[#3DDC8C]">دفعة سنوية واحدة</span>
+              </div>
+            )}
+          </div>
+
+          {/* Features list */}
+          <ul className="list-none flex flex-col gap-3 m-0 p-0 mb-5">
+            {detailsToShow.slice(0, 4).map((item) => (
+              <li key={item} className="flex items-start gap-3 text-[14.5px] text-[#0A0A0A] leading-[1.55]">
+                <span className="shrink-0 mt-[3px] w-5 h-5 rounded-full bg-[#E6F7EF] inline-flex items-center justify-center">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" strokeWidth={3.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                    <path d="M5 12.5l5 5L20 7" />
+                  </svg>
+                </span>
+                <span className="min-w-0">{item}</span>
               </li>
             ))}
           </ul>
-          {detailsToShow.length > 3 && (
-            <button
-              type="button"
-              className={cn(
-                "text-xs text-muted-foreground underline lg:hidden mt-2 text-start",
-                showAllPlanFeatures && "hidden"
-              )}
-              onClick={() => setShowAllPlanFeatures(true)}
+
+          {/* Flexibility callout */}
+          <div className="flex items-start gap-3 px-4 py-3.5 bg-[#F4FBF7] border border-[#B5E5D0] rounded-xl">
+            <span
+              className="w-9 h-9 rounded-full bg-white border border-[#B5E5D0] inline-flex items-center justify-center text-[#0E9F6E] shrink-0"
+              aria-hidden
             >
-              شوف كل المميزات
-            </button>
-          )}
-          {detailsToShow.length > 3 && (
-            <div
-              className={cn(
-                "mt-2 hidden lg:block",
-                showAllPlanFeatures && "block"
-              )}
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5">
-                {detailsToShow.slice(3, 6).map((item, i) => (
-                  <div
-                    key={`${planIndex}-more-${i}-${item.slice(0, 24)}`}
-                    className="flex items-start gap-2 text-sm text-foreground/90"
-                  >
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
-                    <span className="min-w-0 wrap-break-word">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {detailsToShow.length > 6 && (
-            <div className="mt-2 hidden lg:block">
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2.5 list-none">
-                {detailsToShow.slice(6).map((item, i) => (
-                  <li
-                    key={`${planIndex}-rest-${i}-${item.slice(0, 24)}`}
-                    className="flex items-start gap-2 text-sm text-foreground/90"
-                  >
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden />
-                    <span className="min-w-0 wrap-break-word">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-          <div className="mt-4 flex items-start gap-3 rounded-xl border border-border/60 bg-muted/20 p-4">
-            <ShieldCheck className="h-5 w-5 shrink-0 text-primary" aria-hidden />
-            <p className="text-sm font-medium">ضمان استرداد كامل خلال ١٤ يوم — بدون أسئلة</p>
+              <ShieldCheck size={18} />
+            </span>
+            <span className="min-w-0">
+              <span className="block text-[14px] font-semibold text-[#07744F] mb-1">
+                مرونة كاملة في باقتك
+              </span>
+              <span className="block text-[13px] text-[#3F3F38] leading-[1.55]">
+                ترقية، تغيير، أو تعديل الإعدادات من لوحة التحكم في أي وقت.
+              </span>
+            </span>
           </div>
-          <div className="mt-4 border-r-2 border-primary pr-3 text-sm text-muted-foreground italic">
-            <p>كنا نصرف على إعلانات بدون نتيجة — اشتركنا وأول شهر جاب عملاء جدد</p>
-            <p className="mt-1 not-italic">— صاحب متجر إلكتروني، الرياض</p>
-          </div>
-          <BankTrustBadge className="mt-4 justify-start" />
         </section>
       </Card>
       </div>

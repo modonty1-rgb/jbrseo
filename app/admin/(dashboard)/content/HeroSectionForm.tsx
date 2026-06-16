@@ -10,6 +10,13 @@ import { autoResize } from "@/lib/autoResize";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 import { UnsavedChangesBar } from "../components/UnsavedChangesBar";
 import { TrustLinesEditor } from "./TrustLinesEditor";
+import {
+  TrustBarClientsEditor,
+  clientsToRows,
+  emptyClientRow,
+  rowsToClients,
+  type TrustBarClientRow,
+} from "./TrustBarClientsEditor";
 
 const HERO_FORM_ID = "hero-section-form";
 
@@ -19,203 +26,121 @@ type HeroSectionFormProps = {
   ctaLabel: string;
 };
 
+const LABEL = "text-sm font-medium text-foreground";
+const FIELD = "flex flex-col gap-1.5";
+const INPUT = "rounded-md border border-border bg-background px-3 py-2 text-sm";
+const ROW_2 = "grid gap-4 md:grid-cols-2";
+
 export function HeroSectionForm({ hero, country, ctaLabel }: HeroSectionFormProps): ReactElement {
-  const benefits = hero.benefits ?? [];
-  const benefitsCount = benefits.length || 3;
-
-  const getBenefit = (index: number) => benefits[index] ?? { objection: "", answer: "" };
-
   const trustText = (hero.trust ?? []).join("\n");
+  const initialClients = hero.trustBarClients ?? [];
 
   const [isPending, startTransition] = useTransition();
-  const [subCharCount, setSubCharCount] = useState(() => (hero.sub ?? "").length);
   const [ctaVal, setCtaVal] = useState(ctaLabel);
+  const [trustBarRows, setTrustBarRows] = useState<TrustBarClientRow[]>(() =>
+    initialClients.length > 0 ? clientsToRows(initialClients) : [emptyClientRow()],
+  );
 
   useEffect(() => {
     const form = document.getElementById(HERO_FORM_ID);
     if (!form) return;
-    const resize = (ta: HTMLTextAreaElement) => {
-      ta.style.height = "auto";
-      ta.style.height = `${ta.scrollHeight}px`;
-    };
     const sub = form.querySelector<HTMLTextAreaElement>('textarea[name="sub"]');
-    if (sub) resize(sub);
-    form
-      .querySelectorAll<HTMLTextAreaElement>('textarea[name^="benefits_"][name$="_answer"]')
-      .forEach(resize);
+    if (sub) {
+      sub.style.height = "auto";
+      sub.style.height = `${sub.scrollHeight}px`;
+    }
   }, []);
 
   function handleSave() {
     const form = document.getElementById(HERO_FORM_ID);
     if (!(form instanceof HTMLFormElement)) return;
     const fd = new FormData(form);
-    startTransition(() => {
-      void updateHeroSection(fd);
-    });
+    fd.set("trustClientsJson", JSON.stringify(rowsToClients(trustBarRows)));
+    startTransition(() => void updateHeroSection(fd));
   }
 
   return (
     <>
-      <form id={HERO_FORM_ID} className="space-y-4">
+      <form id={HERO_FORM_ID} className="space-y-6">
         <input type="hidden" name="country" value={country} />
         <input type="hidden" name="section" value="hero" />
-        <input
-          type="hidden"
-          name="redirect"
-          value={`/admin/content/hero?country=${country}`}
-        />
-        <input type="hidden" name="benefitsCount" value={benefitsCount} />
+        <input type="hidden" name="redirect" value={`/admin/content/hero?country=${country}`} />
 
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold text-muted-foreground">تعديل قسم الهيرو</h2>
-          <a
-            href={`/admin/content/hero?country=${country}&useDefault=1`}
-            onClick={(e) => {
-              if (
-                !window.confirm(
-                  "هل تريد استعادة القيم الافتراضية؟ ستُفقد كل التعديلات الحالية.",
-                )
-              ) {
-                e.preventDefault();
-              }
-            }}
-            className="text-xs text-destructive hover:underline"
-          >
-            ↺ استعادة القيم الافتراضية
-          </a>
+        {/* Row 1: announcement (full) */}
+        <div className={FIELD}>
+          <label className={LABEL} htmlFor="hero-proof">شريط الإعلان العلوي</label>
+          <Input id="hero-proof" name="proof" defaultValue={hero.proof} className={INPUT} />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-semibold text-muted-foreground" htmlFor="hero-proof">
-            شريط الإعلان العلوي
-          </label>
-          <Input
-            id="hero-proof"
-            name="proof"
-            defaultValue={hero.proof}
-            className="rounded-md border border-border bg-background px-2 py-1 text-sm"
-          />
-          <p className="mt-0.5 text-[10px] text-muted-foreground">
-            💡 يظهر كشريط ملون في أعلى صفحة الموقع
-          </p>
+        {/* Row 2: h1 line 1 + line 2 — paired */}
+        <div className={ROW_2}>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="hero-h1-1">العنوان — السطر الأول</label>
+            <Input id="hero-h1-1" name="h1Line1" defaultValue={hero.h1Line1} className={INPUT} />
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="hero-h1-2">العنوان — السطر الثاني</label>
+            <Input id="hero-h1-2" name="h1Line2" defaultValue={hero.h1Line2} className={INPUT} />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-2">
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            سطر العنوان الأول ← يظهر فوق
-            <Input
-              name="h1Line1"
-              defaultValue={hero.h1Line1}
-              className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+        {/* Row 3: subtitle (textarea) + CTA label */}
+        <div className={ROW_2}>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="hero-sub">النص الفرعي</label>
+            <Textarea
+              id="hero-sub"
+              name="sub"
+              rows={4}
+              defaultValue={hero.sub}
+              className="min-h-0 resize-none overflow-hidden rounded-md border border-border bg-background px-3 py-2 text-sm"
+              onInput={autoResize}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            سطر العنوان الثاني ← يظهر تحته
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="hero-ctaLabel">نص زر الدعوة الرئيسي</label>
             <Input
-              name="h1Line2"
-              defaultValue={hero.h1Line2}
-              className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+              id="hero-ctaLabel"
+              name="ctaLabel"
+              value={ctaVal}
+              onChange={(e) => setCtaVal(e.target.value)}
+              dir="rtl"
+              className={INPUT}
             />
-          </label>
-        </div>
-        <p className="text-center text-[10px] text-muted-foreground">
-          ↕ السطران يُعرضان فوق بعض في الهيرو
-        </p>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-xs font-semibold text-muted-foreground" htmlFor="hero-sub">
-            نص فرعي
-          </label>
-          <Textarea
-            id="hero-sub"
-            name="sub"
-            rows={4}
-            defaultValue={hero.sub}
-            className="min-h-0 resize-none overflow-hidden rounded-md border border-border bg-background px-2 py-1 text-sm"
-            onInput={(e) => {
-              autoResize(e);
-              setSubCharCount(e.currentTarget.value.length);
-            }}
-          />
-          <p className="mt-0.5 text-end text-[10px] text-muted-foreground">
-            {subCharCount} حرف
-          </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-3">
-          {Array.from({ length: benefitsCount }).map((_, i) => {
-            const b = getBenefit(i);
-            return (
-              <div
-                key={i}
-                className="space-y-3 rounded-md border border-border bg-muted/30 p-3"
-              >
-                <div className="flex items-center gap-1 text-xs font-semibold text-muted-foreground">
-                  <span className="text-base" aria-hidden>
-                    🙋
-                  </span>
-                  الاعتراض {i + 1}
-                </div>
-                <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                  السؤال / الاعتراض
-                  <Input
-                    name={`benefits_${i}_objection`}
-                    defaultValue={b.objection}
-                    className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                  />
-                </label>
-                <label className="flex flex-col gap-1 text-[11px] text-muted-foreground">
-                  الرد
-                  <Textarea
-                    name={`benefits_${i}_answer`}
-                    rows={3}
-                    defaultValue={b.answer}
-                    className="min-h-0 resize-none overflow-hidden rounded-md border border-border bg-background px-2 py-1 text-xs"
-                    onInput={autoResize}
-                  />
-                </label>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <span className="text-xs font-semibold text-muted-foreground">عناصر الثقة</span>
+        {/* Row 4: trust lines (list) — full width */}
+        <div className={FIELD}>
+          <label className={LABEL}>عناصر الثقة (سطر لكل عنصر)</label>
           <TrustLinesEditor defaultValue={trustText} />
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-muted-foreground" htmlFor="hero-ctaLabel">
-            نص زر الدعوة الرئيسي
-          </label>
-          <Input
-            id="hero-ctaLabel"
-            name="ctaLabel"
-            value={ctaVal}
-            onChange={(e) => setCtaVal(e.target.value)}
-            dir="rtl"
-            className="rounded-md border border-border bg-background px-2 py-1 text-sm"
-          />
-          <p className="mt-0.5 text-[10px] text-muted-foreground">
-            يُستخدم في الهيدر والبطل وأزرار الدعوة في كل الأقسام.
-          </p>
-          <div className="mt-1 flex flex-wrap items-center gap-2">
-            <span className="text-xs text-muted-foreground">معاينة:</span>
+        {/* ── شريط العملاء (نفس الـ section في DB) ── */}
+        <div className="mt-8 space-y-4 rounded-lg border border-border bg-muted/20 p-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-base" aria-hidden>🏢</span>
+              <h3 className="text-sm font-bold text-foreground">شريط العملاء</h3>
+              <span className="text-xs text-muted-foreground">({trustBarRows.length} عميل)</span>
+            </div>
             <button
               type="button"
-              tabIndex={-1}
-              className="pointer-events-none inline-flex items-center rounded-md bg-primary px-4 py-1.5 text-sm font-semibold text-primary-foreground shadow"
+              onClick={() => setTrustBarRows((prev) => [...prev, emptyClientRow()])}
+              className="rounded-md border border-border bg-background px-3 py-1.5 text-xs font-semibold text-primary hover:bg-muted/40"
             >
-              {ctaVal.trim() || "نص الزر…"}
+              + إضافة عميل
             </button>
           </div>
+
+          <TrustBarClientsEditor rows={trustBarRows} onRowsChange={setTrustBarRows} />
         </div>
 
         <ConfirmSaveDialog
           onConfirm={handleSave}
           pending={isPending}
-          triggerLabel="حفظ قسم الهيرو"
-          description="سيتم حفظ التغييرات على قسم الهيرو للبلد المحدد. هل أنت متأكد من المتابعة؟"
+          triggerLabel="حفظ"
+          description="سيتم حفظ التغييرات على الهيرو + شريط العملاء."
         />
       </form>
       <UnsavedChangesBar formId={HERO_FORM_ID} />

@@ -2,26 +2,14 @@
 
 import { useSearchParams, usePathname } from "next/navigation";
 
-/** مسارات عالمية — تطابق تام فقط */
-const GLOBAL_EXACT = new Set([
-  "/admin",
-  "/admin/settings",
-  "/admin/content/socialProof",
-  "/admin/content/trustbar",
-  "/admin/content/about",
-  "/admin/content/team",
-  "/admin/content/privacy",
-  "/admin/content/terms",
-  "/admin/content/emojis",
-  "/admin/subscribers",
-]);
+/** البلد بقى يخصّ بس صفحات الأسعار + المشتركون.
+ *  أي مسار تاني يعتبر عالمي ولا يحتاج بانر بلد. */
+const COUNTRY_AWARE_PREFIXES = ["/admin/pricing", "/admin/content/pricing", "/admin/subscribers"];
 
-/** مسارات عالمية — prefix (كل ما يبدأ بها) */
-const GLOBAL_PREFIXES = ["/admin/marketing"];
-
-function isGlobalPath(pathname: string): boolean {
-  if (GLOBAL_EXACT.has(pathname)) return true;
-  return GLOBAL_PREFIXES.some((p) => pathname.startsWith(p + "/") || pathname === p);
+function isCountryAwarePath(pathname: string): boolean {
+  return COUNTRY_AWARE_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`),
+  );
 }
 
 export function AdminCountryBanner() {
@@ -29,7 +17,7 @@ export function AdminCountryBanner() {
   const searchParams = useSearchParams();
   const country = searchParams.get("country");
 
-  if (isGlobalPath(pathname)) return null;
+  if (!isCountryAwarePath(pathname)) return null;
   if (country !== "SA" && country !== "EG") return null;
 
   const isSA = country === "SA";
@@ -44,7 +32,7 @@ export function AdminCountryBanner() {
     >
       <span className="text-2xl">{isSA ? "🇸🇦" : "🇪🇬"}</span>
       <p className={`text-sm font-bold ${isSA ? "text-green-400" : "text-red-400"}`}>
-        أنت الآن تعدّل إعدادات {isSA ? "السعودية" : "مصر"} — أي تغيير يؤثر على الموقع السعودي{isSA ? "" : " المصري"} فقط
+        أنت الآن تعدّل أسعار {isSA ? "السعودية" : "مصر"} — أي تغيير يؤثر على الموقع {isSA ? "السعودي" : "المصري"} فقط
       </p>
     </div>
   );

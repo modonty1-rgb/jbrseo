@@ -19,6 +19,10 @@ type FaqSectionFormProps = {
   country: SupportedCountry;
 };
 
+const LABEL = "text-sm font-medium text-foreground";
+const FIELD = "flex flex-col gap-1.5";
+const INPUT = "rounded-md border border-border bg-background px-3 py-2 text-sm";
+
 export function FaqSectionForm({ section, country }: FaqSectionFormProps): ReactElement {
   const faqs = section.faqs ?? [];
   const faqsCount = faqs.length || 10;
@@ -41,7 +45,7 @@ export function FaqSectionForm({ section, country }: FaqSectionFormProps): React
 
   return (
     <>
-      <form id={FAQ_FORM_ID} action={onSubmit} className="space-y-4">
+      <form id={FAQ_FORM_ID} action={onSubmit} className="space-y-6">
         <input type="hidden" name="country" value={country} />
         <input type="hidden" name="section" value="faq" />
         <input
@@ -51,129 +55,70 @@ export function FaqSectionForm({ section, country }: FaqSectionFormProps): React
         />
         <input type="hidden" name="faqsCount" value={faqsCount} />
 
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="text-sm font-semibold text-muted-foreground">تعديل قسم الأسئلة الشائعة</h2>
-          <a
-            href={`/admin/content/faq?country=${country}&useDefault=1`}
-            onClick={(e) => {
-              if (
-                !window.confirm(
-                  "هل تريد استعادة القيم الافتراضية؟ ستُفقد كل التعديلات الحالية.",
-                )
-              ) {
-                e.preventDefault();
-              }
-            }}
-            className="text-xs text-destructive hover:underline"
-          >
-            ↺ استعادة القيم الافتراضية
-          </a>
-        </div>
-
-        <div className="space-y-3 rounded-md border border-border bg-muted/30 p-3">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-            إعدادات القسم
-          </p>
-
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <div>
-              <label className="text-xs font-semibold text-muted-foreground" htmlFor={`${FAQ_FORM_ID}-eyebrow`}>
-                اسم القسم (Eyebrow)
-              </label>
-              <Input
-                id={`${FAQ_FORM_ID}-eyebrow`}
-                name="eyebrow"
-                defaultValue={section.eyebrow}
-                className="mt-1 w-full rounded-md border border-border bg-background px-2 py-1 text-sm"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-semibold text-muted-foreground" htmlFor={`${FAQ_FORM_ID}-cta`}>
-                <span className="inline-flex flex-wrap items-center gap-1">
-                  نص زر الدعوة
-                  <span className="text-[10px] font-normal text-muted-foreground">(يظهر أسفل الأسئلة)</span>
-                </span>
-              </label>
-              <Input
-                id={`${FAQ_FORM_ID}-cta`}
-                name="ctaLabel"
-                defaultValue={section.ctaLabel}
-                className="mt-1 w-full rounded-md border border-border bg-background px-2 py-1 text-sm"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="text-xs font-semibold text-muted-foreground" htmlFor={`${FAQ_FORM_ID}-title`}>
-              العنوان الرئيسي
-            </label>
+        {/* Header row: title + ctaLabel paired */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor={`${FAQ_FORM_ID}-title`}>العنوان الرئيسي</label>
             <Input
               id={`${FAQ_FORM_ID}-title`}
               name="title"
               defaultValue={section.title}
-              className="mt-1 w-full rounded-md border border-border bg-background px-2 py-1 text-sm"
+              className={INPUT}
             />
           </div>
-
-          <div>
-            <label className="text-xs font-semibold text-muted-foreground" htmlFor={`${FAQ_FORM_ID}-subtitle`}>
-              العنوان الفرعي
-            </label>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor={`${FAQ_FORM_ID}-cta`}>نص زر الدعوة</label>
             <Input
-              id={`${FAQ_FORM_ID}-subtitle`}
-              name="subtitle"
-              defaultValue={section.subtitle}
-              className="mt-1 w-full rounded-md border border-border bg-background px-2 py-1 text-sm"
+              id={`${FAQ_FORM_ID}-cta`}
+              name="ctaLabel"
+              defaultValue={section.ctaLabel}
+              className={INPUT}
             />
           </div>
         </div>
 
-        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-          <span className="text-xs font-semibold text-muted-foreground">الأسئلة ({faqsCount})</span>
-          <span className="text-[10px] text-muted-foreground">الحد الأقصى: {faqsCount} سؤال</span>
-        </div>
-
-        <div className="grid gap-3 md:grid-cols-2">
-          {Array.from({ length: faqsCount }).map((_, i) => {
-            const f = getFaq(i);
-            return (
-              <div
-                key={i}
-                className="space-y-2 rounded-md border border-border bg-muted/30 p-3"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-xs font-bold text-primary">س {i + 1}</span>
-                  <FaqTagSelector name={`faqs_${i}_tag`} defaultValue={f.tag} />
+        {/* FAQ list — each row: question + tag side by side, answer below */}
+        <div className="border-t border-border/60 pt-4">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="text-base" aria-hidden>❓</span>
+            <h3 className="text-sm font-bold text-foreground">قائمة الأسئلة ({faqsCount})</h3>
+          </div>
+          <div className="space-y-3">
+            {Array.from({ length: faqsCount }).map((_, i) => {
+              const f = getFaq(i);
+              return (
+                <div key={i} className="space-y-2 rounded-md border border-border bg-card/40 p-3">
+                  <div className="text-xs font-semibold text-muted-foreground">السؤال {i + 1}</div>
+                  <div className="grid gap-3 grid-cols-[1fr_180px]">
+                    <div className={FIELD}>
+                      <label className={LABEL} htmlFor={`${FAQ_FORM_ID}-q-${i}`}>السؤال</label>
+                      <Input
+                        id={`${FAQ_FORM_ID}-q-${i}`}
+                        name={`faqs_${i}_q`}
+                        defaultValue={f.q}
+                        className={INPUT}
+                      />
+                    </div>
+                    <div className={FIELD}>
+                      <label className={LABEL}>الوسم</label>
+                      <FaqTagSelector name={`faqs_${i}_tag`} defaultValue={f.tag} />
+                    </div>
+                  </div>
+                  <div className={FIELD}>
+                    <label className={LABEL} htmlFor={`${FAQ_FORM_ID}-a-${i}`}>الجواب</label>
+                    <Textarea
+                      id={`${FAQ_FORM_ID}-a-${i}`}
+                      name={`faqs_${i}_a`}
+                      rows={3}
+                      defaultValue={f.a}
+                      className="min-h-0 resize-none overflow-hidden rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      onInput={autoResize}
+                    />
+                  </div>
                 </div>
-
-                <div>
-                  <label className="text-[10px] text-muted-foreground" htmlFor={`${FAQ_FORM_ID}-q-${i}`}>
-                    السؤال
-                  </label>
-                  <Input
-                    id={`${FAQ_FORM_ID}-q-${i}`}
-                    name={`faqs_${i}_q`}
-                    defaultValue={f.q}
-                    className="mt-0.5 w-full rounded-md border border-border bg-background px-2 py-1 text-sm font-medium"
-                  />
-                </div>
-
-                <div>
-                  <label className="text-[10px] text-muted-foreground" htmlFor={`${FAQ_FORM_ID}-a-${i}`}>
-                    الجواب
-                  </label>
-                  <Textarea
-                    id={`${FAQ_FORM_ID}-a-${i}`}
-                    name={`faqs_${i}_a`}
-                    rows={3}
-                    defaultValue={f.a}
-                    className="mt-0.5 min-h-0 w-full resize-none overflow-hidden rounded-md border border-border bg-background px-2 py-1 text-xs"
-                    onInput={autoResize}
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         <Button
@@ -186,8 +131,8 @@ export function FaqSectionForm({ section, country }: FaqSectionFormProps): React
         <ConfirmSaveDialog
           formId={FAQ_FORM_ID}
           submitButtonId="faq-form-submit"
-          triggerLabel="حفظ قسم الأسئلة الشائعة"
-          description="سيتم حفظ التغييرات على قسم الأسئلة الشائعة للبلد المحدد. هل أنت متأكد من المتابعة؟"
+          triggerLabel="حفظ"
+          description="سيتم حفظ التغييرات على قسم الأسئلة الشائعة."
         />
       </form>
       <UnsavedChangesBar formId={FAQ_FORM_ID} />

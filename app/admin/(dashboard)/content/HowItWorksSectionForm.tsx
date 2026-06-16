@@ -1,204 +1,143 @@
 "use client";
 
-import { useEffect, type ReactElement } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { updateHowItWorksSection } from "@/app/actions/content-sections";
+import { autoResize } from "@/lib/autoResize";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
-import { autoResize } from "@/lib/autoResize";
 import { ConfirmSaveDialog } from "../components/ConfirmSaveDialog";
 import { UnsavedChangesBar } from "../components/UnsavedChangesBar";
 
 const HOW_IT_WORKS_FORM_ID = "how-it-works-form";
+
+type Step = { title: string; line: string };
 
 type HowItWorksSectionFormProps = {
   section: StaticLanding["howItWorks"];
   country: SupportedCountry;
 };
 
-export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFormProps): ReactElement {
-  const steps = section.steps ?? [];
-  const stepsCount = steps.length || 3;
+const LABEL = "text-sm font-medium text-foreground";
+const FIELD = "flex flex-col gap-1.5";
+const INPUT = "rounded-md border border-border bg-background px-3 py-2 text-sm";
 
-  const getStep = (i: number) =>
-    steps[i] ?? { num: "", icon: "", title: "", line: "", tag: "" };
+export function HowItWorksSectionForm({ section, country }: HowItWorksSectionFormProps): ReactElement {
+  const initial: Step[] = (section.steps ?? []).map((s) => ({
+    title: s.title ?? "",
+    line: s.line ?? "",
+  }));
+
+  const [steps, setSteps] = useState<Step[]>(initial.length > 0 ? initial : [{ title: "", line: "" }]);
 
   useEffect(() => {
     const form = document.getElementById(HOW_IT_WORKS_FORM_ID);
     if (!form) return;
-    const resize = (ta: HTMLTextAreaElement) => {
-      ta.style.height = "auto";
-      ta.style.height = `${ta.scrollHeight}px`;
-    };
-    const guarantee = form.querySelector<HTMLTextAreaElement>('textarea[name="guarantee"]');
-    if (guarantee) resize(guarantee);
-    form.querySelectorAll<HTMLTextAreaElement>('textarea[name^="steps_"][name$="_line"]').forEach(resize);
-  }, []);
+    form
+      .querySelectorAll<HTMLTextAreaElement>('textarea[name^="steps_"][name$="_line"]')
+      .forEach((ta) => {
+        ta.style.height = "auto";
+        ta.style.height = `${ta.scrollHeight}px`;
+      });
+  }, [steps.length]);
 
-  async function onSubmit(formData: FormData) {
-    await updateHowItWorksSection(formData);
+  function addStep() {
+    setSteps((prev) => [...prev, { title: "", line: "" }]);
+  }
+
+  function removeStep(idx: number) {
+    setSteps((prev) => prev.filter((_, i) => i !== idx));
+  }
+
+  function updateStep(idx: number, key: keyof Step, value: string) {
+    setSteps((prev) => prev.map((s, i) => (i === idx ? { ...s, [key]: value } : s)));
   }
 
   return (
     <>
-    <form id={HOW_IT_WORKS_FORM_ID} action={onSubmit} className="space-y-4">
-      <input type="hidden" name="country" value={country} />
-      <input type="hidden" name="section" value="howItWorks" />
-      <input
-        type="hidden"
-        name="redirect"
-        value={`/admin/content/howItWorks?country=${country}`}
-      />
-      <input type="hidden" name="stepsCount" value={stepsCount} />
-
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold text-muted-foreground">
-          تعديل قسم كيف يعمل
-        </h2>
-        <a
-          href={`/admin/content/howItWorks?country=${country}&useDefault=1`}
-          onClick={(e) => {
-            if (!window.confirm("هل تريد استعادة القيم الافتراضية؟ ستُفقد كل التعديلات الحالية.")) {
-              e.preventDefault();
-            }
-          }}
-          className="text-xs text-destructive hover:underline"
-        >
-          ↺ استعادة القيم الافتراضية
-        </a>
-      </div>
-
-      <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-        اسم القسم
-        <Input
-          name="eyebrow"
-          defaultValue={section.eyebrow}
-          className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+      <form id={HOW_IT_WORKS_FORM_ID} action={updateHowItWorksSection} className="space-y-5">
+        <input type="hidden" name="country" value={country} />
+        <input type="hidden" name="section" value="howItWorks" />
+        <input
+          type="hidden"
+          name="redirect"
+          value={`/admin/content/howItWorks?country=${country}`}
         />
-      </label>
+        <input type="hidden" name="stepsCount" value={steps.length} />
 
-      <div className="grid grid-cols-1 gap-2">
-        <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-          العنوان الرئيسي
-          <Input
-            name="title"
-            defaultValue={section.title}
-            className="rounded-md border border-border bg-background px-2 py-1 text-sm"
-          />
-        </label>
-        <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-          <span className="inline-flex flex-wrap items-center gap-1">
-            العنوان الفرعي
-            <span className="text-[10px] font-normal text-muted-foreground">
-              (جملة توضيحية تظهر تحت العنوان)
-            </span>
-          </span>
-          <Input
-            name="subtitle"
-            defaultValue={section.subtitle}
-            className="rounded-md border border-border bg-background px-2 py-1 text-sm"
-          />
-        </label>
-      </div>
-
-      <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-        <span className="inline-flex flex-wrap items-center gap-1">
-          نص الضمان
-          <span className="text-[10px] font-normal text-muted-foreground">
-            (يظهر تحت زر الاشتراك · افصل بين العناصر بـ · )
-          </span>
-        </span>
-        <Textarea
-          name="guarantee"
-          rows={2}
-          defaultValue={section.guarantee}
-          className="min-h-[70px] resize-none overflow-hidden rounded-md border border-border bg-background px-2 py-1 text-sm"
-          onInput={autoResize}
-        />
-      </label>
-
-      <div className="grid grid-cols-1 gap-4">
-        {Array.from({ length: stepsCount }).map((_, i) => {
-          const s = getStep(i);
-          return (
-            <div key={i} className="space-y-2">
-              <div className="space-y-3 rounded-md border border-border bg-muted/30 p-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/20 text-sm font-bold text-primary">
-                    {i + 1}
-                  </div>
-                  <input
-                    type="hidden"
-                    name={`steps_${i}_num`}
-                    value={s.num || `0${i + 1}`}
-                  />
-                  <div className="flex flex-col items-center gap-0.5">
-                    <Input
-                      name={`steps_${i}_icon`}
-                      defaultValue={s.icon}
-                      className="h-10 w-12 rounded-md border border-border bg-muted p-0 text-center text-2xl"
-                    />
-                    <span className="text-[9px] text-muted-foreground">أيقونة</span>
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <label className="flex flex-col gap-1 text-[10px] text-muted-foreground">
-                      عنوان الخطوة
-                      <Input
-                        name={`steps_${i}_title`}
-                        defaultValue={s.title}
-                        className="w-full rounded-md border border-border bg-background px-2 py-1 text-sm font-semibold"
-                      />
-                    </label>
-                  </div>
-                </div>
-                <label className="flex flex-col gap-1 text-[10px] text-muted-foreground">
-                  الوصف
-                  <Textarea
-                    name={`steps_${i}_line`}
-                    rows={2}
-                    defaultValue={s.line}
-                    className="min-h-[40px] w-full resize-none overflow-hidden rounded-md border border-border bg-background px-2 py-1 text-xs"
-                    onInput={autoResize}
-                  />
-                </label>
-                <label className="flex flex-col gap-1 text-[10px] text-muted-foreground">
-                  <span className="inline-flex items-center gap-1">
-                    الوسم الزمني
-                    <span className="text-[9px] opacity-60">(يظهر كـ badge ملون على الكارد)</span>
-                  </span>
-                  <Input
-                    name={`steps_${i}_tag`}
-                    defaultValue={s.tag}
-                    className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                  />
-                </label>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {steps.map((s, i) => (
+            <div
+              key={i}
+              className="flex flex-col gap-3 rounded-md border border-border bg-card/40 p-4"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-muted-foreground">
+                  الخطوة {i + 1}
+                </span>
+                {steps.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 px-2 text-xs text-destructive hover:bg-destructive/10"
+                    onClick={() => removeStep(i)}
+                  >
+                    حذف
+                  </Button>
+                )}
               </div>
-              {i < stepsCount - 1 && (
-                <div className="select-none text-center text-lg text-muted-foreground/40">↓</div>
-              )}
+              <div className={FIELD}>
+                <label className={LABEL}>العنوان</label>
+                <Input
+                  name={`steps_${i}_title`}
+                  value={s.title}
+                  onChange={(e) => updateStep(i, "title", e.target.value)}
+                  className={INPUT}
+                />
+              </div>
+              <div className={FIELD}>
+                <label className={LABEL}>الوصف</label>
+                <Textarea
+                  name={`steps_${i}_line`}
+                  rows={3}
+                  value={s.line}
+                  onChange={(e) => updateStep(i, "line", e.target.value)}
+                  className="min-h-0 resize-none overflow-hidden rounded-md border border-border bg-background px-3 py-2 text-sm"
+                  onInput={autoResize}
+                />
+              </div>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
 
-      <Button
-        type="submit"
-        id="how-it-works-form-submit"
-        className="hidden"
-        tabIndex={-1}
-        aria-hidden
-      />
-      <ConfirmSaveDialog
-        formId={HOW_IT_WORKS_FORM_ID}
-        submitButtonId="how-it-works-form-submit"
-        triggerLabel="حفظ قسم كيف يعمل"
-        description="سيتم حفظ التغييرات على قسم كيف يعمل للبلد المحدد. هل أنت متأكد من المتابعة؟"
-      />
-    </form>
-    <UnsavedChangesBar formId={HOW_IT_WORKS_FORM_ID} />
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={addStep}
+        >
+          + إضافة خطوة
+        </Button>
+
+        <Button
+          type="submit"
+          id="how-it-works-form-submit"
+          className="hidden"
+          tabIndex={-1}
+          aria-hidden
+        />
+        <ConfirmSaveDialog
+          formId={HOW_IT_WORKS_FORM_ID}
+          submitButtonId="how-it-works-form-submit"
+          triggerLabel="حفظ"
+          description="سيتم حفظ التغييرات على قسم كيف يعمل."
+        />
+      </form>
+      <UnsavedChangesBar formId={HOW_IT_WORKS_FORM_ID} />
     </>
   );
 }
-

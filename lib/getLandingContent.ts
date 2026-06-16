@@ -3,10 +3,54 @@ import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { cl } from "@/helpers/cloudinary";
-import type { LandingContent, SocialLinks, SupportedCountry } from "./landing-content.types";
+import type { LandingContent, PricingPlan, SocialLinks, SupportedCountry } from "./landing-content.types";
 import { prisma } from "./prisma";
-import { staticPlansToPricingPlans } from "./static-plans-to-content";
+import { PRICING_CTA_LINK } from "./constants";
 import { getLandingSectionOverride } from "./landing-sections";
+
+function formatPriceForCountry(value: number, country: SupportedCountry): string {
+  if (value === 0) return "مجاناً";
+  return country === "SA" ? `${value} ر.س` : `${value} ج.م`;
+}
+
+function dbPlansToPricingTeaserPlans(
+  dbPlans: Array<{
+    name: string;
+    tagline: string;
+    priceMonthly: number;
+    priceYearly: number;
+    highlights: string[];
+    ctaText: string;
+    badge: string | null;
+    featuredBadge: string | null;
+    visible: boolean;
+    displayOrder: number;
+  }>,
+  sectionCta: string,
+  country: SupportedCountry,
+): PricingPlan[] {
+  return [...dbPlans]
+    .filter((p) => p.visible)
+    .sort((a, b) => a.displayOrder - b.displayOrder)
+    .map((p) => ({
+      name: p.name,
+      forWho: p.tagline,
+      cta: p.ctaText || sectionCta,
+      ctaLink: PRICING_CTA_LINK,
+      ...(p.priceMonthly > 0 || p.priceYearly > 0
+        ? {
+            price: formatPriceForCountry(p.priceMonthly, country),
+            annualPrice:
+              p.priceYearly > 0
+                ? formatPriceForCountry(p.priceYearly * 12, country)
+                : undefined,
+          }
+        : {}),
+      ...(p.badge ? { badge: p.badge } : {}),
+      ...(p.featuredBadge ? { highlight: true as const } : {}),
+      features: p.highlights ?? [],
+    }));
+}
 
 async function siteSettingsRowSafe(): Promise<Awaited<ReturnType<typeof prisma.siteSettings.findFirst>>> {
   try {
@@ -118,13 +162,22 @@ async function getStaticFallback(): Promise<LandingContent> {
 
 async function fetchLandingContent(country: SupportedCountry): Promise<LandingContent> {
   const base = await getStaticFallback();
-  const [staticLandingRaw, settingsRow, seoOverride, ctaLabelOverride, pricingTeaserOverride, socialLinksOverride] = await Promise.all([
-    getStaticLandingWithOverrides(country),
+  const [
+    staticLandingRaw,
+    settingsRow,
+    seoOverride,
+    ctaLabelOverride,
+    pricingTeaserOverride,
+    socialLinksOverride,
+    dbPlans,
+  ] = await Promise.all([
+    getStaticLandingWithOverrides(),
     siteSettingsRowSafe(),
-    getLandingSectionOverride(country, "seo"),
-    getLandingSectionOverride(country, "ctaLabel"),
-    getLandingSectionOverride(country, "pricingTeaser"),
-    getLandingSectionOverride(country, "socialLinks"),
+    getLandingSectionOverride("seo"),
+    getLandingSectionOverride("ctaLabel"),
+    getLandingSectionOverride("pricingTeaser"),
+    getLandingSectionOverride("socialLinks"),
+    prisma.plan.findMany({ where: { country }, orderBy: { displayOrder: "asc" } }),
   ]);
 
   const staticLanding = staticLandingRaw;
@@ -133,7 +186,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
     (pricingTeaserOverride && typeof pricingTeaserOverride === "object" && "cta" in pricingTeaserOverride && typeof (pricingTeaserOverride as { cta?: string }).cta === "string"
       ? (pricingTeaserOverride as { cta: string }).cta
       : null) ?? base.landing.pricingTeaser.plans[0]?.cta ?? "ابدأ الآن";
-  const plans = staticPlansToPricingPlans(staticLanding.pricing.PLANS, sectionCta, country);
+  const plans = dbPlansToPricingTeaserPlans(dbPlans, sectionCta, country);
 
   const socialProofFromStatic = staticLanding.socialProof;
   const landingSocialProof = {

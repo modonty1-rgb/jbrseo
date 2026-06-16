@@ -13,6 +13,12 @@ type AboutSectionFormProps = {
   country: SupportedCountry;
 };
 
+const LABEL = "text-sm font-medium text-foreground";
+const FIELD = "flex flex-col gap-1.5";
+const INPUT = "rounded-md border border-border bg-background px-3 py-2 text-sm";
+const TEXTAREA = "min-h-[70px] rounded-md border border-border bg-background px-3 py-2 text-sm";
+const SECTION_LABEL = "mb-3 flex items-center gap-2 text-sm font-bold text-foreground";
+
 export function AboutSectionForm({ section, country }: AboutSectionFormProps) {
   async function onSubmit(formData: FormData) {
     await updateAboutSection(formData);
@@ -42,11 +48,7 @@ export function AboutSectionForm({ section, country }: AboutSectionFormProps) {
   };
 
   return (
-    <form
-      id="about-form"
-      action={onSubmit}
-      className="space-y-6"
-    >
+    <form id="about-form" action={onSubmit} className="space-y-8">
       <input type="hidden" name="country" value={country} />
       <input type="hidden" name="section" value="about" />
       <input
@@ -55,241 +57,298 @@ export function AboutSectionForm({ section, country }: AboutSectionFormProps) {
         value={`/admin/content/about?country=${country}`}
       />
 
-      <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
-        <h2 className="text-sm font-semibold text-muted-foreground">Hero (من نحن)</h2>
-        <div className="grid gap-3 md:grid-cols-3">
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground md:col-span-1">
-            سطر فوق العنوان (اختياري)
+      {/* ─── HERO ─── */}
+      <section className="rounded-lg border border-border bg-card/40 p-4 space-y-4">
+        <h3 className={SECTION_LABEL}>
+          <span aria-hidden>✨</span>
+          <span>الهيرو</span>
+        </h3>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-heroEyebrow">سطر فوق العنوان</label>
             <Input
+              id="about-heroEyebrow"
               name="heroEyebrow"
               defaultValue={hero.eyebrow ?? ""}
-              className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+              className={INPUT}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground md:col-span-2">
-            العنوان الرئيسي
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-heroTitle">العنوان الرئيسي</label>
             <Input
+              id="about-heroTitle"
               name="heroTitle"
               defaultValue={hero.title}
-              className="rounded-md border border-border bg-background px-2 py-1 text-sm"
+              className={INPUT}
             />
-          </label>
+          </div>
         </div>
-        <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-          الوصف المختصر
+        <div className={FIELD}>
+          <label className={LABEL} htmlFor="about-heroSubtitle">الوصف المختصر</label>
           <Textarea
+            id="about-heroSubtitle"
             name="heroSubtitle"
             defaultValue={hero.subtitle}
-            className="min-h-[70px] rounded-md border border-border bg-background px-2 py-1 text-xs"
+            className={TEXTAREA}
           />
-        </label>
-      </div>
+        </div>
+      </section>
 
-      <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
-        <h2 className="text-sm font-semibold text-muted-foreground">القصة (٣ كروت)</h2>
+      {/* ─── STORY BLOCKS (3 in a row) ─── */}
+      <section className="rounded-lg border border-border bg-card/40 p-4 space-y-4">
+        <h3 className={SECTION_LABEL}>
+          <span aria-hidden>📖</span>
+          <span>القصة (3 مراحل)</span>
+        </h3>
         <div className="grid gap-4 md:grid-cols-3">
-          {storyBlocks.map((block, index) => (
-            <div key={index} className="space-y-2 rounded-md border border-border/60 bg-card/40 p-3">
-              <label className="flex flex-col gap-1 text-[11px] font-semibold text-muted-foreground">
-                التسمية (مثل البداية)
-                <Input
-                  name={`story_${index}_label`}
-                  defaultValue={block.label}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] font-semibold text-muted-foreground">
-                العنوان
-                <Input
-                  name={`story_${index}_title`}
-                  defaultValue={block.title}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] font-semibold text-muted-foreground">
-                النص
-                <Textarea
-                  name={`story_${index}_body`}
-                  defaultValue={block.body}
-                  className="min-h-[70px] rounded-md border border-border bg-background px-2 py-1 text-[11px]"
-                />
-              </label>
-            </div>
-          ))}
+          {[0, 1, 2].map((index) => {
+            const block = storyBlocks[index] ?? { label: "", title: "", body: "" };
+            return (
+              <div key={`story-${index}`} className="space-y-2 rounded-md border border-border bg-background p-3">
+                <div className="text-xs font-semibold text-muted-foreground">مرحلة {index + 1}</div>
+                <div className={FIELD}>
+                  <label className={LABEL}>التسمية</label>
+                  <Input
+                    name={`story_${index}_label`}
+                    defaultValue={block.label}
+                    className={INPUT}
+                  />
+                </div>
+                <div className={FIELD}>
+                  <label className={LABEL}>العنوان</label>
+                  <Input
+                    name={`story_${index}_title`}
+                    defaultValue={block.title}
+                    className={INPUT}
+                  />
+                </div>
+                <div className={FIELD}>
+                  <label className={LABEL}>النص</label>
+                  <Textarea
+                    name={`story_${index}_body`}
+                    defaultValue={block.body}
+                    className={TEXTAREA}
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
+      </section>
 
-      <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
-        <h2 className="text-sm font-semibold text-muted-foreground">القيم / ما يميزنا</h2>
+      {/* ─── VALUES (2x2 grid) ─── */}
+      <section className="rounded-lg border border-border bg-card/40 p-4 space-y-4">
+        <h3 className={SECTION_LABEL}>
+          <span aria-hidden>💎</span>
+          <span>القيم (4 قيم)</span>
+        </h3>
         <div className="grid gap-4 md:grid-cols-2">
-          {values.map((value, index) => (
-            <div key={index} className="space-y-2 rounded-md border border-border/60 bg-card/40 p-3">
-              <label className="flex flex-col gap-1 text-[11px] font-semibold text-muted-foreground">
-                العنوان
-                <Input
-                  name={`value_${index}_title`}
-                  defaultValue={value.title}
-                  className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[11px] font-semibold text-muted-foreground">
-                الوصف
-                <Textarea
-                  name={`value_${index}_body`}
-                  defaultValue={value.body}
-                  className="min-h-[60px] rounded-md border border-border bg-background px-2 py-1 text-[11px]"
-                />
-              </label>
-            </div>
-          ))}
+          {[0, 1, 2, 3].map((index) => {
+            const value = values[index] ?? { title: "", body: "" };
+            return (
+              <div key={`value-${index}`} className="space-y-2 rounded-md border border-border bg-background p-3">
+                <div className="text-xs font-semibold text-muted-foreground">قيمة {index + 1}</div>
+                <div className={FIELD}>
+                  <label className={LABEL}>العنوان</label>
+                  <Input
+                    name={`value_${index}_title`}
+                    defaultValue={value.title}
+                    className={INPUT}
+                  />
+                </div>
+                <div className={FIELD}>
+                  <label className={LABEL}>الوصف</label>
+                  <Textarea
+                    name={`value_${index}_body`}
+                    defaultValue={value.body}
+                    className={TEXTAREA}
+                  />
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
+      </section>
 
-      <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
-        <h2 className="text-sm font-semibold text-muted-foreground">لمن الخدمة / لمن لا تناسب</h2>
+      {/* ─── FIT FOR / NOT FIT FOR (paired) ─── */}
+      <section className="rounded-lg border border-border bg-card/40 p-4 space-y-4">
+        <h3 className={SECTION_LABEL}>
+          <span aria-hidden>🎯</span>
+          <span>مناسب / غير مناسب</span>
+        </h3>
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            مناسب لك إذا (سطر لكل نقطة)
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-fitFor">مناسب لك إذا (سطر لكل نقطة)</label>
             <Textarea
+              id="about-fitFor"
               name="fitFor"
               defaultValue={fitFor.join("\n")}
-              className="min-h-[80px] rounded-md border border-border bg-background px-2 py-1 text-xs"
+              rows={6}
+              className={TEXTAREA}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            قد لا يكون مناسباً إذا (سطر لكل نقطة)
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-notFitFor">قد لا يكون مناسباً إذا (سطر لكل نقطة)</label>
             <Textarea
+              id="about-notFitFor"
               name="notFitFor"
               defaultValue={notFitFor.join("\n")}
-              className="min-h-[80px] rounded-md border border-border bg-background px-2 py-1 text-xs"
+              rows={6}
+              className={TEXTAREA}
             />
-          </label>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
-        <h2 className="text-sm font-semibold text-muted-foreground">معلومات قانونية</h2>
-        <div className="grid gap-3 md:grid-cols-2">
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            الاسم القانوني
+      {/* ─── LEGAL INFO (3-col compact grid) ─── */}
+      <section className="rounded-lg border border-border bg-card/40 p-4 space-y-4">
+        <h3 className={SECTION_LABEL}>
+          <span aria-hidden>⚖️</span>
+          <span>المعلومات القانونية</span>
+        </h3>
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-legalName">الاسم القانوني</label>
             <Input
+              id="about-legalName"
               name="legalName"
               defaultValue={legalInfo.legalName}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+              className={INPUT}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            بلد / مدينة التسجيل
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-registrationCountry">بلد/مدينة التسجيل</label>
             <Input
+              id="about-registrationCountry"
               name="registrationCountry"
               defaultValue={legalInfo.registrationCountry}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+              className={INPUT}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            رقم السجل التجاري
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-crNumber">رقم السجل التجاري</label>
             <Input
+              id="about-crNumber"
               name="crNumber"
               defaultValue={legalInfo.crNumber}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+              className={INPUT}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            تاريخ التأسيس
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-foundedAt">تاريخ التأسيس</label>
             <Input
+              id="about-foundedAt"
               name="foundedAt"
               defaultValue={legalInfo.foundedAt}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+              className={INPUT}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground md:col-span-2">
-            العنوان البريدي
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-email">البريد الإلكتروني</label>
             <Input
-              name="address"
-              defaultValue={legalInfo.address}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
-            />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            البريد الإلكتروني
-            <Input
+              id="about-email"
               name="email"
               defaultValue={legalInfo.email}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+              dir="ltr"
+              className={`${INPUT} font-mono text-xs`}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            رقم الجوال / التواصل
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-phone">رقم الجوال</label>
             <Input
+              id="about-phone"
               name="phone"
               defaultValue={legalInfo.phone}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+              dir="ltr"
+              className={`${INPUT} font-mono text-xs`}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground md:col-span-2">
-            ملاحظة توضيحية (اختيارية)
+          </div>
+          <div className={`${FIELD} md:col-span-3`}>
+            <label className={LABEL} htmlFor="about-address">العنوان البريدي</label>
+            <Input
+              id="about-address"
+              name="address"
+              defaultValue={legalInfo.address}
+              className={INPUT}
+            />
+          </div>
+          <div className={`${FIELD} md:col-span-3`}>
+            <label className={LABEL} htmlFor="about-legalNote">ملاحظة توضيحية</label>
             <Textarea
+              id="about-legalNote"
               name="legalNote"
               defaultValue={legalInfo.note ?? ""}
-              className="min-h-[60px] rounded-md border border-border bg-background px-2 py-1 text-[11px]"
+              className={TEXTAREA}
             />
-          </label>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
-        <h2 className="text-sm font-semibold text-muted-foreground">دعوة لاتخاذ خطوة (CTA)</h2>
-        <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-          العنوان
+      {/* ─── CTA (2-col grid) ─── */}
+      <section className="rounded-lg border border-border bg-card/40 p-4 space-y-4">
+        <h3 className={SECTION_LABEL}>
+          <span aria-hidden>🚀</span>
+          <span>الدعوة للعمل</span>
+        </h3>
+        <div className={FIELD}>
+          <label className={LABEL} htmlFor="about-ctaTitle">عنوان الدعوة</label>
           <Input
+            id="about-ctaTitle"
             name="ctaTitle"
             defaultValue={cta.title}
-            className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+            className={INPUT}
           />
-        </label>
-        <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-          النص
+        </div>
+        <div className={FIELD}>
+          <label className={LABEL} htmlFor="about-ctaBody">نص الدعوة</label>
           <Textarea
+            id="about-ctaBody"
             name="ctaBody"
             defaultValue={cta.body}
-            className="min-h-[70px] rounded-md border border-border bg-background px-2 py-1 text-xs"
+            className={TEXTAREA}
           />
-        </label>
-        <div className="grid gap-3 md:grid-cols-2">
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            نص الزر الرئيسي
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-ctaPrimaryLabel">نص الزر الرئيسي</label>
             <Input
+              id="about-ctaPrimaryLabel"
               name="ctaPrimaryLabel"
               defaultValue={cta.primaryLabel}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+              className={INPUT}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            رابط الزر الرئيسي
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-ctaPrimaryHref">رابط الزر الرئيسي</label>
             <Input
+              id="about-ctaPrimaryHref"
               name="ctaPrimaryHref"
               defaultValue={cta.primaryHref}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+              dir="ltr"
+              className={`${INPUT} font-mono text-xs`}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            نص الرابط الثانوي
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-ctaSecondaryLabel">نص الرابط الثانوي</label>
             <Input
+              id="about-ctaSecondaryLabel"
               name="ctaSecondaryLabel"
               defaultValue={cta.secondaryLabel}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+              className={INPUT}
             />
-          </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-muted-foreground">
-            رابط الزر الثانوي
+          </div>
+          <div className={FIELD}>
+            <label className={LABEL} htmlFor="about-ctaSecondaryHref">رابط الزر الثانوي</label>
             <Input
+              id="about-ctaSecondaryHref"
               name="ctaSecondaryHref"
               defaultValue={cta.secondaryHref}
-              className="rounded-md border border-border bg-background px-2 py-1 text-xs"
+              dir="ltr"
+              className={`${INPUT} font-mono text-xs`}
             />
-          </label>
+          </div>
         </div>
-      </div>
+      </section>
 
       <Button
         type="submit"
@@ -301,10 +360,9 @@ export function AboutSectionForm({ section, country }: AboutSectionFormProps) {
       <ConfirmSaveDialog
         formId="about-form"
         submitButtonId="about-form-submit"
-        triggerLabel="حفظ صفحة من نحن"
-        description="سيتم حفظ جميع التغييرات على صفحة من نحن (القصة، القيم، الفريق، المعلومات القانونية، و CTA) للبلد المحدد. هل أنت متأكد من المتابعة؟"
+        triggerLabel="حفظ"
+        description="سيتم حفظ التغييرات على صفحة من نحن."
       />
     </form>
   );
 }
-

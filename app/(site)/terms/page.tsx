@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { LegalMarkdownArticle } from "@/app/components/legal/LegalMarkdownArticle";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
-import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const h = await headers();
-  const country = getCountryFromHeaders(h);
-  const landing = await getStaticLandingWithOverrides(country);
+  const landing = await getStaticLandingWithOverrides();
   const { title } = landing.terms;
   const siteUrl = DEFAULT_PUBLIC_SITE_ORIGIN;
   const description =
@@ -24,9 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function TermsPage() {
-  const h = await headers();
-  const country = getCountryFromHeaders(h);
-  const landing = await getStaticLandingWithOverrides(country);
+  const landing = await getStaticLandingWithOverrides();
   const { title, updatedAt, body } = landing.terms;
 
   return (

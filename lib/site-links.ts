@@ -5,18 +5,18 @@ export type FooterLinkItem = { label: string; href: string };
 
 const NAV_SA: NavLinkItem[] = [
   { href: "/#how-it-works", label: "الخطوات" },
-  { href: "/#outcomes", label: "أثبتنا" },
-  { href: "/features", label: "نظامنا" },
-  { href: "/#pricing", label: "الخطط" },
-  { href: "/#faq", label: "اقتنع" },
+  { href: "/#social-proof", label: "الشهادات" },
+  { href: "/features", label: "المميزات" },
+  { href: "/#pricing", label: "الأسعار" },
+  { href: "/#faq", label: "أسئلة" },
 ];
 
 const NAV_EG: NavLinkItem[] = [
   { href: "/#how-it-works", label: "الخطوات" },
-  { href: "/#outcomes", label: "أثبتنا" },
-  { href: "/features", label: "نظامنا" },
-  { href: "/#pricing", label: "الخطط" },
-  { href: "/#faq", label: "اقتنع" },
+  { href: "/#social-proof", label: "الشهادات" },
+  { href: "/features", label: "المميزات" },
+  { href: "/#pricing", label: "الأسعار" },
+  { href: "/#faq", label: "أسئلة" },
 ];
 
 function withBasePath<T extends { href: string }>(items: T[], basePath?: string): T[] {

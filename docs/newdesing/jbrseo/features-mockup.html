@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>features — mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:#FAFAF7;font-family:'Readex Pro',sans-serif;-webkit-font-smoothing:antialiased;color:#0A0A0A}
+  ::selection{background:#0A0A0A;color:#fff}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  .container{max-width:1080px;margin:0 auto;padding:0 28px}
+
+  /* Nav */
+  header{position:sticky;top:0;z-index:50;background:rgba(250,250,247,.85);backdrop-filter:blur(12px);border-bottom:1px solid #E5E5DC}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;max-width:1080px;margin:0 auto}
+  .nav-logo{font-weight:700;font-size:20px;letter-spacing:-.5px}
+  .nav-logo .a{color:#0E9F6E}
+  .nav-links{display:flex;gap:4px}
+  .nav-links a{font-size:14px;color:#3F3F38;padding:6px 10px;border-radius:8px}
+  .nav-links a:hover{background:rgba(10,10,10,.04)}
+  .nav-links a.active{color:#0A0A0A;font-weight:600}
+  .nav-cta{background:#0A0A0A;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;font-weight:500}
+
+  /* Hero */
+  .hero{padding:88px 0 64px;text-align:center;max-width:760px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:99px;border:1px solid #E5E5DC;background:#fff;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#3F3F38;margin-bottom:26px}
+  .eyebrow-dot{width:7px;height:7px;border-radius:99px;background:#0E9F6E;box-shadow:0 0 0 3px rgba(14,159,110,.16)}
+  .hero h1{font-size:60px;line-height:1.1;font-weight:600;letter-spacing:-1.8px;margin-bottom:24px;padding:0 28px}
+  .hero h1 .accent{color:#0E9F6E;background:linear-gradient(180deg,transparent 0%,transparent 78%,rgba(14,159,110,.16) 78%,rgba(14,159,110,.16) 100%);padding:0 4px}
+  .hero p{font-size:19px;line-height:1.7;color:#3F3F38;max-width:580px;margin:0 auto;padding:0 28px;font-weight:400}
+  .hero-ctas{display:inline-flex;gap:18px;align-items:center;margin-top:34px;flex-wrap:wrap;justify-content:center}
+  .btn-primary{background:#0A0A0A;color:#fff;padding:14px 26px;border-radius:12px;font-size:15px;font-weight:500}
+  .btn-link{color:#3F3F38;font-size:15px;font-weight:500;display:inline-flex;align-items:center;gap:6px;padding:8px 4px;border-bottom:1px solid transparent}
+  .btn-link:hover{border-color:#0A0A0A;color:#0A0A0A}
+
+  /* Pillars (4 cards) */
+  .pillars{padding:64px 0;background:#fff;border-top:1px solid #E5E5DC;border-bottom:1px solid #E5E5DC}
+  .pillars-header{text-align:center;margin-bottom:56px}
+  .pillars-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B0B0A5;letter-spacing:1;margin-bottom:12px}
+  .pillars-title{font-size:34px;font-weight:600;letter-spacing:-.8px}
+  .pillars-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .pillar{background:#FAFAF7;border:1px solid #E5E5DC;border-radius:16px;padding:24px;transition:all .15s}
+  .pillar:hover{border-color:#0A0A0A;transform:translateY(-2px);box-shadow:0 16px 36px -22px rgba(10,10,10,.18)}
+  .pillar-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8A8A81;margin-bottom:14px;letter-spacing:.5px}
+  .pillar-icon{width:42px;height:42px;border-radius:11px;background:#fff;border:1px solid #E5E5DC;display:inline-flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:14px}
+  .pillar h3{font-size:16px;font-weight:600;margin-bottom:6px}
+  .pillar p{font-size:13.5px;color:#6B6B62;line-height:1.7}
+
+  /* Deep dive (zigzag rows) */
+  .deepdive{padding:88px 0}
+  .deepdive-header{text-align:center;margin-bottom:64px}
+  .deepdive-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B0B0A5;letter-spacing:1;margin-bottom:12px}
+  .deepdive-title{font-size:34px;font-weight:600;letter-spacing:-.8px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;margin-bottom:96px}
+  .row:last-child{margin-bottom:0}
+  .row-num{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#0E9F6E;letter-spacing:1;margin-bottom:14px}
+  .row h3{font-size:30px;font-weight:600;margin-bottom:16px;letter-spacing:-.6px;line-height:1.25}
+  .row > div > p{font-size:16px;color:#3F3F38;line-height:1.85;margin-bottom:18px}
+  .row-features{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .row-features li{display:flex;align-items:flex-start;gap:8px;font-size:14px;color:#3F3F38}
+  .row-features li svg{flex-shrink:0;margin-top:3px}
+
+  /* Mock UI */
+  .mock{background:#FAFAF7;border:1px solid #E5E5DC;border-radius:18px;padding:24px;box-shadow:0 24px 60px -36px rgba(10,10,10,.22)}
+  .mock-head{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #E5E5DC}
+  .mock-dot{width:8px;height:8px;border-radius:99px;background:#0E9F6E}
+  .mock-label{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#6B6B62}
+  .mock-tag{margin-inline-start:auto;font-size:11px;font-weight:600;color:#07744F;background:#E6F7EF;border:1px solid #B5E5D0;padding:3px 8px;border-radius:6px;font-family:'IBM Plex Mono',monospace}
+  .mock-title{font-size:17px;font-weight:600;margin-bottom:12px}
+  .mock-bar{height:7px;background:#0A0A0A;border-radius:99px;width:100%;margin-bottom:6px}
+  .mock-bar.muted{background:#E5E5DC}
+  .mock-bar.w-90{width:90%}
+  .mock-bar.w-75{width:75%}
+  .mock-bar.w-60{width:60%}
+  .mock-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+  .mock-pill{font-family:'IBM Plex Mono',monospace;font-size:10.5px;background:#fff;border:1px solid #E5E5DC;padding:3px 8px;border-radius:6px;color:#3F3F38}
+  .mock-pill.good{background:#E6F7EF;border-color:#B5E5D0;color:#07744F}
+
+  /* Approval mock */
+  .mock-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #E5E5DC}
+  .mock-row:last-child{border-bottom:none}
+  .mock-rownum{width:28px;height:28px;border-radius:6px;background:#fff;border:1px solid #E5E5DC;display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:#6B6B62;font-family:'IBM Plex Mono',monospace}
+  .mock-rowtitle{flex:1;font-size:13px;font-weight:500}
+  .mock-rowstate{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;padding:3px 8px;border-radius:6px}
+  .pending{color:#B96B00;background:#FFF4E5}
+  .approved{color:#0A7A52;background:#E6F7EF}
+
+  /* Chart mock */
+  .chart-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;padding-top:14px;border-top:1px solid #E5E5DC}
+  .chart-stat{text-align:center}
+  .chart-stat .v{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600}
+  .chart-stat .k{font-size:11px;color:#8A8A81;margin-top:2px}
+
+  /* Comparison */
+  .compare{padding:88px 0;background:#fff;border-top:1px solid #E5E5DC}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:920px;margin:0 auto}
+  .compare-card{background:#FAFAF7;border:1px solid #E5E5DC;border-radius:20px;padding:32px 28px}
+  .compare-card.win{background:#0A0A0A;color:#fff;border-color:#0A0A0A;position:relative}
+  .compare-card.win::before{content:"الحل";position:absolute;top:-12px;right:24px;background:#0E9F6E;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:99px;letter-spacing:.3px}
+  .compare-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.5px;margin-bottom:8px}
+  .compare-card.win .compare-eyebrow{color:#3DDC8C}
+  .compare-card:not(.win) .compare-eyebrow{color:#8A8A81}
+  .compare-card h3{font-size:24px;font-weight:600;margin-bottom:18px;letter-spacing:-.4px}
+  .compare-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .compare-list li{font-size:14px;line-height:1.7;display:flex;gap:8px;align-items:flex-start}
+  .compare-list li svg{flex-shrink:0;margin-top:3px}
+
+  /* CTA */
+  .final-cta{padding:80px 28px;text-align:center}
+  .final-cta-card{max-width:880px;margin:0 auto;background:#0A0A0A;color:#fff;border-radius:24px;padding:64px 32px}
+  .final-cta h2{font-size:38px;font-weight:600;letter-spacing:-1px;margin-bottom:14px}
+  .final-cta p{font-size:16px;color:#A5A599;max-width:520px;margin:0 auto 30px}
+  .final-cta .ctas{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .final-cta .btn-white{background:#fff;color:#0A0A0A;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600}
+  .final-cta .btn-ghost{background:rgba(255,255,255,.08);color:#fff;padding:14px 22px;border-radius:12px;font-size:15px;font-weight:500;border:1px solid rgba(255,255,255,.14)}
+
+  /* Footer (minimal) */
+  footer{background:#0A0A0A;color:#A5A599;padding:48px 28px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12.5px}
+  footer .logo{color:#fff;font-weight:700;font-size:16px;letter-spacing:-.3px;margin-bottom:8px}
+
+  /* Mobile */
+  @media (max-width:880px){
+    .hero{padding:56px 0 44px}
+    .hero h1{font-size:38px;letter-spacing:-1.2px}
+    .hero p{font-size:16px}
+    .pillars-title,.deepdive-title{font-size:26px}
+    .pillars-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+    .pillar{padding:18px}
+    .row{grid-template-columns:1fr;gap:24px;margin-bottom:60px}
+    .row .mock{order:1}
+    .row h3{font-size:22px}
+    .compare-grid{grid-template-columns:1fr}
+    .final-cta h2{font-size:26px}
+    .nav-links{display:none}
+    .nav-logo{font-size:17px}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header>
+  <div class="nav">
+    <div style="display:flex;align-items:center;gap:24px">
+      <div class="nav-logo">JBR<span class="a">SEO</span></div>
+      <nav class="nav-links">
+        <a href="#">الخطوات</a>
+        <a href="#" class="active">نظامنا</a>
+        <a href="#">الخطط</a>
+        <a href="#">اقتنع</a>
+      </nav>
+    </div>
+    <a href="#" class="nav-cta">ابدأ الحين</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">
+    <span class="eyebrow-dot"></span>
+    <span>إيش بتحصل فعلاً — جولة سريعة</span>
+  </div>
+  <h1>
+    نظام كامل —<br>
+    <span class="accent">مش مجرد مقالات</span>
+  </h1>
+  <p>كل اللي يحتاجه نشاطك عشان يتصدّر جوجل — كتابة، نشر، متابعة، تقارير — في لوحة واحدة.</p>
+  <div class="hero-ctas">
+    <a href="#" class="btn-primary">ابدأ مجاناً — بدون بطاقة</a>
+    <a href="#" class="btn-link">شوف الأسعار <span>←</span></a>
+  </div>
+</section>
+
+<!-- PILLARS — 4 cards -->
+<section class="pillars">
+  <div class="container">
+    <div class="pillars-header">
+      <div class="pillars-eyebrow">أربعة أعمدة</div>
+      <h2 class="pillars-title">إيش في الصندوق</h2>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar">
+        <div class="pillar-num">٠١</div>
+        <div class="pillar-icon">✍️</div>
+        <h3>كتابة احترافية</h3>
+        <p>كاتب متخصص في قطاعك — مقالات SEO جاهزة، مش قوالب جاهزة.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">٠٢</div>
+        <div class="pillar-icon">⚡</div>
+        <h3>نشر تلقائي</h3>
+        <p>على مدوّنتك بشكل دوري، أو تراجعه أنت قبل النشر — أنت تختار.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">٠٣</div>
+        <div class="pillar-icon">📊</div>
+        <h3>متابعة حية</h3>
+        <p>ترتيبك في جوجل، كلماتك، الظهور والنقرات — كلها في لوحة واحدة.</p>
+      </div>
+      <div class="pillar">
+        <div class="pillar-num">٠٤</div>
+        <div class="pillar-icon">🎯</div>
+        <h3>تقارير شهرية</h3>
+        <p>إيش تحرّك، إيش جاب نتيجة، وإيش الخطوة الجاية — بدون تعقيد.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP DIVE — 3 zigzag rows -->
+<section class="deepdive">
+  <div class="container">
+    <div class="deepdive-header">
+      <div class="deepdive-eyebrow">تفاصيل تشتغل</div>
+      <h2 class="deepdive-title">كيف بيشتغل كل عمود</h2>
+    </div>
+
+    <!-- Row 1: Editor -->
+    <div class="row">
+      <div>
+        <div class="row-num">٠١ — الكتابة</div>
+        <h3>مقالات SEO جاهزة — مش قوالب.</h3>
+        <p>كاتب متخصص يفهم قطاعك، يبحث الكلمات، يحط الـ headings الصحيحة، ويسلّم المقال جاهز للنشر — بدون ما تكتب حرف.</p>
+        <ul class="row-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>كاتب متخصص في قطاعك (مش freelancer عشوائي)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>بحث كلمات حقيقي قبل الكتابة</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>هيكلة headings تخدم محرك البحث + القارئ</span></li>
+        </ul>
+      </div>
+      <div class="mock">
+        <div class="mock-head">
+          <span class="mock-dot"></span>
+          <span class="mock-label">article-draft.md</span>
+          <span class="mock-tag">✓ جاهز</span>
+        </div>
+        <div class="mock-title">أفضل ٧ تقنيات لزراعة الأسنان ٢٠٢٦</div>
+        <div class="mock-bar"></div>
+        <div class="mock-bar muted w-90"></div>
+        <div class="mock-bar muted w-75"></div>
+        <div class="mock-pills">
+          <span class="mock-pill"># ١٢٠٠ كلمة</span>
+          <span class="mock-pill"># ٨ headings</span>
+          <span class="mock-pill good"># SEO ٩٢/١٠٠</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Approval -->
+    <div class="row">
+      <div class="mock">
+        <div class="mock-head">
+          <span class="mock-label">قائمة المراجعة</span>
+          <span class="mock-tag" style="background:#FFF4E5;color:#B96B00;border-color:#FFE1AC">٣ بانتظار اعتمادك</span>
+        </div>
+        <div class="mock-row">
+          <span class="mock-rownum">٠١</span>
+          <span class="mock-rowtitle">مقدمة الشركة — نسخة محدثة</span>
+          <span class="mock-rowstate pending">بانتظار</span>
+        </div>
+        <div class="mock-row">
+          <span class="mock-rownum">٠٢</span>
+          <span class="mock-rowtitle">أفضل ٧ تقنيات للزراعة</span>
+          <span class="mock-rowstate approved">معتمد</span>
+        </div>
+        <div class="mock-row">
+          <span class="mock-rownum">٠٣</span>
+          <span class="mock-rowtitle">صفحة الفروع — Cairo</span>
+          <span class="mock-rowstate pending">بانتظار</span>
+        </div>
+      </div>
+      <div>
+        <div class="row-num">٠٢ — الاعتماد</div>
+        <h3>وافق بنقرة — قبل ما يُنشر.</h3>
+        <p>كل مقال يدخل قائمتك للمراجعة. اعتمد، عدّل، أو ارفض. ما يطلع شي للعلن بدون موافقتك.</p>
+        <ul class="row-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>تنبيهات تليجرام لما يجي مقال جديد</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>تعليقات + تعديلات مباشرة على النص</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>نشر فوري أو مجدول حسب اختيارك</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Row 3: Monitor -->
+    <div class="row">
+      <div>
+        <div class="row-num">٠٣ — المتابعة</div>
+        <h3>شوف ترتيبك يطلع في جوجل.</h3>
+        <p>لوحة مباشرة من Google Search Console — كلماتك، ترتيبك، الظهور، النقرات. الأرقام اللي تهمك، بدون تعقيد.</p>
+        <ul class="row-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>اتصال مباشر مع Google Search Console</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>تتبع كل كلمة مفتاحية وتحرّك ترتيبها</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>تقرير شهري بصيغة PDF يصلك على الإيميل</span></li>
+        </ul>
+      </div>
+      <div class="mock">
+        <div class="mock-head">
+          <span class="mock-label">الترتيب — آخر ٣٠ يوم</span>
+          <span class="mock-tag">▲ +١٤ مركز</span>
+        </div>
+        <svg viewBox="0 0 240 80" style="width:100%;height:80px;display:block">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#0E9F6E" stop-opacity=".24"/>
+              <stop offset="100%" stop-color="#0E9F6E" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,68 L30,60 L60,62 L90,48 L120,46 L150,30 L180,28 L210,16 L240,10 L240,80 L0,80 Z" fill="url(#g)"/>
+          <path d="M0,68 L30,60 L60,62 L90,48 L120,46 L150,30 L180,28 L210,16 L240,10" fill="none" stroke="#0E9F6E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="chart-stats">
+          <div class="chart-stat"><div class="v">12.4K</div><div class="k">الظهور</div></div>
+          <div class="chart-stat"><div class="v">1,089</div><div class="k">النقرات</div></div>
+          <div class="chart-stat"><div class="v">#3</div><div class="k">الترتيب</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="compare">
+  <div class="container">
+    <div class="pillars-header">
+      <div class="pillars-eyebrow">مقارنة عملية</div>
+      <h2 class="pillars-title">إيش الفرق فعلاً؟</h2>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-eyebrow">الطريقة التقليدية</div>
+        <h3>توظف فريق محتوى داخلي</h3>
+        <ul class="compare-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D67878" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>راتب ٦ موظفين شهرياً (~٣٧,٠٠٠ ر.س)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D67878" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>توظيف + تدريب + إجازات + استقالات</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D67878" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>أدوات SEO منفصلة بتكلفة إضافية</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D67878" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>تأخير في النتائج — ٦ شهور للبدء</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D67878" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>أنت اللي تدير الفريق + تتابع + تشتكي</span></li>
+        </ul>
+      </div>
+      <div class="compare-card win">
+        <div class="compare-eyebrow">مدوّنتي</div>
+        <h3>اشتراك واحد — نظام كامل</h3>
+        <ul class="compare-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>من ٣٩٩ ر.س / شهر — كل شي شامل</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>كاتب جاهز + نشر + متابعة من اليوم الأول</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>أدوات SEO + GSC مدمجة في اللوحة</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>أول مقال خلال ٤٨ ساعة</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>أنت توافق، نحن ندير الباقي</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="final-cta-card">
+    <h2>جاهز تشوف ترتيبك يتحرّك؟</h2>
+    <p>اشترك الحين، أول مقال يصلك خلال ٤٨ ساعة — وإذا ما عجبك، نرجع لك فلوسك خلال ١٤ يوم.</p>
+    <div class="ctas">
+      <a href="#" class="btn-white">ابدأ مجاناً — بدون بطاقة</a>
+      <a href="#" class="btn-ghost">كلّمنا على واتساب</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER (minimal) -->
+<footer>
+  <div class="logo">JBRSEO</div>
+  <div>mockup — features page</div>
+</footer>
+
+</body>
+</html>

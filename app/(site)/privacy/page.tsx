@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { LegalMarkdownArticle } from "@/app/components/legal/LegalMarkdownArticle";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
-import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
 
 const privacyTitleAbsolute =
@@ -33,9 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function PrivacyPage() {
-  const h = await headers();
-  const country = getCountryFromHeaders(h);
-  const landing = await getStaticLandingWithOverrides(country);
+  const landing = await getStaticLandingWithOverrides();
   const { title, updatedAt, body } = landing.privacy;
 
   return (

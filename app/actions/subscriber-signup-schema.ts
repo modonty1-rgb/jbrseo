@@ -12,13 +12,13 @@ function egLocalFromDigits(d: string): string {
 }
 
 const signupBaseSchema = z.object({
-  name: z.string().min(2, "الاسم مطلوب"),
-  email: z.string().email("البريد الإلكتروني غير صحيح"),
-  phone: z.string().min(1),
-  businessName: z.string().optional(),
-  businessType: z.string().optional(),
-  plan: z.coerce.number().int().min(0),
-  planName: z.string().min(1, "الخطة مطلوبة"),
+  name: z.string().min(2, "الاسم مطلوب").max(100, "الاسم طويل جداً"),
+  email: z.string().email("البريد الإلكتروني غير صحيح").max(254, "البريد طويل جداً"),
+  phone: z.string().min(1).max(20, "رقم الجوال طويل جداً"),
+  businessName: z.string().max(200, "اسم النشاط طويل جداً").optional(),
+  businessType: z.string().max(500, "نوع النشاط طويل جداً").optional(),
+  plan: z.coerce.number().int().min(0).max(50),
+  planName: z.string().min(1, "الخطة مطلوبة").max(100, "اسم الخطة طويل جداً"),
   country: z.enum(["SA", "EG"]),
   isAnnual: z.boolean(),
 });

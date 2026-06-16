@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>features v2 — mockup</title>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:#FAFAF7;font-family:'Readex Pro',sans-serif;-webkit-font-smoothing:antialiased;color:#0A0A0A}
+  ::selection{background:#0A0A0A;color:#fff}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  .container{max-width:1080px;margin:0 auto;padding:0 28px}
+
+  /* Nav */
+  header.top{position:sticky;top:0;z-index:50;background:rgba(250,250,247,.85);backdrop-filter:blur(12px);border-bottom:1px solid #E5E5DC}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;max-width:1080px;margin:0 auto}
+  .nav-logo{font-weight:700;font-size:20px;letter-spacing:-.5px}
+  .nav-logo .a{color:#0E9F6E}
+  .nav-links{display:flex;gap:4px}
+  .nav-links a{font-size:14px;color:#3F3F38;padding:6px 10px;border-radius:8px}
+  .nav-links a:hover{background:rgba(10,10,10,.04)}
+  .nav-links a.active{color:#0A0A0A;font-weight:600}
+  .nav-cta{background:#0A0A0A;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;font-weight:500}
+
+  /* Hero */
+  .hero{padding:72px 0 48px;text-align:center;max-width:760px;margin:0 auto}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:99px;border:1px solid #E5E5DC;background:#fff;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#3F3F38;margin-bottom:24px}
+  .eyebrow-dot{width:7px;height:7px;border-radius:99px;background:#0E9F6E;box-shadow:0 0 0 3px rgba(14,159,110,.16)}
+  .hero h1{font-size:56px;line-height:1.1;font-weight:600;letter-spacing:-1.6px;margin-bottom:22px;padding:0 28px}
+  .hero h1 .accent{color:#0E9F6E;background:linear-gradient(180deg,transparent 0%,transparent 78%,rgba(14,159,110,.16) 78%,rgba(14,159,110,.16) 100%);padding:0 4px}
+  .hero p{font-size:18px;line-height:1.7;color:#3F3F38;max-width:560px;margin:0 auto;padding:0 28px;font-weight:400}
+  .hero-ctas{display:inline-flex;gap:18px;align-items:center;margin-top:30px;flex-wrap:wrap;justify-content:center}
+  .btn-primary{background:#0A0A0A;color:#fff;padding:14px 26px;border-radius:12px;font-size:15px;font-weight:500}
+  .btn-link{color:#3F3F38;font-size:15px;font-weight:500;display:inline-flex;align-items:center;gap:6px;padding:8px 4px;border-bottom:1px solid transparent}
+  .btn-link:hover{border-color:#0A0A0A;color:#0A0A0A}
+
+  /* Hero stats strip */
+  .hero-stats{margin-top:40px;display:inline-flex;flex-wrap:wrap;gap:32px;justify-content:center;padding:18px 28px;background:#fff;border:1px solid #E5E5DC;border-radius:16px}
+  .hs-item{text-align:center;min-width:88px}
+  .hs-n{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:#0A0A0A}
+  .hs-l{font-size:11.5px;color:#6B6B62;margin-top:2px;font-family:'IBM Plex Mono',monospace}
+
+  /* Timeline */
+  .timeline-strip{padding:48px 0;background:#fff;border-top:1px solid #E5E5DC;border-bottom:1px solid #E5E5DC}
+  .timeline-head{text-align:center;margin-bottom:36px}
+  .timeline-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#8A8A81;letter-spacing:.5px;margin-bottom:8px}
+  .timeline-title{font-size:24px;font-weight:600;letter-spacing:-.4px}
+  .timeline{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-width:780px;margin:0 auto;padding:0 28px}
+  .timeline::before{content:"";position:absolute;top:13px;left:60px;right:60px;height:1px;background:#E5E5DC}
+  .tl-stop{display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:1}
+  .tl-dot{width:14px;height:14px;border-radius:99px;border:2px solid #FAFAF7}
+  .tl-time{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:#0A0A0A}
+  .tl-event{font-size:10.5px;color:#6B6B62;text-align:center;line-height:1.4}
+
+  /* Step section */
+  .step-section{padding:88px 0}
+  .step-section.alt{background:#fff;border-top:1px solid #E5E5DC;border-bottom:1px solid #E5E5DC}
+  .step-row{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+  .step-num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#0E9F6E;letter-spacing:1.5px;margin-bottom:14px;font-weight:600}
+  .step-row h2{font-size:36px;font-weight:600;margin-bottom:18px;letter-spacing:-.8px;line-height:1.2}
+  .step-row > div > p{font-size:16px;color:#3F3F38;line-height:1.85;margin-bottom:22px}
+  .step-features{list-style:none;display:flex;flex-direction:column;gap:12px}
+  .step-features li{display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:#3F3F38;line-height:1.6}
+  .step-features li svg{flex-shrink:0;margin-top:2px}
+  .step-features li strong{color:#0A0A0A;font-weight:600}
+
+  /* Mock surface */
+  .mock{background:#FAFAF7;border:1px solid #E5E5DC;border-radius:18px;padding:22px;box-shadow:0 24px 60px -36px rgba(10,10,10,.22)}
+  .alt .mock{background:#FAFAF7}
+  .mock-bar-top{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #E5E5DC}
+  .mock-dot{width:8px;height:8px;border-radius:99px;background:#0E9F6E}
+  .mock-label{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#6B6B62}
+  .mock-tag-r{margin-inline-start:auto;font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;font-family:'IBM Plex Mono',monospace}
+  .tag-green{color:#07744F;background:#E6F7EF;border:1px solid #B5E5D0}
+  .tag-amber{color:#B96B00;background:#FFF4E5;border:1px solid #FFE1AC}
+
+  /* Step 1 — Writing flow */
+  .flow{display:flex;align-items:center;gap:6px;margin-bottom:18px;flex-wrap:wrap;justify-content:center}
+  .flow-item{flex:1;min-width:64px;text-align:center;padding:10px 6px;border-radius:10px;background:#fff;border:1px solid #E5E5DC}
+  .flow-item.hl{background:#E6F7EF;border-color:#B5E5D0}
+  .flow-emoji{font-size:18px;margin-bottom:4px}
+  .flow-label{font-size:10.5px;font-weight:600;color:#0A0A0A}
+  .flow-sub{font-size:9px;color:#6B6B62;margin-top:1px}
+  .flow-arrow{font-size:14px;color:#B0B0A5;flex-shrink:0}
+  .article-card{background:#fff;border:1px solid #E5E5DC;border-radius:12px;padding:14px}
+  .article-title{font-size:14px;font-weight:600;margin-bottom:10px}
+  .article-bar{height:6px;background:#0A0A0A;border-radius:99px;margin-bottom:4px}
+  .article-bar.m{background:#E5E5DC}
+  .article-bar.w90{width:90%}
+  .article-bar.w75{width:75%}
+  .article-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .article-pill{font-family:'IBM Plex Mono',monospace;font-size:10px;background:#FAFAF7;border:1px solid #E5E5DC;padding:2px 7px;border-radius:5px;color:#3F3F38}
+  .article-pill.good{background:#E6F7EF;border-color:#B5E5D0;color:#07744F}
+  .platforms-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;justify-content:center}
+  .platform{width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid #E5E5DC;display:flex;align-items:center;justify-content:center;font-size:13px}
+
+  /* Step 2 — Network */
+  .net-flow{background:#fff;border:1px solid #E5E5DC;border-radius:12px;padding:12px;margin-bottom:16px}
+  .net-flow-title{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8A8A81;margin-bottom:8px;letter-spacing:.3px}
+  .net-tags{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .net-tag{font-size:10.5px;padding:3px 10px;border-radius:99px;border:1px solid #E5E5DC;background:#FAFAF7;color:#3F3F38}
+  .net-tag.start{background:#E6F7EF;border-color:#B5E5D0;color:#07744F;font-weight:600}
+  .net-tag.fire{background:#FFF4E5;border-color:#FFE1AC;color:#B96B00;font-weight:600}
+  .net-arrow{font-size:11px;color:#B0B0A5}
+  .profile-card{background:#fff;border:1px solid #E5E5DC;border-radius:12px;overflow:hidden}
+  .profile-cover{height:48px;background:linear-gradient(135deg,#0E9F6E33,#0A0A0A22)}
+  .profile-body{padding:12px}
+  .profile-head{display:flex;align-items:center;gap:10px;margin-top:-22px;margin-bottom:10px}
+  .profile-avatar{width:42px;height:42px;border-radius:99px;background:#0E9F6E;color:#fff;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-weight:600}
+  .profile-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+  .verified{font-size:9px;font-weight:600;color:#07744F;background:#E6F7EF;border:1px solid #B5E5D0;padding:2px 6px;border-radius:5px}
+  .profile-meta{font-size:10.5px;color:#6B6B62;margin-top:2px}
+  .profile-tabs{display:flex;border-top:1px solid #E5E5DC;margin-top:8px;padding-top:8px;gap:14px;overflow-x:auto}
+  .profile-tab{font-size:11px;color:#6B6B62;white-space:nowrap;padding-bottom:4px}
+  .profile-tab.active{color:#0A0A0A;font-weight:600;border-bottom:2px solid #0E9F6E;padding-bottom:2px}
+
+  /* Step 3 — Leads */
+  .inbox-card{background:#fff;border:1px solid #E5E5DC;border-radius:12px;padding:14px;margin-bottom:14px}
+  .inbox-head{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#8A8A81;margin-bottom:10px;letter-spacing:.3px;text-transform:uppercase}
+  .inbox-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #F4F4EE}
+  .inbox-row:last-child{border-bottom:none}
+  .unread{width:6px;height:6px;border-radius:99px;background:#0E9F6E;flex-shrink:0}
+  .unread.faded{background:#E5E5DC}
+  .avatar-mini{width:26px;height:26px;border-radius:99px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
+  .av-blue{background:#dbeafe;color:#1d4ed8}
+  .av-green{background:#dcfce7;color:#15803d}
+  .av-amber{background:#fef3c7;color:#a16207}
+  .inbox-mid{flex:1;min-width:0}
+  .inbox-name{font-size:12px;font-weight:600;display:flex;gap:6px;align-items:center}
+  .heat{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;padding:2px 6px;border-radius:4px}
+  .heat-hot{background:#fee2e2;color:#b91c1c}
+  .heat-warm{background:#FFF4E5;color:#B96B00}
+  .heat-cold{background:#dbeafe;color:#1d4ed8}
+  .inbox-msg{font-size:11px;color:#6B6B62;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .inbox-time{font-family:'IBM Plex Mono',monospace;font-size:10px;color:#8A8A81;flex-shrink:0}
+  .leads-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #F4F4EE}
+  .leads-row:last-child{border-bottom:none}
+  .leads-mid{flex:1;min-width:0}
+  .leads-meta{font-size:10.5px;color:#6B6B62;margin-top:2px}
+  .leads-bar{margin-top:5px;height:4px;background:#E5E5DC;border-radius:99px;overflow:hidden;width:80px}
+  .leads-bar-fill{height:100%;border-radius:99px}
+  .fill-red{background:#dc2626}
+  .fill-amber{background:#d97706}
+  .fill-blue{background:#2563eb}
+
+  /* Step 4 — Dashboard */
+  .gtm-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#1d4ed8;background:#dbeafe;border:1px solid #bfdbfe;padding:4px 10px;border-radius:6px;margin-bottom:16px;font-family:'IBM Plex Mono',monospace}
+  .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+  .dash-stat{background:#fff;border:1px solid #E5E5DC;border-radius:10px;padding:12px;text-align:center}
+  .ds-n{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600}
+  .ds-n.green{color:#0E9F6E}
+  .ds-n.amber{color:#B96B00}
+  .ds-n.red{color:#dc2626}
+  .ds-l{font-size:10.5px;color:#6B6B62;margin-top:3px;font-family:'IBM Plex Mono',monospace}
+  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .dash-card{background:#fff;border:1px solid #E5E5DC;border-radius:10px;padding:12px}
+  .dash-card-title{font-size:11px;color:#6B6B62;margin-bottom:10px;font-family:'IBM Plex Mono',monospace}
+  .bars{display:flex;align-items:flex-end;gap:3px;height:48px}
+  .bar{flex:1;background:#0E9F6E;border-radius:3px 3px 0 0;min-height:6px}
+  .src-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;font-size:10.5px}
+  .src-label{width:48px;color:#6B6B62;font-family:'IBM Plex Mono',monospace}
+  .src-bar{flex:1;height:5px;background:#F4F4EE;border-radius:99px;overflow:hidden}
+  .src-fill{height:100%}
+  .src-fill.green{background:#0E9F6E}
+  .src-fill.amber{background:#B96B00}
+  .src-fill.blue{background:#2563eb}
+  .src-pct{width:30px;text-align:left;font-family:'IBM Plex Mono',monospace;font-weight:600}
+  .events-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .event-cell{background:#fff;border:1px solid #E5E5DC;border-radius:8px;padding:10px;text-align:center}
+  .event-icon{font-size:16px;margin-bottom:4px}
+  .event-label{font-size:9.5px;color:#6B6B62;line-height:1.4}
+
+  /* Comparison */
+  .compare{padding:88px 0}
+  .compare-head{text-align:center;margin-bottom:48px}
+  .compare-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B0B0A5;letter-spacing:1;margin-bottom:10px}
+  .compare-title{font-size:32px;font-weight:600;letter-spacing:-.7px}
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:920px;margin:0 auto}
+  .compare-card{background:#fff;border:1px solid #E5E5DC;border-radius:20px;padding:32px 28px}
+  .compare-card.win{background:#0A0A0A;color:#fff;border-color:#0A0A0A;position:relative;box-shadow:0 30px 70px -28px rgba(10,10,10,.5)}
+  .compare-card.win::before{content:"الحل";position:absolute;top:-13px;right:24px;background:#0E9F6E;color:#fff;font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:700;padding:5px 12px;border-radius:99px;letter-spacing:.3px}
+  .compare-card .ceyebrow{font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.5px;margin-bottom:8px}
+  .compare-card.win .ceyebrow{color:#3DDC8C}
+  .compare-card:not(.win) .ceyebrow{color:#8A8A81}
+  .compare-card h3{font-size:22px;font-weight:600;margin-bottom:8px;letter-spacing:-.4px}
+  .compare-price{font-family:'IBM Plex Mono',monospace;font-size:14px;color:#6B6B62;margin-bottom:18px}
+  .compare-card.win .compare-price{color:#A5A599}
+  .compare-list{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .compare-list li{font-size:14px;line-height:1.6;display:flex;gap:8px;align-items:flex-start}
+  .compare-list li svg{flex-shrink:0;margin-top:3px}
+
+  /* CTA */
+  .final-cta{padding:60px 28px 90px;text-align:center}
+  .final-cta-card{max-width:880px;margin:0 auto;background:#0A0A0A;color:#fff;border-radius:24px;padding:56px 32px}
+  .final-cta h2{font-size:36px;font-weight:600;letter-spacing:-1px;margin-bottom:14px}
+  .final-cta p{font-size:16px;color:#A5A599;max-width:520px;margin:0 auto 28px}
+  .final-cta .ctas{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .final-cta .btn-white{background:#fff;color:#0A0A0A;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600}
+  .final-cta .btn-ghost{background:rgba(255,255,255,.08);color:#fff;padding:14px 22px;border-radius:12px;font-size:15px;font-weight:500;border:1px solid rgba(255,255,255,.14)}
+
+  /* Footer */
+  footer{background:#0A0A0A;color:#A5A599;padding:40px 28px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:12px}
+  footer .logo{color:#fff;font-weight:700;font-size:15px;margin-bottom:6px}
+
+  /* Mobile */
+  @media (max-width:880px){
+    .nav-links{display:none}
+    .hero{padding:48px 0 36px}
+    .hero h1{font-size:34px;letter-spacing:-1.2px}
+    .hero p{font-size:16px}
+    .hero-stats{gap:18px;padding:14px 18px}
+    .hs-n{font-size:16px}
+    .timeline{grid-template-columns:1fr;gap:14px;padding:0 28px}
+    .timeline::before{display:none}
+    .tl-stop{flex-direction:row;justify-content:flex-start;text-align:right}
+    .tl-event{text-align:right}
+    .step-section{padding:56px 0}
+    .step-row{grid-template-columns:1fr;gap:28px}
+    .step-row h2{font-size:24px}
+    .step-row > div.mock{order:1}
+    .compare-grid{grid-template-columns:1fr}
+    .compare-title{font-size:24px}
+    .final-cta h2{font-size:24px}
+    .dash-stats{grid-template-columns:repeat(2,1fr)}
+    .dash-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="top">
+  <div class="nav">
+    <div style="display:flex;align-items:center;gap:24px">
+      <div class="nav-logo">JBR<span class="a">SEO</span></div>
+      <nav class="nav-links">
+        <a href="#">الخطوات</a>
+        <a href="#" class="active">نظامنا</a>
+        <a href="#">الخطط</a>
+        <a href="#">اقتنع</a>
+      </nav>
+    </div>
+    <a href="#" class="nav-cta">ابدأ الحين</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">
+    <span class="eyebrow-dot"></span>
+    <span>إيش بتحصل فعلاً — جولة كاملة</span>
+  </div>
+  <h1>
+    أنت توافق فقط —<br>
+    <span class="accent">الباقي علينا</span>
+  </h1>
+  <p>نظام محتوى متكامل: كتابة، نشر في شبكة، قاعدة عملاء، ولوحة تحكم بأرقام حقيقية.</p>
+  <div class="hero-ctas">
+    <a href="#" class="btn-primary">ابدأ مجاناً — بدون بطاقة</a>
+    <a href="#" class="btn-link">شوف الأسعار <span>←</span></a>
+  </div>
+  <div class="hero-stats">
+    <div class="hs-item"><div class="hs-n">+19</div><div class="hs-l">شركة في الشبكة</div></div>
+    <div class="hs-item"><div class="hs-n">90</div><div class="hs-l">يوم لأول نتائج</div></div>
+    <div class="hs-item"><div class="hs-n">96%</div><div class="hs-l">توفير vs فريق</div></div>
+    <div class="hs-item"><div class="hs-n">14</div><div class="hs-l">يوم ضمان</div></div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline-strip">
+  <div class="timeline-head">
+    <div class="timeline-eyebrow">متى تشوف النتائج</div>
+    <h2 class="timeline-title">رحلتك مع مدوّنتي — ٦ أشهر</h2>
+  </div>
+  <div class="timeline">
+    <div class="tl-stop"><div class="tl-dot" style="background:#0E9F6E"></div><div class="tl-time">اليوم</div><div class="tl-event">اشتركت</div></div>
+    <div class="tl-stop"><div class="tl-dot" style="background:#0E9F6E;opacity:.75"></div><div class="tl-time">أسبوع ١</div><div class="tl-event">استمارة + موافقة</div></div>
+    <div class="tl-stop"><div class="tl-dot" style="background:#0E9F6E;opacity:.55"></div><div class="tl-time">شهر ١</div><div class="tl-event">٣ مقالات + صفحتك</div></div>
+    <div class="tl-stop"><div class="tl-dot" style="background:#10b981"></div><div class="tl-time">شهر ٣</div><div class="tl-event">أول نتائج جوجل</div></div>
+    <div class="tl-stop"><div class="tl-dot" style="background:#059669"></div><div class="tl-time">شهر ٦</div><div class="tl-event">نظام نمو كامل</div></div>
+  </div>
+</section>
+
+<!-- STEP 1 — WRITING -->
+<section class="step-section">
+  <div class="container">
+    <div class="step-row">
+      <div>
+        <div class="step-num">٠١ — الكتابة</div>
+        <h2>الفريق يكتب —<br>أنت توافق فقط.</h2>
+        <p>دورك الوحيد: <strong>الموافقة</strong>. الفريق يكتب، يصمم، يوزّع — أنت تضغط موافق وخلاص.</p>
+        <ul class="step-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>حتى ١٢ مقال شهرياً</strong> — SEO احترافي كامل (عنوان، وصف، headings، روابط داخلية)</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>نسخة صوتية</strong> تلقائية مع كل مقال — يرفع وقت الجلسة + SEO</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>ريلز جاهز + توزيع ٨ منصات</strong> تلقائياً — يوم النشر بدون جهد</span></li>
+        </ul>
+      </div>
+      <div class="mock">
+        <div class="mock-bar-top">
+          <span class="mock-label">سير العمل</span>
+        </div>
+        <div class="flow">
+          <div class="flow-item"><div class="flow-emoji">📋</div><div class="flow-label">استمارة</div><div class="flow-sub">١٠ أسئلة</div></div>
+          <span class="flow-arrow">←</span>
+          <div class="flow-item"><div class="flow-emoji">✍️</div><div class="flow-label">الفريق يكتب</div><div class="flow-sub">+ يصمم</div></div>
+          <span class="flow-arrow">←</span>
+          <div class="flow-item hl"><div class="flow-emoji">✅</div><div class="flow-label">أنت توافق</div><div class="flow-sub">دورك هنا</div></div>
+          <span class="flow-arrow">←</span>
+          <div class="flow-item"><div class="flow-emoji">🚀</div><div class="flow-label">ينزل تلقائي</div><div class="flow-sub">كل مكان</div></div>
+        </div>
+        <div class="article-card">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px">
+            <span class="mock-dot"></span>
+            <span class="mock-label">article-draft.md</span>
+            <span class="mock-tag-r tag-green" style="margin-inline-start:auto">✓ جاهز</span>
+          </div>
+          <div class="article-title">أفضل ٧ تقنيات لزراعة الأسنان ٢٠٢٦</div>
+          <div class="article-bar"></div>
+          <div class="article-bar m w90"></div>
+          <div class="article-bar m w75"></div>
+          <div class="article-pills">
+            <span class="article-pill"># ١٢٠٠ كلمة</span>
+            <span class="article-pill"># ٨ headings</span>
+            <span class="article-pill good"># SEO ٩٢/١٠٠</span>
+          </div>
+        </div>
+        <div class="platforms-row">
+          <div class="platform">📱</div>
+          <div class="platform">📷</div>
+          <div class="platform">𝕏</div>
+          <div class="platform">🎵</div>
+          <div class="platform">📌</div>
+          <div class="platform">▶</div>
+          <div class="platform">f</div>
+          <div class="platform">in</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 2 — NETWORK -->
+<section class="step-section alt">
+  <div class="container">
+    <div class="step-row">
+      <div class="mock">
+        <div class="net-flow">
+          <div class="net-flow-title">رحلة مقالك بعد الموافقة</div>
+          <div class="net-tags">
+            <span class="net-tag start">✅ وافقت</span>
+            <span class="net-arrow">←</span>
+            <span class="net-tag">موقعك + جوجل</span>
+            <span class="net-tag">صفحتك في مدوّنتي</span>
+            <span class="net-tag">٨ منصات اجتماعية</span>
+            <span class="net-tag fire">🔥 صفحة الرائجة</span>
+          </div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-cover"></div>
+          <div class="profile-body">
+            <div class="profile-head">
+              <div class="profile-avatar">ن</div>
+              <div>
+                <div class="profile-name">نخبة الاستشارات <span class="verified">✓ موثّق</span></div>
+                <div class="profile-meta">١٢ مقال · ٢٣ متابع · ★ ٥.٠ · الرياض</div>
+              </div>
+            </div>
+            <div class="profile-tabs">
+              <span class="profile-tab active">الكل</span>
+              <span class="profile-tab">حول</span>
+              <span class="profile-tab">الصور</span>
+              <span class="profile-tab">المتابعون</span>
+              <span class="profile-tab">التقييمات</span>
+              <span class="profile-tab">الريلز</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="step-num">٠٢ — الشبكة</div>
+        <h2>لست وحدك على الإنترنت.</h2>
+        <p>مقالاتك تنضم لـ<strong>شبكة مدوّنتي</strong> — فيها +١٩ شركة عربية وزوار يومياً. كل مقال يستفيد من جمهور الشبكة كلها.</p>
+        <ul class="step-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>صفحة الرائجة</strong> = مقالاتك أمام كل زوار مدوّنتي — بدون إعلانات ممولة</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>صفحة شركتك</strong> مع شارة موثّق + تقييمات علنية = مصداقية فورية</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>متابعون يتراكمون</strong> — كل مقال جديد يصلهم تلقائياً بدون إعلانات</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 3 — LEADS -->
+<section class="step-section">
+  <div class="container">
+    <div class="step-row">
+      <div>
+        <div class="step-num">٠٣ — الـ Leads</div>
+        <h2>كل سؤال = فرصة بيع.</h2>
+        <p>الزائر يسأل من المقال مباشرة — <strong>اسمه ورقمه يصلك تلقائياً</strong> ومصنّف بنقاط حرارة (ساخن / مهتم / مشترك).</p>
+        <ul class="step-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>صندوق وارد موحّد</strong> — كل أسئلة المقالات في مكان واحد</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>تصنيف ذكي</strong> — ساخن (يبغى يشتري الآن) / مهتم / مشترك في القائمة فقط</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>WhatsApp + Email + رقم</strong> — كل المعلومات تصلك جاهزة</span></li>
+        </ul>
+      </div>
+      <div class="mock">
+        <div class="inbox-card">
+          <div class="inbox-head">صندوق الوارد — من مقالاتك</div>
+          <div class="inbox-row">
+            <div class="unread"></div>
+            <div class="avatar-mini av-blue">أ</div>
+            <div class="inbox-mid">
+              <div class="inbox-name">أحمد المطيري <span class="heat heat-hot">ساخن</span></div>
+              <div class="inbox-msg">هل تقدمون خدمات للشركات الناشئة؟</div>
+            </div>
+            <span class="inbox-time">٥ د</span>
+          </div>
+          <div class="inbox-row">
+            <div class="unread"></div>
+            <div class="avatar-mini av-green">س</div>
+            <div class="inbox-mid">
+              <div class="inbox-name">سارة الدوسري <span class="heat heat-warm">مهتم</span></div>
+              <div class="inbox-msg">ما الفرق بين الباقات؟</div>
+            </div>
+            <span class="inbox-time">٢ س</span>
+          </div>
+          <div class="inbox-row">
+            <div class="unread faded"></div>
+            <div class="avatar-mini av-amber">م</div>
+            <div class="inbox-mid">
+              <div class="inbox-name">منى العجمي <span class="heat heat-cold">مشترك</span></div>
+              <div class="inbox-msg">سأتواصل لاحقاً</div>
+            </div>
+            <span class="inbox-time">أمس</span>
+          </div>
+        </div>
+        <div class="inbox-card">
+          <div class="inbox-head">قاعدة Leads — مُصنَّفة تلقائياً</div>
+          <div class="leads-row">
+            <div class="avatar-mini av-blue">أ</div>
+            <div class="leads-mid">
+              <div class="inbox-name">أحمد المطيري <span class="heat heat-hot">ساخن</span></div>
+              <div class="leads-meta">a.motairi@invest.sa · 0550123456 · WA ✓</div>
+              <div class="leads-bar"><div class="leads-bar-fill fill-red" style="width:90%"></div></div>
+            </div>
+          </div>
+          <div class="leads-row">
+            <div class="avatar-mini av-green">س</div>
+            <div class="leads-mid">
+              <div class="inbox-name">سارة الدوسري <span class="heat heat-warm">مهتم</span></div>
+              <div class="leads-meta">s.dosari@visionco.sa · WA ✓</div>
+              <div class="leads-bar"><div class="leads-bar-fill fill-amber" style="width:60%"></div></div>
+            </div>
+          </div>
+          <div class="leads-row">
+            <div class="avatar-mini av-amber">م</div>
+            <div class="leads-mid">
+              <div class="inbox-name">منى العجمي <span class="heat heat-cold">مشترك</span></div>
+              <div class="leads-meta">m.ajmi@gulf-retail.com · لا واتساب</div>
+              <div class="leads-bar"><div class="leads-bar-fill fill-blue" style="width:30%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEP 4 — DASHBOARD -->
+<section class="step-section alt">
+  <div class="container">
+    <div class="step-row">
+      <div class="mock">
+        <div class="gtm-badge">
+          <span>✓</span>
+          <span>Google Tag Manager — بيانات حقيقية لا تقديرات</span>
+        </div>
+        <div class="dash-stats">
+          <div class="dash-stat"><div class="ds-n">١٢</div><div class="ds-l">مقال منشور</div></div>
+          <div class="dash-stat"><div class="ds-n green">+٣٨٠٪</div><div class="ds-l">نمو الزيارات</div></div>
+          <div class="dash-stat"><div class="ds-n amber">٢٤</div><div class="ds-l">lead جديد</div></div>
+          <div class="dash-stat"><div class="ds-n red">٦</div><div class="ds-l">ساخن الآن</div></div>
+        </div>
+        <div class="dash-grid">
+          <div class="dash-card">
+            <div class="dash-card-title">أداء المقالات — ٦ أشهر</div>
+            <div class="bars">
+              <div class="bar" style="height:35%;opacity:.4"></div>
+              <div class="bar" style="height:50%;opacity:.5"></div>
+              <div class="bar" style="height:45%;opacity:.6"></div>
+              <div class="bar" style="height:72%;opacity:.75"></div>
+              <div class="bar" style="height:85%;opacity:.9"></div>
+              <div class="bar" style="height:100%"></div>
+            </div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-title">مصادر الزيارات</div>
+            <div class="src-row"><div class="src-label">جوجل</div><div class="src-bar"><div class="src-fill green" style="width:62%"></div></div><div class="src-pct">62%</div></div>
+            <div class="src-row"><div class="src-label">سوشيال</div><div class="src-bar"><div class="src-fill amber" style="width:23%"></div></div><div class="src-pct">23%</div></div>
+            <div class="src-row"><div class="src-label">مباشر</div><div class="src-bar"><div class="src-fill blue" style="width:15%"></div></div><div class="src-pct">15%</div></div>
+          </div>
+        </div>
+        <div class="events-grid">
+          <div class="event-cell"><div class="event-icon">👁</div><div class="event-label">مشاهدات</div></div>
+          <div class="event-cell"><div class="event-icon">❤️</div><div class="event-label">إعجابات</div></div>
+          <div class="event-cell"><div class="event-icon">⏱️</div><div class="event-label">وقت البقاء</div></div>
+          <div class="event-cell"><div class="event-icon">📍</div><div class="event-label">عمق التمرير</div></div>
+          <div class="event-cell"><div class="event-icon">🎯</div><div class="event-label">تصنيف Leads</div></div>
+          <div class="event-cell"><div class="event-icon">📊</div><div class="event-label">+١٥ حدث</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="step-num">٠٤ — اللوحة</div>
+        <h2>كل شي في عينك —<br>أرقام حقيقية.</h2>
+        <p>+٢٠ حدث مُتتبَّع عبر <strong>Google Tag Manager</strong>. لا تقديرات، لا "تقريباً". أرقام تتخذ عليها قرار.</p>
+        <ul class="step-features">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>أداء كل مقال</strong> منفصل — مشاهدات، وقت قراءة، تحويلات</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>مصادر الزيارات</strong> — جوجل، سوشيال، مباشر — كل واحد بنسبة</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span><strong>تقرير شهري PDF</strong> يوصلك بالإيميل — ملخص + توصيات</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="compare">
+  <div class="container">
+    <div class="compare-head">
+      <div class="compare-eyebrow">مقارنة عملية</div>
+      <h2 class="compare-title">إيش الفرق فعلاً؟</h2>
+    </div>
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="ceyebrow">الطريقة التقليدية</div>
+        <h3>توظف فريق محتوى داخلي</h3>
+        <div class="compare-price">~٣٧,٠٠٠ ر.س / شهرياً</div>
+        <ul class="compare-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D67878" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>راتب ٦ موظفين + توظيف + تدريب + إجازات</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D67878" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>أدوات SEO منفصلة بتكلفة إضافية</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D67878" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>تأخير ٦+ شهور للبدء — ما عندك lead واحد</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D67878" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>ما في شبكة — تبدأ من صفر</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D67878" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg><span>أنت تدير الفريق + تتابع + تشتكي</span></li>
+        </ul>
+      </div>
+      <div class="compare-card win">
+        <div class="ceyebrow">مدوّنتي</div>
+        <h3>اشتراك واحد — نظام كامل</h3>
+        <div class="compare-price">من ٣٩٩ ر.س / شهرياً</div>
+        <ul class="compare-list">
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>كتابة + نشر + متابعة + تقارير — كل شي شامل</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>أدوات SEO + GSC + GTM مدمجة باللوحة</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>أول مقال خلال ٤٨ ساعة — أول lead خلال أسابيع</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>تنضم لشبكة +١٩ شركة + جمهور موجود</span></li>
+          <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3DDC8C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L20 7"/></svg><span>أنت توافق، نحن ندير الباقي</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div class="final-cta-card">
+    <h2>جاهز ترى ترتيبك يتحرّك؟</h2>
+    <p>اشترك الحين، أول مقال يصلك خلال ٤٨ ساعة — وإذا ما فتحت حسابك خلال ١٤ يوم نرجع لك فلوسك كاملة.</p>
+    <div class="ctas">
+      <a href="#" class="btn-white">ابدأ مجاناً — بدون بطاقة</a>
+      <a href="#" class="btn-ghost">كلّمنا على واتساب</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">JBRSEO</div>
+  <div>mockup v2 — features page</div>
+</footer>
+
+</body>
+</html>

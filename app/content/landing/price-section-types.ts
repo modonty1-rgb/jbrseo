@@ -7,6 +7,8 @@ export interface Section {
 export interface Plan {
   id: string;
   name: string;
+  /** Distinctive value line surfaced under the plan name (replaces persona when present). */
+  hook?: string | null;
   persona: string;
   price: { mo: number; yr: number };
   cta: string;
@@ -64,6 +66,10 @@ export interface PricingUI {
   priceDetailsToggle: string;
   /** Single link below plan grid → full pricing / comparison page */
   pricingFullComparisonLabel: string;
+  /** Universal feature line shown in every plan's inclusions (Facebook-Business-style page on modonty.com). */
+  pageOnModonty: string;
+  /** Always-on banner shown in the inline-promo slot when no seasonal promo is active. Keeps cards visually aligned + adds an evergreen value reminder. */
+  noPromoBanner: string;
 }
 
 export interface PricingContent {

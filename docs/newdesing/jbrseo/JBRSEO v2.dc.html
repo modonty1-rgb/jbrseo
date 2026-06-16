@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:#FBFBF9;font-family:'Readex Pro',sans-serif;-webkit-font-smoothing:antialiased;color:#0A0A0A}
+  ::selection{background:#0A0A0A;color:#fff}
+  @keyframes caret{0%,49%{opacity:1}50%,100%{opacity:0}}
+  @keyframes up{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  @keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+  a{color:inherit}
+  @keyframes fabIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+  @keyframes sheetIn{from{transform:translateY(20px) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;height:22px}
+  input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:transparent}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:20px;width:20px;border-radius:50%;background:#fff;border:2px solid #0E9F6E;box-shadow:0 2px 7px rgba(14,159,110,.45);margin-top:-8px}
+  input[type=range]::-moz-range-track{height:5px;border-radius:99px;background:transparent}
+  input[type=range]::-moz-range-thumb{height:18px;width:18px;border-radius:50%;background:#fff;border:2px solid #0E9F6E}
+</style>
+</helmet>
+
+<div dir="rtl" style="background:#FBFBF9;min-height:100vh;overflow-x:hidden">
+
+  <!-- NAV -->
+  <header style="position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(251,251,249,.8);border-bottom:1px solid #EDEDE8">
+    <div style="max-width:1080px;margin:0 auto;padding:18px 28px;display:flex;align-items:center;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="width:30px;height:30px;border-radius:8px;background:#0A0A0A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">J</div>
+        <span style="font-weight:600;font-size:17px;letter-spacing:-.3px">jbr<span style="color:#0E9F6E">seo</span></span>
+      </div>
+      <div style="display:flex;align-items:center;gap:18px">
+        <div style="display:flex;gap:4px;font-size:13px;color:#6B6B66">
+          <button onClick="{{ setSA }}" style="{{ saStyle }}">السعودية</button>
+          <button onClick="{{ setEG }}" style="{{ egStyle }}">مصر</button>
+        </div>
+        <a href="#pricing" style="background:#0A0A0A;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;font-weight:500;text-decoration:none">ابدأ الحين</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section style="max-width:760px;margin:0 auto;padding:88px 28px 28px;text-align:center">
+    <div style="font-size:14px;color:#6B6B66;font-weight:500;letter-spacing:.2px;margin-bottom:26px">سيو بالاشتراك الشهري · السعودية ومصر</div>
+    <h1 style="font-size:64px;line-height:1.08;font-weight:600;letter-spacing:-2px;text-wrap:balance">
+      نخلّيك في <span style="color:#0E9F6E">المركز الأول</span><br>على جوجل.
+    </h1>
+    <p style="font-size:20px;line-height:1.7;color:#52524C;margin:26px auto 0;max-width:520px;font-weight:300;text-wrap:pretty">
+      فريقنا يكتب محتوى سيو وينشره على موقعك. أنت توافق بضغطة — وجوجل يجيب لك العملاء كل يوم. بدون إعلانات، بدون فريق داخلي.
+    </p>
+    <div style="display:flex;gap:12px;justify-content:center;margin-top:32px;flex-wrap:wrap">
+      <a href="#pricing" style="background:#0A0A0A;color:#fff;padding:15px 28px;border-radius:12px;font-size:16px;font-weight:500;text-decoration:none">ابدأ الحين — بدون بطاقة</a>
+      <a href="{{ waLink }}" style="background:#fff;color:#0A0A0A;padding:15px 24px;border-radius:12px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid #E2E2DC">تواصل واتساب</a>
+    </div>
+    <div style="font-size:13px;color:#9A9A93;margin-top:18px">بدون بطاقة · ضمان استرجاع ١٤ يوم · دعم عربي ١٠٠٪</div>
+  </section>
+
+  <!-- LIVE SERP -->
+  <section style="max-width:640px;margin:0 auto;padding:34px 28px 20px">
+    <div style="background:#fff;border:1px solid #E8E8E2;border-radius:20px;box-shadow:0 30px 60px -36px rgba(10,10,10,.28);overflow:hidden">
+      <!-- search bar -->
+      <div style="display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid #F0F0EA">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A9A93" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+        <div style="font-size:15px;color:#2A2A26;flex:1;font-weight:400">{{ query }}<span style="display:inline-block;width:1.5px;height:16px;background:#0A0A0A;vertical-align:-3px;margin-right:2px;animation:caret 1s step-end infinite"></span></div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#B8B8B0">بحث جوجل</div>
+      </div>
+      <!-- results -->
+      <div style="position:relative;height:{{ boardHeight }};padding:10px 14px;background:#FCFCFA">
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+          <div style="{{ r.boxStyle }}">
+            <div style="display:flex;align-items:center;gap:13px;height:100%">
+              <div style="{{ r.rankStyle }}">{{ r.rankLabel }}</div>
+              <div style="flex:1;min-width:0">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="{{ r.titleStyle }}">{{ r.title }}</span>
+                  <sc-if value="{{ r.showAd }}" hint-placeholder-val="{{ false }}"><span style="font-size:10px;font-weight:600;color:#B26B00;background:#FFF3DC;padding:1px 6px;border-radius:5px;font-family:'IBM Plex Mono',monospace">إعلان</span></sc-if>
+                  <sc-if value="{{ r.isYou }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;color:#0E9F6E;background:#E6F7EF;padding:2px 8px;border-radius:6px">موقعك</span></sc-if>
+                </div>
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:{{ r.urlColor }};margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.url }}</div>
+              </div>
+              <sc-if value="{{ r.rising }}" hint-placeholder-val="{{ false }}">
+                <div style="display:flex;align-items:center;gap:4px;color:#0E9F6E;font-size:12px;font-weight:600;font-family:'IBM Plex Mono',monospace;animation:up 1s ease-in-out infinite">▲ يصعد</div>
+              </sc-if>
+              <sc-if value="{{ r.won }}" hint-placeholder-val="{{ false }}">
+                <div style="color:#0E9F6E;font-size:13px;font-weight:600;animation:pop .4s ease both">المركز الأول ✓</div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:13px;color:#9A9A93;margin-top:16px">من الصفحة الخامسة إلى المركز الأول — هذا اللي نسوّيه لموقعك.</div>
+  </section>
+
+  <!-- HOW (one calm line) -->
+  <section style="max-width:880px;margin:0 auto;padding:72px 28px">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;text-align:center">
+      <sc-for list="{{ how }}" as="h" hint-placeholder-count="3">
+        <div style="{{ h.cellStyle }}">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#B8B8B0;margin-bottom:12px">{{ h.no }}</div>
+          <div style="font-size:20px;font-weight:600;margin-bottom:8px">{{ h.title }}</div>
+          <div style="font-size:14px;color:#7A7A73;line-height:1.6;max-width:200px;margin:0 auto">{{ h.body }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- MATH -->
+  <section style="border-top:1px solid #EDEDE8;border-bottom:1px solid #EDEDE8;background:#fff">
+    <div style="max-width:880px;margin:0 auto;padding:72px 28px;text-align:center">
+      <h2 style="font-size:38px;font-weight:600;letter-spacing:-1px;margin-bottom:14px">الرياضيات بسيطة.</h2>
+      <p style="font-size:16px;color:#7A7A73;margin-bottom:44px">عشان تتصدّر جوجل تحتاج فريق ٦ وظائف. أو اشتراك واحد.</p>
+      <div style="display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap">
+        <div style="text-align:center">
+          <div style="font-size:13px;color:#9A9A93;margin-bottom:10px">فريق محتوى داخلي كامل</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:46px;font-weight:500;color:#C4C4BC;letter-spacing:-1.5px;text-decoration:line-through;text-decoration-color:#E2A0A0;text-decoration-thickness:2px">{{ teamCost }}</div>
+          <div style="font-size:12px;color:#B8B8B0;margin-top:6px">{{ curName }} / شهرياً</div>
+        </div>
+        <div style="font-size:30px;color:#C4C4BC;font-weight:300">←</div>
+        <div style="text-align:center">
+          <div style="font-size:13px;color:#0E9F6E;font-weight:500;margin-bottom:10px">مدونتي — اشتراك واحد</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:60px;font-weight:600;color:#0A0A0A;letter-spacing:-2px">{{ subCost }}</div>
+          <div style="font-size:12px;color:#7A7A73;margin-top:6px">{{ curName }} / شهرياً — يبدأ من</div>
+        </div>
+      </div>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#E6F7EF;color:#0A7A52;font-size:14px;font-weight:600;padding:10px 18px;border-radius:99px;margin-top:40px">توفير يصل إلى ٩٧٪ — ومحتوى يبقى ملكك للأبد</div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" style="max-width:1080px;margin:0 auto;padding:80px 28px">
+    <div style="text-align:center;margin-bottom:34px">
+      <h2 style="font-size:38px;font-weight:600;letter-spacing:-1px">باقات تنمو معك</h2>
+      <p style="font-size:15px;color:#7A7A73;margin-top:12px">أسعار التأسيس — أول ١٥٠ شركة. ضمان استرجاع ١٤ يوم.</p>
+      <div style="display:inline-flex;background:#F0F0EA;border-radius:11px;padding:4px;margin-top:24px;font-size:14px;font-weight:500">
+        <button onClick="{{ setMonthly }}" style="{{ monStyle }}">شهري</button>
+        <button onClick="{{ setAnnual }}" style="{{ annStyle }}">سنوي · ٦ أشهر هدية</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <sc-for list="{{ plans }}" as="p" hint-placeholder-count="4">
+        <div style="{{ p.cardStyle }}">
+          <div style="font-size:14px;font-weight:600;color:{{ p.nameColor }}">{{ p.name }}</div>
+          <p style="font-size:12.5px;color:{{ p.subColor }};margin:8px 0 20px;line-height:1.6;min-height:50px">{{ p.tagline }}</p>
+          <div style="display:flex;align-items:baseline;gap:6px">
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:600;letter-spacing:-1.5px;color:{{ p.priceColor }}">{{ p.price }}</span>
+            <span style="font-size:12px;color:{{ p.subColor }}">{{ curName }}/شهر</span>
+          </div>
+          <div style="font-size:11.5px;color:{{ p.subColor }};margin-top:6px;min-height:16px;font-family:'IBM Plex Mono',monospace">{{ p.note }}</div>
+          <a href="{{ waLink }}" style="{{ p.ctaStyle }}">{{ p.cta }}</a>
+          <div style="{{ p.dividerStyle }}"></div>
+          <sc-for list="{{ p.features }}" as="f" hint-placeholder-count="3">
+            <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:{{ p.featColor }}">
+              <span style="color:{{ p.checkColor }};flex-shrink:0">✓</span><span>{{ f }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section style="max-width:1080px;margin:0 auto;padding:20px 28px 90px">
+    <div style="background:#0A0A0A;border-radius:26px;padding:72px 40px;text-align:center">
+      <h2 style="font-size:44px;font-weight:600;color:#fff;letter-spacing:-1.5px;line-height:1.15;margin-bottom:16px">منافسك يتصدّر الحين.<br>وأنت؟</h2>
+      <p style="font-size:17px;color:#A8A8A0;max-width:460px;margin:0 auto 32px;line-height:1.7;font-weight:300">انضم لأوائل الشركات اللي اختارت المحتوى طريقاً للنمو — لا الإعلانات.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="#pricing" style="background:#fff;color:#0A0A0A;padding:16px 30px;border-radius:13px;font-size:16px;font-weight:600;text-decoration:none">ابدأ الحين</a>
+        <a href="{{ waLink }}" style="background:rgba(255,255,255,.1);color:#fff;padding:16px 26px;border-radius:13px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,.16)">كلّمنا على واتساب</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="border-top:1px solid #EDEDE8">
+    <div style="max-width:1080px;margin:0 auto;padding:32px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="width:26px;height:26px;border-radius:7px;background:#0A0A0A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">J</div>
+        <span style="font-weight:600;font-size:15px">jbr<span style="color:#0E9F6E">seo</span></span>
+        <span style="font-size:12px;color:#B8B8B0;margin-right:6px">· مدعوم بمنصة مدونتي</span>
+      </div>
+      <div style="font-size:12.5px;color:#9A9A93;font-family:'IBM Plex Mono',monospace">© JBRSEO · سجل تجاري ٧٠٤٠٦٠٢٠٩١</div>
+    </div>
+  </footer>
+
+  <!-- FLOATING CALCULATOR FAB -->
+  <button onClick="{{ openCalc }}" aria-label="حاسبة التوفير" style="position:fixed;bottom:24px;left:24px;z-index:60;display:flex;align-items:center;gap:10px;background:#0A0A0A;color:#fff;border:none;cursor:pointer;padding:14px 18px 14px 20px;border-radius:99px;box-shadow:0 16px 36px -10px rgba(10,10,10,.5);font-family:inherit;font-size:14px;font-weight:500;animation:fabIn .4s ease both">
+    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="2.5" width="16" height="19" rx="2.5"></rect><line x1="8" y1="7" x2="16" y2="7"></line><circle cx="8.5" cy="12" r=".6" fill="currentColor"></circle><circle cx="12" cy="12" r=".6" fill="currentColor"></circle><circle cx="15.5" cy="12" r=".6" fill="currentColor"></circle><circle cx="8.5" cy="16.5" r=".6" fill="currentColor"></circle><circle cx="12" cy="16.5" r=".6" fill="currentColor"></circle><circle cx="15.5" cy="16.5" r=".6" fill="currentColor"></circle></svg>
+    احسب توفيرك
+  </button>
+
+  <!-- CALCULATOR MODAL -->
+  <sc-if value="{{ calcOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeCalc }}" style="position:fixed;inset:0;z-index:70;background:rgba(10,10,10,.42);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease both">
+      <div onClick="{{ stopProp }}" style="background:#fff;border-radius:22px;max-width:540px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 50px 90px -24px rgba(0,0,0,.5);animation:sheetIn .3s cubic-bezier(.34,1.1,.4,1) both">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:26px 26px 18px;border-bottom:1px solid #F0F0EA;position:sticky;top:0;background:#fff;z-index:2">
+          <div>
+            <h3 style="font-size:21px;font-weight:600;letter-spacing:-.5px">كم يكلّفك البديل فعلاً؟</h3>
+            <p style="font-size:13.5px;color:#7A7A73;margin-top:6px;line-height:1.6">اضبط رواتب فريق المحتوى حسب سوقك، وقارن بتكلفة اشتراك واحد.</p>
+          </div>
+          <button onClick="{{ closeCalc }}" aria-label="إغلاق" style="flex-shrink:0;width:34px;height:34px;border-radius:9px;border:1px solid #E8E8E2;background:#fff;cursor:pointer;font-size:18px;color:#7A7A73;display:flex;align-items:center;justify-content:center">✕</button>
+        </div>
+
+        <div style="padding:22px 26px 8px">
+          <div style="font-size:12px;color:#9A9A93;margin-bottom:18px">رواتب الفريق الشهرية ({{ curName }})</div>
+          <sc-for list="{{ roles }}" as="r" hint-placeholder-count="6">
+            <div style="margin-bottom:18px">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <span style="font-size:14px;color:#2A2A26">{{ r.label }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:13.5px;font-weight:600;color:#0A0A0A">{{ r.valLabel }}</span>
+              </div>
+              <div style="position:relative;height:22px;display:flex;align-items:center">
+                <div style="position:absolute;left:0;right:0;height:5px;border-radius:99px;background:#ECECE6"></div>
+                <div style="{{ r.fillStyle }}"></div>
+                <input type="range" min="{{ r.min }}" max="{{ r.max }}" step="{{ r.step }}" value="{{ r.val }}" onInput="{{ r.onInput }}" style="position:absolute;left:0;right:0;width:100%;margin:0">
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="padding:6px 26px 26px">
+          <div style="background:#FAFAF7;border:1px solid #EDEDE8;border-radius:16px;padding:20px">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid #EDEDE8">
+              <span style="font-size:13.5px;color:#7A7A73"><span style="color:#C46B6B">✕</span> فريق كامل / سنوياً</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600;color:#9A9A93;text-decoration:line-through;text-decoration-color:#E2A0A0">{{ teamAnnualLabel }}</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0">
+              <span style="font-size:13.5px;color:#0A7A52;font-weight:500"><span>✓</span> مدونتي / سنوياً</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:600;color:#0A0A0A">{{ subAnnualLabel }}</span>
+            </div>
+            <div style="background:#0A0A0A;border-radius:13px;padding:18px;text-align:center;margin-top:6px">
+              <div style="font-size:12.5px;color:#9A9A93;margin-bottom:4px">توفيرك السنوي</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:40px;font-weight:600;color:#3DDC8C;letter-spacing:-1.5px;line-height:1">{{ savingsPctLabel }}</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#C8C8C2;margin-top:6px">{{ savingsAmountLabel }} {{ curName }} في السنة</div>
+            </div>
+          </div>
+          <a href="#pricing" onClick="{{ closeCalc }}" style="display:block;text-align:center;background:#0A0A0A;color:#fff;padding:14px;border-radius:12px;font-weight:600;font-size:15px;text-decoration:none;margin-top:14px">شوف الباقة المناسبة لك ←</a>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1080,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  queries = ['شركة مقاولات بالرياض','عيادة أسنان بجدة','متجر قهوة مختصة','مكتب محاماة بالقاهرة'];
+  ROWH = 62;
+  comps = [
+    {id:'ad', title:'منافسك', url:'competitor-ads.com', ad:true},
+    {id:'c2', title:'دليل الشركات', url:'business-directory.sa'},
+    {id:'c3', title:'موقع منافس', url:'rival-company.com'},
+    {id:'c4', title:'صفحة قديمة', url:'old-listing.net'},
+    {id:'c5', title:'منتدى عام', url:'forum.example.com'},
+  ];
+
+  state = { market:'sa', billing:'annual', queryIdx:0, order:['ad','c2','c3','c4','c5','you'],
+    calcOpen:false,
+    salaries:{ writer:4500, designer:7000, seo:6000, social:5500, video:6000, dev:8000 } };
+
+  componentDidMount(){ this.stop=false; this._raise(); }
+  componentWillUnmount(){ this.stop=true; clearTimeout(this._t); }
+  _raise(){
+    this._t = setTimeout(()=>{
+      if(this.stop) return;
+      const order=[...this.state.order];
+      const i=order.indexOf('you');
+      if(i>0){ [order[i-1],order[i]]=[order[i],order[i-1]]; this.setState({order}); this._raise(); }
+      else {
+        this._t=setTimeout(()=>{ if(this.stop)return;
+          this.setState(s=>({queryIdx:(s.queryIdx+1)%this.queries.length, order:['ad','c2','c3','c4','c5','you']}));
+          this._raise();
+        }, 2800);
+      }
+    }, 760);
+  }
+
+  cur(){ return this.state.market==='sa' ? 'ر.س' : 'ج.م'; }
+  fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+  setMarket(m){ return ()=>this.setState({market:m}); }
+  setBilling(b){ return ()=>this.setState({billing:b}); }
+  setSalary(key){ return (e)=>this.setState({salaries:{...this.state.salaries,[key]:+e.target.value}}); }
+
+  renderVals(){
+    const { market, billing, queryIdx, order } = this.state;
+    const cur=this.cur();
+    const wa='https://wa.me/'+(market==='sa'?'966541018020':'201000000000');
+    const youAtTop = order[0]==='you';
+    const youIdx = order.indexOf('you');
+
+    const segBtn=(on)=>({padding:'6px 12px',borderRadius:'8px',border:'none',cursor:'pointer',fontFamily:'inherit',fontWeight:500,fontSize:'13px',background:on?'#0A0A0A':'transparent',color:on?'#fff':'#9A9A93',transition:'all .15s'});
+    const pillBtn=(on)=>({padding:'9px 18px',borderRadius:'9px',border:'none',cursor:'pointer',fontFamily:'inherit',fontWeight:500,fontSize:'14px',background:on?'#fff':'transparent',color:on?'#0A0A0A':'#7A7A73',boxShadow:on?'0 1px 3px rgba(0,0,0,.08)':'none',transition:'all .15s'});
+
+    // SERP rows
+    const all=[...this.comps,{id:'you',title:'نشاطك التجاري',url:'your-business.com',you:true}];
+    const rows=all.map(item=>{
+      const idx=order.indexOf(item.id);
+      const isYou=!!item.you;
+      const rising=isYou && !youAtTop;
+      const won=isYou && youAtTop;
+      const dim = !isYou;
+      return {
+        title:item.title, url:item.url, isYou,
+        showAd: !!item.ad && idx===order.indexOf('ad') && order.indexOf('ad')<youIdx,
+        rising, won, isYou,
+        urlColor: isYou ? '#0E9F6E' : (dim?'#B0B0A8':'#A8A8A0'),
+        boxStyle:{
+          position:'absolute',left:'14px',right:'14px',top:(idx*this.ROWH+6)+'px',height:(this.ROWH-8)+'px',
+          padding:'0 14px',borderRadius:'12px',
+          background: isYou ? '#fff' : 'transparent',
+          border: isYou ? '1.5px solid #0E9F6E' : '1px solid transparent',
+          boxShadow: isYou ? '0 10px 26px -12px rgba(14,159,110,.45)' : 'none',
+          transition:'top .55s cubic-bezier(.34,1.2,.34,1), box-shadow .4s, border-color .4s, transform .4s',
+          transform: won ? 'scale(1.015)' : 'scale(1)',
+          zIndex: isYou ? 5 : 1,
+        },
+        rankStyle:{
+          fontFamily:"'IBM Plex Mono',monospace",fontSize:'13px',fontWeight:600,width:'30px',height:'30px',flexShrink:0,
+          display:'flex',alignItems:'center',justifyContent:'center',borderRadius:'8px',
+          background: isYou ? (won?'#0E9F6E':'#E6F7EF') : '#F0F0EA',
+          color: isYou ? (won?'#fff':'#0E9F6E') : '#9A9A93',
+          transition:'all .4s',
+        },
+        rankLabel:'#'+(idx+1),
+        titleStyle:{fontSize:'14.5px',fontWeight: isYou?600:400,color: isYou?'#0A0A0A':(dim?'#86867E':'#52524C'),whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis'},
+      };
+    });
+
+    // how
+    const how=[
+      {no:'٠١',title:'اشترك',body:'اختر باقتك وتعبّأ استمارة قصيرة مرة وحدة.'},
+      {no:'٠٢',title:'نكتب وننشر',body:'فريقنا يجهّز المحتوى وينشره على موقعك تلقائياً.'},
+      {no:'٠٣',title:'تتصدّر جوجل',body:'تظهر في البحث، والعملاء يجونك كل يوم.'},
+    ].map((h,i)=>({...h, cellStyle:{padding:'8px 24px', borderRight: i<2 ? '1px solid #EDEDE8' : 'none'}}));
+
+    // math
+    const teamMonthly=37000;
+    const subStart=100;
+
+    // pricing
+    const annual=billing==='annual';
+    const data=[
+      {name:'الحضور',tagline:'صفحة احترافية تحكي قصتك وخبراتك.',m:100,a:100,feat:['مقال احترافي يعكس خبرتك','صفحة تعريفية جاهزة للمشاركة','رابط خاص تشاركه مع عملائك'],featured:false},
+      {name:'الانطلاقة',tagline:'٤ مقالات شهرياً — نكتب وأنت تستقبل العملاء.',m:499,a:399,feat:['٤ مقالات كل شهر','نشر تلقائي على موقعك','توزيع على ٣ منصات'],featured:false},
+      {name:'الزخم',tagline:'نشيل عنك هم المحتوى بالكامل.',m:1299,a:1039,feat:['٨ مقالات + ريلز شهرياً','توزيع على ٨ منصات','تمييز العميل الجاهز للشراء'],featured:true},
+      {name:'الريادة',tagline:'لنشاطك اللي كبر ويستاهل فريق متكامل.',m:2999,a:2399,feat:['١٢ مقالاً كل شهر','جلسة استراتيجية شهرية','مدير حساب خاص فيك'],featured:false},
+    ];
+    const plans=data.map(p=>{
+      const price=annual?p.a:p.m;
+      const f=p.featured;
+      return {
+        name:p.name, tagline:p.tagline, price:this.fmt(price),
+        note: annual ? ('سنوياً '+this.fmt(price*12)+' '+cur) : 'يُدفع شهرياً',
+        features:p.feat,
+        nameColor: f?'#fff':'#0A0A0A',
+        priceColor: f?'#fff':'#0A0A0A',
+        subColor: f?'#9A9A93':'#9A9A93',
+        featColor: f?'#C8C8C2':'#52524C',
+        checkColor: f?'#0E9F6E':'#0E9F6E',
+        cta: f?'ابدأ الحين':'اختر',
+        cardStyle:{borderRadius:'18px',padding:'26px 22px',background:f?'#0A0A0A':'#fff',border:f?'none':'1px solid #E8E8E2',boxShadow:f?'0 24px 50px -22px rgba(10,10,10,.5)':'none'},
+        ctaStyle:{display:'block',textAlign:'center',background:f?'#fff':'#0A0A0A',color:f?'#0A0A0A':'#fff',padding:'12px',borderRadius:'10px',fontWeight:600,fontSize:'14px',textDecoration:'none',marginTop:'18px'},
+        dividerStyle:{height:'1px',background:f?'rgba(255,255,255,.12)':'#F0F0EA',margin:'18px 0'},
+      };
+    });
+
+    // calculator
+    const roleMeta=[
+      {key:'writer',label:'كاتب محتوى SEO',min:2500,max:12000},
+      {key:'designer',label:'مصمم جرافيك',min:2000,max:12000},
+      {key:'seo',label:'متخصص SEO',min:3000,max:14000},
+      {key:'social',label:'مدير سوشال ميديا',min:2500,max:12000},
+      {key:'video',label:'مونتير / منتج فيديو',min:2500,max:14000},
+      {key:'dev',label:'مطور مواقع',min:3000,max:18000},
+    ];
+    const sal=this.state.salaries;
+    const roles=roleMeta.map(r=>{
+      const v=sal[r.key];
+      const pct=Math.max(0,Math.min(100,((v-r.min)/(r.max-r.min))*100));
+      return { label:r.label, min:r.min, max:r.max, step:100, val:v,
+        valLabel:this.fmt(v)+' '+cur, onInput:this.setSalary(r.key),
+        fillStyle:{position:'absolute',right:0,height:'5px',borderRadius:'99px',background:'#0E9F6E',width:pct+'%'} };
+    });
+    const calcTeamMonthly=Object.values(sal).reduce((a,b)=>a+b,0);
+    const teamAnnual=calcTeamMonthly*12;
+    const subAnnual=12468;
+    const savingsAmount=Math.max(0,teamAnnual-subAnnual);
+    const savingsPct=Math.max(0,Math.round((1-subAnnual/teamAnnual)*100));
+
+    return {
+      waLink:wa, curName:cur,
+      calcOpen:this.state.calcOpen,
+      openCalc:()=>this.setState({calcOpen:true}),
+      closeCalc:()=>this.setState({calcOpen:false}),
+      stopProp:(e)=>e.stopPropagation(),
+      roles,
+      teamAnnualLabel:this.fmt(teamAnnual)+' '+cur,
+      subAnnualLabel:this.fmt(subAnnual)+' '+cur,
+      savingsPctLabel:savingsPct+'%',
+      savingsAmountLabel:this.fmt(savingsAmount),
+      setSA:this.setMarket('sa'), setEG:this.setMarket('eg'),
+      saStyle:segBtn(market==='sa'), egStyle:segBtn(market==='eg'),
+      setMonthly:this.setBilling('monthly'), setAnnual:this.setBilling('annual'),
+      monStyle:pillBtn(!annual), annStyle:pillBtn(annual),
+      query:this.queries[queryIdx],
+      boardHeight:(all.length*this.ROWH+12)+'px',
+      rows, how, plans,
+      teamCost:this.fmt(teamMonthly), subCost:this.fmt(subStart),
+    };
+  }
+}
+</script>
+</body>
+</html>

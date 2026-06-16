@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/app/actions/auth";
-import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { SocialLinks } from "@/lib/landing-content.types";
 import {
   type GlobalSiteSettings,
@@ -15,23 +14,8 @@ import { getLandingSectionOverride, upsertLandingSection } from "@/lib/landing-s
 import { optimizeCloudinaryImageUrl } from "@/helpers/cloudinary";
 import { META_DESCRIPTION_MAX_CHARS } from "@/lib/seo-meta";
 
-const ALLOWED_COUNTRIES: SupportedCountry[] = ["SA", "EG"];
-
-function assertCountry(country: string): asserts country is SupportedCountry {
-  if (!ALLOWED_COUNTRIES.includes(country as SupportedCountry)) {
-    throw new Error("Invalid country");
-  }
-}
-
-function revalidateLanding(country: string) {
-  revalidateTag(`landing-${country}`, "default");
-  revalidatePath("/");
-  revalidatePath("/pricing");
-}
-
-function revalidateAllLanding() {
-  revalidateTag("landing-SA", "default");
-  revalidateTag("landing-EG", "default");
+function revalidateLanding() {
+  revalidateTag("landing", "default");
   revalidatePath("/");
   revalidatePath("/pricing");
 }
@@ -47,13 +31,10 @@ export async function getGlobalSiteSettings(): Promise<GlobalSiteSettings | null
 
 export async function updateSeoFormData(formData: FormData) {
   if (!(await isAdmin())) return;
-  const country = formData.get("country") as string;
-  if (!country) return;
-  assertCountry(country);
   const redirectBase = (formData.get("redirect") as string)?.trim();
   const description = (formData.get("description") as string)?.trim() ?? "";
   if (description.length > META_DESCRIPTION_MAX_CHARS) {
-    const r = redirectBase ?? `/admin/settings/seo?country=${country}`;
+    const r = redirectBase ?? `/admin/settings/seo`;
     redirect(
       `${r}${r.includes("?") ? "&" : "?"}error=1&reason=seo_description_max`,
     );
@@ -65,17 +46,12 @@ export async function updateSeoFormData(formData: FormData) {
     ogImage: optimizeCloudinaryImageUrl((formData.get("ogImage") as string)?.trim() ?? "", {
       ogImage: true,
     }),
-    ogLocale: country === "EG" ? "ar_EG" : "ar_SA",
+    ogLocale: "ar_SA",
   };
-  await upsertLandingSection(country as SupportedCountry, "seo", seo as unknown as Prisma.InputJsonValue);
+  await upsertLandingSection("seo", seo as unknown as Prisma.InputJsonValue);
   revalidatePath("/admin");
-  revalidateLanding(country);
+  revalidateLanding();
   if (redirectBase) redirect(redirectBase + (redirectBase.includes("?") ? "&" : "?") + "saved=1");
-}
-
-export async function updateImagesFormData(_formData: FormData) {
-  if (!(await isAdmin())) return;
-  revalidatePath("/admin");
 }
 
 export async function updateTrackingFormData(formData: FormData) {
@@ -93,16 +69,13 @@ export async function updateTrackingFormData(formData: FormData) {
     });
   }
   revalidatePath("/admin");
-  revalidateAllLanding();
+  revalidateLanding();
   const r = (formData.get("redirect") as string)?.trim();
   if (r) redirect(r + (r.includes("?") ? "&" : "?") + "saved=1");
 }
 
 export async function updateSiteSettingsFormData(formData: FormData) {
   if (!(await isAdmin())) return;
-  const country = formData.get("country") as string;
-  if (!country) return;
-  assertCountry(country);
   const whatsappNumber = (formData.get("whatsappNumber") as string)?.trim() ?? "";
   const row = await prisma.siteSettings.findFirst();
   if (row) {
@@ -117,7 +90,7 @@ export async function updateSiteSettingsFormData(formData: FormData) {
   }
   revalidatePath("/admin");
   revalidatePath("/");
-  revalidateAllLanding();
+  revalidateLanding();
   const r = (formData.get("redirect") as string)?.trim();
   if (r) redirect(r + (r.includes("?") ? "&" : "?") + "saved=1");
 }
@@ -136,8 +109,8 @@ function isHttpUrlOrEmpty(v: string): boolean {
   }
 }
 
-export async function getSocialLinksSettings(country: SupportedCountry): Promise<SocialLinks> {
-  const row = await getLandingSectionOverride(country, "socialLinks");
+export async function getSocialLinksSettings(): Promise<SocialLinks> {
+  const row = await getLandingSectionOverride("socialLinks");
   if (!row || typeof row !== "object" || Array.isArray(row)) return {};
   const raw = row as Record<string, unknown>;
   const val = (key: string): string | undefined => {
@@ -159,9 +132,6 @@ export async function getSocialLinksSettings(country: SupportedCountry): Promise
 
 export async function updateSocialLinksFormData(formData: FormData) {
   if (!(await isAdmin())) return;
-  const country = formData.get("country") as string;
-  if (!country) return;
-  assertCountry(country);
 
   const payload: SocialLinks = {
     facebook: trimOrEmpty(formData.get("facebook")) || undefined,
@@ -175,13 +145,13 @@ export async function updateSocialLinksFormData(formData: FormData) {
 
   const links = Object.values(payload).filter(Boolean) as string[];
   if (links.some((v) => !isHttpUrlOrEmpty(v))) {
-    const r = (formData.get("redirect") as string)?.trim() || `/admin/settings/social?country=${country}`;
+    const r = (formData.get("redirect") as string)?.trim() || `/admin/settings/social`;
     redirect(`${r}${r.includes("?") ? "&" : "?"}error=1`);
   }
 
-  await upsertLandingSection(country, "socialLinks", payload as Prisma.InputJsonValue);
+  await upsertLandingSection("socialLinks", payload as Prisma.InputJsonValue);
   revalidatePath("/admin");
-  revalidateLanding(country);
+  revalidateLanding();
   const r = (formData.get("redirect") as string)?.trim();
   if (r) redirect(r + (r.includes("?") ? "&" : "?") + "saved=1");
 }

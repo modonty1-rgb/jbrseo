@@ -14,7 +14,13 @@
     "db:fix-contact-names": "tsx prisma/fix-null-contact-names.ts",
     "db:seed-social-links": "tsx prisma/seed-social-links.ts",
     "db:setup": "prisma generate && prisma db push && prisma db seed",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "_comment_dev_db": "All dev:* scripts target modonty_dev via .env.local. Never run against prod.",
+    "dev:db:push": "dotenv -e .env.local -- prisma db push",
+    "dev:db:studio": "dotenv -e .env.local -- prisma studio",
+    "dev:db:inspect": "dotenv -e .env.local -- node scripts/inspect-db.mjs",
+    "dev:db:clone-from-prod": "dotenv -e .env.local -- node scripts/clone-prod-to-dev.mjs",
+    "dev:next": "dotenv -e .env.local -- next dev"
   },
   "prisma": {
     "seed": "pnpm exec tsx prisma/seed.ts"
@@ -24,7 +30,6 @@
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
     "@google-analytics/data": "^5.2.1",
-    "@heyo.so/js": "^1.1.3",
     "@next/third-parties": "^16.2.1",
     "@prisma/client": "^6.9.0",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -41,6 +46,7 @@
     "clsx": "^2.1.1",
     "google-auth-library": "^10.6.2",
     "lucide-react": "^0.577.0",
+    "motion": "^12.40.0",
     "next": "^16.1.1",
     "react": "^19.2.3",
     "react-dom": "^19.2.3",
@@ -68,6 +74,7 @@
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.23",
     "cross-env": "^10.1.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.2",
     "eslint-config-next": "^16.1.1",
     "playwright": "^1.59.1",

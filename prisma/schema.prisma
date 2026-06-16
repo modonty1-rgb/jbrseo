@@ -33,12 +33,9 @@ model Subscriber {
 
 model LandingSection {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  country   String
-  section   String
+  section   String   @unique
   data      Json
   updatedAt DateTime @updatedAt
-
-  @@unique([country, section])
 }
 
 model ExitReason {
@@ -50,4 +47,54 @@ model ExitReason {
   @@index([country])
   @@index([reason])
   @@index([createdAt])
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Pricing — split per-plan rows + section-level meta. Replaces the
+// old `LandingSection { section: "pricing" }` JSON blob. See
+// docs/PRICING-REFACTOR-PLAN.md.
+// ─────────────────────────────────────────────────────────────────
+
+model Plan {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Control
+  country         String                                  // "SA" | "EG"
+  slug            String                                  // "free" | "starter" | "growth" | "scale"
+  visible         Boolean  @default(true)
+  displayOrder    Int
+
+  // Core content
+  name            String
+  tagline         String   @default("")
+  priceMonthly    Int      @default(0)
+  priceYearly     Int      @default(0)
+  articlesLabel   String   @default("")
+  ctaText         String   @default("")
+  hook            String?                                 // Single distinctive line surfaced near price (the "catching" feature)
+  highlights      String[]
+
+  // Badges
+  badge           String?
+  featuredBadge   String?
+
+  updatedAt       DateTime @updatedAt
+
+  @@unique([country, slug])
+  @@index([country, displayOrder])
+}
+
+model PriceSectionMeta {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  country         String   @unique
+
+  announcement    String   @default("")
+
+  ctaHeadline     String   @default("")
+  ctaSubheadline  String   @default("")
+
+  trustItems      Json     @default("[]")
+  uiStrings       Json     @default("{}")
+
+  updatedAt       DateTime @updatedAt
 }

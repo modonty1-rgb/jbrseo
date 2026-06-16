@@ -59,9 +59,17 @@ export function PricingPageShell({
           <p className="mb-6 max-w-xl text-sm text-muted-foreground leading-relaxed">
             {pricingPage.intro}
           </p>
-        
+
+          <div className="mb-6 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-2 rounded-full border border-border bg-card/60 px-5 py-2.5 font-mono text-[11.5px] text-muted-foreground">
+            <span><b className="font-semibold text-foreground">4</b> منظومات</span>
+            <span className="text-border" aria-hidden>·</span>
+            <span><b className="font-semibold text-foreground">23</b> تنبيه فوري</span>
+            <span className="text-border" aria-hidden>·</span>
+            <span><b className="font-semibold text-foreground">28</b> فحص جودة / مقال</span>
+          </div>
+
           <p className="mb-6 text-[11px] text-muted-foreground">
-            بدون بطاقة ائتمان · رفع الباقة بضغطة زر · ضمان استرجاع ١٤ يوم
+            بدون بطاقة ائتمان · رفع الباقة بضغطة زر · إلغاء بأي وقت
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a

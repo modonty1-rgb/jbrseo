@@ -24,7 +24,9 @@ export default async function CountrySignupLayout({
   return (
     <div className="flex min-h-screen flex-col">
       <AuthNav homeHref={homeHref} helpHref={helpHref} />
-      <main id="main-content" className="flex-1">
+      {/* Foundation-layer edit: marketing-surface wraps inner <main> so signup form inherits
+          Readex Pro + marketing tokens, while AuthNav stays outside the marketing chrome. */}
+      <main id="main-content" className="marketing-surface text-[#0A0A0A] flex-1">
         {children}
       </main>
     </div>

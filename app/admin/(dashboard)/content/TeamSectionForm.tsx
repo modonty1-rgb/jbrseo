@@ -178,7 +178,7 @@ export function TeamSectionForm({
           onClick={handleSaveClick}
           disabled={pending}
         >
-          حفظ صفحة فريق العمل
+          حفظ
         </Button>
       </form>
 

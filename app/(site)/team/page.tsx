@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
-import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import Link from "@/app/components/link";
 import { StaffAvatar } from "@/app/components/StaffAvatar";
@@ -21,9 +19,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TeamPage() {
-  const h = await headers();
-  const country = getCountryFromHeaders(h);
-  const staticLanding = await getStaticLandingWithOverrides(country);
+  const staticLanding = await getStaticLandingWithOverrides();
   const { coreTeam, executionTeam } = staticLanding.team;
 
   return (

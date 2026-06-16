@@ -28,15 +28,13 @@ async function main(): Promise<void> {
     snapchat: clean(process.env.NEXT_PUBLIC_SOCIAL_SNAPCHAT_URL),
   };
 
-  for (const country of ["SA", "EG"] as const) {
-    await prisma.landingSection.upsert({
-      where: { country_section: { country, section: "socialLinks" } },
-      create: { country, section: "socialLinks", data: payload },
-      update: { data: payload },
-    });
-  }
+  await prisma.landingSection.upsert({
+    where: { section: "socialLinks" },
+    create: { section: "socialLinks", data: payload },
+    update: { data: payload },
+  });
 
-  console.log("[seed-social-links] Upserted socialLinks for SA and EG.");
+  console.log("[seed-social-links] Upserted socialLinks (unified — no country).");
 }
 
 main()

@@ -1,12 +1,18 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getLandingContent } from "@/lib/getLandingContent";
-import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
+import { PRICING_CTA_LINK } from "@/lib/constants";
+import { getAllPlans } from "@/app/actions/pricing";
 import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
 } from "@/lib/country-config";
+import type { PricingPlan } from "@/lib/landing-content.types";
 import { SignupForm } from "./component/SignupForm";
+
+function formatPrice(value: number, country: "SA" | "EG"): string {
+  if (value === 0) return "مجاناً";
+  return country === "SA" ? `${value} ر.س` : `${value} ج.م`;
+}
 
 export async function generateMetadata({
   params,
@@ -37,13 +43,28 @@ export default async function CountrySignupPage({
   }
   const countrySlug = slug as "sa" | "eg";
   const countryCode = getCountryCodeFromSlug(countrySlug);
-  const [content, staticLanding] = await Promise.all([
-    getLandingContent(countryCode),
-    getStaticLandingWithOverrides(countryCode),
-  ]);
-  const serverPlans = content.landing.pricingTeaser.plans ?? [];
-  const planPrices = staticLanding.pricing.PLANS.map((p) => ({ mo: p.price.mo, yr: p.price.yr }));
-  const planIds = staticLanding.pricing.PLANS.map((p) => p.id);
+  const dbPlans = await getAllPlans(countryCode);
+  const visibleDbPlans = [...dbPlans]
+    .filter((p) => p.visible)
+    .sort((a, b) => a.displayOrder - b.displayOrder);
+
+  const serverPlans: PricingPlan[] = visibleDbPlans.map((p) => ({
+    name: p.name,
+    forWho: p.tagline,
+    cta: p.ctaText || "ابدأ الحين",
+    ctaLink: PRICING_CTA_LINK,
+    ...(p.priceMonthly > 0 || p.priceYearly > 0
+      ? {
+          price: formatPrice(p.priceMonthly, countryCode),
+          annualPrice: p.priceYearly > 0 ? formatPrice(p.priceYearly * 12, countryCode) : undefined,
+        }
+      : {}),
+    ...(p.badge ? { badge: p.badge } : {}),
+    ...(p.featuredBadge ? { highlight: true as const } : {}),
+    features: p.highlights ?? [],
+  }));
+  const planPrices = visibleDbPlans.map((p) => ({ mo: p.priceMonthly, yr: p.priceYearly }));
+  const planIds = visibleDbPlans.map((p) => p.slug);
 
   return (
     <Suspense>

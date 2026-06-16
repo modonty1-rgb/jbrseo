@@ -7,8 +7,7 @@ export function displayMainTotalFromMoYr(mo: number, yr: number, isAnnual: boole
   return mo;
 }
 
-export function formatPlanTotalDisplay(amount: number, country: SupportedCountry): string {
+export function formatPlanTotalDisplay(amount: number, _country: SupportedCountry): string {
   if (amount === 0) return "مجاناً";
-  const n = amount.toLocaleString("ar-SA");
-  return country === "SA" ? `${n} ر.س` : `${n} ج.م`;
+  return amount.toLocaleString("en-US");
 }

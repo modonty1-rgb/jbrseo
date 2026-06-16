@@ -5,6 +5,7 @@ import { AdminCountrySync } from "./components/AdminCountrySync";
 import { AdminTopNavbar } from "./components/AdminTopNavbar";
 import { AdminCountryBanner } from "./components/AdminCountryBanner";
 import { AdminToaster } from "./components/AdminToaster";
+import { AdminThemeProvider } from "./components/AdminThemeProvider";
 
 export default async function AdminDashboardLayout({
   children,
@@ -14,7 +15,7 @@ export default async function AdminDashboardLayout({
   const ok = await isAdmin();
   if (!ok) redirect("/admin/login");
   return (
-    <div className="min-h-screen bg-background">
+    <AdminThemeProvider>
       <AdminToaster />
       <Suspense fallback={null}>
         <AdminCountrySync />
@@ -33,6 +34,6 @@ export default async function AdminDashboardLayout({
         <AdminCountryBanner />
       </Suspense>
       <main className="min-w-0 flex-1">{children}</main>
-    </div>
+    </AdminThemeProvider>
   );
 }

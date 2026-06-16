@@ -1,23 +1,25 @@
-import type { StaticLanding } from "@/app/content/landing/types";
+import type { Plan } from "@/app/content/landing/price-section-types";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import { DEFAULT_PUBLIC_SITE_ORIGIN } from "@/lib/seo-meta";
 
 type PricingPageJsonLdProps = {
   countrySlug: "sa" | "eg";
   countryCode: SupportedCountry;
-  landing: StaticLanding;
+  plans: Plan[];
+  pricingPageTitle: string;
 };
 
 export function PricingPageJsonLd({
   countrySlug,
   countryCode,
-  landing,
+  plans,
+  pricingPageTitle,
 }: PricingPageJsonLdProps): React.JSX.Element {
   const base = DEFAULT_PUBLIC_SITE_ORIGIN;
   const url = `${base}/${countrySlug}/pricing`;
   const homeUrl = `${base}/${countrySlug}`;
   const pageName =
-    countrySlug === "sa" ? "أسعار خدمة السيو العربي — مدونتي" : landing.pricingPage.title;
+    countrySlug === "sa" ? "أسعار خدمة السيو العربي — مدونتي" : pricingPageTitle;
 
   const webPage = {
     "@context": "https://schema.org",
@@ -34,7 +36,6 @@ export function PricingPageJsonLd({
     },
   };
 
-  const { PLANS } = landing.pricing;
   const currency = countryCode === "EG" ? "EGP" : "SAR";
   const regionCountry = countryCode === "EG" ? "EG" : "SA";
 
@@ -42,8 +43,8 @@ export function PricingPageJsonLd({
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "خطط أسعار مدونتي",
-    numberOfItems: PLANS.length,
-    itemListElement: PLANS.map((plan, i) => ({
+    numberOfItems: plans.length,
+    itemListElement: plans.map((plan, i) => ({
       "@type": "ListItem",
       position: i + 1,
       item: {

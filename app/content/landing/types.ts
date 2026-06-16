@@ -1,17 +1,5 @@
 /** Shared types for static landing content (SA/EG). Single source for component props. */
 
-import type { PricingContent } from "./price-section-types";
-
-export type OutcomeToken = "accent" | "success" | "destructive";
-
-export type OutcomeItem = {
-  icon: string;
-  metric: string;
-  title: string;
-  line: string;
-  token: OutcomeToken;
-};
-
 export type FaqItem = { q: string; a: string; tag: string };
 
 export type FaqTagToken = "accent" | "success" | "primary" | "destructive";
@@ -32,16 +20,10 @@ export type Testimonial = {
   quote: string;
   metric: string;
   avatarImg: string;
-  stars: number;
-  tag: string;
   /** Optional video testimonial URL (YouTube, etc.) */
   videoUrl?: string;
-  /** Optional label for the video button */
-  videoLabel?: string;
   /** Optional fallback media image shown when video is not set */
   mediaImage?: string;
-  /** Optional site link; when set, shown on public site for this testimonial */
-  siteLink?: string;
 };
 
 export type NavLink = { href: string; label: string };
@@ -114,41 +96,23 @@ export type StaticLanding = {
     h1Line2: string;
     sub: string;
     brandTag?: HeroBrandTag;
-    benefits: { objection: string; answer: string }[];
     trust: string[];
     guaranteeBadge?: string;
-    trustBarHeadline?: string;
     trustBarClients?: TrustBarClient[];
   };
   whyNow: {
     sectionImage?: string;
-    eyebrow: string;
     title1: string;
-    title2: string;
     subtitle: string;
-    costs: { month: string; label: string; desc: string; value: string; icon: string; severity: number }[];
-    reasons: { icon: string; title: string; body: string }[];
-    ctaText: string;
-    ctaHighlight: string;
-    daysTarget: number;
+    costs: { month: string; label: string; desc: string; icon: string }[];
   };
   howItWorks: {
     sectionImage?: string;
-    eyebrow: string;
-    title: string;
-    subtitle: string;
-    steps: { num: string; icon: string; title: string; line: string; tag: string }[];
-    guarantee: string;
-  };
-  outcomes: {
-    sectionImage?: string;
-    eyebrow: string;
-    title: string;
-    subtitle: string;
-    outcomes: OutcomeItem[];
-    badgeText: string;
-    message: string;
-    messageHighlight: string;
+    eyebrow?: string;
+    title?: string;
+    subtitle?: string;
+    steps: { num: string; title: string; line: string; icon?: string; tag?: string }[];
+    guarantee?: string;
   };
   socialProof: {
     sectionImage?: string;
@@ -156,24 +120,18 @@ export type StaticLanding = {
     title: string;
     subtitle: string;
     testimonials: Testimonial[];
-    founding: string;
   };
   faq: {
     sectionImage?: string;
-    eyebrow: string;
     title: string;
-    subtitle: string;
     faqs: FaqItem[];
     ctaLabel: string;
   };
   finalCta: {
     sectionImage?: string;
-    eyebrow: string;
     title1: string;
     title2: string;
     subtitle: string;
-    seats: { total: number; taken: number };
-    benefits: string[];
     wa: string;
   };
   header: {
@@ -186,7 +144,6 @@ export type StaticLanding = {
     tagline: string;
     desc: string;
   };
-  pricing: PricingContent;
   pricingPage: {
     title: string;
     description: string;

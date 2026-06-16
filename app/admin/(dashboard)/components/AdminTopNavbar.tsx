@@ -3,9 +3,10 @@
 import { type ReactElement, useRef, useState, useEffect } from "react";
 import Link from "@/app/components/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ADMIN_NAV, COUNTRIES, COUNTRY_NAV_ITEMS, GLOBAL_TOP_NAV, MARKETING_TOP_NAV } from "../_config";
+import { ADMIN_NAV, COUNTRIES, MARKETING_TOP_NAV, PAGES_NAV_ITEMS, PRICING_NAV_ITEMS, SECTIONS_NAV_ITEMS, SETTINGS_NAV_ITEMS } from "../_config";
 import { AdminSubscribersLink } from "./AdminSubscribersLink";
 import { RefreshButton } from "./RefreshButton";
+import { AdminThemeToggle } from "./AdminThemeToggle";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -190,7 +191,7 @@ export function AdminTopNavbar(): ReactElement {
       {/* ── Right: Three menus + tools ── */}
       <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-2">
 
-        {/* 🏠 الرئيسية */}
+        {/* 🏠 لوحة التحكم — admin overview */}
         <Link
           href={withCountry("/admin", country)}
           className={cn(
@@ -201,7 +202,7 @@ export function AdminTopNavbar(): ReactElement {
           )}
         >
           <span>🏠</span>
-          <span className="hidden sm:inline">الرئيسية</span>
+          <span className="hidden sm:inline">لوحة التحكم</span>
         </Link>
 
         <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />
@@ -216,40 +217,44 @@ export function AdminTopNavbar(): ReactElement {
 
         <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />
 
-        {/* 🇸🇦 السعودية */}
+        {/* ✨ الصفحة الرئيسية للزائر — أقسام /sa و /eg */}
         <TopNavDropdown
-          label="السعودية"
-          flag="🇸🇦"
-          items={COUNTRY_NAV_ITEMS}
+          label="الصفحة الرئيسية"
+          flag="✨"
+          items={SECTIONS_NAV_ITEMS}
           pathname={pathname}
-          country="SA"
-          countryKey="SA"
-          currentCountry={country}
         />
 
-        {/* 🇪🇬 مصر */}
+        {/* 📄 صفحات — about, privacy, terms */}
         <TopNavDropdown
-          label="مصر"
-          flag="🇪🇬"
-          items={COUNTRY_NAV_ITEMS}
+          label="الصفحات الثابتة"
+          flag="📄"
+          items={PAGES_NAV_ITEMS}
           pathname={pathname}
-          country="EG"
-          countryKey="EG"
-          currentCountry={country}
         />
 
-        {/* 🌍 مشترك */}
+        {/* ⚙️ إعدادات — تطبق على كل الموقع */}
         <TopNavDropdown
-          label="مشترك"
-          flag="🌍"
-          items={GLOBAL_TOP_NAV}
+          label="الإعدادات"
+          flag="⚙️"
+          items={SETTINGS_NAV_ITEMS}
           pathname={pathname}
+        />
+
+        {/* 💰 الأسعار — السعودية + مصر في دروبداون واحدة */}
+        <TopNavDropdown
+          label="الأسعار"
+          flag="💰"
+          items={PRICING_NAV_ITEMS}
+          pathname={pathname}
+          activeHrefs={["/admin/pricing", "/admin/content/pricing"]}
         />
 
         <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />
 
         <AdminSubscribersLink />
         <RefreshButton />
+        <AdminThemeToggle />
       </div>
     </header>
   );

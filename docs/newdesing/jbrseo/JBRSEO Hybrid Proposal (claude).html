@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JBRSEO — اقتراح هجين (Claude)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:#FBFBF9;font-family:'Readex Pro',sans-serif;-webkit-font-smoothing:antialiased;color:#0A0A0A;overflow-x:hidden}
+  ::selection{background:#0A0A0A;color:#fff}
+  a{color:inherit}
+  button{font-family:inherit;cursor:pointer;border:none;background:transparent}
+  @keyframes caret{0%,49%{opacity:1}50%,100%{opacity:0}}
+  @keyframes up{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  @keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+  @keyframes fabIn{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+  @keyframes sheetIn{from{transform:translateY(20px) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .serp-row{position:absolute;left:14px;right:14px;height:54px;border:1.5px solid transparent;border-radius:13px;padding:10px 12px;transition:top .55s cubic-bezier(.34,1.2,.34,1),box-shadow .4s,border-color .4s,background .4s}
+  .serp-row.you{background:#fff;border-color:#0E9F6E;box-shadow:0 10px 26px -12px rgba(14,159,110,.45)}
+  .serp-row.won{background:#fff;border-color:#0E9F6E;box-shadow:0 14px 30px -10px rgba(14,159,110,.55)}
+  .faq-item{border-bottom:1px solid #EDEDE8}
+  .faq-q{display:flex;justify-content:space-between;align-items:center;width:100%;padding:22px 0;font-size:16px;font-weight:500;color:#0A0A0A;text-align:right}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;font-size:14.5px;color:#52524C;line-height:1.85;padding:0;font-weight:300}
+  .faq-item.open .faq-a{max-height:400px;padding:0 0 22px}
+  .faq-item.open .faq-toggle{transform:rotate(45deg)}
+  .faq-toggle{font-size:22px;color:#9A9A93;font-weight:300;transition:transform .3s ease;display:inline-block;line-height:1}
+  input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;height:22px;width:100%}
+  input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:transparent}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;height:20px;width:20px;border-radius:50%;background:#fff;border:2px solid #0E9F6E;box-shadow:0 2px 7px rgba(14,159,110,.45);margin-top:-8px}
+  input[type=range]::-moz-range-thumb{height:18px;width:18px;border-radius:50%;background:#fff;border:2px solid #0E9F6E}
+  @media (max-width:640px){
+    .hero-h1{font-size:42px !important;letter-spacing:-1.2px !important}
+    .hero-sub{font-size:17px !important}
+    .section-h2{font-size:30px !important}
+    .math-num{font-size:36px !important}
+    .math-num-big{font-size:46px !important}
+    .pricing-grid{grid-template-columns:1fr !important}
+    .how-grid{grid-template-columns:1fr !important}
+    .how-cell{border-right:none !important;border-bottom:1px solid #EDEDE8;padding:24px 0}
+    .how-cell:last-child{border-bottom:none}
+    .serp-card{margin:0 -8px}
+    .serp-row{height:48px;padding:8px 10px}
+    .serp-rank{width:26px !important;height:26px !important;font-size:12px !important}
+    .serp-title{font-size:13.5px !important}
+    .serp-url{font-size:10.5px !important}
+    .why-grid{grid-template-columns:1fr !important}
+    .cta-h2{font-size:32px !important}
+    .nav-pad{padding:14px 16px !important}
+    .nav-cta{padding:8px 14px !important;font-size:13px !important}
+    .hero-pad{padding:60px 18px 18px !important}
+    .testimonial-card{padding:24px 22px !important}
+  }
+</style>
+</head>
+<body>
+
+<!-- ─────────── NAVBAR ─────────── -->
+<header style="position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:rgba(251,251,249,.85);border-bottom:1px solid #EDEDE8">
+  <div class="nav-pad" style="max-width:1080px;margin:0 auto;padding:18px 28px;display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:9px">
+      <div style="width:30px;height:30px;border-radius:8px;background:#0A0A0A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px">J</div>
+      <span style="font-weight:600;font-size:17px;letter-spacing:-.3px">jbr<span style="color:#0E9F6E">seo</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div id="marketSwitch" style="display:flex;gap:4px;font-size:13px">
+        <button data-mkt="sa" class="mkt-btn active" style="padding:6px 12px;border-radius:8px;font-weight:500">السعودية</button>
+        <button data-mkt="eg" class="mkt-btn" style="padding:6px 12px;border-radius:8px;color:#9A9A93;font-weight:500">مصر</button>
+      </div>
+      <a href="#pricing" class="nav-cta" style="background:#0A0A0A;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;font-weight:500;text-decoration:none">ابدأ الحين</a>
+    </div>
+  </div>
+</header>
+
+<!-- ─────────── HERO ─────────── -->
+<section class="hero-pad" style="max-width:760px;margin:0 auto;padding:88px 28px 28px;text-align:center">
+  <div style="font-size:14px;color:#6B6B66;font-weight:500;letter-spacing:.2px;margin-bottom:26px">سيو بالاشتراك الشهري · السعودية ومصر</div>
+  <h1 class="hero-h1" style="font-size:64px;line-height:1.08;font-weight:600;letter-spacing:-2px">
+    نخلّيك في <span style="color:#0E9F6E">المركز الأول</span><br>على جوجل.
+  </h1>
+  <p class="hero-sub" style="font-size:20px;line-height:1.7;color:#52524C;margin:26px auto 0;max-width:520px;font-weight:300">
+    فريقنا يكتب محتوى سيو وينشره على موقعك. أنت توافق بضغطة — وجوجل يجيب لك العملاء كل يوم. بدون إعلانات، بدون فريق داخلي.
+  </p>
+  <div style="display:flex;gap:12px;justify-content:center;margin-top:32px;flex-wrap:wrap">
+    <a href="#pricing" style="background:#0A0A0A;color:#fff;padding:15px 28px;border-radius:12px;font-size:16px;font-weight:500;text-decoration:none">ابدأ الحين — بدون بطاقة</a>
+    <a id="waLinkHero" href="https://wa.me/966541018020" style="background:#fff;color:#0A0A0A;padding:15px 24px;border-radius:12px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid #E2E2DC">تواصل واتساب</a>
+  </div>
+  <div style="font-size:13px;color:#9A9A93;margin-top:18px">بدون بطاقة · ضمان استرجاع ١٤ يوم · دعم عربي ١٠٠٪</div>
+</section>
+
+<!-- ─────────── LIVE SERP (the star) ─────────── -->
+<section style="max-width:640px;margin:0 auto;padding:34px 18px 20px">
+  <div class="serp-card" style="background:#fff;border:1px solid #E8E8E2;border-radius:20px;box-shadow:0 30px 60px -36px rgba(10,10,10,.28);overflow:hidden">
+    <div style="display:flex;align-items:center;gap:12px;padding:18px 22px;border-bottom:1px solid #F0F0EA">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9A9A93" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+      <div style="font-size:15px;color:#2A2A26;flex:1;font-weight:400" id="serpQuery">شركة مقاولات بالرياض<span style="display:inline-block;width:1.5px;height:16px;background:#0A0A0A;vertical-align:-3px;margin-right:2px;animation:caret 1s step-end infinite"></span></div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#B8B8B0">بحث جوجل</div>
+    </div>
+    <div id="serpList" style="position:relative;height:384px;padding:10px 14px;background:#FCFCFA"></div>
+  </div>
+  <div style="text-align:center;font-size:13px;color:#9A9A93;margin-top:16px">من الصفحة الخامسة إلى المركز الأول — هذا اللي نسوّيه لموقعك.</div>
+</section>
+
+<!-- ─────────── HOW (3-step) ─────────── -->
+<section style="max-width:880px;margin:0 auto;padding:72px 28px">
+  <div class="how-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center">
+    <div class="how-cell" style="padding:0 14px;border-right:1px solid #EDEDE8">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#B8B8B0;margin-bottom:12px">٠١</div>
+      <div style="font-size:20px;font-weight:600;margin-bottom:8px">اشترك</div>
+      <div style="font-size:14px;color:#7A7A73;line-height:1.6;max-width:200px;margin:0 auto">اختر باقتك وتعبّأ استمارة قصيرة مرة وحدة.</div>
+    </div>
+    <div class="how-cell" style="padding:0 14px;border-right:1px solid #EDEDE8">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#B8B8B0;margin-bottom:12px">٠٢</div>
+      <div style="font-size:20px;font-weight:600;margin-bottom:8px">نكتب وننشر</div>
+      <div style="font-size:14px;color:#7A7A73;line-height:1.6;max-width:200px;margin:0 auto">فريقنا يجهّز المحتوى وينشره على موقعك تلقائياً.</div>
+    </div>
+    <div class="how-cell" style="padding:0 14px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:#B8B8B0;margin-bottom:12px">٠٣</div>
+      <div style="font-size:20px;font-weight:600;margin-bottom:8px">تتصدّر جوجل</div>
+      <div style="font-size:14px;color:#7A7A73;line-height:1.6;max-width:200px;margin:0 auto">تظهر في البحث، والعملاء يجونك كل يوم.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── WHY NOW (added — minimalist) ─────────── -->
+<section style="border-top:1px solid #EDEDE8;border-bottom:1px solid #EDEDE8;background:#fff">
+  <div style="max-width:1080px;margin:0 auto;padding:80px 28px;text-align:center">
+    <h2 class="section-h2" style="font-size:38px;font-weight:600;letter-spacing:-1px;margin-bottom:14px">كل شهر تأخير له ثمن</h2>
+    <p style="font-size:16px;color:#7A7A73;margin-bottom:48px;max-width:520px;margin-left:auto;margin-right:auto">منافسك بدأ من ٣ شهور. كل يوم تتأخر = خطوة يكسبها هو.</p>
+    <div class="why-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px;text-align:right;max-width:880px;margin:0 auto">
+      <div style="border-right:2px solid #EDEDE8;padding:0 22px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B8B8B0;letter-spacing:.5px;margin-bottom:12px">الشهر ١</div>
+        <div style="font-size:18px;font-weight:600;margin-bottom:10px">فرص ضائعة</div>
+        <div style="font-size:14px;color:#7A7A73;line-height:1.7">منافسوك ينشرون محتوى يجيب على أسئلة عملائك. كل مقال ما تكتبه اليوم = باب يفتحه غيرك.</div>
+      </div>
+      <div style="border-right:2px solid #EDEDE8;padding:0 22px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B8B8B0;letter-spacing:.5px;margin-bottom:12px">الشهر ٣</div>
+        <div style="font-size:18px;font-weight:600;margin-bottom:10px">تراكم التأخر</div>
+        <div style="font-size:14px;color:#7A7A73;line-height:1.7">جوجل يكافئ المحتوى المتراكم. منافسك اللي بدأ قبل ٣ شهور صار في نتائج أعلى بثلاثة أضعاف.</div>
+      </div>
+      <div style="border-right:2px solid #0E9F6E;padding:0 22px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#0E9F6E;letter-spacing:.5px;margin-bottom:12px">الشهر ٦</div>
+        <div style="font-size:18px;font-weight:600;margin-bottom:10px">فجوة لا تُسد</div>
+        <div style="font-size:14px;color:#7A7A73;line-height:1.7">بعد ٦ شهور من المحتوى المتراكم، الفجوة تصير شبه مستحيلة. الأول في البحث يأخذ ٧١٪ من الضغطات.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── MATH (from new design) ─────────── -->
+<section style="background:#FBFBF9">
+  <div style="max-width:880px;margin:0 auto;padding:80px 28px;text-align:center">
+    <h2 class="section-h2" style="font-size:38px;font-weight:600;letter-spacing:-1px;margin-bottom:14px">الرياضيات بسيطة.</h2>
+    <p style="font-size:16px;color:#7A7A73;margin-bottom:44px">عشان تتصدّر جوجل تحتاج فريق ٦ وظائف. أو اشتراك واحد.</p>
+    <div style="display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap">
+      <div style="text-align:center">
+        <div style="font-size:13px;color:#9A9A93;margin-bottom:10px">فريق محتوى داخلي كامل</div>
+        <div class="math-num" style="font-family:'IBM Plex Mono',monospace;font-size:46px;font-weight:500;color:#C4C4BC;letter-spacing:-1.5px;text-decoration:line-through;text-decoration-color:#E2A0A0;text-decoration-thickness:2px">37,000</div>
+        <div style="font-size:12px;color:#B8B8B0;margin-top:6px"><span class="cur-name">ر.س</span> / شهرياً</div>
+      </div>
+      <div style="font-size:30px;color:#C4C4BC;font-weight:300">←</div>
+      <div style="text-align:center">
+        <div style="font-size:13px;color:#0E9F6E;font-weight:500;margin-bottom:10px">مدونتي — اشتراك واحد</div>
+        <div class="math-num-big" style="font-family:'IBM Plex Mono',monospace;font-size:60px;font-weight:600;color:#0A0A0A;letter-spacing:-2px">100</div>
+        <div style="font-size:12px;color:#7A7A73;margin-top:6px"><span class="cur-name">ر.س</span> / شهرياً — يبدأ من</div>
+      </div>
+    </div>
+    <div style="display:inline-flex;align-items:center;gap:8px;background:#E6F7EF;color:#0A7A52;font-size:14px;font-weight:600;padding:10px 18px;border-radius:99px;margin-top:40px">توفير يصل إلى ٩٧٪ — ومحتوى يبقى ملكك للأبد</div>
+  </div>
+</section>
+
+<!-- ─────────── TRUST BAR (real content from live site) ─────────── -->
+<section style="border-top:1px solid #EDEDE8;border-bottom:1px solid #EDEDE8;background:#fff">
+  <div style="max-width:1080px;margin:0 auto;padding:80px 28px;text-align:center">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B8B8B0;letter-spacing:1px;margin-bottom:12px">من ائتمنّا</div>
+    <h2 class="section-h2" style="font-size:38px;font-weight:600;letter-spacing:-1px;margin-bottom:14px">شركات اختارت تركّز على شغلها</h2>
+    <p style="font-size:16px;color:#7A7A73;max-width:560px;margin:0 auto 44px">واحنا نشتغل على ظهورها في جوجل.</p>
+
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;max-width:880px;margin:0 auto">
+      <div style="border:1px solid #EDEDE8;border-radius:99px;padding:12px 22px;font-size:14px;color:#52524C;font-weight:500;background:#FCFCFA">مجموعة جبر الجنوبية</div>
+      <div style="border:1px solid #EDEDE8;border-radius:99px;padding:12px 22px;font-size:14px;color:#52524C;font-weight:500;background:#FCFCFA">كيما زون</div>
+      <div style="border:1px solid #EDEDE8;border-radius:99px;padding:12px 22px;font-size:14px;color:#52524C;font-weight:500;background:#FCFCFA">حديقة البستان</div>
+      <div style="border:1px solid #EDEDE8;border-radius:99px;padding:12px 22px;font-size:14px;color:#52524C;font-weight:500;background:#FCFCFA">الساحة للتكنولوجيا</div>
+      <div style="border:1px solid #EDEDE8;border-radius:99px;padding:12px 22px;font-size:14px;color:#52524C;font-weight:500;background:#FCFCFA">Trust Technology</div>
+    </div>
+
+    <div style="display:inline-flex;align-items:center;gap:8px;background:#E6F7EF;color:#0A7A52;font-size:13.5px;font-weight:500;padding:8px 16px;border-radius:99px;margin-top:32px">
+      <span style="font-family:'IBM Plex Mono',monospace;font-weight:600">صادقون</span>
+      <span style="opacity:.55">·</span>
+      <span>دي تجارب مبكرة — إحنا بنبني سمعتنا معاك</span>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── PRICING ─────────── -->
+<section id="pricing" style="max-width:1080px;margin:0 auto;padding:80px 28px">
+  <div style="text-align:center;margin-bottom:34px">
+    <h2 class="section-h2" style="font-size:38px;font-weight:600;letter-spacing:-1px">باقات تنمو معك</h2>
+    <p style="font-size:15px;color:#7A7A73;margin-top:12px">أسعار التأسيس — أول ١٥٠ شركة. ضمان استرجاع ١٤ يوم.</p>
+    <div id="billingSwitch" style="display:inline-flex;background:#F0F0EA;border-radius:11px;padding:4px;margin-top:24px;font-size:14px;font-weight:500">
+      <button data-bil="monthly" class="bil-btn active" style="padding:8px 18px;border-radius:8px;background:#fff;color:#0A0A0A;box-shadow:0 1px 3px rgba(10,10,10,.08)">شهري</button>
+      <button data-bil="annual" class="bil-btn" style="padding:8px 18px;border-radius:8px;color:#7A7A73">سنوي · ٦ أشهر هدية</button>
+    </div>
+  </div>
+
+  <div class="pricing-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+    <!-- الحضور -->
+    <div class="plan-card" data-plan="presence" style="background:#fff;border:1px solid #E8E8E2;border-radius:18px;padding:26px 22px">
+      <div style="font-size:14px;font-weight:600;color:#0A0A0A">الحضور</div>
+      <p style="font-size:12.5px;color:#7A7A73;margin:8px 0 20px;line-height:1.6;min-height:50px">صفحة باسمك على مدونتي + مقال هدية — تجرّب الفكرة بدون مخاطرة.</p>
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <span class="plan-price" style="font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:600;letter-spacing:-1.5px;color:#0A0A0A">100</span>
+        <span style="font-size:12px;color:#7A7A73"><span class="cur-name">ر.س</span>/شهر</span>
+      </div>
+      <div class="plan-note" style="font-size:11.5px;color:#9A9A93;margin-top:6px;min-height:16px;font-family:'IBM Plex Mono',monospace">&nbsp;</div>
+      <a href="#" style="display:block;text-align:center;background:#FBFBF9;color:#0A0A0A;padding:11px;border-radius:10px;font-size:13.5px;font-weight:500;text-decoration:none;border:1px solid #E8E8E2;margin:18px 0 22px">ابدأ الحين</a>
+      <div style="border-top:1px solid #EDEDE8;margin-bottom:18px"></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#52524C"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>مقال احترافي يعكس خبرتك</span></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#52524C"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>صفحة تعريفية جاهزة</span></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#52524C"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>رابط خاص تشاركه</span></div>
+    </div>
+
+    <!-- الانطلاقة -->
+    <div class="plan-card" data-plan="starter" style="background:#fff;border:1px solid #E8E8E2;border-radius:18px;padding:26px 22px">
+      <div style="font-size:14px;font-weight:600;color:#0A0A0A">الانطلاقة</div>
+      <p style="font-size:12.5px;color:#7A7A73;margin:8px 0 20px;line-height:1.6;min-height:50px">٤ مقالات احترافية كل شهر — احنا نكتب، أنت تستقبل العملاء.</p>
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <span class="plan-price" data-mo="499" data-yr="399" style="font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:600;letter-spacing:-1.5px;color:#0A0A0A">499</span>
+        <span style="font-size:12px;color:#7A7A73"><span class="cur-name">ر.س</span>/شهر</span>
+      </div>
+      <div class="plan-note" style="font-size:11.5px;color:#9A9A93;margin-top:6px;min-height:16px;font-family:'IBM Plex Mono',monospace">&nbsp;</div>
+      <a href="#" style="display:block;text-align:center;background:#FBFBF9;color:#0A0A0A;padding:11px;border-radius:10px;font-size:13.5px;font-weight:500;text-decoration:none;border:1px solid #E8E8E2;margin:18px 0 22px">ابدأ الحين</a>
+      <div style="border-top:1px solid #EDEDE8;margin-bottom:18px"></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#52524C"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>٤ مقالات/شهر — نشر تلقائي</span></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#52524C"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>توزيع على ٣ منصات</span></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#52524C"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>قائمة بريدية حتى ٥٠٠ مشترك</span></div>
+    </div>
+
+    <!-- الزخم (featured / black) -->
+    <div class="plan-card featured" data-plan="growth" style="background:#0A0A0A;border:1px solid #0A0A0A;border-radius:18px;padding:26px 22px;box-shadow:0 24px 50px -22px rgba(10,10,10,.5);color:#fff;position:relative">
+      <span style="position:absolute;top:-11px;right:22px;background:#0E9F6E;color:#fff;font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:99px;letter-spacing:.3px">الأكثر اختياراً ✦</span>
+      <div style="font-size:14px;font-weight:600;color:#fff">الزخم</div>
+      <p style="font-size:12.5px;color:#A8A8A0;margin:8px 0 20px;line-height:1.6;min-height:50px">ودّنا نشيل عنك هم المحتوى بالكامل — مع تمييز العميل الجاهز.</p>
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <span class="plan-price" data-mo="1299" data-yr="1039" style="font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:600;letter-spacing:-1.5px;color:#fff">1299</span>
+        <span style="font-size:12px;color:#A8A8A0"><span class="cur-name">ر.س</span>/شهر</span>
+      </div>
+      <div class="plan-note" style="font-size:11.5px;color:#A8A8A0;margin-top:6px;min-height:16px;font-family:'IBM Plex Mono',monospace">&nbsp;</div>
+      <a href="#" style="display:block;text-align:center;background:#0E9F6E;color:#fff;padding:11px;border-radius:10px;font-size:13.5px;font-weight:600;text-decoration:none;margin:18px 0 22px">ابدأ الحين</a>
+      <div style="border-top:1px solid rgba(255,255,255,.12);margin-bottom:18px"></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#D8D8D2"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>٨ مقالات + ريلز كل شهر</span></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#D8D8D2"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>توزيع على ٨ منصات مختلفة</span></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#D8D8D2"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>تمييز العميل الجاهز للشراء</span></div>
+    </div>
+
+    <!-- الريادة -->
+    <div class="plan-card" data-plan="scale" style="background:#fff;border:1px solid #E8E8E2;border-radius:18px;padding:26px 22px">
+      <div style="font-size:14px;font-weight:600;color:#0A0A0A">الريادة</div>
+      <p style="font-size:12.5px;color:#7A7A73;margin:8px 0 20px;line-height:1.6;min-height:50px">لنشاطك اللي صار يستاهل فريق محتوى متكامل ومدير حساب خاص.</p>
+      <div style="display:flex;align-items:baseline;gap:6px">
+        <span class="plan-price" data-mo="2999" data-yr="2399" style="font-family:'IBM Plex Mono',monospace;font-size:36px;font-weight:600;letter-spacing:-1.5px;color:#0A0A0A">2999</span>
+        <span style="font-size:12px;color:#7A7A73"><span class="cur-name">ر.س</span>/شهر</span>
+      </div>
+      <div class="plan-note" style="font-size:11.5px;color:#9A9A93;margin-top:6px;min-height:16px;font-family:'IBM Plex Mono',monospace">&nbsp;</div>
+      <a href="#" style="display:block;text-align:center;background:#FBFBF9;color:#0A0A0A;padding:11px;border-radius:10px;font-size:13.5px;font-weight:500;text-decoration:none;border:1px solid #E8E8E2;margin:18px 0 22px">ابدأ الحين</a>
+      <div style="border-top:1px solid #EDEDE8;margin-bottom:18px"></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#52524C"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>١٢ مقال/شهر</span></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#52524C"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>جلسة استراتيجية شهرية</span></div>
+      <div style="display:flex;gap:9px;margin-bottom:11px;font-size:13px;line-height:1.5;color:#52524C"><span style="color:#0E9F6E;flex-shrink:0">✓</span><span>مدير حساب خاص فيك</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── FAQ (added — minimalist accordion) ─────────── -->
+<section style="border-top:1px solid #EDEDE8;background:#fff">
+  <div style="max-width:720px;margin:0 auto;padding:80px 28px">
+    <div style="text-align:center;margin-bottom:42px">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#B8B8B0;letter-spacing:1px;margin-bottom:12px">أسئلة شائعة</div>
+      <h2 class="section-h2" style="font-size:38px;font-weight:600;letter-spacing:-1px">اقتنع قبل ما تبدأ</h2>
+    </div>
+
+    <div id="faqList">
+      <div class="faq-item">
+        <button class="faq-q"><span>متى أشوف نتائج فعلية؟</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a">من أول ٣ شهور تبدأ تشوف ارتفاع في عدد الزيارات وتحسّن في ترتيبك. النتائج التحويلية الحقيقية (عملاء جدد) تظهر عادة بين الشهر ٤ والـ ٦. السيو استثمار يتراكم — كل شهر يضيف.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>لو قررت أوقف الاشتراك — وش يصير بمحتواي؟</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a">المحتوى ملكك ١٠٠٪. تحصل على تصدير كامل لكل مقالاتك ومشتركينك وتقاريرك فور ما تلغي بالصيغة اللي تناسبك.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>في عقد أو التزام طويل؟</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a">لا. ما في أي عقود. كل الباقات شهرية تلغيها وقت ما تبي. السنوي اختياري ويمنحك ٦ أشهر مجانية، ومعه ضمان استرجاع ١٤ يوم.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>كيف تكتبون المقالات؟ لازم أشارك أو أتعب؟</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a">خذ راحتك — احنا نشيل الهم كله. فريقنا يتولى البحث والكتابة والتصميم والنشر والترويج. دورك بس تعطينا الموافقة، وبس.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>هل الخدمة تشتغل للنشاطات السعودية والمصرية؟</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a">نعم. متخصصين في السوق السعودي والمصري — فريق الدعم عربي بالكامل ويشتغل بتوقيت المنطقة. صفحاتك تظهر بنفس اللهجة المحلية لجمهورك.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q"><span>أيش الفرق بينكم وبين وكالة سيو عادية؟</span><span class="faq-toggle">+</span></button>
+        <div class="faq-a">الوكالات تشتغل بمشاريع مؤقتة + فواتير ضخمة + التزامات طويلة. احنا اشتراك شهري ثابت، فريق متخصص جاهز، ومحتوى يبقى ملكك — مش "خدمة" ينقطع عنها.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── FINAL CTA ─────────── -->
+<section style="max-width:1080px;margin:0 auto;padding:60px 28px 90px">
+  <div style="background:#0A0A0A;border-radius:26px;padding:72px 40px;text-align:center">
+    <h2 class="cta-h2" style="font-size:44px;font-weight:600;color:#fff;letter-spacing:-1.5px;line-height:1.15;margin-bottom:16px">منافسك يتصدّر الحين.<br>وأنت؟</h2>
+    <p style="font-size:17px;color:#A8A8A0;max-width:460px;margin:0 auto 32px;line-height:1.7;font-weight:300">انضم لأوائل الشركات اللي اختارت المحتوى طريقاً للنمو — لا الإعلانات.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="#pricing" style="background:#fff;color:#0A0A0A;padding:16px 30px;border-radius:13px;font-size:16px;font-weight:600;text-decoration:none">ابدأ الحين</a>
+      <a id="waLinkCta" href="https://wa.me/966541018020" style="background:rgba(255,255,255,.1);color:#fff;padding:16px 26px;border-radius:13px;font-size:16px;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,.16)">كلّمنا على واتساب</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─────────── FOOTER ─────────── -->
+<footer style="border-top:1px solid #EDEDE8">
+  <div style="max-width:1080px;margin:0 auto;padding:32px 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+    <div style="display:flex;align-items:center;gap:9px">
+      <div style="width:26px;height:26px;border-radius:7px;background:#0A0A0A;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px">J</div>
+      <span style="font-weight:600;font-size:15px">jbr<span style="color:#0E9F6E">seo</span></span>
+      <span style="font-size:12px;color:#B8B8B0;margin-right:6px">· مدعوم بمنصة مدونتي</span>
+    </div>
+    <div style="font-size:12.5px;color:#9A9A93;font-family:'IBM Plex Mono',monospace">© JBRSEO · سجل تجاري ٧٠٤٠٦٠٢٠٩١</div>
+  </div>
+</footer>
+
+<!-- ─────────── FLOATING CALCULATOR FAB ─────────── -->
+<button id="fabBtn" aria-label="حاسبة التوفير" style="position:fixed;bottom:24px;left:24px;z-index:60;display:flex;align-items:center;gap:10px;background:#0A0A0A;color:#fff;border:none;cursor:pointer;padding:14px 18px;border-radius:99px;box-shadow:0 16px 36px -10px rgba(10,10,10,.5);font-family:inherit;font-size:14px;font-weight:500;animation:fabIn .4s ease both">
+  <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="2.5" width="16" height="19" rx="2.5"></rect><line x1="8" y1="7" x2="16" y2="7"></line><circle cx="8.5" cy="12" r=".6" fill="currentColor"></circle><circle cx="12" cy="12" r=".6" fill="currentColor"></circle><circle cx="15.5" cy="12" r=".6" fill="currentColor"></circle><circle cx="8.5" cy="16.5" r=".6" fill="currentColor"></circle><circle cx="12" cy="16.5" r=".6" fill="currentColor"></circle><circle cx="15.5" cy="16.5" r=".6" fill="currentColor"></circle></svg>
+  احسب توفيرك
+</button>
+
+<!-- Calculator Modal -->
+<div id="calcOverlay" style="display:none;position:fixed;inset:0;z-index:70;background:rgba(10,10,10,.42);backdrop-filter:blur(5px);align-items:center;justify-content:center;padding:18px">
+  <div id="calcSheet" style="background:#fff;border-radius:22px;max-width:540px;width:100%;max-height:90vh;overflow:auto;animation:sheetIn .35s cubic-bezier(.34,1.1,.4,1) both">
+    <div style="position:sticky;top:0;background:#fff;padding:24px 28px 18px;border-bottom:1px solid #F0F0EA;display:flex;align-items:flex-start;justify-content:space-between;gap:14px">
+      <div>
+        <div style="font-size:20px;font-weight:600;margin-bottom:4px">كم يكلّفك البديل فعلاً؟</div>
+        <div style="font-size:13px;color:#7A7A73">حرّك المنزلقات حسب رواتب فريقك المحتمل، نحسب لك التوفير.</div>
+      </div>
+      <button id="calcClose" aria-label="إغلاق" style="background:transparent;border:none;font-size:22px;color:#9A9A93;cursor:pointer;line-height:1;padding:4px 8px">✕</button>
+    </div>
+
+    <div id="sliders" style="padding:22px 28px">
+      <!-- sliders injected by JS -->
+    </div>
+
+    <div style="padding:0 28px 24px">
+      <div style="background:#FAFAF7;border-radius:14px;padding:18px 20px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:#9A9A93;margin-bottom:6px">
+          <span>فريق كامل · سنوياً</span>
+          <span class="cur-name" id="teamAnnualText" style="font-family:'IBM Plex Mono',monospace;color:#C4C4BC;text-decoration:line-through;text-decoration-color:#E2A0A0">0 ر.س</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;color:#0E9F6E;font-weight:500">
+          <span>مدونتي · سنوياً</span>
+          <span style="font-family:'IBM Plex Mono',monospace">12,468 <span class="cur-name">ر.س</span></span>
+        </div>
+      </div>
+      <div style="background:#0A0A0A;border-radius:14px;padding:22px 20px;margin-top:12px;text-align:center">
+        <div style="font-size:12px;color:#A8A8A0;letter-spacing:.5px;font-family:'IBM Plex Mono',monospace;margin-bottom:8px">نسبة التوفير</div>
+        <div id="savePct" style="font-family:'IBM Plex Mono',monospace;font-size:40px;font-weight:600;color:#3DDC8C">0٪</div>
+        <div style="font-size:13px;color:#A8A8A0;margin-top:6px">توفر <span id="saveAmt" style="font-family:'IBM Plex Mono',monospace;color:#fff">0</span> <span class="cur-name">ر.س</span> سنوياً</div>
+      </div>
+      <a href="#pricing" id="calcCta" style="display:block;text-align:center;background:#0E9F6E;color:#fff;padding:14px;border-radius:12px;font-size:15px;font-weight:600;text-decoration:none;margin-top:14px">شوف الباقة المناسبة لك ←</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ─── Market switch ───
+  var mkt = 'sa';
+  var waSA = 'https://wa.me/966541018020';
+  var waEG = 'https://wa.me/201000000000';
+  document.querySelectorAll('.mkt-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      mkt = btn.dataset.mkt;
+      document.querySelectorAll('.mkt-btn').forEach(function(b){
+        var on = b.dataset.mkt === mkt;
+        b.classList.toggle('active', on);
+        b.style.background = on ? '#0A0A0A' : 'transparent';
+        b.style.color = on ? '#fff' : '#9A9A93';
+      });
+      var curName = mkt === 'sa' ? 'ر.س' : 'ج.م';
+      document.querySelectorAll('.cur-name').forEach(function(el){ el.textContent = curName; });
+      var waLink = mkt === 'sa' ? waSA : waEG;
+      var hero = document.getElementById('waLinkHero');
+      var cta = document.getElementById('waLinkCta');
+      if (hero) hero.href = waLink;
+      if (cta) cta.href = waLink;
+    });
+  });
+  // initialize active SA visual
+  document.querySelector('.mkt-btn[data-mkt="sa"]').style.background = '#0A0A0A';
+  document.querySelector('.mkt-btn[data-mkt="sa"]').style.color = '#fff';
+
+  // ─── Billing switch ───
+  var billing = 'monthly';
+  document.querySelectorAll('.bil-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      billing = btn.dataset.bil;
+      document.querySelectorAll('.bil-btn').forEach(function(b){
+        var on = b.dataset.bil === billing;
+        b.classList.toggle('active', on);
+        b.style.background = on ? '#fff' : 'transparent';
+        b.style.color = on ? '#0A0A0A' : '#7A7A73';
+        b.style.boxShadow = on ? '0 1px 3px rgba(10,10,10,.08)' : 'none';
+      });
+      document.querySelectorAll('.plan-price').forEach(function(p){
+        var mo = p.dataset.mo, yr = p.dataset.yr;
+        if (!mo || !yr) return;
+        var value = billing === 'monthly' ? mo : yr;
+        p.textContent = value;
+        var card = p.closest('.plan-card');
+        var note = card.querySelector('.plan-note');
+        if (note) {
+          if (billing === 'annual') {
+            var total = (Number(yr) * 12).toLocaleString('en-US');
+            note.innerHTML = 'سنوياً ' + total;
+          } else {
+            note.innerHTML = '&nbsp;';
+          }
+        }
+      });
+    });
+  });
+
+  // ─── Live SERP ───
+  var queries = ['شركة مقاولات بالرياض','عيادة أسنان بجدة','متجر قهوة مختصة','مكتب محاماة بالقاهرة'];
+  var queryIdx = 0;
+  var initialOrder = ['ad','c2','c3','c4','c5','you'];
+  var rows = {
+    ad:  { title:'منافس أعلى أداءً — موقعك في الخلف', url:'competitor-ads.com', ad:true },
+    c2:  { title:'دليل خدمات بدون تحديث منذ سنتين', url:'old-directory.net', ad:false },
+    c3:  { title:'مدوّنة عامة بدون أمثلة محلية', url:'generic-blog.com', ad:false },
+    c4:  { title:'صفحة ويكيبيديا للتعريف العام', url:'reference-site.org', ad:false },
+    c5:  { title:'منافس متخصص في خدمة مجاورة', url:'side-competitor.net', ad:false },
+    you: { title:'نشاطك التجاري — حل عملائك الأول', url:'your-business.com', isYou:true }
+  };
+  var order = initialOrder.slice();
+  var ROWH = 62;
+  var listEl = document.getElementById('serpList');
+
+  function rankLabelFor(idx){ return '#' + (['١','٢','٣','٤','٥','٦'][idx] || (idx+1)); }
+
+  function render(){
+    listEl.innerHTML = '';
+    order.forEach(function(id, idx){
+      var r = rows[id];
+      var isYou = !!r.isYou;
+      var won = isYou && idx === 0;
+      var rising = isYou && idx > 0 && idx < 3;
+      var youAboveAd = isYou && order.indexOf('you') < order.indexOf('ad');
+
+      var rankStyle = 'width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:\'IBM Plex Mono\',monospace;font-size:13px;font-weight:600;flex-shrink:0;';
+      if (won) {
+        rankStyle += 'background:#0E9F6E;color:#fff;';
+      } else if (isYou) {
+        rankStyle += 'background:#E6F7EF;color:#0E9F6E;';
+      } else {
+        rankStyle += 'background:#F0F0EA;color:#9A9A93;';
+      }
+
+      var titleStyle = 'font-size:14px;font-weight:' + (isYou ? '600' : '500') + ';color:' + (isYou ? '#0A0A0A' : (idx < 2 ? '#52524C' : '#86867E')) + ';';
+      var urlColor = isYou ? '#0E9F6E' : '#B8B8B0';
+      var showAd = r.ad && !youAboveAd;
+
+      var rowEl = document.createElement('div');
+      rowEl.className = 'serp-row serp-rank-wrap' + (isYou ? ' you' : '') + (won ? ' won' : '');
+      rowEl.style.top = (idx * ROWH + 6) + 'px';
+      rowEl.innerHTML = ''
+        + '<div style="display:flex;align-items:center;gap:12px;height:100%">'
+        +   '<div class="serp-rank" style="'+rankStyle+'">'+ rankLabelFor(idx) +'</div>'
+        +   '<div style="flex:1;min-width:0">'
+        +     '<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap">'
+        +       '<span class="serp-title" style="'+titleStyle+'">'+ r.title +'</span>'
+        +       (showAd ? '<span style="font-size:10px;font-weight:600;color:#B26B00;background:#FFF3DC;padding:1px 6px;border-radius:5px;font-family:\'IBM Plex Mono\',monospace">إعلان</span>' : '')
+        +       (isYou ? '<span style="font-size:11px;font-weight:600;color:#0E9F6E;background:#E6F7EF;padding:2px 8px;border-radius:6px">موقعك</span>' : '')
+        +     '</div>'
+        +     '<div class="serp-url" style="font-family:\'IBM Plex Mono\',monospace;font-size:11.5px;color:'+ urlColor +';margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+ r.url +'</div>'
+        +   '</div>'
+        +   (won ? '<div style="color:#0E9F6E;font-size:13px;font-weight:600;animation:pop .4s ease both;white-space:nowrap">المركز الأول ✓</div>' : '')
+        +   (rising ? '<div style="display:flex;align-items:center;gap:4px;color:#0E9F6E;font-size:12px;font-weight:600;font-family:\'IBM Plex Mono\',monospace;animation:up 1s ease-in-out infinite">▲ يصعد</div>' : '')
+        + '</div>';
+      listEl.appendChild(rowEl);
+    });
+  }
+
+  function stepClimb(){
+    var youIdx = order.indexOf('you');
+    if (youIdx === 0) {
+      setTimeout(function(){
+        queryIdx = (queryIdx + 1) % queries.length;
+        document.getElementById('serpQuery').innerHTML = queries[queryIdx] + '<span style="display:inline-block;width:1.5px;height:16px;background:#0A0A0A;vertical-align:-3px;margin-right:2px;animation:caret 1s step-end infinite"></span>';
+        order = initialOrder.slice();
+        render();
+        setTimeout(stepClimb, 900);
+      }, 2800);
+      return;
+    }
+    var tmp = order[youIdx - 1];
+    order[youIdx - 1] = 'you';
+    order[youIdx] = tmp;
+    render();
+    setTimeout(stepClimb, 760);
+  }
+
+  render();
+  setTimeout(stepClimb, 900);
+
+  // ─── FAQ accordion ───
+  document.querySelectorAll('.faq-q').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var item = btn.closest('.faq-item');
+      item.classList.toggle('open');
+      var toggle = btn.querySelector('.faq-toggle');
+      toggle.textContent = item.classList.contains('open') ? '×' : '+';
+    });
+  });
+
+  // ─── Calculator ───
+  var roles = [
+    { key:'writer',  label:'كاتب محتوى SEO', def:4500, min:2500, max:12000 },
+    { key:'designer',label:'مصمم جرافيك',    def:7000, min:2000, max:12000 },
+    { key:'seo',     label:'متخصص SEO',      def:6000, min:3000, max:14000 },
+    { key:'social',  label:'مدير سوشال ميديا', def:5500, min:2500, max:12000 },
+    { key:'video',   label:'مونتير / منتج فيديو', def:6000, min:2500, max:14000 },
+    { key:'dev',     label:'مطور مواقع',     def:8000, min:3000, max:18000 },
+  ];
+  var salaries = {};
+  roles.forEach(function(r){ salaries[r.key] = r.def; });
+
+  function buildSliders(){
+    var container = document.getElementById('sliders');
+    container.innerHTML = '';
+    roles.forEach(function(r){
+      var pct = ((salaries[r.key] - r.min) / (r.max - r.min)) * 100;
+      var row = document.createElement('div');
+      row.style.cssText = 'margin-bottom:18px';
+      row.innerHTML = ''
+        + '<div style="display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;margin-bottom:8px">'
+        +   '<span style="color:#52524C;font-weight:500">'+ r.label +'</span>'
+        +   '<span style="font-family:\'IBM Plex Mono\',monospace;font-weight:500" id="val-'+ r.key +'">'+ salaries[r.key].toLocaleString('en-US') +' <span class="cur-name">ر.س</span></span>'
+        + '</div>'
+        + '<div style="position:relative;height:22px">'
+        +   '<div style="position:absolute;top:9px;left:0;right:0;height:5px;border-radius:99px;background:#ECECE6"></div>'
+        +   '<div style="position:absolute;top:9px;right:0;height:5px;border-radius:99px;background:#0E9F6E;width:'+ pct +'%" id="fill-'+ r.key +'"></div>'
+        +   '<input type="range" min="'+ r.min +'" max="'+ r.max +'" step="100" value="'+ salaries[r.key] +'" data-key="'+ r.key +'" data-min="'+ r.min +'" data-max="'+ r.max +'" style="position:absolute;top:0;left:0;right:0;width:100%">'
+        + '</div>';
+      container.appendChild(row);
+    });
+    container.querySelectorAll('input[type=range]').forEach(function(inp){
+      inp.addEventListener('input', function(){
+        var key = inp.dataset.key;
+        var min = Number(inp.dataset.min), max = Number(inp.dataset.max);
+        salaries[key] = Number(inp.value);
+        document.getElementById('val-'+ key).innerHTML = salaries[key].toLocaleString('en-US') +' <span class="cur-name">'+ (mkt==='sa'?'ر.س':'ج.م') +'</span>';
+        var pct = ((salaries[key] - min) / (max - min)) * 100;
+        document.getElementById('fill-'+ key).style.width = pct + '%';
+        updateCalc();
+      });
+    });
+  }
+
+  function updateCalc(){
+    var teamMonthly = Object.values(salaries).reduce(function(a,b){ return a+b; }, 0);
+    var teamAnnual = teamMonthly * 12;
+    var subAnnual = 12468;
+    var saveAmt = Math.max(0, teamAnnual - subAnnual);
+    var savePct = teamAnnual > 0 ? Math.max(0, Math.round((1 - subAnnual/teamAnnual) * 100)) : 0;
+    document.getElementById('teamAnnualText').innerHTML = teamAnnual.toLocaleString('en-US') + ' <span class="cur-name">'+ (mkt==='sa'?'ر.س':'ج.م') +'</span>';
+    document.getElementById('savePct').textContent = savePct + '٪';
+    document.getElementById('saveAmt').textContent = saveAmt.toLocaleString('en-US');
+  }
+
+  var overlay = document.getElementById('calcOverlay');
+  var sheet = document.getElementById('calcSheet');
+  function openCalc(){
+    overlay.style.display = 'flex';
+    buildSliders();
+    updateCalc();
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCalc(){
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('fabBtn').addEventListener('click', openCalc);
+  document.getElementById('calcClose').addEventListener('click', closeCalc);
+  document.getElementById('calcCta').addEventListener('click', closeCalc);
+  overlay.addEventListener('click', function(e){ if (e.target === overlay) closeCalc(); });
+
+})();
+</script>
+
+</body>
+</html>
