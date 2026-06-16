@@ -1,7 +1,7 @@
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { StaticLanding } from "@/app/content/landing/types";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
-import { HeaderFooterForm } from "../HeaderFooterForm";
+import { HeaderFooterForm } from "./_components/HeaderFooterForm";
 
 async function getCountry(
   searchParams: Promise<{ country?: string }>,
