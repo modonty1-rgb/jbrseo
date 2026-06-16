@@ -56,10 +56,10 @@ const ARABIC_DIGITS = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"] as con
 
 const STYLE_BLOCK = `
 html{scroll-behavior:smooth}
-::selection{background:#0A0A0A;color:#fff}
+::selection{background:var(--foreground);color:var(--card)}
 :focus{outline:none}
-:focus-visible{outline:2px solid #0E9F6E;outline-offset:3px;border-radius:var(--radius-sm)}
-a:focus-visible,button:focus-visible{outline:2px solid #0E9F6E;outline-offset:3px}
+:focus-visible{outline:2px solid var(--success);outline-offset:3px;border-radius:var(--radius-sm)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--success);outline-offset:3px}
 .prev-pricing-toggle button{min-height:var(--tap);padding:10px 18px}
 @keyframes prev-caret{0%,49%{opacity:1}50%,100%{opacity:0}}
 @keyframes prev-up{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
@@ -67,57 +67,57 @@ a:focus-visible,button:focus-visible{outline:2px solid #0E9F6E;outline-offset:3p
 @keyframes prev-fab-in{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
 @keyframes prev-sheet-in{from{transform:translateY(20px) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
 .prev-serp-row{position:absolute;left:14px;right:14px;height:${ROW_INNER_H}px;border:1.5px solid transparent;border-radius:13px;padding:10px 12px;overflow:hidden;transition:top .55s cubic-bezier(.34,1.2,.34,1),box-shadow .4s,border-color .4s,background .4s}
-.prev-serp-row.you{background:#fff;border-color:#0E9F6E;box-shadow:0 10px 26px -12px rgba(14,159,110,.45)}
-.prev-serp-row.won{background:#fff;border-color:#0E9F6E;box-shadow:0 14px 30px -10px rgba(14,159,110,.55)}
-.prev-faq-item{border-bottom:1px solid #E5E5DC}
-.prev-faq-q{display:flex;justify-content:space-between;align-items:center;width:100%;padding:22px 0;font-size:16px;font-weight:500;color:#0A0A0A;text-align:right}
-.prev-faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;font-size:14.5px;color:#3F3F38;line-height:1.85;padding:0;font-weight:300}
+.prev-serp-row.you{background:var(--card);border-color:var(--success);box-shadow:0 10px 26px -12px color-mix(in oklch, var(--success) 45%, transparent)}
+.prev-serp-row.won{background:var(--card);border-color:var(--success);box-shadow:0 14px 30px -10px color-mix(in oklch, var(--success) 55%, transparent)}
+.prev-faq-item{border-bottom:1px solid var(--border)}
+.prev-faq-q{display:flex;justify-content:space-between;align-items:center;width:100%;padding:22px 0;font-size:16px;font-weight:500;color:var(--foreground);text-align:right}
+.prev-faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;font-size:14.5px;color:var(--muted-foreground);line-height:1.85;padding:0;font-weight:300}
 .prev-faq-item.open .prev-faq-a{max-height:600px;padding:0 0 22px}
-.prev-faq-toggle{font-size:22px;color:#8A8A81;font-weight:300;transition:transform .3s ease;display:inline-block;line-height:1}
+.prev-faq-toggle{font-size:22px;color:var(--muted-foreground);font-weight:300;transition:transform .3s ease;display:inline-block;line-height:1}
 .prev-faq-item.open .prev-faq-toggle{transform:rotate(45deg)}
 .prev-range{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;height:22px;width:100%}
 .prev-range::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:transparent}
-.prev-range::-webkit-slider-thumb{-webkit-appearance:none;height:20px;width:20px;border-radius:50%;background:#fff;border:2px solid #0E9F6E;box-shadow:0 2px 7px rgba(14,159,110,.45);margin-top:-8px}
-.prev-range::-moz-range-thumb{height:18px;width:18px;border-radius:50%;background:#fff;border:2px solid #0E9F6E}
-.prev-systems-teaser{position:relative;overflow:hidden;background:#0A0A0A;color:#fff;border-radius:24px;padding:48px 36px;text-align:center}
-.prev-systems-teaser::before{content:"";position:absolute;top:-100px;right:-100px;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,rgba(14,159,110,.28),transparent 70%);pointer-events:none}
-.prev-systems-teaser::after{content:"";position:absolute;bottom:-110px;left:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(closest-side,rgba(14,159,110,.16),transparent 70%);pointer-events:none}
-.prev-st-eyebrow{position:relative;display:inline-flex;align-items:center;gap:var(--space-2);font-family:'IBM Plex Mono',monospace;font-size:var(--font-xs);color:#3DDC8C;letter-spacing:1;margin-bottom:18px;font-weight:600}
-.prev-st-eyebrow::before{content:"";width:6px;height:6px;border-radius:99px;background:#3DDC8C}
+.prev-range::-webkit-slider-thumb{-webkit-appearance:none;height:20px;width:20px;border-radius:50%;background:var(--card);border:2px solid var(--success);box-shadow:0 2px 7px color-mix(in oklch, var(--success) 45%, transparent);margin-top:-8px}
+.prev-range::-moz-range-thumb{height:18px;width:18px;border-radius:50%;background:var(--card);border:2px solid var(--success)}
+.prev-systems-teaser{position:relative;overflow:hidden;background:var(--foreground);color:var(--card);border-radius:24px;padding:48px 36px;text-align:center}
+.prev-systems-teaser::before{content:"";position:absolute;top:-100px;right:-100px;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in oklch, var(--success) 28%, transparent),transparent 70%);pointer-events:none}
+.prev-systems-teaser::after{content:"";position:absolute;bottom:-110px;left:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in oklch, var(--success) 16%, transparent),transparent 70%);pointer-events:none}
+.prev-st-eyebrow{position:relative;display:inline-flex;align-items:center;gap:var(--space-2);font-family:'IBM Plex Mono',monospace;font-size:var(--font-xs);color:var(--success);letter-spacing:1;margin-bottom:18px;font-weight:600}
+.prev-st-eyebrow::before{content:"";width:6px;height:6px;border-radius:99px;background:var(--success)}
 .prev-st-icons{position:relative;display:flex;justify-content:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
-.prev-st-ico{width:48px;height:48px;border-radius:13px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);display:inline-flex;align-items:center;justify-content:center;font-size:22px}
+.prev-st-ico{width:48px;height:48px;border-radius:13px;background:color-mix(in oklch, var(--card-foreground) 6%, transparent);border:1px solid color-mix(in oklch, var(--card-foreground) 10%, transparent);display:inline-flex;align-items:center;justify-content:center;font-size:22px}
 .prev-st-title{position:relative;font-size:28px;font-weight:600;letter-spacing:-.7px;line-height:1.25;margin-bottom:14px;max-width:560px;margin-inline:auto}
-.prev-st-title .accent{color:#3DDC8C}
-.prev-st-sub{position:relative;font-size:14.5px;color:#A5A599;max-width:540px;margin:0 auto 26px;line-height:1.75}
+.prev-st-title .accent{color:var(--success)}
+.prev-st-sub{position:relative;font-size:14.5px;color:var(--muted-foreground);max-width:540px;margin:0 auto 26px;line-height:1.75}
 .prev-st-stats{position:relative;display:inline-flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-bottom:26px}
-.prev-st-stat{font-family:'IBM Plex Mono',monospace;font-size:12px;color:#A5A599;display:inline-flex;align-items:center;gap:7px}
-.prev-st-stat b{color:#fff;font-weight:600;font-size:14px}
-.prev-st-stat-sep{width:4px;height:4px;border-radius:99px;background:rgba(255,255,255,.18)}
-.prev-st-cta{position:relative;display:inline-flex;align-items:center;gap:8px;background:#0E9F6E;color:#fff;padding:13px 24px;border-radius:12px;font-size:14.5px;font-weight:600;text-decoration:none;transition:all .15s ease;box-shadow:0 14px 30px -14px rgba(14,159,110,.6)}
-.prev-st-cta:hover{background:#0bb37c;transform:translateY(-1px)}
-.prev-calc-btn{width:26px;height:26px;border-radius:8px;background:#FAFAF7;border:1px solid #E5E5DC;color:#3F3F38;font-size:18px;font-weight:500;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s ease;user-select:none}
-.prev-calc-btn:hover:not(:disabled){background:#0A0A0A;border-color:#0A0A0A;color:#fff}
+.prev-st-stat{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted-foreground);display:inline-flex;align-items:center;gap:7px}
+.prev-st-stat b{color:var(--card);font-weight:600;font-size:14px}
+.prev-st-stat-sep{width:4px;height:4px;border-radius:99px;background:color-mix(in oklch, var(--card-foreground) 18%, transparent)}
+.prev-st-cta{position:relative;display:inline-flex;align-items:center;gap:8px;background:var(--success);color:var(--card);padding:13px 24px;border-radius:12px;font-size:14.5px;font-weight:600;text-decoration:none;transition:all .15s ease;box-shadow:0 14px 30px -14px color-mix(in oklch, var(--success) 60%, transparent)}
+.prev-st-cta:hover{background:var(--success);transform:translateY(-1px)}
+.prev-calc-btn{width:26px;height:26px;border-radius:8px;background:var(--background);border:1px solid var(--border);color:var(--muted-foreground);font-size:18px;font-weight:500;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s ease;user-select:none}
+.prev-calc-btn:hover:not(:disabled){background:var(--foreground);border-color:var(--foreground);color:var(--card)}
 .prev-calc-btn:active:not(:disabled){transform:scale(.92)}
 .prev-trust-pill{transition:all .2s}
-.prev-trust-pill:hover{border-color:#0E9F6E !important;box-shadow:0 8px 20px -10px rgba(14,159,110,.35);transform:translateY(-1px)}
+.prev-trust-pill:hover{border-color:var(--success) !important;box-shadow:0 8px 20px -10px color-mix(in oklch, var(--success) 35%, transparent);transform:translateY(-1px)}
 .prev-trust-pill:hover img{filter:grayscale(0%) !important;opacity:1 !important}
-.prev-voice-btn{display:flex;align-items:center;gap:var(--space-3);width:100%;text-align:right;padding:12px 14px;border-radius:var(--radius-lg);border:1px solid #E5E5DC;background:#fff;transition:all .15s ease;cursor:pointer}
-.prev-voice-btn:hover{border-color:#0A0A0A}
-.prev-voice-btn.active{border-color:#0E9F6E;background:#F4FBF7;box-shadow:0 8px 20px -14px rgba(14,159,110,.45)}
-.prev-voice-btn.active .prev-voice-avatar{box-shadow:0 0 0 2px #0E9F6E}
-.prev-voice-avatar{width:40px;height:40px;border-radius:50%;background:#E5E5DC;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:600;color:#8A8A81}
+.prev-voice-btn{display:flex;align-items:center;gap:var(--space-3);width:100%;text-align:right;padding:12px 14px;border-radius:var(--radius-lg);border:1px solid var(--border);background:var(--card);transition:all .15s ease;cursor:pointer}
+.prev-voice-btn:hover{border-color:var(--foreground)}
+.prev-voice-btn.active{border-color:var(--success);background:color-mix(in oklch, var(--success) 8%, var(--background));box-shadow:0 8px 20px -14px color-mix(in oklch, var(--success) 45%, transparent)}
+.prev-voice-btn.active .prev-voice-avatar{box-shadow:0 0 0 2px var(--success)}
+.prev-voice-avatar{width:40px;height:40px;border-radius:50%;background:var(--border);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--muted-foreground)}
 .prev-voice-avatar img{width:100%;height:100%;object-fit:cover}
-.prev-team-core-card{background:#fff;border:1px solid #E5E5DC;border-radius:18px;padding:28px 26px;display:flex;align-items:center;gap:var(--space-5);transition:all .2s ease}
-.prev-team-core-card:hover{border-color:#0A0A0A;box-shadow:0 24px 50px -28px rgba(10,10,10,.18);transform:translateY(-1px)}
-.prev-team-core-avatar{width:88px;height:88px;border-radius:50%;flex-shrink:0;overflow:hidden;background:#E5E5DC;display:flex;align-items:center;justify-content:center}
+.prev-team-core-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px 26px;display:flex;align-items:center;gap:var(--space-5);transition:all .2s ease}
+.prev-team-core-card:hover{border-color:var(--foreground);box-shadow:0 24px 50px -28px color-mix(in oklch, var(--foreground) 18%, transparent);transform:translateY(-1px)}
+.prev-team-core-avatar{width:88px;height:88px;border-radius:50%;flex-shrink:0;overflow:hidden;background:var(--border);display:flex;align-items:center;justify-content:center}
 .prev-team-core-avatar img{width:100%;height:100%;object-fit:cover}
-.prev-team-exec-card{background:#fff;border:1px solid #E5E5DC;border-radius:var(--radius-lg);padding:18px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-3);transition:all .15s ease}
-.prev-team-exec-card:hover{border-color:#8A8A81;transform:translateY(-1px)}
-.prev-team-exec-avatar{width:64px;height:64px;border-radius:50%;overflow:hidden;background:#E5E5DC;display:flex;align-items:center;justify-content:center;color:#6B6B62;font-weight:600;font-size:18px}
+.prev-team-exec-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-3);transition:all .15s ease}
+.prev-team-exec-card:hover{border-color:var(--muted-foreground);transform:translateY(-1px)}
+.prev-team-exec-avatar{width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted-foreground);font-weight:600;font-size:18px}
 .prev-team-exec-avatar img{width:100%;height:100%;object-fit:cover}
 @media (max-width:640px){
   .prev-trust-metrics{grid-template-columns:1fr !important;gap:var(--space-6)}
-  .prev-trust-metrics > div{border-right:none !important;border-bottom:1px solid #E5E5DC;padding:var(--space-0) var(--space-0) var(--space-5) !important}
+  .prev-trust-metrics > div{border-right:none !important;border-bottom:1px solid var(--border);padding:var(--space-0) var(--space-0) var(--space-5) !important}
   .prev-trust-metrics > div:last-child{border-bottom:none;padding-bottom:0 !important}
 }
 @media (max-width:640px){
@@ -128,7 +128,7 @@ a:focus-visible,button:focus-visible{outline:2px solid #0E9F6E;outline-offset:3p
   .prev-math-num-big{font-size:46px !important}
   .prev-pricing-grid{grid-template-columns:1fr !important}
   .prev-how-grid{grid-template-columns:1fr !important}
-  .prev-how-cell{border-right:none !important;border-bottom:1px solid #E5E5DC;padding:var(--space-6) var(--space-0)}
+  .prev-how-cell{border-right:none !important;border-bottom:1px solid var(--border);padding:var(--space-6) var(--space-0)}
   .prev-how-cell:last-child{border-bottom:none}
   .prev-serp-card{margin:0 -8px}
   .prev-serp-row{height:52px;padding:8px 10px}
@@ -368,49 +368,49 @@ export function Landing(props: Props) {
 
       {/* ─── HERO ─── */}
       <section className="prev-hero-pad max-w-[760px] mx-auto pt-[88px] px-7 pb-7 text-center">
-        <div className="inline-flex items-center gap-2 pt-[5px] pe-3 pb-[5px] ps-[14px] rounded-full border border-[#E5E5DC] bg-white font-mono text-[11.5px] text-[#3F3F38] tracking-[.3px] mb-[26px]">
+        <div className="inline-flex items-center gap-2 pt-[5px] pe-3 pb-[5px] ps-[14px] rounded-full border border-border bg-card font-mono text-[11.5px] text-muted-foreground tracking-[.3px] mb-[26px]">
           <span
-            className="w-[7px] h-[7px] rounded-full bg-[#0E9F6E] shrink-0 shadow-[0_0_0_3px_rgba(14,159,110,.16)]"
+            className="w-[7px] h-[7px] rounded-full bg-success shrink-0 shadow-[0_0_0_3px_color-mix(in oklch, var(--success) 16%, transparent)]"
           />
           <span>{staticLanding.hero?.proof ?? "سيو بالاشتراك الشهري · السعودية ومصر"}</span>
         </div>
         <h1 className="prev-hero-h1 text-[length:var(--font-5xl)] leading-[1.08] font-semibold tracking-[-2px]">
           {staticLanding.hero?.h1Line1 ?? "ابنِ حضورك على جوجل"}<br />
           <span
-            className="relative inline-block text-[#0E9F6E] px-1 py-0 bg-[linear-gradient(180deg,transparent_0%,transparent_78%,rgba(14,159,110,.16)_78%,rgba(14,159,110,.16)_100%)]"
+            className="relative inline-block text-success px-1 py-0 bg-[linear-gradient(180deg,transparent_0%,transparent_78%,color-mix(in oklch, var(--success) 16%, transparent)_78%,color-mix(in oklch, var(--success) 16%, transparent)_100%)]"
           >
             {staticLanding.hero?.h1Line2 ?? "بدون إعلانات · بدون فريق داخلي"}
           </span>
         </h1>
-        <p className="prev-hero-sub text-[20px] leading-[1.7] text-[#3F3F38] mt-[26px] mx-auto max-w-[520px] font-normal">
+        <p className="prev-hero-sub text-[20px] leading-[1.7] text-muted-foreground mt-[26px] mx-auto max-w-[520px] font-normal">
           {staticLanding.hero?.sub ?? "فريقنا يكتب محتوى سيو وينشره على موقعك. أنت توافق بضغطة — وجوجل يجيب لك العملاء كل يوم."}
         </p>
         <div className="flex gap-[18px] justify-center items-center mt-8 flex-wrap">
-          <Link href={signupHref} className="bg-[#0A0A0A] text-white px-7 py-[15px] rounded-xl text-base font-medium no-underline">
+          <Link href={signupHref} className="bg-foreground text-card-foreground px-7 py-[15px] rounded-xl text-base font-medium no-underline">
             {ctaLabel}
           </Link>
           <a
             href={whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#3F3F38] text-[15px] font-medium no-underline inline-flex items-center gap-1.5 px-1 py-2 border-b border-b-transparent transition-[border-color,color] duration-150"
+            className="text-muted-foreground text-[15px] font-medium no-underline inline-flex items-center gap-1.5 px-1 py-2 border-b border-b-transparent transition-[border-color,color] duration-150"
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderBottomColor = "#0A0A0A";
-              e.currentTarget.style.color = "#0A0A0A";
+              e.currentTarget.style.borderBottomColor = "var(--foreground)";
+              e.currentTarget.style.color = "var(--foreground)";
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.borderBottomColor = "transparent";
-              e.currentTarget.style.color = "#3F3F38";
+              e.currentTarget.style.color = "var(--muted-foreground)";
             }}
           >
             تواصل واتساب
             <span className="text-[18px] leading-none">←</span>
           </a>
         </div>
-        <div className="inline-flex flex-wrap justify-center gap-[18px] mt-[22px] text-[13px] text-[#6B6B62]">
+        <div className="inline-flex flex-wrap justify-center gap-[18px] mt-[22px] text-[13px] text-muted-foreground">
           {(staticLanding.hero?.trust ?? ["بدون بطاقة", "إلغاء بأي وقت", "دعم عربي ١٠٠٪"]).map((item, i) => (
             <span key={i} className="inline-flex items-center gap-1.5">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0E9F6E" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M5 12.5l5 5L20 7" />
               </svg>
               <span>{item}</span>
@@ -422,19 +422,19 @@ export function Landing(props: Props) {
 
       {/* ─── LIVE SERP ─── */}
       <section className="max-w-[640px] mx-auto pt-[34px] px-[18px] pb-5">
-        <div className="prev-serp-card bg-white border border-[#E5E5DC] rounded-[20px] shadow-[0_30px_60px_-36px_rgba(10,10,10,.28)] overflow-hidden">
-          <div className="flex items-center gap-3 px-[22px] py-[18px] border-b border-b-[#F4F4EE]">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A8A81" strokeWidth={2}>
+        <div className="prev-serp-card bg-card border border-border rounded-[20px] shadow-[0_30px_60px_-36px_color-mix(in oklch, var(--foreground) 28%, transparent)] overflow-hidden">
+          <div className="flex items-center gap-3 px-[22px] py-[18px] border-b border-b-muted">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" strokeWidth={2}>
               <circle cx="11" cy="11" r="7" />
               <line x1="21" y1="21" x2="16.5" y2="16.5" />
             </svg>
-            <div className="text-[15px] text-[#2A2A26] flex-1 font-normal">
+            <div className="text-[15px] text-foreground flex-1 font-normal">
               {SERP_QUERIES[queryIdx]}
-              <span className="inline-block w-[1.5px] h-4 bg-[#0A0A0A] align-[-3px] mr-0.5 animate-[prev-caret_1s_step-end_infinite]" />
+              <span className="inline-block w-[1.5px] h-4 bg-foreground align-[-3px] mr-0.5 animate-[prev-caret_1s_step-end_infinite]" />
             </div>
-            <div data-st className="font-mono text-[11px] text-[#B0B0A5]">بحث جوجل</div>
+            <div data-st className="font-mono text-[11px] text-muted-foreground">بحث جوجل</div>
           </div>
-          <div className="relative h-96 px-[14px] py-2.5 bg-[#FCFCFA]">
+          <div className="relative h-96 px-[14px] py-2.5 bg-card">
             {order.map((key, idx) => {
               const r = SERP_ROWS[key];
               const isYou = "isYou" in r && r.isYou;
@@ -445,15 +445,15 @@ export function Landing(props: Props) {
 
               const rankClass = cn(
                 "w-[30px] h-[30px] rounded-lg flex items-center justify-center font-mono text-[13px] font-semibold shrink-0",
-                won ? "bg-[#0E9F6E] text-white" : isYou ? "bg-[#E6F7EF] text-[#0E9F6E]" : "bg-[#F4F4EE] text-[#8A8A81]",
+                won ? "bg-success text-card-foreground" : isYou ? "bg-success/10 text-success" : "bg-muted text-muted-foreground",
               );
 
               const titleClass = cn(
                 "text-sm",
-                isYou ? "font-semibold text-[#0A0A0A]" : idx < 2 ? "font-medium text-[#3F3F38]" : "font-medium text-[#86867E]",
+                isYou ? "font-semibold text-foreground" : idx < 2 ? "font-medium text-muted-foreground" : "font-medium text-muted-foreground",
               );
 
-              const urlColorClass = isYou ? "text-[#0E9F6E]" : "text-[#B0B0A5]";
+              const urlColorClass = isYou ? "text-success" : "text-muted-foreground";
 
               return (
                 <div key={key} className={`prev-serp-row${isYou ? " you" : ""}${won ? " won" : ""}`} style={{ top: idx * ROW_H + 6 }}>
@@ -463,19 +463,19 @@ export function Landing(props: Props) {
                       <div className="prev-serp-titlebar flex items-center gap-[7px] flex-wrap min-w-0">
                         <span className={cn("prev-serp-title", titleClass)}>{r.title}</span>
                         {showAd && (
-                          <span data-st className="text-[10px] font-semibold text-[#B26B00] bg-[#FFF3DC] px-1.5 py-px rounded-[5px] font-mono">إعلان</span>
+                          <span data-st className="text-[10px] font-semibold text-destructive bg-destructive/10 px-1.5 py-px rounded-[5px] font-mono">إعلان</span>
                         )}
                         {isYou && (
-                          <span className="prev-serp-you-badge text-[11px] font-semibold text-[#0E9F6E] bg-[#E6F7EF] px-2 py-0.5 rounded-md">موقعك</span>
+                          <span className="prev-serp-you-badge text-[11px] font-semibold text-success bg-success/10 px-2 py-0.5 rounded-md">موقعك</span>
                         )}
                       </div>
                       <div data-st className={cn("prev-serp-url font-mono text-[11.5px] mt-[3px] whitespace-nowrap overflow-hidden text-ellipsis", urlColorClass)}>{r.url}</div>
                     </div>
                     {won && (
-                      <div data-st className="text-[#0E9F6E] text-[13px] font-semibold whitespace-nowrap animate-[prev-pop_.4s_ease_both]">المركز الأول ✓</div>
+                      <div data-st className="text-success text-[13px] font-semibold whitespace-nowrap animate-[prev-pop_.4s_ease_both]">المركز الأول ✓</div>
                     )}
                     {rising && (
-                      <div data-st className="flex items-center gap-1 text-[#0E9F6E] text-[12px] font-semibold font-mono animate-[prev-up_1s_ease-in-out_infinite]">▲ يصعد</div>
+                      <div data-st className="flex items-center gap-1 text-success text-[12px] font-semibold font-mono animate-[prev-up_1s_ease-in-out_infinite]">▲ يصعد</div>
                     )}
                   </div>
                 </div>
@@ -483,7 +483,7 @@ export function Landing(props: Props) {
             })}
           </div>
         </div>
-        <div data-st className="text-center text-[13px] text-[#8A8A81] mt-4">
+        <div data-st className="text-center text-[13px] text-muted-foreground mt-4">
           من الصفحة الخامسة إلى الصفحة الأولى — هذا اللي نسوّيه لموقعك.
         </div>
       </section>
@@ -495,11 +495,11 @@ export function Landing(props: Props) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="border-t border-t-[#E5E5DC] border-b border-b-[#E5E5DC] bg-white"
+          className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card"
         >
           <div className="max-w-[1080px] mx-auto px-7 py-14">
             <div className="text-center mb-8">
-              <div data-st className="font-mono text-xs text-[#B0B0A5] tracking-[1.5px]">من ائتمنّا</div>
+              <div data-st className="font-mono text-xs text-muted-foreground tracking-[1.5px]">من ائتمنّا</div>
             </div>
             <div className="prev-trust-logos flex flex-wrap justify-center items-center gap-[14px] max-w-[960px] mx-auto">
               {trustClients.map((client, i) => {
@@ -507,7 +507,7 @@ export function Landing(props: Props) {
                 const card = (
                   <div
                     className={cn(
-                      "prev-trust-pill border border-[#E5E5DC] rounded-[14px] bg-white transition-all duration-200 inline-flex items-center justify-center min-h-[72px] min-w-[132px] gap-2.5",
+                      "prev-trust-pill border border-border rounded-[14px] bg-card transition-all duration-200 inline-flex items-center justify-center min-h-[72px] min-w-[132px] gap-2.5",
                       hasLogo ? "px-6 py-4" : "px-[22px] py-[14px]",
                       client.href ? "cursor-pointer" : "cursor-default",
                     )}
@@ -522,7 +522,7 @@ export function Landing(props: Props) {
                         className="h-10 w-auto max-w-[100px] object-contain grayscale opacity-85 transition-[filter,opacity] duration-[.25s]"
                       />
                     ) : (
-                      <span className="text-[14.5px] text-[#0A0A0A] font-semibold tracking-[-.2px]">{client.name}</span>
+                      <span className="text-[14.5px] text-foreground font-semibold tracking-[-.2px]">{client.name}</span>
                     )}
                   </div>
                 );
@@ -544,10 +544,10 @@ export function Landing(props: Props) {
         <section id="how-it-works" className="max-w-[880px] mx-auto px-7 py-[72px]">
           <div className="prev-how-grid grid text-center" style={{ gridTemplateColumns: `repeat(${Math.min(howSteps.length, 3)}, 1fr)` }}>
             {howSteps.slice(0, 3).map((step, i) => (
-              <div key={i} className={cn("prev-how-cell px-[14px] py-0", i < Math.min(howSteps.length, 3) - 1 && "border-r border-r-[#E5E5DC]")}>
-                <div className="font-mono text-[13px] text-[#B0B0A5] mb-3">{step.num || toArabicDigits(`0${i + 1}`)}</div>
+              <div key={i} className={cn("prev-how-cell px-[14px] py-0", i < Math.min(howSteps.length, 3) - 1 && "border-r border-r-[var(--border)]")}>
+                <div className="font-mono text-[13px] text-muted-foreground mb-3">{step.num || toArabicDigits(`0${i + 1}`)}</div>
                 <div className="text-xl font-semibold mb-2">{step.title}</div>
-                <div className="text-sm text-[#6B6B62] leading-[1.6] max-w-[200px] mx-auto">{step.line}</div>
+                <div className="text-sm text-muted-foreground leading-[1.6] max-w-[200px] mx-auto">{step.line}</div>
               </div>
             ))}
           </div>
@@ -562,28 +562,28 @@ export function Landing(props: Props) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="border-t border-t-[#E5E5DC] border-b border-b-[#E5E5DC] bg-white"
+          className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card"
         >
           <div className="max-w-[1080px] mx-auto px-7 py-20 text-center">
             <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-[14px]">
               {staticLanding.whyNow?.title1 ?? "كل شهر تأخير له ثمن"}
             </h2>
-            <p className="text-base text-[#6B6B62] mb-12 max-w-[520px] mx-auto">
+            <p className="text-base text-muted-foreground mb-12 max-w-[520px] mx-auto">
               {staticLanding.whyNow?.subtitle ?? "منافسك بدأ من ٣ شهور. كل يوم تتأخر = خطوة يكسبها هو."}
             </p>
             <div className="prev-why-grid grid gap-7 text-right max-w-[880px] mx-auto" style={{ gridTemplateColumns: `repeat(${Math.min(whyNowCosts.length, 3)}, 1fr)` }}>
               {whyNowCosts.slice(0, 3).map((cost, i) => {
                 const isLast = i === Math.min(whyNowCosts.length, 3) - 1;
                 return (
-                  <div key={i} className={cn("px-[22px] py-0 border-r-2", isLast ? "border-r-[#0E9F6E]" : "border-r-[#E5E5DC]")}>
-                    <div className={cn("font-mono text-xs tracking-[.5px] mb-3", isLast ? "text-[#0E9F6E]" : "text-[#B0B0A5]")}>{cost.month}</div>
+                  <div key={i} className={cn("px-[22px] py-0 border-r-2", isLast ? "border-r-[var(--success)]" : "border-r-[var(--border)]")}>
+                    <div className={cn("font-mono text-xs tracking-[.5px] mb-3", isLast ? "text-success" : "text-muted-foreground")}>{cost.month}</div>
                     <div className="text-[18px] font-semibold mb-2.5">{cost.label}</div>
-                    <div className="text-sm text-[#6B6B62] leading-[1.7]">{cost.desc}</div>
+                    <div className="text-sm text-muted-foreground leading-[1.7]">{cost.desc}</div>
                   </div>
                 );
               })}
             </div>
-            <div className="mt-12 font-mono text-xs text-[#8A8A81] tracking-[1px]">
+            <div className="mt-12 font-mono text-xs text-muted-foreground tracking-[1px]">
               الحل ↓
             </div>
           </div>
@@ -596,33 +596,33 @@ export function Landing(props: Props) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-[#FAFAF7]"
+        className="bg-background"
       >
         <div className="max-w-[880px] mx-auto px-7 py-20 text-center">
           <h2 data-st className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-[14px]">الرياضيات بسيطة.</h2>
-          <p data-st className="text-base text-[#6B6B62] mb-[14px]">عشان تتصدّر جوجل تحتاج فريق ٦ وظائف. أو اشتراك واحد.</p>
-          <div className="inline-block font-mono text-[11px] text-[#8A8A81] tracking-[.5px] border border-[#E5E5DC] px-3 py-[5px] rounded-full mb-9">
+          <p data-st className="text-base text-muted-foreground mb-[14px]">عشان تتصدّر جوجل تحتاج فريق ٦ وظائف. أو اشتراك واحد.</p>
+          <div className="inline-block font-mono text-[11px] text-muted-foreground tracking-[.5px] border border-border px-3 py-[5px] rounded-full mb-9">
             المقارنة سنوياً
           </div>
           <div className="flex items-center justify-center gap-7 flex-wrap">
             <div className="text-center">
-              <div data-st className="text-[13px] text-[#8A8A81] mb-2.5">فريق محتوى داخلي كامل</div>
-              <div className="prev-math-num font-mono text-[46px] font-medium text-[#B0B0A5] tracking-[-1.5px] line-through decoration-[#D67878] decoration-2">
+              <div data-st className="text-[13px] text-muted-foreground mb-2.5">فريق محتوى داخلي كامل</div>
+              <div className="prev-math-num font-mono text-[46px] font-medium text-muted-foreground tracking-[-1.5px] line-through decoration-destructive decoration-2">
                 {formatNum(mathTeamAnnual)}
               </div>
-              <div data-st className="text-xs text-[#B0B0A5] mt-1.5">{currency} / سنوياً</div>
+              <div data-st className="text-xs text-muted-foreground mt-1.5">{currency} / سنوياً</div>
             </div>
-            <div data-st className="text-[30px] text-[#B0B0A5] font-light">←</div>
+            <div data-st className="text-[30px] text-muted-foreground font-light">←</div>
             <div className="text-center">
-              <div className="text-[13px] text-[#0E9F6E] font-medium mb-2.5">مدونتي — {mathPlanName}</div>
-              <div className="prev-math-num-big font-mono text-[60px] font-semibold text-[#0A0A0A] tracking-[-2px]">
+              <div className="text-[13px] text-success font-medium mb-2.5">مدونتي — {mathPlanName}</div>
+              <div className="prev-math-num-big font-mono text-[60px] font-semibold text-foreground tracking-[-2px]">
                 {formatNum(mathPlanAnnual)}
               </div>
-              <div data-st className="text-xs text-[#6B6B62] mt-1.5">{currency} / سنوياً</div>
+              <div data-st className="text-xs text-muted-foreground mt-1.5">{currency} / سنوياً</div>
             </div>
           </div>
           {mathSavePct > 0 && (
-            <div className="inline-flex items-center gap-2 bg-[#E6F7EF] text-[#07744F] text-sm font-semibold px-[18px] py-2.5 rounded-full mt-10">
+            <div className="inline-flex items-center gap-2 bg-success/10 text-success text-sm font-semibold px-[18px] py-2.5 rounded-full mt-10">
               توفير يصل إلى {mathSavePct}٪ — ومحتوى يبقى ملكك للأبد
             </div>
           )}
@@ -630,14 +630,14 @@ export function Landing(props: Props) {
       </m.section>
 
       {/* ─── FEATURES → OUTCOMES (in-code product mockups) ─── */}
-      <section id="features" className="border-t border-t-[#E5E5DC] bg-white">
+      <section id="features" className="border-t border-t-[var(--border)] bg-card">
         <div className="max-w-[1080px] mx-auto px-7 py-[88px]">
           <div className="text-center mb-14">
-            <div className="font-mono text-xs text-[#B0B0A5] tracking-[1px] mb-3">إيش بتاخد فعلاً</div>
+            <div className="font-mono text-xs text-muted-foreground tracking-[1px] mb-3">إيش بتاخد فعلاً</div>
             <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-3">
               مش مجرد مقالات — منظومة كاملة.
             </h2>
-            <p className="text-base text-[#6B6B62] max-w-[560px] mx-auto">
+            <p className="text-base text-muted-foreground max-w-[560px] mx-auto">
               لوحة واحدة، تتابع منها من اقتراح الفكرة لحد أول مركز في جوجل.
             </p>
           </div>
@@ -646,53 +646,53 @@ export function Landing(props: Props) {
             {/* Row 1 — Editor */}
             <div className="prev-feature-row grid grid-cols-2 gap-12 items-center">
               <div>
-                <div className="font-mono text-[11px] text-[#0E9F6E] tracking-[1px] mb-[14px]">٠١ — الكتابة</div>
+                <div className="font-mono text-[11px] text-success tracking-[1px] mb-[14px]">٠١ — الكتابة</div>
                 <h3 className="text-[26px] font-semibold mb-[14px] tracking-[-.5px]">مقالات SEO جاهزة — مش قوالب.</h3>
-                <p className="text-[15px] text-[#3F3F38] leading-[1.85]">
+                <p className="text-[15px] text-muted-foreground leading-[1.85]">
                   كاتب متخصص في قطاعك يكتب لك المقال، يبحث الكلمات، يحط الـ headings، ويسلمه جاهز للنشر — بدون ما تكتب حرف.
                 </p>
               </div>
-              <div className="prev-feat-mock bg-[#FAFAF7] border border-[#E5E5DC] rounded-2xl p-[22px] shadow-[0_24px_50px_-32px_rgba(10,10,10,.18)]">
-                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-b-[#E5E5DC]">
-                  <span className="w-2 h-2 rounded-full bg-[#0E9F6E]" />
-                  <span className="font-mono text-[11px] text-[#6B6B62]">article-draft.md</span>
-                  <span className="ms-auto text-[11px] text-[#0E9F6E] font-semibold">✓ جاهز</span>
+              <div className="prev-feat-mock bg-background border border-border rounded-2xl p-[22px] shadow-[0_24px_50px_-32px_color-mix(in oklch, var(--foreground) 18%, transparent)]">
+                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-b-[var(--border)]">
+                  <span className="w-2 h-2 rounded-full bg-success" />
+                  <span className="font-mono text-[11px] text-muted-foreground">article-draft.md</span>
+                  <span className="ms-auto text-[11px] text-success font-semibold">✓ جاهز</span>
                 </div>
-                <div className="text-base font-semibold mb-2 text-[#0A0A0A]">أفضل ٧ تقنيات لزراعة الأسنان ٢٠٢٦</div>
-                <div className="h-1.5 bg-[#0A0A0A] rounded-full w-full mb-1.5" />
-                <div className="h-1.5 bg-[#E5E5DC] rounded-full w-[92%] mb-1.5" />
-                <div className="h-1.5 bg-[#E5E5DC] rounded-full w-[78%] mb-[14px]" />
+                <div className="text-base font-semibold mb-2 text-foreground">أفضل ٧ تقنيات لزراعة الأسنان ٢٠٢٦</div>
+                <div className="h-1.5 bg-foreground rounded-full w-full mb-1.5" />
+                <div className="h-1.5 bg-border rounded-full w-[92%] mb-1.5" />
+                <div className="h-1.5 bg-border rounded-full w-[78%] mb-[14px]" />
                 <div className="flex gap-2 flex-wrap">
-                  <span className="text-[10.5px] font-mono bg-white border border-[#E5E5DC] px-2 py-[3px] rounded-md text-[#3F3F38]"># ١٢٠٠ كلمة</span>
-                  <span className="text-[10.5px] font-mono bg-white border border-[#E5E5DC] px-2 py-[3px] rounded-md text-[#3F3F38]"># ٨ headings</span>
-                  <span className="text-[10.5px] font-mono bg-[#E6F7EF] border border-[#B5E5D0] px-2 py-[3px] rounded-md text-[#07744F]"># SEO ٩٢/١٠٠</span>
+                  <span className="text-[10.5px] font-mono bg-card border border-border px-2 py-[3px] rounded-md text-muted-foreground"># ١٢٠٠ كلمة</span>
+                  <span className="text-[10.5px] font-mono bg-card border border-border px-2 py-[3px] rounded-md text-muted-foreground"># ٨ headings</span>
+                  <span className="text-[10.5px] font-mono bg-success/10 border border-success/30 px-2 py-[3px] rounded-md text-success"># SEO ٩٢/١٠٠</span>
                 </div>
               </div>
             </div>
 
             {/* Row 2 — Approval (alternate) */}
             <div className="prev-feature-row grid grid-cols-2 gap-12 items-center">
-              <div className="prev-feat-mock bg-[#FAFAF7] border border-[#E5E5DC] rounded-2xl p-[22px] shadow-[0_24px_50px_-32px_rgba(10,10,10,.18)] order-none">
-                <div className="flex items-center gap-2 mb-[18px] pb-3 border-b border-b-[#E5E5DC]">
-                  <span className="font-mono text-[11px] text-[#6B6B62]">قائمة المراجعة</span>
-                  <span className="ms-auto text-[10.5px] font-semibold text-[#6B6B62] bg-white border border-[#E5E5DC] px-2 py-[3px] rounded-md">٣ بانتظار اعتمادك</span>
+              <div className="prev-feat-mock bg-background border border-border rounded-2xl p-[22px] shadow-[0_24px_50px_-32px_color-mix(in oklch, var(--foreground) 18%, transparent)] order-none">
+                <div className="flex items-center gap-2 mb-[18px] pb-3 border-b border-b-[var(--border)]">
+                  <span className="font-mono text-[11px] text-muted-foreground">قائمة المراجعة</span>
+                  <span className="ms-auto text-[10.5px] font-semibold text-muted-foreground bg-card border border-border px-2 py-[3px] rounded-md">٣ بانتظار اعتمادك</span>
                 </div>
                 {[
-                  { title: "مقدمة الشركة — نسخة محدثة", state: "بانتظار", color: "#B96B00", bg: "#FFF4E5" },
-                  { title: "أفضل ٧ تقنيات للزراعة", state: "معتمد", color: "#07744F", bg: "#E6F7EF" },
-                  { title: "صفحة الفروع — Cairo", state: "بانتظار", color: "#B96B00", bg: "#FFF4E5" },
+                  { title: "مقدمة الشركة — نسخة محدثة", state: "بانتظار", color: "var(--destructive)", bg: "color-mix(in oklch, var(--destructive) 10%, transparent)" },
+                  { title: "أفضل ٧ تقنيات للزراعة", state: "معتمد", color: "var(--success)", bg: "color-mix(in oklch, var(--success) 12%, transparent)" },
+                  { title: "صفحة الفروع — Cairo", state: "بانتظار", color: "var(--destructive)", bg: "color-mix(in oklch, var(--destructive) 10%, transparent)" },
                 ].map((row, i) => (
-                  <div key={i} className={cn("flex items-center gap-2.5 py-3", i < 2 && "border-b border-b-[#E5E5DC]")}>
-                    <span className="w-7 h-7 rounded-md bg-white border border-[#E5E5DC] inline-flex items-center justify-center text-[11px] text-[#6B6B62] font-mono">0{i + 1}</span>
-                    <span className="text-[13px] text-[#0A0A0A] flex-1 font-medium">{row.title}</span>
+                  <div key={i} className={cn("flex items-center gap-2.5 py-3", i < 2 && "border-b border-b-[var(--border)]")}>
+                    <span className="w-7 h-7 rounded-md bg-card border border-border inline-flex items-center justify-center text-[11px] text-muted-foreground font-mono">0{i + 1}</span>
+                    <span className="text-[13px] text-foreground flex-1 font-medium">{row.title}</span>
                     <span className="text-[10.5px] font-semibold px-2 py-[3px] rounded-md font-mono" style={{ color: row.color, background: row.bg }}>{row.state}</span>
                   </div>
                 ))}
               </div>
               <div>
-                <div className="font-mono text-[11px] text-[#0E9F6E] tracking-[1px] mb-[14px]">٠٢ — الاعتماد</div>
+                <div className="font-mono text-[11px] text-success tracking-[1px] mb-[14px]">٠٢ — الاعتماد</div>
                 <h3 className="text-[26px] font-semibold mb-[14px] tracking-[-.5px]">وافق بنقرة — قبل ما يُنشر.</h3>
-                <p className="text-[15px] text-[#3F3F38] leading-[1.85]">
+                <p className="text-[15px] text-muted-foreground leading-[1.85]">
                   كل مقال يدخل قائمتك للمراجعة. اعتمد، عدّل، أو ارفض. ما يطلع شي للعلن بدون موافقتك.
                 </p>
               </div>
@@ -701,39 +701,39 @@ export function Landing(props: Props) {
             {/* Row 3 — Monitor */}
             <div className="prev-feature-row grid grid-cols-2 gap-12 items-center">
               <div>
-                <div className="font-mono text-[11px] text-[#0E9F6E] tracking-[1px] mb-[14px]">٠٣ — المتابعة</div>
+                <div className="font-mono text-[11px] text-success tracking-[1px] mb-[14px]">٠٣ — المتابعة</div>
                 <h3 className="text-[26px] font-semibold mb-[14px] tracking-[-.5px]">شوف ترتيبك يطلع في جوجل.</h3>
-                <p className="text-[15px] text-[#3F3F38] leading-[1.85]">
+                <p className="text-[15px] text-muted-foreground leading-[1.85]">
                   لوحة مباشرة من Google Search Console — كلماتك، ترتيبك، الظهور، النقرات. الأرقام اللي تهمك، بدون تعقيد.
                 </p>
               </div>
-              <div className="prev-feat-mock bg-[#FAFAF7] border border-[#E5E5DC] rounded-2xl p-[22px] shadow-[0_24px_50px_-32px_rgba(10,10,10,.18)]">
+              <div className="prev-feat-mock bg-background border border-border rounded-2xl p-[22px] shadow-[0_24px_50px_-32px_color-mix(in oklch, var(--foreground) 18%, transparent)]">
                 <div className="flex items-center gap-2 mb-4">
-                  <span className="font-mono text-[11px] text-[#6B6B62]">الترتيب — آخر ٣٠ يوم</span>
-                  <span className="ms-auto text-xs font-semibold text-[#07744F]">▲ +١٤ مركز</span>
+                  <span className="font-mono text-[11px] text-muted-foreground">الترتيب — آخر ٣٠ يوم</span>
+                  <span className="ms-auto text-xs font-semibold text-success">▲ +١٤ مركز</span>
                 </div>
                 <svg viewBox="0 0 240 80" className="w-full h-20 block">
                   <defs>
                     <linearGradient id="prev-feat-grad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#0E9F6E" stopOpacity="0.24" />
-                      <stop offset="100%" stopColor="#0E9F6E" stopOpacity="0" />
+                      <stop offset="0%" stopColor="var(--success)" stopOpacity="0.24" />
+                      <stop offset="100%" stopColor="var(--success)" stopOpacity="0" />
                     </linearGradient>
                   </defs>
                   <path d="M0,68 L30,60 L60,62 L90,48 L120,46 L150,30 L180,28 L210,16 L240,10 L240,80 L0,80 Z" fill="url(#prev-feat-grad)" />
-                  <path d="M0,68 L30,60 L60,62 L90,48 L120,46 L150,30 L180,28 L210,16 L240,10" fill="none" stroke="#0E9F6E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M0,68 L30,60 L60,62 L90,48 L120,46 L150,30 L180,28 L210,16 L240,10" fill="none" stroke="var(--success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   {[[30,60],[60,62],[90,48],[120,46],[150,30],[180,28],[210,16],[240,10]].map(([cx, cy], i) => (
-                    <circle key={i} cx={cx} cy={cy} r="2.5" fill="#fff" stroke="#0E9F6E" strokeWidth="1.5" />
+                    <circle key={i} cx={cx} cy={cy} r="2.5" fill="var(--card)" stroke="var(--success)" strokeWidth="1.5" />
                   ))}
                 </svg>
-                <div className="grid grid-cols-3 gap-2.5 mt-[14px] pt-[14px] border-t border-t-[#E5E5DC]">
+                <div className="grid grid-cols-3 gap-2.5 mt-[14px] pt-[14px] border-t border-t-[var(--border)]">
                   {[
                     { k: "الظهور", v: "12.4K" },
                     { k: "النقرات", v: "1,089" },
                     { k: "الترتيب", v: "#3" },
                   ].map((s, i) => (
                     <div key={i} className="text-center">
-                      <div className="font-mono text-base font-semibold text-[#0A0A0A]">{s.v}</div>
-                      <div className="text-[10.5px] text-[#8A8A81] mt-0.5">{s.k}</div>
+                      <div className="font-mono text-base font-semibold text-foreground">{s.v}</div>
+                      <div className="text-[10.5px] text-muted-foreground mt-0.5">{s.k}</div>
                     </div>
                   ))}
                 </div>
@@ -788,23 +788,23 @@ export function Landing(props: Props) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="border-t border-t-[#E5E5DC] border-b border-b-[#E5E5DC] bg-white"
+        className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card"
       >
         <div className="max-w-[1080px] mx-auto px-7 py-14">
           <div data-st className="flex flex-col items-center gap-8">
               <div className="text-center">
-                <div className="font-mono text-[12px] text-[#0E9F6E] tracking-[2px] mb-2">SECURE PAYMENTS</div>
-                <div className="text-[20px] font-semibold text-[#0A0A0A] tracking-[-.3px]">الدفع الآمن عبر</div>
+                <div className="font-mono text-[12px] text-success tracking-[2px] mb-2">SECURE PAYMENTS</div>
+                <div className="text-[20px] font-semibold text-foreground tracking-[-.3px]">الدفع الآمن عبر</div>
               </div>
 
               {/* Country-grouped clusters — shadcn Card per region */}
               <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
                 {/* Saudi card */}
-                <Card className="border-[#E5E5DC] bg-white shadow-sm hover:shadow-md transition-shadow">
+                <Card className="border-border bg-card shadow-sm hover:shadow-md transition-shadow">
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between gap-3">
-                      <CardTitle className="text-[16px] font-semibold text-[#0A0A0A]">السعودية</CardTitle>
-                      <div className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#6B6B62] tracking-[1px]">
+                      <CardTitle className="text-[16px] font-semibold text-foreground">السعودية</CardTitle>
+                      <div className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground tracking-[1px]">
                         <span className="text-[16px]" aria-hidden>🇸🇦</span>
                         <span>SA</span>
                       </div>
@@ -834,11 +834,11 @@ export function Landing(props: Props) {
                 </Card>
 
                 {/* Egypt card */}
-                <Card className="border-[#E5E5DC] bg-white shadow-sm hover:shadow-md transition-shadow">
+                <Card className="border-border bg-card shadow-sm hover:shadow-md transition-shadow">
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between gap-3">
-                      <CardTitle className="text-[16px] font-semibold text-[#0A0A0A]">مصر</CardTitle>
-                      <div className="inline-flex items-center gap-1.5 font-mono text-[11px] text-[#6B6B62] tracking-[1px]">
+                      <CardTitle className="text-[16px] font-semibold text-foreground">مصر</CardTitle>
+                      <div className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground tracking-[1px]">
                         <span className="text-[16px]" aria-hidden>🇪🇬</span>
                         <span>EG</span>
                       </div>
@@ -867,7 +867,7 @@ export function Landing(props: Props) {
 
               {/* Global accepted — Visa / Mastercard */}
               <div className="flex items-center gap-4">
-                <div className="text-[13px] text-[#6B6B62] font-medium">يُقبل أيضًا</div>
+                <div className="text-[13px] text-muted-foreground font-medium">يُقبل أيضًا</div>
                 <div className="flex items-center gap-5">
                   {[
                     { src: "/logos/visa.svg", alt: "Visa" },
@@ -887,7 +887,7 @@ export function Landing(props: Props) {
               </div>
 
               {/* Honest banner */}
-              <div data-st className="inline-flex items-center gap-2 bg-[#E6F7EF] text-[#07744F] text-[14px] font-medium px-4 py-2.5 rounded-full">
+              <div data-st className="inline-flex items-center gap-2 bg-success/10 text-success text-[14px] font-medium px-4 py-2.5 rounded-full">
                 <span className="font-mono font-semibold">صادقون</span>
                 <span className="opacity-55">·</span>
                 <span>دي تجارب مبكرة — إحنا بنبني سمعتنا معاك</span>
@@ -900,15 +900,15 @@ export function Landing(props: Props) {
       <section id="pricing" className="max-w-[1080px] mx-auto px-7 py-20">
         <div className="text-center mb-[34px]">
           <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px]">باقات تنمو معك</h2>
-          <p className="text-[15px] text-[#6B6B62] mt-3">
+          <p className="text-[15px] text-muted-foreground mt-3">
             ابدأ بالباقة الأنسب — ترقّى متى ما احتجت، بدون التزام.
           </p>
-          <div className="prev-pricing-toggle inline-flex bg-[#F4F4EE] rounded-[11px] p-1 mt-6 text-sm font-medium">
+          <div className="prev-pricing-toggle inline-flex bg-muted rounded-[11px] p-1 mt-6 text-sm font-medium">
             <button
               onClick={() => setBilling("monthly")}
               className={cn(
                 "px-[18px] py-2 rounded-lg",
-                billing === "monthly" ? "bg-white text-[#0A0A0A] shadow-[0_1px_3px_rgba(10,10,10,.08)]" : "bg-transparent text-[#6B6B62]",
+                billing === "monthly" ? "bg-card text-foreground shadow-[0_1px_3px_color-mix(in oklch, var(--foreground) 8%, transparent)]" : "bg-transparent text-muted-foreground",
               )}
             >
               شهري
@@ -917,7 +917,7 @@ export function Landing(props: Props) {
               onClick={() => setBilling("annual")}
               className={cn(
                 "px-[18px] py-2 rounded-lg",
-                billing === "annual" ? "bg-white text-[#0A0A0A] shadow-[0_1px_3px_rgba(10,10,10,.08)]" : "bg-transparent text-[#6B6B62]",
+                billing === "annual" ? "bg-card text-foreground shadow-[0_1px_3px_color-mix(in oklch, var(--foreground) 8%, transparent)]" : "bg-transparent text-muted-foreground",
               )}
             >
               سنوي · ادفع 12 استلم 18
@@ -945,39 +945,39 @@ export function Landing(props: Props) {
                 className={cn(
                   "rounded-[18px] px-[22px] py-[26px] relative border",
                   featured
-                    ? "bg-[#0A0A0A] border-[#0A0A0A] text-white shadow-[0_24px_50px_-22px_rgba(10,10,10,.5)]"
-                    : "bg-white border-[#E5E5DC] text-[#0A0A0A]",
+                    ? "bg-foreground border-foreground text-card-foreground shadow-[0_24px_50px_-22px_color-mix(in oklch, var(--foreground) 50%, transparent)]"
+                    : "bg-card border-border text-foreground",
                 )}
               >
                 {featured && (
-                  <span className="absolute -top-[11px] right-[22px] bg-[#0E9F6E] text-white text-[10.5px] font-semibold px-2.5 py-1 rounded-full tracking-[.3px]">
+                  <span className="absolute -top-[11px] right-[22px] bg-success text-card-foreground text-[10.5px] font-semibold px-2.5 py-1 rounded-full tracking-[.3px]">
                     {p.featuredBadge}
                   </span>
                 )}
-                <div className={cn("text-sm font-semibold", featured ? "text-white" : "text-[#0A0A0A]")}>{p.name}</div>
-                <p className={cn("text-[12.5px] mt-2 mb-5 leading-[1.6] min-h-[50px]", featured ? "text-[#A8A8A0]" : "text-[#6B6B62]")}>
+                <div className={cn("text-sm font-semibold", featured ? "text-card-foreground" : "text-foreground")}>{p.name}</div>
+                <p className={cn("text-[12.5px] mt-2 mb-5 leading-[1.6] min-h-[50px]", featured ? "text-muted-foreground" : "text-muted-foreground")}>
                   {p.tagline || p.hook || ""}
                 </p>
                 <div className="flex items-baseline gap-1.5">
-                  <span className={cn("font-mono text-4xl font-semibold tracking-[-1.5px]", featured ? "text-white" : "text-[#0A0A0A]")}>{price}</span>
-                  <span className={cn("text-xs", featured ? "text-[#A8A8A0]" : "text-[#6B6B62]")}>{currency}/شهر</span>
+                  <span className={cn("font-mono text-4xl font-semibold tracking-[-1.5px]", featured ? "text-card-foreground" : "text-foreground")}>{price}</span>
+                  <span className={cn("text-xs", featured ? "text-muted-foreground" : "text-muted-foreground")}>{currency}/شهر</span>
                 </div>
-                <div className={cn("text-[11.5px] mt-1.5 min-h-4 font-mono", featured ? "text-[#A8A8A0]" : "text-[#6B6B62]")}>
+                <div className={cn("text-[11.5px] mt-1.5 min-h-4 font-mono", featured ? "text-muted-foreground" : "text-muted-foreground")}>
                   {billing === "annual" && p.priceYearly > 0 ? `سنوياً ${formatNum(annualTotal)}` : " "}
                 </div>
                 <Link
                   href={`${signupHref}?plan=${p.slug}`}
                   className={cn(
                     "block text-center p-[11px] rounded-[10px] text-[13.5px] no-underline mt-[18px] mb-[22px] border",
-                    featured ? "bg-[#0E9F6E] text-white font-semibold border-transparent" : "bg-[#FAFAF7] text-[#0A0A0A] font-medium border-[#E5E5DC]",
+                    featured ? "bg-success text-card-foreground font-semibold border-transparent" : "bg-background text-foreground font-medium border-border",
                   )}
                 >
                   {p.ctaText || (featured ? `ابدأ بـ${p.name}` : "ابدأ الحين")}
                 </Link>
-                <div className={cn("border-t mb-[18px]", featured ? "border-t-white/10" : "border-t-[#E5E5DC]")} />
+                <div className={cn("border-t mb-[18px]", featured ? "border-t-white/10" : "border-t-[var(--border)]")} />
                 {(p.highlights ?? []).slice(0, 5).map((h, i) => (
-                  <div key={i} className={cn("flex gap-[9px] mb-[11px] text-[13px] leading-[1.5]", featured ? "text-[#CFCFC4]" : "text-[#3F3F38]")}>
-                    <span className="text-[#0E9F6E] shrink-0">✓</span>
+                  <div key={i} className={cn("flex gap-[9px] mb-[11px] text-[13px] leading-[1.5]", featured ? "text-muted-foreground" : "text-muted-foreground")}>
+                    <span className="text-success shrink-0">✓</span>
                     <span>{h}</span>
                   </div>
                 ))}
@@ -1000,17 +1000,17 @@ export function Landing(props: Props) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="border-t border-t-[#E5E5DC] bg-[#FAFAF7]"
+            className="border-t border-t-[var(--border)] bg-background"
           >
             <div className="max-w-[1080px] mx-auto px-7 py-20">
               <div className="text-center mb-12">
-                <div className="font-mono text-xs text-[#B0B0A5] tracking-[1px] mb-3">
+                <div className="font-mono text-xs text-muted-foreground tracking-[1px] mb-3">
                   {socialProofEyebrow}
                 </div>
                 <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-3">
                   {socialProofTitle}
                 </h2>
-                <p className="text-base text-[#6B6B62]">{socialProofSubtitle}</p>
+                <p className="text-base text-muted-foreground">{socialProofSubtitle}</p>
               </div>
 
               <div
@@ -1019,7 +1019,7 @@ export function Landing(props: Props) {
               >
                 {/* RIGHT (RTL first child): list */}
                 <div>
-                  <div className="font-mono text-[10.5px] text-[#8A8A81] tracking-[1px] mb-2.5 ps-1">
+                  <div className="font-mono text-[10.5px] text-muted-foreground tracking-[1px] mb-2.5 ps-1">
                     اضغط لتبديل الشهادة ↓
                   </div>
                 <div className="prev-voices-list flex flex-col gap-2.5">
@@ -1047,10 +1047,10 @@ export function Landing(props: Props) {
                           )}
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span className="block text-sm font-semibold text-[#0A0A0A] whitespace-nowrap overflow-hidden text-ellipsis">
+                          <span className="block text-sm font-semibold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
                             {voice.name}
                           </span>
-                          <span className="block text-xs text-[#6B6B62] mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
+                          <span className="block text-xs text-muted-foreground mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
                             {voice.company || voice.role}
                           </span>
                         </span>
@@ -1061,8 +1061,8 @@ export function Landing(props: Props) {
                 </div>
 
                 {/* LEFT: media + quote */}
-                <div className="bg-white border border-[#E5E5DC] rounded-[20px] overflow-hidden shadow-[0_24px_50px_-30px_rgba(10,10,10,.18)]">
-                  <div className="relative aspect-video bg-[#0A0A0A]">
+                <div className="bg-card border border-border rounded-[20px] overflow-hidden shadow-[0_24px_50px_-30px_color-mix(in oklch, var(--foreground) 18%, transparent)]">
+                  <div className="relative aspect-video bg-foreground">
                     {embedUrl ? (
                       <iframe
                         key={embedUrl}
@@ -1082,18 +1082,18 @@ export function Landing(props: Props) {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-[#3F3F38] font-mono text-[13px]">
+                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground font-mono text-[13px]">
                         لا يوجد فيديو
                       </div>
                     )}
                   </div>
                   <div className="px-7 py-[26px]">
                     {v.quote && (
-                      <p className="text-[17px] leading-[1.85] text-[#0A0A0A] font-normal mb-[18px]">
+                      <p className="text-[17px] leading-[1.85] text-foreground font-normal mb-[18px]">
                         «{v.quote}»
                       </p>
                     )}
-                    <div className="prev-voice-attr flex items-center gap-3 pt-4 border-t border-t-[#E5E5DC] flex-wrap">
+                    <div className="prev-voice-attr flex items-center gap-3 pt-4 border-t border-t-[var(--border)] flex-wrap">
                       <span className="prev-voice-avatar w-11 h-11">
                         {v.avatarImg ? (
                           <Image src={v.avatarImg} alt={v.name ?? ""} width={44} height={44} unoptimized />
@@ -1102,13 +1102,13 @@ export function Landing(props: Props) {
                         )}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <div className="text-[15px] font-semibold text-[#0A0A0A]">{v.name}</div>
-                        <div className="text-[13px] text-[#6B6B62] mt-0.5">
+                        <div className="text-[15px] font-semibold text-foreground">{v.name}</div>
+                        <div className="text-[13px] text-muted-foreground mt-0.5">
                           {[v.role, v.company].filter(Boolean).join(" · ")}
                         </div>
                       </div>
                       {v.metric && (
-                        <div className="prev-voice-metric ms-auto bg-[#F4FBF7] text-[#07744F] text-xs font-semibold px-3 py-1.5 rounded-full font-mono">
+                        <div className="prev-voice-metric ms-auto bg-[color-mix(in oklch, var(--success) 8%, var(--background))] text-success text-xs font-semibold px-3 py-1.5 rounded-full font-mono">
                           {v.metric}
                         </div>
                       )}
@@ -1128,17 +1128,17 @@ export function Landing(props: Props) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="border-t border-t-[#E5E5DC] bg-white"
+          className="border-t border-t-[var(--border)] bg-card"
         >
           <div className="max-w-[1080px] mx-auto px-7 py-20">
             <div className="text-center mb-12">
-              <div className="font-mono text-xs text-[#B0B0A5] tracking-[1px] mb-3">
+              <div className="font-mono text-xs text-muted-foreground tracking-[1px] mb-3">
                 الفريق
               </div>
               <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-3">
                 وراء الكلام
               </h2>
-              <p className="text-base text-[#6B6B62]">
+              <p className="text-base text-muted-foreground">
                 ناس حقيقية تكتب وتنشر وتتابع — مش algorithms.
               </p>
             </div>
@@ -1156,12 +1156,12 @@ export function Landing(props: Props) {
                         {m.avatarUrl ? (
                           <Image src={m.avatarUrl} alt={m.name} width={88} height={88} unoptimized />
                         ) : (
-                          <span className="text-[26px] font-semibold text-[#6B6B62]">{initials}</span>
+                          <span className="text-[26px] font-semibold text-muted-foreground">{initials}</span>
                         )}
                       </div>
                       <div className="min-w-0">
-                        <div className="text-[17px] font-semibold text-[#0A0A0A] mb-1">{m.name}</div>
-                        <div className="text-[13.5px] text-[#6B6B62]">{m.role}</div>
+                        <div className="text-[17px] font-semibold text-foreground mb-1">{m.name}</div>
+                        <div className="text-[13.5px] text-muted-foreground">{m.role}</div>
                       </div>
                     </div>
                   );
@@ -1186,8 +1186,8 @@ export function Landing(props: Props) {
                         )}
                       </div>
                       <div className="min-w-0">
-                        <div className="text-sm font-semibold text-[#0A0A0A] mb-1 whitespace-nowrap overflow-hidden text-ellipsis">{m.name}</div>
-                        <div className="text-xs text-[#6B6B62] leading-[1.5]">{m.role}</div>
+                        <div className="text-sm font-semibold text-foreground mb-1 whitespace-nowrap overflow-hidden text-ellipsis">{m.name}</div>
+                        <div className="text-xs text-muted-foreground leading-[1.5]">{m.role}</div>
                       </div>
                     </div>
                   );
@@ -1206,11 +1206,11 @@ export function Landing(props: Props) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="border-t border-t-[#E5E5DC] bg-white"
+          className="border-t border-t-[var(--border)] bg-card"
         >
           <div className="max-w-[720px] mx-auto px-7 py-20">
             <div className="text-center mb-[42px]">
-              <div data-st className="font-mono text-xs text-[#B0B0A5] tracking-[1px] mb-3">أسئلة شائعة</div>
+              <div data-st className="font-mono text-xs text-muted-foreground tracking-[1px] mb-3">أسئلة شائعة</div>
               <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px]">
                 {staticLanding.faq?.title ?? "اقتنع قبل ما تبدأ"}
               </h2>
@@ -1226,13 +1226,13 @@ export function Landing(props: Props) {
                 </div>
               ))}
             </div>
-            <div className="mt-9 text-center text-sm text-[#6B6B62]">
+            <div className="mt-9 text-center text-sm text-muted-foreground">
               ما لقيت إجابتك؟{" "}
               <a
                 href={whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#0E9F6E] font-semibold no-underline border-b border-b-[#B5E5D0] pb-px"
+                className="text-success font-semibold no-underline border-b border-b-success/30 pb-px"
               >
                 تواصل معنا على واتساب ←
               </a>
@@ -1249,19 +1249,19 @@ export function Landing(props: Props) {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="max-w-[1080px] mx-auto pt-[60px] px-7 pb-[90px]"
       >
-        <div className="bg-[#0A0A0A] rounded-[26px] px-10 py-[72px] text-center">
-          <h2 className="prev-cta-h2 text-[44px] font-semibold text-white tracking-[-1.5px] leading-[1.15] mb-4">
+        <div className="bg-foreground rounded-[26px] px-10 py-[72px] text-center">
+          <h2 className="prev-cta-h2 text-[44px] font-semibold text-card-foreground tracking-[-1.5px] leading-[1.15] mb-4">
             {finalCtaData?.title1 ?? "منافسك يتصدّر الحين."}<br />
             {finalCtaData?.title2 ?? "وأنت؟"}
           </h2>
-          <p className="text-[17px] text-[#A8A8A0] max-w-[460px] mx-auto mb-8 leading-[1.7] font-light">
+          <p className="text-[17px] text-muted-foreground max-w-[460px] mx-auto mb-8 leading-[1.7] font-light">
             {finalCtaData?.subtitle ?? "انضم لأوائل الشركات اللي اختارت المحتوى طريقاً للنمو — لا الإعلانات."}
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href={signupHref} className="bg-white text-[#0A0A0A] px-[30px] py-4 rounded-[13px] text-base font-semibold no-underline">
+            <Link href={signupHref} className="bg-card text-foreground px-[30px] py-4 rounded-[13px] text-base font-semibold no-underline">
               {ctaLabel}
             </Link>
-            <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="bg-white/10 text-white px-[26px] py-4 rounded-[13px] text-base font-medium no-underline border border-white/15">
+            <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="bg-card/10 text-card-foreground px-[26px] py-4 rounded-[13px] text-base font-medium no-underline border border-white/15">
               {finalCtaData?.wa ?? "كلّمنا على واتساب"}
             </a>
           </div>
@@ -1273,7 +1273,7 @@ export function Landing(props: Props) {
         onClick={() => setCalcOpen(true)}
         aria-label="حاسبة التوفير"
         className={cn(
-          "prev-fab fixed bottom-6 left-6 z-[60] flex items-center gap-2.5 bg-[#0A0A0A] text-white border-none cursor-pointer px-[18px] py-[14px] rounded-full shadow-[0_16px_36px_-10px_rgba(10,10,10,.5)] text-sm font-medium font-[inherit] transition-[transform,opacity] duration-200 ease-out",
+          "prev-fab fixed bottom-6 left-6 z-[60] flex items-center gap-2.5 bg-foreground text-card-foreground border-none cursor-pointer px-[18px] py-[14px] rounded-full shadow-[0_16px_36px_-10px_color-mix(in oklch, var(--foreground) 50%, transparent)] text-sm font-medium font-[inherit] transition-[transform,opacity] duration-200 ease-out",
           fabVisible ? "translate-y-0 opacity-100 pointer-events-auto" : "translate-y-[120%] opacity-0 pointer-events-none",
         )}
       >
@@ -1303,30 +1303,30 @@ export function Landing(props: Props) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={(e) => { if (e.target === e.currentTarget) setCalcOpen(false); }}
-          className="fixed inset-0 z-[70] bg-[rgba(10,10,10,.42)] backdrop-blur-[5px] flex items-center justify-center p-[18px]"
+          className="fixed inset-0 z-[70] bg-[color-mix(in oklch, var(--foreground) 42%, transparent)] backdrop-blur-[5px] flex items-center justify-center p-[18px]"
         >
           <m.div
             initial={{ y: 40, opacity: 0, scale: 0.96 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 20, opacity: 0, scale: 0.97 }}
             transition={{ type: "spring", damping: 26, stiffness: 230 }}
-            className="bg-white rounded-[18px] max-w-[620px] w-full max-h-[88vh] overflow-auto"
+            className="bg-card rounded-[18px] max-w-[620px] w-full max-h-[88vh] overflow-auto"
           >
             {/* Header — compact */}
-            <div className="pt-[18px] px-[22px] pb-[14px] border-b border-b-[#F4F4EE] flex items-center justify-between gap-3">
+            <div className="pt-[18px] px-[22px] pb-[14px] border-b border-b-muted flex items-center justify-between gap-3">
               <div className="text-base font-semibold">كم يكلّفك البديل فعلاً؟</div>
               <div className="flex items-center gap-1">
                 <button
                   type="button"
                   onClick={() => setSalaries(Object.fromEntries(CALC_ROLES.map((r) => [r.key, r.def])))}
-                  className="bg-transparent border-none text-[11.5px] text-[#6B6B62] cursor-pointer px-2 py-1 font-mono"
+                  className="bg-transparent border-none text-[11.5px] text-muted-foreground cursor-pointer px-2 py-1 font-mono"
                 >
                   reset
                 </button>
                 <button
                   onClick={() => setCalcOpen(false)}
                   aria-label="إغلاق"
-                  className="bg-transparent border-none text-xl text-[#8A8A81] cursor-pointer leading-none px-1.5 py-0.5"
+                  className="bg-transparent border-none text-xl text-muted-foreground cursor-pointer leading-none px-1.5 py-0.5"
                 >
                   ✕
                 </button>
@@ -1334,28 +1334,28 @@ export function Landing(props: Props) {
             </div>
 
             {/* Result strip — compact, on top so visible without scroll */}
-            <div className="pt-4 px-[22px] pb-[18px] bg-[#0A0A0A] text-white">
+            <div className="pt-4 px-[22px] pb-[18px] bg-foreground text-card-foreground">
               <div className="flex items-center justify-between gap-[18px]">
                 {/* RIGHT (RTL start): Modonty — emphasized */}
                 <div>
                   <div className="inline-flex items-center gap-1.5 mb-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#3DDC8C]" />
-                    <span className="text-[11.5px] text-[#3DDC8C] font-semibold tracking-[.3px]">
+                    <span className="w-1.5 h-1.5 rounded-full bg-success" />
+                    <span className="text-[11.5px] text-success font-semibold tracking-[.3px]">
                       مدونتي · {mathPlanName}
                     </span>
                   </div>
-                  <div className="font-mono text-[22px] font-semibold text-white">
-                    {formatNum(calcModontyAnnual)} <span className="text-xs text-[#A5A599] font-normal">{currency}/سنة</span>
+                  <div className="font-mono text-[22px] font-semibold text-card-foreground">
+                    {formatNum(calcModontyAnnual)} <span className="text-xs text-muted-foreground font-normal">{currency}/سنة</span>
                   </div>
-                  <div className="text-[13px] text-[#A5A599] mt-1.5 font-mono">
-                    بدلاً من <span className="line-through decoration-[#D67878] text-[#D5D5C8] font-medium">{formatNum(teamAnnual)}</span>
+                  <div className="text-[13px] text-muted-foreground mt-1.5 font-mono">
+                    بدلاً من <span className="line-through decoration-destructive text-muted-foreground font-medium">{formatNum(teamAnnual)}</span>
                   </div>
                 </div>
                 {/* LEFT (RTL end): Saving % */}
                 <div className="text-left ps-[14px] border-s border-s-white/10">
-                  <div className="text-[11px] text-[#8A8A81] font-mono tracking-[.5px] mb-[3px]">التوفير</div>
-                  <div className="font-mono text-[26px] font-semibold text-[#3DDC8C] leading-none">{calcSavePct}٪</div>
-                  <div className="text-xs text-[#A5A599] mt-[5px] font-mono">
+                  <div className="text-[11px] text-muted-foreground font-mono tracking-[.5px] mb-[3px]">التوفير</div>
+                  <div className="font-mono text-[26px] font-semibold text-success leading-none">{calcSavePct}٪</div>
+                  <div className="text-xs text-muted-foreground mt-[5px] font-mono">
                     = {formatNum(calcSaveAmt)}
                   </div>
                 </div>
@@ -1381,8 +1381,8 @@ export function Landing(props: Props) {
                   return (
                     <div key={r.key}>
                       <div className="flex justify-between items-baseline text-xs mb-1.5">
-                        <span className="text-[#3F3F38] font-medium">{r.label}</span>
-                        <span className="font-mono text-xs text-[#0A0A0A]">{formatNum(value)}</span>
+                        <span className="text-muted-foreground font-medium">{r.label}</span>
+                        <span className="font-mono text-xs text-foreground">{formatNum(value)}</span>
                       </div>
                       <div className="flex items-center gap-2">
                         <button
@@ -1395,8 +1395,8 @@ export function Landing(props: Props) {
                           −
                         </button>
                         <div className="relative h-[18px] flex-1">
-                          <div className="absolute top-[7px] left-0 right-0 h-1 rounded-full bg-[#ECECE6]" />
-                          <div className="absolute top-[7px] right-0 h-1 rounded-full bg-[#0E9F6E]" style={{ width: `${pct}%` }} />
+                          <div className="absolute top-[7px] left-0 right-0 h-1 rounded-full bg-muted" />
+                          <div className="absolute top-[7px] right-0 h-1 rounded-full bg-success" style={{ width: `${pct}%` }} />
                           <input
                             type="range"
                             className="prev-range absolute top-0 left-0 right-0"
@@ -1428,7 +1428,7 @@ export function Landing(props: Props) {
               <a
                 href="#pricing"
                 onClick={() => setCalcOpen(false)}
-                className="block text-center bg-[#0E9F6E] text-white p-3 rounded-[10px] text-[14.5px] font-semibold no-underline"
+                className="block text-center bg-success text-card-foreground p-3 rounded-[10px] text-[14.5px] font-semibold no-underline"
               >
                 شوف الباقة المناسبة لك ←
               </a>
