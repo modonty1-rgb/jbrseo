@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentProps, ReactElement } from "react";
-import { useThemeOptional } from "@/app/helpers/useTheme";
+import { useThemeOptional } from "@/lib/useTheme";
 import { Toaster as SonnerToaster, toast } from "sonner";
 
 type ToasterProps = ComponentProps<typeof SonnerToaster>;

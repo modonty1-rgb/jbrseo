@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/app/components/ui/button";
-import { useThemeOptional } from "@/app/helpers/useTheme";
+import { useThemeOptional } from "@/lib/useTheme";
 
 export function ThemeToggle() {
   const ctx = useThemeOptional();

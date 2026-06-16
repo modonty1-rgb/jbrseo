@@ -6,7 +6,7 @@ import { FAVICON_URLS } from "@/lib/constants";
 import { getGlobalSeo } from "@/lib/getGlobalSeo";
 import { getSiteGtmId } from "@/lib/getLandingContent";
 import { ensureWwwJbrseoUrl, resolveSiteOriginFromSeoCanonical } from "@/lib/seo-meta";
-import { ThemeProvider } from "@/app/helpers/useTheme";
+import { ThemeProvider } from "@/lib/useTheme";
 import "./globals.css";
 
 const SITE_URL = ensureWwwJbrseoUrl(

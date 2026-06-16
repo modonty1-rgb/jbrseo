@@ -7,7 +7,7 @@ import {
   isSupportedCountrySlug,
 } from "@/lib/country-config";
 import type { PricingPlan } from "@/lib/landing-content.types";
-import { SignupForm } from "./component/SignupForm";
+import { SignupForm } from "./_components/SignupForm";
 
 function formatPrice(value: number, country: "SA" | "EG"): string {
   if (value === 0) return "مجاناً";
