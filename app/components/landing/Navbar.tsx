@@ -98,15 +98,19 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
             className="preview-nav-links hidden md:flex items-center gap-1 min-w-0 overflow-x-auto"
             aria-label="القائمة الرئيسية"
           >
-            {navLinks.map((link) => (
-              <NextLink
-                key={link.href}
-                href={link.href}
-                className="preview-nav-link text-sm font-medium text-card-foreground/75 no-underline py-[6px] px-[10px] rounded-lg transition-[color,background] duration-150"
-              >
-                {link.label}
-              </NextLink>
-            ))}
+            {navLinks.map((link) => {
+              const isHashLink = link.href.includes("#");
+              const className = "preview-nav-link text-sm font-medium text-card-foreground/75 no-underline py-[6px] px-[10px] rounded-lg transition-[color,background] duration-150";
+              return isHashLink ? (
+                <a key={link.href} href={link.href} className={className}>
+                  {link.label}
+                </a>
+              ) : (
+                <NextLink key={link.href} href={link.href} className={className}>
+                  {link.label}
+                </NextLink>
+              );
+            })}
           </nav>
         </div>
 
@@ -148,12 +152,21 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
             <ThemeToggle />
           </div>
 
-          <NextLink
-            href={pricingHref}
-            className="bg-card-foreground text-card py-[10px] px-3 md:px-[18px] rounded-[var(--radius-md)] text-[13px] md:text-sm font-semibold no-underline whitespace-nowrap min-h-[44px] inline-flex items-center hover:bg-card-foreground/90"
-          >
-            ابدأ الحين
-          </NextLink>
+          {pricingHref.includes("#") ? (
+            <a
+              href={pricingHref}
+              className="bg-card-foreground text-card py-[10px] px-3 md:px-[18px] rounded-[var(--radius-md)] text-[13px] md:text-sm font-semibold no-underline whitespace-nowrap min-h-[44px] inline-flex items-center hover:bg-card-foreground/90"
+            >
+              ابدأ الحين
+            </a>
+          ) : (
+            <NextLink
+              href={pricingHref}
+              className="bg-card-foreground text-card py-[10px] px-3 md:px-[18px] rounded-[var(--radius-md)] text-[13px] md:text-sm font-semibold no-underline whitespace-nowrap min-h-[44px] inline-flex items-center hover:bg-card-foreground/90"
+            >
+              ابدأ الحين
+            </NextLink>
+          )}
         </div>
       </div>
 
@@ -169,16 +182,19 @@ export function Navbar({ country, content, basePath, pricingHref }: Props) {
           className="px-4 py-3 flex flex-col gap-1"
           aria-label="القائمة الرئيسية (الجوال)"
         >
-          {navLinks.map((link) => (
-            <NextLink
-              key={link.href}
-              href={link.href}
-              onClick={closeMenu}
-              className="text-[15px] font-medium text-card-foreground no-underline py-3 px-3 rounded-lg hover:bg-muted min-h-[44px] inline-flex items-center"
-            >
-              {link.label}
-            </NextLink>
-          ))}
+          {navLinks.map((link) => {
+            const isHashLink = link.href.includes("#");
+            const className = "text-[15px] font-medium text-card-foreground no-underline py-3 px-3 rounded-lg hover:bg-muted min-h-[44px] inline-flex items-center";
+            return isHashLink ? (
+              <a key={link.href} href={link.href} onClick={closeMenu} className={className}>
+                {link.label}
+              </a>
+            ) : (
+              <NextLink key={link.href} href={link.href} onClick={closeMenu} className={className}>
+                {link.label}
+              </NextLink>
+            );
+          })}
         </nav>
       </div>
 
