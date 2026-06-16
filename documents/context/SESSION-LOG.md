@@ -4,6 +4,90 @@
 
 ---
 
+## Session: 2026-06-16 — route-colocation refactor + landing theme tokens (no hardcode)
+
+### 🎯 Where I stopped
+- Last task in progress: bulk theme-token conversion across all landing components is DONE in working tree (5 files modified), NOT YET committed. The `.marketing-surface` + Navbar conversion is committed (`84bc992`); the Landing.tsx + Footer + AnnouncementBar + StickyMobileCTA + PriceSectionIcons bulk pass is staged in the working tree only.
+- Next concrete action when resuming:
+  1. `pnpm exec tsc --noEmit` → confirm zero errors after bulk conversion.
+  2. Open `http://localhost:3000/sa` → click ThemeToggle → verify visual swap (hero, cards, pricing, sticky CTA, footer) in BOTH light and dark.
+  3. If both pass → commit the 5-file bulk theme conversion with message about "no-hardcode" completion. STOP at push and await explicit Khalid approval.
+
+### ✅ Done this session
+
+**Phase 1 — Route-colocation refactor (skill: refactor):**
+- Studied entire repo, mapped all routes, built usage table.
+- Confirmed no dead code remained (after Phase 0 deletes).
+- Moved 28 admin components → `app/admin/(dashboard)/_components/`
+- Moved 12 section forms → `app/admin/(dashboard)/[section]/_components/`
+- Moved HeaderFooterForm → `header-footer/_components/`
+- Moved LegalMarkdownArticle → `app/(site)/_components/`
+- Moved StaffAvatar → `app/(site)/_components/`
+- Moved AboutPageJsonLd → `app/(site)/about/_components/`
+- Moved AuthNav + SignupForm → `app/[country]/signup/_components/`
+- Moved MarketingPageSkeleton → `app/[country]/_components/`
+- Moved `app/helpers/useTheme.tsx` → `lib/useTheme.tsx`
+- 5+ commits (`4d4d9a7`, `4e052c6`, `d5a98f8`, `3731337`, `f43764a`, `67f29b0`, `e5055e1`).
+
+**Phase 2 — Dead code deletion:**
+- Deleted `app/components/shared/TestimonialCard.tsx` (zero importers)
+- Deleted `app/components/layout/footer/FooterRouteGate.tsx`
+- Deleted `app/components/landing/price-section/price-section.tsx`
+- Deleted `app/admin/(dashboard)/components/ImagesForm.tsx`
+- Removed orphan admin field `trustBarHeadline` (admin-only, never consumed by visitor pages).
+
+**Phase 3 — Theme infrastructure fixes:**
+- Fixed pre-existing hydration mismatch in `AdminThemeToggle` using `mounted` flag pattern (`9bb775b`).
+- Added `ThemeToggle` to landing Navbar (visible on `/sa` and `/eg`) (`ee9e649`).
+- Removed hardcoded `background: #FAFAF7` + `color-scheme: light` from `.marketing-surface` in `app/globals.css` — the root cause that prevented dark mode from rendering visually (`84bc992`).
+- Converted Navbar.tsx: all `bg-[#XXX]` arbitrary classes + inline `<style>` hex → theme tokens + `color-mix(in oklch, var(--token) X%, transparent)` (`84bc992`).
+
+**Phase 4 — Bulk theme conversion (working tree, NOT committed yet):**
+- `Landing.tsx`: 210 hardcoded values → 0. Tailwind arbitrary classes → theme classes; inline `<style>` block hex → `var(--token)`; rgba() patterns → `color-mix()` via Node script; status badge data array hex strings → token strings.
+- `Footer.tsx`: 9 → 0
+- `AnnouncementBar.tsx`: 3 → 0
+- `StickyMobileCTA.tsx`: 5 → 0 (including shadow rgba → color-mix)
+- `PriceSectionIcons.tsx`: 1 → 0 (SVG `fill="#25d366"` → `fill="var(--success)"`)
+
+**TSC state:** Last run passed during refactor phases. NOT yet re-run after the bulk theme conversion — that's the immediate next step.
+
+**Build state:** not run this session.
+
+**Live test state:** Navbar + AdminThemeToggle tested visually after their commits. Bulk landing conversion NOT yet live-tested — pending.
+
+### 📝 Decisions taken (with reasoning)
+- **Underscore-prefix on _components/_actions/_helpers** → chose explicit `_` over plain folder names. Why: Next.js excludes underscore-prefixed dirs from routing, the intent ("not a segment") is unambiguous to every reader, and they sort together visually. Alternative (plain `components/`) rejected because it loses the "this folder is private to the route" signal.
+- **Bulk theme conversion via sed + Node script** → chose automation over file-by-file edits. Why: 229 occurrences across 5 files; manual edits would be error-prone and slow. Node script handled rgba() → color-mix() with regex capture groups. Alternative (per-file Read/Edit) rejected on time grounds.
+- **Stopped at "commit" — no push** → strict per global rule "ممنوع البوش لحد ما تديك confirm". Each push needs fresh confirmation. The bulk-conversion commit is also not yet made — pending TSC + live test first.
+- **Kept `bg-[#25D366]` exception in Navbar mobile WA icon** → that one className is a WhatsApp brand color (not a theme decision); brand colors don't follow the theme. Documented mentally as intentional.
+
+### 🚧 Pending / blocked
+- TSC verification after bulk theme conversion — blocker: just needs to be run (no human input needed).
+- Live test of light + dark theme on /sa across all sections — blocker: needs a Playwright session OR Khalid to manually verify (Khalid prefers to watch live himself per `feedback_no_auto_playwright`).
+- Commit message for bulk conversion — pending TSC pass.
+- Push approval — pending explicit Khalid "push" / "ادفع" after he sees the live test.
+
+### 📂 Files touched (uncommitted in working tree)
+- `app/components/landing/Landing.tsx` — full hex/rgba → theme tokens + color-mix conversion
+- `app/components/landing/Footer.tsx` — hex → theme tokens
+- `app/components/landing/AnnouncementBar.tsx` — hex → theme tokens
+- `app/components/landing/StickyMobileCTA.tsx` — hex + shadow rgba → tokens + color-mix
+- `app/components/landing/price-section/PriceSectionIcons.tsx` — SVG `fill` → `var(--success)`
+
+### 🔁 Git / deploy state
+- Branch: `refactor/structure` (10 commits ahead of `main`)
+- Uncommitted changes: YES — 5 files (the bulk landing theme conversion)
+- Last commit: `84bc992` — `feat: theme tokens في .marketing-surface و Navbar (no hard code)`
+- Pushed: NO — branch never pushed this session; awaiting explicit approval after full verification
+- Vercel/deploy: N/A — no push yet
+
+### 🚀 How to resume in 30 seconds
+1. `cd c:/Users/w2nad/Desktop/dreamToApp/JBRSEO/jbrseo.com && pnpm exec tsc --noEmit` → expect zero errors.
+2. Start dev server (`pnpm dev`) → open `http://localhost:3000/sa` → click theme toggle in navbar → verify light↔dark swap is visible on hero, cards, pricing badges, sticky CTA pill, footer.
+3. If both themes look right: `git add -u && git commit -m "feat: theme tokens في landing الكامل (no hard code)"` then STOP. Wait for Khalid's "push" before `git push`.
+
+---
+
 ## Session: 2026-06-15 (afternoon) — `/features` shipped + Systems Teaser + `/signup` restyled + nav simplified
 
 ### 🎯 Where I stopped
