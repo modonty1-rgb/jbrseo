@@ -8,7 +8,7 @@ import { PricingMetaInline } from "./PricingMetaInline";
 import { dbMetaToPricingUi } from "@/lib/admin-pricing-adapter";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 
-type Slug = "free" | "starter" | "growth" | "scale";
+type Slug = "presence" | "starter" | "growth" | "scale";
 
 async function resolveParams(searchParams: Promise<{ country?: string; billing?: string }>) {
   const p = await searchParams;

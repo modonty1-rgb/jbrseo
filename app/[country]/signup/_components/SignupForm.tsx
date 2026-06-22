@@ -119,8 +119,8 @@ export function SignupForm({
     if (pending) return "جاري الإرسال...";
     const id = planIds[Math.min(planIndex, planIds.length - 1)] ?? "";
     switch (id) {
-      case "free":
-        return "ابدأ التجربة المجانية — التالي";
+      case "presence":
+        return "ابدأ مع حضور — التالي";
       case "starter":
         return "ابدأ مع الانطلاقة — التالي";
       case "growth":

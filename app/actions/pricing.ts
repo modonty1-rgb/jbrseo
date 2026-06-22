@@ -6,7 +6,7 @@ import { isAdmin } from "@/app/actions/auth";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 
 const ALLOWED_COUNTRIES: SupportedCountry[] = ["SA", "EG"];
-const ALLOWED_SLUGS = ["free", "starter", "growth", "scale"] as const;
+const ALLOWED_SLUGS = ["presence", "starter", "growth", "scale"] as const;
 type PlanSlug = (typeof ALLOWED_SLUGS)[number];
 
 function assertCountry(country: string): asserts country is SupportedCountry {

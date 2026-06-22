@@ -4,6 +4,135 @@
 
 ---
 
+## Session: 2026-06-17 (late) — permissions tuning (project + user level)
+
+### 🎯 Where I stopped
+- Last task in progress: nothing — all permissions work landed locally. Khalid said the next test is to just keep working and report any unexpected prompts.
+- Next concrete action when resuming:
+  1. Continue regular work. If a non-`git push` prompt appears, capture the exact command and add it to either the deny list (if destructive) or the allow list (if safe + frequent).
+  2. Verify the navigation fix on production once Vercel deploy `6c1bb99` finishes (still pending from earlier today's block).
+
+### ✅ Done this session
+
+**Project-level allowlist + denylist** (`.claude/settings.local.json`):
+- Allow expanded with frequent-use patterns: `pnpm run/test/lint/format/typecheck`, `npm run/exec/ls/view`, `tsc/tsx/ts-node`, `gh` read-only (`view`/`list`/`diff`/`checks`/`api`), `vercel` read-only (`ls`/`inspect`/`logs`/`env ls`), file ops (`mkdir`/`touch`/`cp`/`mv`/`chmod`), inspection (`jq`/`yq`/`tree`/`stat`/`du`), network (`ping`/`nslookup`/`dig`), git read+safe-edit (`tag`/`rev-list`/`switch`/`merge`/`rebase`/`pull`), and shell helpers (`whoami`/`date`/`env`).
+- Deny block ~80 rules covering: all `rm`/`rmdir`/`del` forms, all `git push*`, git destructive (`reset --hard`/`clean`/`filter-branch`/`branch -D`/`remote set-url`/`config --global`/`prune`/`worktree remove`), npm/pnpm/yarn `publish`/`unpublish`, all forms of Prisma `migrate deploy`/`db push`/`db reset`/`db drop`/`db execute`, Vercel actions (`deploy`/`rm`/`rollback`/`alias`/`env add`/`env rm`/`link`/`switch`), GitHub actions (`gh pr merge/close/create/edit/review`, `gh issue close/delete/create/edit`, `gh release create/delete/edit/upload`, `gh repo delete/create/edit/archive/rename/transfer`, `gh secret set/delete`, `gh workflow run/enable/disable`, `gh auth login/logout`), MongoDB (`mongo`/`mongosh`/`mongodump`/`mongorestore`/`drop`/`deleteMany`/`deleteOne`), curl `DELETE`/`PUT`, plus fork-bomb + `dd if=*` + `mkfs*` + `format*`.
+
+**User-level deny block** (`~/.claude/settings.json`):
+- Found existing state: `defaultMode: "bypassPermissions"`, `ask: ["Bash(git push:*)"]`, deny had only 5 weak rules. The 580+ line allow list is fine — bypassPermissions makes most of it moot.
+- Extended deny from 5 to ~80 rules — same coverage as the project-level deny so the protection applies in EVERY project, not just jbrseo.com.
+
+**Discussion outcome — what actually triggers prompts now:**
+- With `bypassPermissions` mode active at user level, only TWO things still prompt:
+  1. `git push` (the user-level `ask` rule — intentional, keeps Khalid's "fresh push confirmation" rule from CLAUDE.md).
+  2. `rm -rf /` and `rm -rf ~` (Claude Code's built-in circuit breakers, can't be bypassed).
+- Anything matching a deny rule is rejected silently — no prompt at all.
+- Everything else passes without prompts.
+- Khalid asked "what commands did I miss that would make you ask me?" — the answer: nothing he missed. The historical prompts were either from `default` mode (not bypass) or from project-level local settings without the broad allow.
+
+### 📝 Decisions taken (with reasoning)
+- **Deny rules applied at BOTH levels (project + user)** instead of user-only. Why: deny precedence works across levels regardless, but having them at project level makes the intent visible to anyone working in this repo and survives if the user-level file is reset.
+- **Did NOT touch the existing user-level allow array** (580+ lines, accumulated noise from sessions). With `bypassPermissions` active, the allow is mostly moot, and pruning a list this big risks breaking something. Tradeoff: more visual clutter, zero behavior change.
+- **Did NOT remove the user-level `Bash(git push:*)` from the allow array** even though it conflicts with the `ask` rule for `git push`. Why: ask precedence > allow precedence (per docs), so the ask wins anyway. AND deny precedence > ask, so the project-level deny `Bash(git push*)` blocks it outright. The allow entry is harmless residue.
+- **Flagged but did NOT clean** the MongoDB credentials (`modonty-admin:2053712713`) embedded in the user-level allow array (lines 194-195, 263-264). The file is local-only (never reaches git), but it's still plaintext on disk. Cleanup left for a future session — not urgent enough to disturb the bigger task.
+- **`PowerShell` permission rules not added** — Khalid uses bash-style commands almost exclusively even though the OS is Windows. Adding PowerShell rules speculatively would just add noise.
+
+### 🚧 Pending / blocked
+- **Verify Vercel deploy `6c1bb99`** (navigation fix) on `jbrseo.com/sa` and `/eg`. Carried over from earlier today's session.
+- **Carried over from previous days (unchanged):**
+  - Seed prod DB with missing LandingSection rows (`about`, `privacy`, `terms`, `pricingPage`) — needs Khalid via admin UI.
+  - Rotate exposed GCP service account key — needs Khalid via Google Cloud Console.
+- **MongoDB credentials in user-level allow array** — flagged for future cleanup, not blocking anything.
+
+### 📂 Files touched this session
+- [.claude/settings.local.json](.claude/settings.local.json) — project-level allow + deny rewrite (gitignored, local-only).
+- [`C:\Users\w2nad\.claude\settings.json`](C:/Users/w2nad/.claude/settings.json) — user-level deny block extended (5 → ~80 rules). Lines 590-596 region.
+- [documents/context/SESSION-LOG.md](documents/context/SESSION-LOG.md) — this entry.
+
+### 🔁 Git / deploy state
+- Branch: `main`.
+- Last commit: `6c1bb99` (navigation fix — pushed earlier today, still the head).
+- Uncommitted changes in this repo: `.claude/settings.local.json` (gitignored, never tracked).
+- Vercel deploy: `6c1bb99` triggered earlier, status still unverified.
+
+### 🚀 How to resume in 30 seconds
+1. Just keep working normally. Most commands run without prompts now.
+2. If a non-`git push` command prompts you for permission, write down the exact command and tell Claude — it'll be added to the allow (if safe) or deny (if destructive).
+3. To verify the navigation fix actually shipped: open `jbrseo.com/sa`, hard-refresh (Ctrl+Shift+R), click "الأسعار" in the navbar — should scroll to pricing from a single click.
+
+---
+
+## Session: 2026-06-17 — حضور plan finalize + navigation hash fix
+
+### 🎯 Where I stopped
+- Last task in progress: pushed navigation fix to production (`main` at `6c1bb99`). Vercel auto-deploy triggered, ETA ~2 min.
+- Next concrete action when resuming:
+  1. Wait for Vercel deploy to finish, then verify on `jbrseo.com/sa` — single click on "الأسعار" in navbar should scroll to #pricing section from any starting page.
+  2. Also verify same fix on `jbrseo.com/eg`.
+
+### ✅ Done this session
+
+**حضور plan finalize (replaced "free" plan):**
+- Iterated on pricing/CTA after Khalid's corrections:
+  - SA: 110 ر.س/شهر، السنوي = 110 (no annual discount — "بدون التزام طويل" = no commitment ≠ no discount). Earlier mistake: had السنوي = 88 (110 × 0.8) which contradicted the plan positioning.
+  - EG: 1100 ج.م/شهر، السنوي = 1100. Khalid picked 1100 directly (not the 297/330 my earlier ratios suggested) — keeps it round and decisive.
+  - CTA: "ابدأ الحين" for both (matches all other plans — Khalid: "like the other").
+  - Tagline: kept original "أقل تكلفة لظهور حقيقي على جوجل — بدون/من غير التزام طويل" (Khalid didn't approve the proposed change).
+- Updated [scripts/seed-presence-plan-local.ts](scripts/seed-presence-plan-local.ts) — ran on local `modonty_dev` (verified URL out loud per CLAUDE.md rule).
+- Synced to production `modonty` via [scripts/copy-plans-local-to-prod.ts](scripts/copy-plans-local-to-prod.ts) with `CONFIRM_PROD_WRITE=YES`. 8 plans upserted (SA+EG × presence/starter/growth/scale).
+
+**Navigation hash bug — diagnosed + fixed:**
+- Bug report: Khalid clicked "الأسعار" in navbar on production, page URL changed to `/sa#pricing` but scroll stayed at top. Had to click "الأسئلة" then back to "الأسعار" to trigger scroll.
+- Reproduced live in Playwright on local:
+  - Cross-page (`/features` → click "الأسعار"): URL updates, `scrollY=0`, pricing section at `Y=5233` (off-screen). ❌
+  - Same-page (`/sa` → click "الأسعار"): worked first try.
+- Root cause: Next.js 16.1.1 App Router `NextLink` cross-page navigation with hash performs scroll-to-top, NOT scroll-to-hash. Browser does the right thing if you reload, but Next.js's client-side routing skips the hash scroll on first nav.
+- Fix in [app/components/landing/Navbar.tsx](app/components/landing/Navbar.tsx): conditionally render `<a>` (plain anchor) instead of `NextLink` for any href containing `#`. Browser-native hash handling is reliable both same-page and cross-page. Logo + `/features` (non-hash) links stay `NextLink`.
+- Verified all paths post-fix on local:
+  - `/features` → "الأسعار" → `scrollY=4933` ✓
+  - `/sa` → "الأسعار" → `scrollY=5025` ✓
+  - `/sa` → "أسئلة" → `scrollY=7946` ✓
+  - `/sa` → CTA "ابدأ الحين" (navbar pricing-href variant) → `scrollY=5025` ✓
+  - `/sa` (bottom) → footer "الأسعار" → `scrollY=5025` ✓ (was already `<a>`, no regression)
+
+**Other notes:**
+- `app/components/layout/header/LandingHeader.tsx` (used by `/about`, `/team`, `/privacy`, `/terms`, `/sa/pricing`) uses `Link` for `pricingHref`, but the prop default is `/signup` (no hash) and `/sa/pricing` passes `/sa/signup?...` (no hash) — so no fix needed there.
+- Footer hash links were already plain `<a>` — no fix needed.
+
+### 📝 Decisions taken (with reasoning)
+- **Plain `<a>` over `NextLink` for hash-containing hrefs** chosen over a global `useEffect` hash-scroll handler. Why: `<a>` is built-in browser behavior — zero JS, zero edge cases, works during navigation lifecycle and on direct URL hash. A handler would need to listen to `hashchange` + `popstate` + handle SSR + race conditions with React hydration. The downside (full page reload for cross-page) is acceptable because the destinations are landing-page sections, navigated rarely.
+- **Conditional render based on `href.includes("#")`** rather than replacing all `NextLink` with `<a>`. Keeps client-side benefits (prefetch, no reload) for non-hash routes like `/features`.
+- **Annual price = monthly price for "حضور" plan** (no 20% discount) chosen over the standard `priceYearly = priceMonthly × 0.8` pattern used by other plans. Why: the plan is positioned as "بدون التزام طويل" — committing to annual contradicts that positioning. Same price either toggle removes the contradiction.
+- **EG 1100 instead of ratio-based 297/330** — Khalid overrode my data-driven suggestion. Final number was his judgment call on Egyptian market positioning.
+- **Did NOT change tagline** even though I proposed a shorter version — Khalid only said "yes" to CTA + price changes, not tagline.
+
+### 🚧 Pending / blocked
+- **Vercel deploy verification** — `6c1bb99` is pushed; need to confirm Vercel build READY + test live on `jbrseo.com/sa` after deploy.
+- **Carried over from previous session (unchanged):**
+  - Seed prod DB with missing LandingSection rows (`about`, `privacy`, `terms`, `pricingPage`) — needs Khalid via admin UI.
+  - Rotate exposed GCP service account key — needs Khalid via Google Cloud Console.
+
+### 📂 Files touched this session
+- [app/components/landing/Navbar.tsx](app/components/landing/Navbar.tsx) — hash links: `NextLink` → conditional `<a>` (desktop nav + CTA button + mobile menu).
+- [scripts/seed-presence-plan-local.ts](scripts/seed-presence-plan-local.ts) — updated SA priceYearly 88→110, EG prices 330/264→1100/1100, CTA → "ابدأ الحين" for both.
+- [scripts/copy-plans-local-to-prod.ts](scripts/copy-plans-local-to-prod.ts) — pre-existing utility, ran with `CONFIRM_PROD_WRITE=YES` to sync.
+- [documents/context/SESSION-LOG.md](documents/context/SESSION-LOG.md) — this entry.
+
+### 🔁 Git / deploy state
+- Branch: `main`.
+- Last commit: `6c1bb99` — `fix: navigation للـ #pricing من أول ضغطة (NextLink → a للروابط hash)`.
+- Pushed to `origin/main`: yes.
+- Vercel deploy: triggered, status unverified (need to check after ETA ~2 min).
+- Uncommitted changes: only `.claude/settings.local.json` (gitignored, local-only allowlist).
+
+### 🚀 How to resume in 30 seconds
+1. Open `jbrseo.com/sa` in a fresh browser tab (hard refresh — Ctrl+Shift+R) → click "الأسعار" in navbar → page should scroll to pricing section from a single click.
+2. If it works, also verify the حضور plan shows: name "حضور", price 110 ر.س, CTA "ابدأ الحين".
+3. Same checks on `jbrseo.com/eg` (1100 ج.م).
+4. If anything is wrong, check the latest Vercel deploy status — it may not be live yet (5-minute ISR also applies).
+
+---
+
 ## Session: 2026-06-16 (evening) — visitor-pages theme audit + production deploy
 
 ### 🎯 Where I stopped

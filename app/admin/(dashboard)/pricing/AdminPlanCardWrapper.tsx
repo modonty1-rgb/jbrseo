@@ -8,7 +8,7 @@ import { dbPlanToVisitorPlan, currencyFor } from "@/lib/admin-pricing-adapter";
 import type { PricingUI } from "@/app/content/landing/price-section-types";
 import { cn } from "@/lib/utils";
 
-type Slug = "free" | "starter" | "growth" | "scale";
+type Slug = "presence" | "starter" | "growth" | "scale";
 
 export type AdminPlanInput = {
   slug: string;

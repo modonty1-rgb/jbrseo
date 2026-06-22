@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { updatePlan } from "@/app/actions/pricing";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 
-type PlanSlug = "free" | "starter" | "growth" | "scale";
+type PlanSlug = "presence" | "starter" | "growth" | "scale";
 
 type Props = {
   country: SupportedCountry;

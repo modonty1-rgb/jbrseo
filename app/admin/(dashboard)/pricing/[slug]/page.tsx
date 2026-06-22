@@ -6,7 +6,7 @@ import { AdminCountryPill } from "../../_components/AdminCountryPill";
 import { PlanEditForm } from "./PlanEditForm";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 
-const ALLOWED_SLUGS = ["free", "starter", "growth", "scale"] as const;
+const ALLOWED_SLUGS = ["presence", "starter", "growth", "scale"] as const;
 type PlanSlug = (typeof ALLOWED_SLUGS)[number];
 
 function isAllowedSlug(s: string): s is PlanSlug {
