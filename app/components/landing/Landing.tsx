@@ -937,6 +937,7 @@ export function Landing(props: Props) {
             const featured = !!p.featuredBadge && p.featuredBadge.trim() !== "";
             const price = billing === "annual" ? p.priceYearly : p.priceMonthly;
             const annualTotal = p.priceYearly * 12;
+            const effectiveMonthly = Math.round(annualTotal / 18);
 
             return (
               <m.div
@@ -959,11 +960,11 @@ export function Landing(props: Props) {
                   {p.tagline || p.hook || ""}
                 </p>
                 <div className="flex items-baseline gap-1.5">
-                  <span className={cn("font-mono text-4xl font-semibold tracking-[-1.5px]", featured ? "text-background" : "text-foreground")}>{price}</span>
-                  <span className={cn("text-xs", featured ? "text-background/70" : "text-muted-foreground")}>{currency}/شهر</span>
+                  <span className={cn("font-mono text-4xl font-semibold tracking-[-1.5px]", featured ? "text-background" : "text-foreground")}>{billing === "annual" ? formatNum(annualTotal) : price}</span>
+                  <span className={cn("text-xs", featured ? "text-background/70" : "text-muted-foreground")}>{currency}/{billing === "annual" ? "سنوياً" : "شهر"}</span>
                 </div>
-                <div className={cn("text-[11.5px] mt-1.5 min-h-4 font-mono", featured ? "text-background/70" : "text-muted-foreground")}>
-                  {billing === "annual" && p.priceYearly > 0 ? `سنوياً ${formatNum(annualTotal)}` : " "}
+                <div className={cn("text-[12.5px] mt-2 min-h-5 font-mono font-semibold", featured ? "text-success bg-success/15 px-2.5 py-1 rounded-md inline-block w-fit" : "text-success")}>
+                  {billing === "annual" && p.priceYearly > 0 ? `يصير ${formatNum(effectiveMonthly)} ${currency}/شهر · ٦ شهور هدية` : " "}
                 </div>
                 <Link
                   href={`${signupHref}?plan=${p.slug}`}
