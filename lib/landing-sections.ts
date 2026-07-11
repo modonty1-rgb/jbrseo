@@ -6,8 +6,6 @@ import { prisma } from "./prisma";
 
 const SECTION_KEYS = [
   "hero",
-  "whyNow",
-  "howItWorks",
   "socialProof",
   "faq",
   "finalCta",
@@ -22,6 +20,7 @@ const SECTION_KEYS = [
   "ctaLabel",
   "pricingTeaser",
   "socialLinks",
+  "featuresComparison",
 ] as const;
 
 export type LandingSectionKey = (typeof SECTION_KEYS)[number];

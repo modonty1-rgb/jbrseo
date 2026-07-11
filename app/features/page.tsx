@@ -1,15 +1,18 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { headers } from "next/headers";
 import { getAllPlans } from "@/app/actions/pricing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getLandingContent } from "@/lib/getLandingContent";
+import { featuresCatalog } from "@/lib/features-catalog.mjs";
 import { getWhatsAppLink } from "@/lib/site-links";
 import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
-import { Card } from "@/app/components/ui/card";
+import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 
-const TITLE = "كل المزايا — مدوّنتي";
+const TITLE = "مزايا اشتراك مدونتي — منظومة كاملة | JBRSEO";
 const DESCRIPTION =
-  "الدليل الكامل لكل ما تحصل عليه: لوحة التحكم، صفحتك العامة، مقالاتك، التصاميم والإنتاج، 23 تنبيه تيليجرام، وأسعار الباقات.";
+  "لوحة تحكم كاملة · صفحة عميل احترافية · مقالات تبيع · حماية YMYL · تنبيهات فورية. كل شي في اشتراك واحد على مدونتي.";
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -34,185 +37,120 @@ export const metadata: Metadata = {
 };
 
 const STYLE_BLOCK = `
-:focus{outline:none}
-:focus-visible{outline:2px solid var(--success);outline-offset:3px;border-radius:6px}
-a:focus-visible,button:focus-visible{outline:2px solid var(--success);outline-offset:3px}
-.feat-container{max-width:1080px;margin:0 auto;padding:0 28px}
-.feat-mono{font-family:'IBM Plex Mono', monospace}
+.fx-page{background:#0a0a0a;color:#fff}
+.fx-page a{color:#4ade80;text-decoration:none}
+.fx-container{max-width:1180px;margin:0 auto;padding:0 20px}
 
-.feat-hero{padding:64px 0 40px;text-align:center;max-width:780px;margin:0 auto}
-.feat-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border-radius:99px;border:1px solid var(--border);background:var(--card);font-family:'IBM Plex Mono', monospace;font-size:11.5px;color:var(--muted-foreground);margin-bottom:24px}
-.feat-eyebrow-dot{width:7px;height:7px;border-radius:99px;background:var(--success);box-shadow:0 0 0 3px color-mix(in oklch, var(--success) 16%, transparent)}
-.feat-hero h1{font-size:52px;line-height:1.12;font-weight:600;letter-spacing:-1.6px;margin-bottom:20px;padding:0 18px}
-.feat-hero h1 .accent{color:var(--success);background:linear-gradient(180deg,transparent 0%,transparent 78%,color-mix(in oklch, var(--success) 16%, transparent) 78%,color-mix(in oklch, var(--success) 16%, transparent) 100%);padding:0 4px}
-.feat-hero p{font-size:18px;line-height:1.7;color:var(--muted-foreground);max-width:580px;margin:0 auto;padding:0 18px;font-weight:400}
+/* Hero */
+.fx-hero{padding:70px 0 50px;text-align:center;background:radial-gradient(ellipse at top,rgba(4,120,87,.2),transparent 60%);border-bottom:1px solid rgba(255,255,255,.06)}
+.fx-hero h1{font-size:44px;font-weight:900;line-height:1.15;margin-bottom:14px;letter-spacing:-1px}
+.fx-hero h1 .accent{color:#4ade80}
+.fx-hero-sub{font-size:17px;color:rgba(255,255,255,.7);max-width:640px;margin:0 auto 28px}
+.fx-stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:900px;margin:0 auto}
+.fx-stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:18px 22px;min-width:170px;flex:1}
+.fx-stat b{display:block;font-size:26px;font-weight:900;color:#4ade80;margin-bottom:2px}
+.fx-stat span{font-size:12.5px;color:rgba(255,255,255,.65);font-weight:600}
 
-.feat-hero-stats{margin-top:40px;display:inline-flex;flex-wrap:wrap;gap:30px;justify-content:center;padding:18px 26px;background:var(--card);border:1px solid var(--border);border-radius:16px}
-.feat-hs{text-align:center;min-width:96px}
-.feat-hs-n{font-family:'IBM Plex Mono', monospace;font-size:22px;font-weight:600;color:var(--foreground)}
-.feat-hs-l{font-size:11.5px;color:var(--muted-foreground);margin-top:3px;font-family:'IBM Plex Mono', monospace}
+/* Section */
+.fx-sec{padding:70px 0;border-top:1px solid rgba(255,255,255,.06)}
+.fx-eyebrow{color:#4ade80;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;font-family:'IBM Plex Mono',monospace}
+.fx-sec h2{font-size:34px;font-weight:900;line-height:1.2;margin-bottom:10px;letter-spacing:-.5px}
+.fx-lead{font-size:16px;color:rgba(255,255,255,.7);max-width:640px;margin-bottom:28px}
 
-.feat-systems{padding:24px 0 8px}
-.feat-sys-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.feat-sys-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 18px;text-align:center;transition:transform .15s,box-shadow .15s}
-.feat-sys-card:hover{transform:translateY(-3px);box-shadow:0 18px 40px -28px color-mix(in oklch, var(--foreground) 28%, transparent)}
-.feat-sys-emoji{font-size:24px;margin-bottom:10px}
-.feat-sys-card h3,.feat-sys-card .feat-sys-title{font-size:15px;font-weight:600;margin-bottom:6px}
-.feat-sys-card p{font-size:12px;color:var(--muted-foreground);line-height:1.6}
+/* Screenshot frame */
+.fx-shot{background:linear-gradient(135deg,rgba(74,222,128,.05),rgba(59,130,246,.05));border:1px solid rgba(74,222,128,.2);border-radius:16px;padding:18px;margin:20px 0}
+.fx-shot-cap{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.fx-shot-cap h4{font-size:14px;font-weight:800;color:#4ade80;margin-top:4px}
+.fx-shot-cap a{font-size:12px;color:rgba(255,255,255,.6)}
+.fx-shot-cap small{font-size:11px;color:rgba(255,255,255,.5)}
+.fx-badge-real{background:#4ade80;color:#0a0a0a;font-size:10.5px;font-weight:900;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:6px;letter-spacing:.5px}
+.fx-shot img{border:1px solid rgba(255,255,255,.08);border-radius:8px;display:block;width:100%;height:auto}
 
-.feat-sec{padding:60px 0}
-.feat-sec.alt{background:var(--card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.feat-sec-head{margin-bottom:34px}
-.feat-sec-eyebrow{font-family:'IBM Plex Mono', monospace;font-size:12px;color:var(--success);letter-spacing:1px;margin-bottom:10px;font-weight:600}
-.feat-sec-title{font-size:32px;font-weight:600;letter-spacing:-.8px;line-height:1.2}
-.feat-sec-sub{font-size:15.5px;color:var(--muted-foreground);line-height:1.75;margin-top:12px;max-width:640px}
+/* Group cards grid */
+.fx-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.fx-gcard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px}
+.fx-gcard .icon{font-size:24px;margin-bottom:8px}
+.fx-gcard h3{font-size:15px;font-weight:800;margin-bottom:6px}
+.fx-gcard p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.65}
+.fx-gcard ul{margin-top:8px;padding-inline-start:14px;list-style:disc}
+.fx-gcard li{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:2px}
 
-.feat-group-label{display:flex;align-items:center;gap:10px;margin:30px 0 14px;font-size:13px;font-weight:600;color:var(--foreground);font-family:'IBM Plex Mono', monospace;letter-spacing:.3px}
-.feat-group-label::after{content:"";flex:1;height:1px;background:var(--border)}
+/* Split layout */
+.fx-split{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:start;margin-top:20px}
+.fx-split-feats{display:grid;grid-template-columns:1fr;gap:10px}
 
-.feat-cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.feat-bcard{background:var(--background);border:1px solid var(--border);border-radius:14px;padding:18px;transition:border-color .15s,transform .15s}
-.feat-sec.alt .feat-bcard{background:var(--background)}
-.feat-bcard:hover{border-color:var(--foreground);transform:translateY(-1px)}
-.feat-bcard-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-.feat-bcard-ico{font-size:18px;flex-shrink:0}
-.feat-bcard h3{font-size:14px;font-weight:600;flex:1}
-.feat-bcard p{font-size:12.5px;color:var(--muted-foreground);line-height:1.7}
-.feat-bcard ul{list-style:none;display:flex;flex-direction:column;gap:6px}
-.feat-bcard ul li{display:flex;align-items:flex-start;gap:6px;font-size:12.5px;color:var(--muted-foreground);line-height:1.55}
-.feat-bcard ul li svg{flex-shrink:0;margin-top:3px}
-.feat-tag-live{font-family:'IBM Plex Mono', monospace;font-size:10px;font-weight:600;background:color-mix(in oklch, var(--success) 12%, transparent);border:1px solid color-mix(in oklch, var(--success) 35%, transparent);color:var(--success);padding:2px 7px;border-radius:5px;margin-inline-start:auto}
+/* YMYL */
+.fx-ymyl{background:linear-gradient(135deg,#f8fafc,#e2e8f0);color:#0f172a;padding:30px;border-radius:16px;margin-top:20px}
+.fx-ymyl h3{color:#065f46;font-size:22px;margin-bottom:6px}
+.fx-ymyl p{color:#334155;font-size:14.5px;line-height:1.7}
+.fx-sectors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.fx-scard{background:#fff;color:#0f172a;border-radius:12px;padding:18px;text-align:center;border:1px solid #e2e8f0}
+.fx-scard .icon{font-size:32px;margin-bottom:6px}
+.fx-scard h4{font-size:15px;font-weight:900;margin-bottom:4px;color:#065f46}
+.fx-scard p{font-size:12.5px;color:#334155}
 
-/* YMYL highlight */
-.feat-ymyl{position:relative;overflow:hidden;background:var(--foreground);color:var(--background);border-radius:28px;padding:56px 36px;max-width:920px;margin:0 auto;box-shadow:0 40px 90px -40px color-mix(in oklch, var(--foreground) 50%, transparent)}
-.feat-ymyl::before{content:"";position:absolute;top:-120px;right:-120px;width:340px;height:340px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in oklch, var(--success) 32%, transparent),transparent 70%);pointer-events:none}
-.feat-ymyl::after{content:"";position:absolute;bottom:-140px;left:-100px;width:300px;height:300px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in oklch, var(--success) 18%, transparent),transparent 70%);pointer-events:none}
-.feat-ymyl-head{position:relative;text-align:center;margin-bottom:36px}
-.feat-ymyl-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:99px;border:1px solid color-mix(in oklch, var(--success) 32%, transparent);background:color-mix(in oklch, var(--success) 12%, transparent);font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--success);margin-bottom:18px;font-weight:600;letter-spacing:.5px}
-.feat-ymyl-shield{display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,color-mix(in oklch, var(--success) 28%, transparent),color-mix(in oklch, var(--success) 8%, transparent));border:1px solid color-mix(in oklch, var(--success) 40%, transparent);margin-bottom:22px}
-.feat-ymyl h2{font-size:34px;font-weight:600;letter-spacing:-.9px;line-height:1.2;margin-bottom:14px}
-.feat-ymyl h2 .accent{color:var(--success)}
-.feat-ymyl-sub{font-size:16px;color:color-mix(in oklch, var(--background) 70%, transparent);max-width:580px;margin:0 auto;line-height:1.75}
-.feat-ymyl-grid{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
-.feat-ymyl-card{background:color-mix(in oklch, var(--background) 4%, transparent);border:1px solid color-mix(in oklch, var(--background) 10%, transparent);border-radius:16px;padding:22px 20px;transition:all .2s}
-.feat-ymyl-card:hover{background:color-mix(in oklch, var(--success) 6%, transparent);border-color:color-mix(in oklch, var(--success) 32%, transparent);transform:translateY(-2px)}
-.feat-ymyl-emoji{font-size:24px;margin-bottom:12px}
-.feat-ymyl-card h3{font-size:15px;font-weight:600;margin-bottom:8px;color:var(--background)}
-.feat-ymyl-card p{font-size:13px;color:color-mix(in oklch, var(--background) 70%, transparent);line-height:1.7}
-.feat-ymyl-foot{position:relative;display:flex;align-items:center;justify-content:center;gap:14px;margin-top:32px;padding-top:24px;border-top:1px solid color-mix(in oklch, var(--background) 8%, transparent);flex-wrap:wrap}
-.feat-ymyl-foot-item{display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:color-mix(in oklch, var(--background) 70%, transparent)}
-.feat-ymyl-foot-item .dot{width:6px;height:6px;border-radius:99px;background:var(--success)}
+/* Pricing */
+.fx-pkg{overflow-x:auto;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;margin-top:20px}
+.fx-pkg table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
+.fx-pkg th,.fx-pkg td{padding:12px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,.06)}
+.fx-pkg th{background:rgba(255,255,255,.03);font-weight:800;color:#4ade80}
+.fx-pkg th.rec{background:rgba(74,222,128,.15)}
+.fx-pkg th .th-inner{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+.fx-pkg tr.cat-row td{background:rgba(74,222,128,.06);color:#4ade80;font-weight:800;font-size:12px;padding:10px 12px;letter-spacing:.5px;text-align:right}
+.fx-pkg .rec-badge{background:linear-gradient(135deg,#059669,#047857);color:#fff;font-size:11px;font-weight:900;padding:4px 10px;border-radius:99px;box-shadow:0 6px 18px -6px rgba(74,222,128,.55);letter-spacing:.3px;white-space:nowrap}
+.fx-pkg td.plan-name{font-weight:800;color:#fff}
+.fx-pkg .price{color:#4ade80;font-weight:900;font-size:17px}
 
-/* Telegram alerts */
-.feat-tg-wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.feat-tg-col{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
-.feat-tg-col-title{font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono', monospace}
-.feat-tg-count{font-family:'IBM Plex Mono', monospace;font-size:11px;background:var(--foreground);color:var(--background);padding:2px 8px;border-radius:99px;font-weight:600}
-.feat-tg-chip{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--background);border:1px solid var(--border);border-radius:8px;font-size:12.5px;color:var(--muted-foreground);margin-bottom:6px}
-.feat-tg-chip .e{font-size:14px;flex-shrink:0}
+/* Included in all */
+.fx-included{background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.2);border-radius:14px;padding:20px;margin-top:20px}
+.fx-included-title{font-size:13px;font-weight:800;color:#4ade80;letter-spacing:.5px;margin-bottom:14px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase}
+.fx-included-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.fx-included-item{font-size:13px;color:rgba(255,255,255,.85);padding:6px 0;line-height:1.6}
 
-/* Pricing table */
-.feat-pkg{overflow-x:auto;-webkit-overflow-scrolling:touch;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:6px;max-width:100%;width:100%}
-.feat-pkg-table{width:100%;border-collapse:separate;border-spacing:0;min-width:680px}
-.feat-pkg-table th,.feat-pkg-table td{padding:14px 12px;text-align:center;font-size:13px;border-bottom:1px solid var(--border)}
-.feat-pkg-table th.feat-feat,.feat-pkg-table td.feat-feat{text-align:right;color:var(--muted-foreground);font-weight:500}
-.feat-pkg-table thead th{vertical-align:bottom;padding-bottom:18px}
-.feat-pkg-name{font-size:14px;font-weight:600;color:var(--foreground)}
-.feat-pkg-name.pop{color:var(--success)}
-.feat-pkg-price{font-family:'IBM Plex Mono', monospace;font-size:12px;color:var(--muted-foreground);margin-top:4px}
-.feat-pkg-price b{font-size:18px;color:var(--foreground);font-weight:600}
-.feat-pkg-pop-badge{display:inline-block;background:var(--success);color:var(--success-foreground);font-family:'IBM Plex Mono', monospace;font-size:10px;font-weight:600;padding:3px 8px;border-radius:99px;margin-bottom:6px}
-.feat-yes{color:var(--success);font-weight:700;font-size:16px}
-.feat-no{color:var(--muted-foreground);font-size:16px}
-.feat-pkg-note{font-size:12px;color:var(--muted-foreground);text-align:center;margin-top:16px;line-height:1.7}
-
-/* Comparison */
-.feat-compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:920px;margin:0 auto}
-.feat-cc{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px 28px}
-.feat-cc.win{background:var(--foreground);color:var(--background);border-color:var(--foreground);position:relative;box-shadow:0 30px 70px -28px color-mix(in oklch, var(--foreground) 50%, transparent)}
-.feat-cc.win::before{content:"الحل";position:absolute;top:-13px;right:24px;background:var(--success);color:var(--success-foreground);font-family:'IBM Plex Mono', monospace;font-size:10.5px;font-weight:700;padding:5px 12px;border-radius:99px;letter-spacing:.3px}
-.feat-cc-eyebrow{font-family:'IBM Plex Mono', monospace;font-size:11.5px;letter-spacing:.5px;margin-bottom:8px}
-.feat-cc.win .feat-cc-eyebrow{color:var(--success)}
-.feat-cc:not(.win) .feat-cc-eyebrow{color:var(--muted-foreground)}
-.feat-cc h3{font-size:22px;font-weight:600;margin-bottom:8px;letter-spacing:-.4px}
-.feat-cc-price{font-family:'IBM Plex Mono', monospace;font-size:14px;color:var(--muted-foreground);margin-bottom:18px}
-.feat-cc.win .feat-cc-price{color:color-mix(in oklch, var(--background) 70%, transparent)}
-.feat-cc-list{list-style:none;display:flex;flex-direction:column;gap:10px}
-.feat-cc-list li{font-size:14px;line-height:1.6;display:flex;gap:8px;align-items:flex-start}
-.feat-cc-list li svg{flex-shrink:0;margin-top:3px}
+/* Compare */
+.fx-cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+.fx-cc{border-radius:16px;padding:24px;border:1px solid rgba(255,255,255,.1)}
+.fx-cc.bad{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.25)}
+.fx-cc.good{background:rgba(4,120,87,.12);border-color:rgba(74,222,128,.35)}
+.fx-cc h3{font-size:16px;font-weight:900;margin-bottom:14px}
+.fx-cc ul{list-style:none;padding:0}
+.fx-cc li{font-size:13.5px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.fx-cc.bad li::before{content:"✗ ";color:#f87171;font-weight:900}
+.fx-cc.good li::before{content:"✓ ";color:#4ade80;font-weight:900}
 
 /* Final CTA */
-.feat-final{padding:60px 28px 90px;text-align:center}
-.feat-final-card{max-width:880px;margin:0 auto;background:var(--foreground);color:var(--background);border-radius:24px;padding:56px 32px}
-.feat-final h2{font-size:36px;font-weight:600;letter-spacing:-1px;margin-bottom:14px}
-.feat-final p{font-size:16px;color:color-mix(in oklch, var(--background) 70%, transparent);max-width:520px;margin:0 auto 28px}
-.feat-final .feat-ctas{display:inline-flex;gap:12px;flex-wrap:wrap;justify-content:center}
-.feat-final .feat-btn-white{background:var(--background);color:var(--foreground);padding:14px 28px;border-radius:12px;font-size:15px;font-weight:600;text-decoration:none}
-.feat-final .feat-btn-ghost{background:color-mix(in oklch, var(--background) 8%, transparent);color:var(--background);padding:14px 22px;border-radius:12px;font-size:15px;font-weight:500;border:1px solid color-mix(in oklch, var(--background) 14%, transparent);text-decoration:none}
+.fx-final{background:linear-gradient(135deg,#064e3b,#047857);border-radius:20px;padding:60px 30px;text-align:center;margin:40px 0 20px}
+.fx-final h2{font-size:30px;font-weight:900;margin-bottom:10px}
+.fx-final p{font-size:15px;color:rgba(255,255,255,.85);margin-bottom:24px;max-width:520px;margin-inline:auto}
+.fx-final .fx-btn-p{display:inline-block;background:#fff;color:#064e3b;font-weight:900;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none}
+.fx-final .fx-btn-s{display:inline-block;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);font-weight:600;font-size:14px;padding:14px 24px;border-radius:10px;margin-inline-start:8px;text-decoration:none}
+
+/* Telegram */
+.fx-tg{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
+.fx-tgc{background:rgba(37,99,235,.08);border:1px solid rgba(59,130,246,.25);border-radius:12px;padding:14px;text-align:center}
+.fx-tgc .ico{font-size:22px;margin-bottom:6px}
+.fx-tgc h4{font-size:13px;font-weight:800;margin-bottom:4px}
+.fx-tgc p{font-size:11.5px;color:rgba(255,255,255,.6)}
 
 /* Mobile */
-@media (max-width:880px){
-  .feat-container{padding:0 20px}
-  .feat-hero{padding:48px 0 36px}
-  .feat-hero h1{font-size:34px;letter-spacing:-1.2px}
-  .feat-hero p{font-size:16px}
-  .feat-hero-stats{gap:18px;padding:14px 18px}
-  .feat-hs-n{font-size:18px}
-  .feat-sys-grid{grid-template-columns:repeat(2,1fr)}
-  .feat-sec{padding:48px 0}
-  .feat-sec-title{font-size:24px}
-  .feat-cat-grid{grid-template-columns:1fr;gap:10px}
-  .feat-bcard{padding:14px}
-  .feat-tg-wrap{grid-template-columns:1fr;gap:10px}
-  .feat-compare-grid{grid-template-columns:1fr}
-  .feat-final{padding:48px 20px 70px}
-  .feat-final-card{padding:40px 22px;border-radius:22px}
-  .feat-final h2{font-size:24px}
-  .feat-ymyl{padding:40px 22px;border-radius:22px}
-  .feat-ymyl h2{font-size:24px}
-  .feat-ymyl-grid{grid-template-columns:1fr;gap:10px}
-  .feat-ymyl-foot{flex-direction:column;gap:10px;align-items:center}
+@media (max-width:900px){
+  .fx-groups{grid-template-columns:repeat(2,1fr)}
+  .fx-split{grid-template-columns:1fr;gap:20px}
+  .fx-tg{grid-template-columns:repeat(2,1fr)}
+  .fx-included-grid{grid-template-columns:1fr}
 }
-@media (max-width:480px){
-  .feat-container{padding:0 16px}
-  .feat-hero{padding:36px 0 28px}
-  .feat-hero h1{font-size:28px;letter-spacing:-1px;padding:0 8px}
-  .feat-hero p{font-size:15px;padding:0 8px}
-  .feat-hero-stats{gap:14px;padding:12px 14px;margin-top:28px}
-  .feat-hs{min-width:70px}
-  .feat-hs-n{font-size:16px}
-  .feat-hs-l{font-size:10.5px}
-  .feat-sys-grid{grid-template-columns:1fr;gap:10px}
-  .feat-sec-title{font-size:22px}
-  .feat-sec-sub{font-size:14.5px}
-  .feat-ymyl{padding:32px 18px}
-  .feat-ymyl h2{font-size:22px}
-  .feat-cc{padding:24px 20px}
-  .feat-final-card{padding:32px 18px}
-  .feat-final h2{font-size:22px}
+@media (max-width:600px){
+  .fx-hero h1{font-size:32px}
+  .fx-sec h2{font-size:26px}
+  .fx-hero{padding:50px 0 30px}
+  .fx-sec{padding:50px 0}
+  .fx-groups{grid-template-columns:1fr}
+  .fx-sectors{grid-template-columns:1fr}
+  .fx-cmp{grid-template-columns:1fr}
+  .fx-final{padding:40px 20px}
+  .fx-final h2{font-size:22px}
 }
 `;
-
-const Check = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M5 12.5l5 5L20 7" />
-  </svg>
-);
-
-const X = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--destructive)" strokeWidth={2.5} strokeLinecap="round" aria-hidden>
-    <line x1="6" y1="6" x2="18" y2="18" />
-    <line x1="6" y1="18" x2="18" y2="6" />
-  </svg>
-);
-
-const CheckWhite = () => (
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-    <path d="M5 12.5l5 5L20 7" />
-  </svg>
-);
-
-export const revalidate = 60;
 
 export default async function FeaturesPage() {
   const h = await headers();
@@ -221,404 +159,418 @@ export default async function FeaturesPage() {
     getLandingContent(country),
     getAllPlans(country),
   ]);
-
-  const countrySlug = country === "EG" ? "eg" : "sa";
-  const basePath = `/${countrySlug}`;
-  const pricingHref = `${basePath}#pricing`;
-  const signupHref = `${basePath}/signup`;
   const whatsappLink = getWhatsAppLink(country, content.siteSettings?.whatsappNumber);
-  const ctaLabel = content.siteSettings?.ctaLabel?.trim() || "ابدأ مجاناً — بدون بطاقة";
+  const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
+  const countrySlug = country === "EG" ? "eg" : "sa";
+  const signupHref = `/${countrySlug}/signup`;
   const currency = country === "EG" ? "ج.م" : "ر.س";
 
-  const visiblePlans = [...plans]
-    .filter((p) => p.visible)
-    .sort((a, b) => a.displayOrder - b.displayOrder);
+  // Plans for pricing table (from DB)
+  const displayPlans = plans.slice(0, 4);
+  const recommendedIndex = displayPlans.findIndex((p) => Boolean(p.featuredBadge)) ;
+  const recIdx = recommendedIndex >= 0 ? recommendedIndex : 1;
 
-  const PILLAR_FEATURES = [
-    { label: "صفحتك المصغّرة + شارة موثّق", all: true },
-    { label: "لوحة التحكم + تحليلات GA4", all: true },
-    { label: "نسخة صوتية + صور لكل مقال", paid: true },
-    { label: "Leads + حجوزات + تنبيهات تيليجرام", paid: true },
-    { label: "بوّابة جودة 28 فحص + فهرسة Google", paid: true },
-    { label: "التوثيق المهني (YMYL) — للقطاعات الحسّاسة", paid: true },
-  ];
+  // Comparison data — single source of truth: lib/features-catalog.mjs
+  //  - category row = section separator (no values)
+  //  - feature row = label + values array (one per plan, ordered by PLAN_SLUGS)
+  const rows = featuresCatalog.rows as Array<{
+    label?: string;
+    values?: string[];
+    category?: string;
+  }>;
 
   return (
-    <div suppressHydrationWarning>
+    <>
       <style dangerouslySetInnerHTML={{ __html: STYLE_BLOCK }} />
-        {/* HERO */}
-        <section className="feat-hero">
-          <div className="feat-eyebrow">
-            <span className="feat-eyebrow-dot"></span>
-            <span>كل ما تحصل عليه باشتراكك — الدليل الكامل</span>
-          </div>
-          <h1>
-            اشتراك واحد —<br />
-            <span className="accent">منظومة كاملة</span>
-          </h1>
-          <p>من لوحة تحكّمك، إلى صفحتك العامة في مدوّنتي، إلى التصاميم والإنتاج التقني — كل مزية تحصل عليها فعليًا، مشروحة بالتفصيل.</p>
-          <div className="inline-flex gap-4 items-center mt-7 flex-wrap justify-center">
-            <a href="#packages" className="bg-foreground text-background px-[26px] py-[14px] rounded-xl text-[15px] font-medium no-underline">
-              شوف الباقات
-            </a>
-            <a href="#systems" className="text-muted-foreground text-[15px] font-medium no-underline px-1 py-2">
-              استعرض المزايا ←
-            </a>
-          </div>
-          <div className="feat-hero-stats">
-            <div className="feat-hs"><div className="feat-hs-n">4</div><div className="feat-hs-l">منظومات متكاملة</div></div>
-            <div className="feat-hs"><div className="feat-hs-n">23</div><div className="feat-hs-l">تنبيه فوري</div></div>
-            <div className="feat-hs"><div className="feat-hs-n">28</div><div className="feat-hs-l">فحص جودة / مقال</div></div>
-            <div className="feat-hs"><div className="feat-hs-n">4</div><div className="feat-hs-l">باقات مرنة</div></div>
-          </div>
-        </section>
+      <div className="fx-page">
 
-        {/* SYSTEMS OVERVIEW */}
-        <section className="feat-systems" id="systems">
-          <div className="feat-container">
-            <div className="feat-sys-grid">
-              <Card className="feat-sys-card"><div className="feat-sys-emoji">📊</div><div className="feat-sys-title">لوحة تحكّمك</div><p>تحليلات حيّة، إدارة المحتوى، Leads، حجوزات، وإشراف كامل.</p></Card>
-              <Card className="feat-sys-card"><div className="feat-sys-emoji">🌐</div><div className="feat-sys-title">صفحتك العامة</div><p>موقع مصغّر موثّق داخل شبكة مدوّنتي — مرئي ومفهرس في جوجل.</p></Card>
-              <Card className="feat-sys-card"><div className="feat-sys-emoji">✍️</div><div className="feat-sys-title">مقالاتك</div><p>محتوى احترافي بنسخة صوتية وصور والتقاط عملاء من كل مقال.</p></Card>
-              <Card className="feat-sys-card"><div className="feat-sys-emoji">🛠️</div><div className="feat-sys-title">التصاميم والإنتاج</div><p>SEO تقني كامل، بيانات منظّمة، وبوّابة جودة قبل كل نشر.</p></Card>
+        {/* ─── HERO ─── */}
+        <section className="fx-hero">
+          <div className="fx-container">
+            <h1>
+              اشتراك واحد <span className="accent">—</span> منظومة كاملة
+            </h1>
+            <p className="fx-hero-sub">
+              لوحة تحكّم · صفحة عميل احترافية · مقالات تبيع · حماية YMYL · تنبيهات تيليجرام. كل شي في مدونتي.
+            </p>
+            <div className="fx-stats">
+              <div className="fx-stat"><b>٤</b><span>باقات</span></div>
+              <div className="fx-stat"><b>٢٩</b><span>ميزة رئيسية</span></div>
+              <div className="fx-stat"><b>٢٣</b><span>تنبيه فوري</span></div>
+              <div className="fx-stat"><b>٤</b><span>قطاعات YMYL</span></div>
             </div>
           </div>
         </section>
 
-        {/* SYSTEM 01 — CONSOLE */}
-        <section className="feat-sec alt" id="console">
-          <div className="feat-container">
-            <div className="feat-sec-head">
-              <div className="feat-sec-eyebrow">المنظومة 01</div>
-              <h2 className="feat-sec-title">لوحة تحكّمك — كل شيء في عينك</h2>
-              <p className="feat-sec-sub">لوحة كاملة على <span className="feat-mono">console.modonty.com</span> تدير منها نشاطك، تتابع الأرقام الحقيقية، وترد على عملائك — بلغة أعمال بسيطة.</p>
-            </div>
+        {/* ─── SECTION 1: CONSOLE ─── */}
+        <section className="fx-sec">
+          <div className="fx-container">
+            <div className="fx-eyebrow">01 · CONSOLE</div>
+            <h2>لوحة تحكّمك — كل شي في عينك</h2>
+            <p className="fx-lead">
+              تفتح لوحتك، تلقى شغلك مباشر: أرقامك من جوجل، محتواك الجاي، عملاءك، فوترتك.
+            </p>
 
-            <div className="feat-group-label"><span>📈</span> القياس والتحليل</div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🏠</span><h3>اللوحة الرئيسية</h3></div><p>ملخّص شهري لحظي: المشاهدات، التفاعل، أعلى المقالات، وسجل نشاط مباشر.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">📊</span><h3>تحليلات Google Analytics 4</h3></div><ul><li><Check /><span>الجمهور: أجهزة، زائر جديد مقابل عائد</span></li><li><Check /><span>السلوك: وقت القراءة، عمق التمرير، الارتداد</span></li><li><Check /><span>التوقيت: نمط اليوم والساعة + المصادر</span></li></ul></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">⚡</span><h3>زائر مباشر + Core Web Vitals</h3></div><p>عدّاد زوّار لحظي وأهم الصفحات الآن، مع مؤشرات سرعة الموقع (LCP · CLS · INP · TTFB).</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🩺</span><h3>فحص صحة الموقع</h3></div><p>تدقيق تقني فوري: الأمان، الأداء، SEO، الجوال، وسرعة Google PageSpeed.</p></Card>
-            </div>
-
-            <div className="feat-group-label"><span>✍️</span> المحتوى والوسائط</div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">📝</span><h3>إدارة المقالات</h3></div><p>تراجع وتوافق على كل مقال قبل نشره، وتشوف إحصائيات كل مقال على حدة (مشاهدات، تفاعل، تحويلات).</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">📦</span><h3>خط الإنتاج والحصة</h3></div><p>تتابع حصتك الشهرية، المقالات قيد الكتابة، والمجدولة للنشر — كلها في مكان واحد.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🧩</span><h3>محتوى صفحتك</h3></div><p>تحرّر الخدمات، فريق العمل، الإنجازات، الاعتمادات، والفيديو التعريفي — يظهر مباشرة في صفحتك.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🖼️</span><h3>المعرض ومكتبة الوسائط</h3></div><p>ترفع صور المعرض (مع نص بديل لجوجل صور) وتدير كل وسائطك، وتختار الشعار وصورة الغلاف.</p></Card>
-            </div>
-
-            <div className="feat-group-label"><span>🪪</span> ملفك ومصداقيتك</div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🏢</span><h3>الملف التجاري</h3></div><p>بياناتك الكاملة: الاسم، الوصف، العنوان، ساعات العمل، السجل التجاري، والرقم الضريبي.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">✅</span><h3>اكتمال + جاهزية SEO</h3></div><p>مؤشّر يبيّن نسبة اكتمال ملفك والحقول الناقصة، وحالة جاهزية بياناتك المنظّمة لمحركات البحث.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🛡️</span><h3>التوثيق المهني (YMYL)</h3></div><p>للقطاعات الحسّاسة (طبي/قانوني/مالي): توثيق التراخيص مع جهة الاعتماد = ثقة فورية + شارة موثّق.</p></Card>
-            </div>
-
-            <div className="feat-group-label"><span>💬</span> التفاعل والإشراف</div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">⭐</span><h3>تقييمات الزوّار</h3></div><p>تقييمات بنجوم من زوّارك — توافق عليها قبل ظهورها، وتظهر علنًا كتقييم تجميعي على صفحتك.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🗨️</span><h3>إشراف التعليقات</h3></div><p>تعليقات المقالات وتعليقات صفحتك — توافق/ترفض كلٌّ منها قبل النشر، تحكّم كامل.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">❓</span><h3>الأسئلة الشائعة وأسئلة الزوّار</h3></div><p>صندوق أسئلة الزوّار (Q&amp;A) — ترد، وتنشر الإجابة، فتتحوّل لأسئلة شائعة على صفحتك وفي البحث.</p></Card>
-            </div>
-
-            <div className="feat-group-label"><span>🎯</span> العملاء والتحويلات</div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🔥</span><h3>العملاء المحتملون (Leads)</h3></div><p>تصنيف تلقائي بنقاط حرارة: ساخن / مهتم / بارد / مؤهّل — مع درجة تفاعل لكل عميل.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">📅</span><h3>الحجوزات</h3></div><p>طلبات الحجز من زوّارك بحالة متابعة (جديد → تم التواصل → مكتمل → مؤرشف).</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">📩</span><h3>الدعم والمشتركون</h3></div><p>صندوق رسائل التواصل + قائمة المشتركين في نشرتك مع إحصائيات (نشط، موافقة، نمو).</p></Card>
-            </div>
-
-            <div className="feat-group-label"><span>🧰</span> أدوات وتنبيهات</div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🔍</span><h3>أدوات SEO</h3></div><p>استمارة نشاطك، الكلمات المستهدفة، وقائمة المنافسين — يستخدمها الفريق عند كتابة محتواك.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🔔</span><h3>تنبيهات تيليجرام الفورية</h3><span className="feat-tag-live">23 حدث</span></div><p>تصلك إشعارات لحظية على تيليجرام لكل حدث مهم (تفاصيلها في قسم التنبيهات أدناه).</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">⚙️</span><h3>الاشتراك والحساب</h3></div><p>تفاصيل باقتك وحالة الدفع والتواريخ، وإدارة كلمة المرور وربط بوت تيليجرام.</p></Card>
-            </div>
-          </div>
-        </section>
-
-        {/* SYSTEM 02 — PUBLIC PAGE */}
-        <section className="feat-sec" id="page">
-          <div className="feat-container">
-            <div className="feat-sec-head">
-              <div className="feat-sec-eyebrow">المنظومة 02</div>
-              <h2 className="feat-sec-title">صفحتك العامة في مدوّنتي</h2>
-              <p className="feat-sec-sub">موقع مصغّر احترافي على <span className="feat-mono">modonty.com/clients/…</span> — داخل شبكة فيها جمهور وزوّار، ومفهرس في جوجل ببيانات منظّمة كاملة.</p>
-            </div>
-
-            <div className="feat-group-label"><span>🪟</span> موقعك المصغّر</div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🖼️</span><h3>هوية كاملة</h3></div><p>غلاف + شعار + اسم + قطاع + موقع + شريط إحصائيات (متابعون، مقالات، مشاهدات، تقييم).</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🛡️</span><h3>شارة «موثّق»</h3></div><p>شارة توثيق من مدوّنتي + صورة الاعتماد ورقم الترخيص — مصداقية تفصلك عن المنافسين.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🧩</span><h3>أقسام غنية</h3></div><ul><li><Check /><span>خدمات · فريق · إنجازات · اعتمادات</span></li><li><Check /><span>تقييمات بنجوم · أسئلة شائعة · معرض صور</span></li><li><Check /><span>فيديو تعريفي · خريطة · ساعات العمل</span></li></ul></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">👆</span><h3>أزرار تفاعل وتواصل</h3></div><p>متابعة · حفظ · مشاركة · واتساب · حجز · اشتراك في النشرة — كلها تصلك كتنبيه فوري.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">⏰</span><h3>«مفتوح الآن» + تواصل سريع</h3></div><p>حالة العمل الآن، بطاقة تواصل سريع، وبطاقة Google Business — كلها على صفحتك.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">📰</span><h3>نشرتك البريدية</h3></div><p>زوّارك يشتركون مباشرة من صفحتك؛ كل مقال جديد يصلهم تلقائيًا.</p></Card>
-            </div>
-
-            <div className="feat-group-label"><span>🕸️</span> شبكة مدوّنتي</div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🏠</span><h3>ظهور في الواجهة</h3></div><p>مقالاتك تظهر في الصفحة الرئيسية أمام كل زوّار مدوّنتي — بلا إعلانات ممولة.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🤝</span><h3>شريط الشركاء + فلتر الصناعة</h3></div><p>اسمك وشعارك في قائمة الشركاء، قابلة للتصفية حسب الصناعة = اكتشاف أسهل.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🔢</span><h3>إحصائيات الشبكة</h3></div><p>تفاعلك يضاف لأرقام مدوّنتي العامة (المشاهدات، التفاعلات، الشركاء) = إثبات اجتماعي مشترك.</p></Card>
-            </div>
-
-            <div className="feat-group-label"><span>🔎</span> SEO تقني على صفحتك</div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🧬</span><h3>بيانات منظّمة (JSON-LD)</h3></div><p>Organization · LocalBusiness · FAQPage · BreadcrumbList · AggregateRating — تظهر صفحتك أغنى في نتائج جوجل.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🗺️</span><h3>خرائط الموقع والصور</h3></div><p>صفحتك ومقالاتك وصورك في خريطة الموقع وخريطة الصور = أرشفة أسرع في جوجل وجوجل صور.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">📤</span><h3>مشاركة احترافية</h3></div><p>صور OG/Twitter بقياس 1200×630 + روابط لغوية (hreflang) للسعودية ومصر = معاينة مرتّبة عند المشاركة.</p></Card>
-            </div>
-          </div>
-        </section>
-
-        {/* SYSTEM 03 — ARTICLES */}
-        <section className="feat-sec alt" id="articles">
-          <div className="feat-container">
-            <div className="feat-sec-head">
-              <div className="feat-sec-eyebrow">المنظومة 03</div>
-              <h2 className="feat-sec-title">مقالاتك — محتوى يبيع</h2>
-              <p className="feat-sec-sub">كل مقال ليس نصًّا فقط — بل تجربة قراءة كاملة وأداة التقاط عملاء.</p>
-            </div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">📖</span><h3>تجربة قراءة احترافية</h3></div><ul><li><Check /><span>نقاط رئيسية + جدول محتويات</span></li><li><Check /><span>شريط تقدّم القراءة + مسار تنقّل</span></li><li><Check /><span>مصادر/مراجع + بطاقة الكاتب</span></li></ul></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🎧</span><h3>نسخة صوتية</h3></div><p>كل مقال يصدر بنسخة صوتية يستمع لها الزائر — يرفع وقت الجلسة وتجربة الوصول.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🖼️</span><h3>صور ومعرض</h3></div><p>صورة بارزة + صور داخل المحتوى تظهر كمعرض، وكلها في خريطة الصور لجوجل.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">❤️</span><h3>تفاعل الزوّار</h3></div><p>إعجاب · حفظ · مشاركة (6 منصات) · تعليقات بإشراف — كله يبني جمهورك.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🙋</span><h3>سؤال مباشر = Lead</h3></div><p>الزائر يسأل من داخل المقال، فيصلك تنبيه فوري ويُسجّل كعميل محتمل في لوحتك.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">📅</span><h3>حجز من المقال</h3></div><p>زر حجز داخل المقال نفسه = تحويل القارئ لعميل في لحظة الاهتمام.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🔗</span><h3>مقالات ذات صلة</h3></div><p>روابط ذكية لمقالاتك الأخرى (نفس العميل/الكاتب/التصنيف) = جلسات أطول.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🔥</span><h3>صفحة «الرائجة»</h3></div><p>مقالاتك المتفاعلة تظهر في صفحة الرائجة أمام كل زوّار المنصة.</p></Card>
-            </div>
-          </div>
-        </section>
-
-        {/* SYSTEM 04 — PRODUCTION */}
-        <section className="feat-sec" id="production">
-          <div className="feat-container">
-            <div className="feat-sec-head">
-              <div className="feat-sec-eyebrow">المنظومة 04</div>
-              <h2 className="feat-sec-title">التصاميم والإنتاج التقني</h2>
-              <p className="feat-sec-sub">الفريق ينتج لك لكل مقال حزمة تقنية كاملة، ويمرّرها على بوّابة جودة صارمة قبل أي نشر.</p>
-            </div>
-            <div className="feat-cat-grid">
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🔧</span><h3>SEO كامل لكل مقال</h3></div><p>عنوان + وصف + رابط أساسي (canonical) + عناوين فرعية منظّمة + روابط داخلية.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🧬</span><h3>بيانات منظّمة مولّدة</h3></div><p>JSON-LD (Article + Organization + Breadcrumb + FAQ) يُولَّد ويُتحقّق منه آليًا — صفر عمل منك.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🖼️</span><h3>صور احترافية + OG</h3></div><p>صورة بارزة موثّقة الأبعاد مع نص بديل + صور مشاركة OG/Twitter بقياس 1200×630.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">✅</span><h3>بوّابة جودة 28 فحص</h3></div><p>قبل النشر: قابلية الفهرسة، E-E-A-T، الصور، السكيما، التواريخ، والروابط — كلها 100%.</p></Card>
-              <Card className="feat-bcard"><div className="feat-bcard-head"><span className="feat-bcard-ico">🔎</span><h3>طلب فهرسة Google</h3></div><p>بعد اجتياز الجودة، يُطلب فهرسة المقال عبر Google Search Console لظهور أسرع.</p></Card>
-            </div>
-          </div>
-        </section>
-
-        {/* YMYL HIGHLIGHT — sensitive sectors */}
-        <section className="feat-sec" id="ymyl">
-          <div className="feat-container">
-            <div className="feat-ymyl">
-              <div className="feat-ymyl-head">
-                <div className="feat-ymyl-badge">
-                  <span className="w-1.5 h-1.5 rounded-full bg-success" />
-                  <span>ميزة حصرية — YMYL</span>
+            <div className="fx-shot">
+              <div className="fx-shot-cap">
+                <div>
+                  <span className="fx-badge-real">✓ من لوحتك</span>
+                  <h4>لوحة تحكّم سمايل تاون — ٥ مقالات · ١٦٦ مشاهدة · ٤١ ظهور (+٨٪) · تحويلات ١</h4>
                 </div>
-                <div className="feat-ymyl-shield" aria-hidden>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                    <path d="M9 12l2 2 4-4" />
-                  </svg>
+                <small>صورة من لوحة عميل فعلي</small>
+              </div>
+              <Image src="/features/console-dashboard.png" alt="لوحة تحكم مدونتي - سمايل تاون" width={1920} height={950} priority={false} />
+            </div>
+
+            <div className="fx-groups">
+              <div className="fx-gcard">
+                <div className="icon">📊</div>
+                <h3>نظرة عامة سريعة</h3>
+                <p>مقال منشور · مشاهدات · مشتركين — كل شي في السطر الأول.</p>
+                <ul>
+                  <li>هذا الشهر: ٥ مقال · ١٦٦ مشاهدة</li>
+                  <li>الإحصائيات (٤١ ظهور +٨٪)</li>
+                  <li>معدل الارتداد (٧.٩٪)</li>
+                </ul>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">⚠️</div>
+                <h3>يحتاج انتباهك</h3>
+                <p>يلفت انتباهك للأمور المنتظرة قرارك — بلا فوت.</p>
+                <ul>
+                  <li>المقالات (موافقات)</li>
+                  <li>التعليقات (مراجعة)</li>
+                  <li>الدعم (رسائل)</li>
+                </ul>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">📈</div>
+                <h3>الأداء الأسبوعي</h3>
+                <p>٤ مؤشرات موثّقة قدامك مباشرة.</p>
+                <ul>
+                  <li>الإحصائيات (Impressions)</li>
+                  <li>درجة التفاعل (٣٣/١٠٠)</li>
+                  <li>التحويلات (١، ٠.٦٪)</li>
+                  <li>نسبة الارتداد</li>
+                </ul>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">✍️</div>
+                <h3>محتواك</h3>
+                <p>كل حاجة تخص محتوى صفحتك — منظّمة.</p>
+                <ul>
+                  <li>بيانات نشاطك (+YMYL)</li>
+                  <li>معلومات · محتوى الصفحة</li>
+                  <li>معرض الصور · الملفات</li>
+                  <li>المقالات · أسئلة الصفحة</li>
+                </ul>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">👥</div>
+                <h3>عملاءك</h3>
+                <p>كل تفاعل عميل في مكان واحد.</p>
+                <ul>
+                  <li>مشتركو النشرة</li>
+                  <li>العملاء المحتملون (Leads)</li>
+                  <li>الحجوزات</li>
+                  <li>الأسئلة · الآراء · التقييمات</li>
+                </ul>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">🛡️</div>
+                <h3>الموثوقية والصحة</h3>
+                <p>مدى جاهزية موقعك.</p>
+                <ul>
+                  <li>صحة موقعك</li>
+                  <li>الحملات (قريباً 🚀)</li>
+                  <li>YMYL badge</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── SECTION 2: PUBLIC PAGE ─── */}
+        <section className="fx-sec">
+          <div className="fx-container">
+            <div className="fx-eyebrow">02 · YOUR PAGE</div>
+            <h2>صفحتك العامة — بديل موقعك الإلكتروني</h2>
+            <p className="fx-lead">
+              ما عندك موقع؟ ما مشكلة. مدونتي تعطيك صفحة كاملة تشوفها عملاءك: هويّتك، خدماتك، حجزك، تقييماتك.
+            </p>
+
+            <div className="fx-shot">
+              <div className="fx-shot-cap">
+                <div>
+                  <span className="fx-badge-real">✓ صفحة حقيقية</span>
+                  <h4>عيادات سمايل تاون — أعلى أثر رقمي على مدونتي (١٠,٦٨٤ من جوجل)</h4>
                 </div>
-                <h2>
-                  مصداقيتك = ثقة جوجل.<br />
-                  <span className="accent">نوثّقها لك — ونحميها.</span>
-                </h2>
-                <p className="feat-ymyl-sub">
-                  جوجل يضع المجالات اللي تمس صحتك أو مالك أو حقوقك تحت معيار أعلى (Your Money or Your Life). أكثر منصات المحتوى ما تتعامل معه — إحنا نتعامل.
-                </p>
+                <a href="https://www.modonty.com/clients/عيادات-سمايل-تاون-لطب-الفم-و-الأسنان" target="_blank" rel="noopener noreferrer">
+                  شوف الصفحة الحقيقية ←
+                </a>
               </div>
+              <Image src="/features/client-page.png" alt="صفحة عميل حقيقية - سمايل تاون" width={1920} height={950} />
+            </div>
 
-              <div className="feat-ymyl-grid">
-                <Card className="feat-ymyl-card">
-                  <div className="feat-ymyl-emoji">🩺</div>
-                  <h3>القطاع الطبي</h3>
-                  <p>عيادات، أطباء، صيدليات — يُطلب توثيق الترخيص + المراجعة المهنية لكل محتوى. نتولاها.</p>
-                </Card>
-                <Card className="feat-ymyl-card">
-                  <div className="feat-ymyl-emoji">⚖️</div>
-                  <h3>القطاع القانوني</h3>
-                  <p>محامون، مكاتب استشارات قانونية — توثيق العضوية + خبرة الكاتب = ظهور أعلى في النتائج.</p>
-                </Card>
-                <Card className="feat-ymyl-card">
-                  <div className="feat-ymyl-emoji">💰</div>
-                  <h3>القطاع المالي</h3>
-                  <p>محاسبة، تمويل، استشارات مالية — رخصة الهيئة + توثيق الكاتب = ثقة فورية للقارئ والمحرك.</p>
-                </Card>
+            <div className="fx-groups">
+              <div className="fx-gcard">
+                <div className="icon">📌</div>
+                <h3>هوية كاملة + شارة موثّق</h3>
+                <p>لوگو · اسم · تخصص · موقع · شارة "موثّق ✓" · سنة التأسيس.</p>
               </div>
-
-              <div className="feat-ymyl-foot">
-                <span className="feat-ymyl-foot-item"><span className="dot"></span><span>توثيق الترخيص مع جهة الاعتماد</span></span>
-                <span className="feat-ymyl-foot-item"><span className="dot"></span><span>شارة «موثّق» علنية</span></span>
-                <span className="feat-ymyl-foot-item"><span className="dot"></span><span>بيانات منظّمة EAT/EEAT كاملة</span></span>
+              <div className="fx-gcard">
+                <div className="icon">🎨</div>
+                <h3>Hero banner برندي</h3>
+                <p>صورة رئيسية احترافية بتصميم يعبّر عن هويّتك.</p>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">📞</div>
+                <h3>أزرار CTA بارزة</h3>
+                <p>احجز الآن · متابعة · مشاركة · واتساب عائم.</p>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">📊</div>
+                <h3>الأثر الرقمي من Google</h3>
+                <p>كارت "١٠,٦٨٤ الأثر الرقمي" مع شعار G — دليل مصداقية فوري.</p>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">🗂️</div>
+                <h3>٩ أقسام غنية</h3>
+                <p>نظرة عامة · آراء · مقالات · عن الشركة · FAQ · تواصل · ساعات · موثوقية · نشرة.</p>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">🔍</div>
+                <h3>SEO/AEO مدمج</h3>
+                <p>JSON-LD · Sitemap · Open Graph · Structured Data — لِلظهور في جوجل و ChatGPT.</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* TELEGRAM ALERTS */}
-        <section className="feat-sec alt" id="alerts">
-          <div className="feat-container">
-            <div className="feat-sec-head">
-              <div className="feat-sec-eyebrow">تنبيهات لحظية</div>
-              <h2 className="feat-sec-title">23 تنبيه فوري على تيليجرام</h2>
-              <p className="feat-sec-sub">تشتغل تجارتك وأنت مطمئن — كل حدث مهم يصلك لحظيًا، وتتحكم في تفعيل/إيقاف كل نوع.</p>
+        {/* ─── SECTION 3: ARTICLES ─── */}
+        <section className="fx-sec">
+          <div className="fx-container">
+            <div className="fx-eyebrow">03 · ARTICLES</div>
+            <h2>مقالاتك — محتوى يبيع فعلاً</h2>
+            <p className="fx-lead">
+              مقال احترافي مع صور high-res، إحصائيات قراءة، أزرار تفاعل، وشارة العميل الموثّقة — كل شي مصمّم يخلي القارئ ينحوّل لعميل.
+            </p>
+
+            <div className="fx-shot">
+              <div className="fx-shot-cap">
+                <div>
+                  <span className="fx-badge-real">✓ مقال حقيقي</span>
+                  <h4>ابتسامة هوليود قبل وبعد (سمايل تاون) — 1189 كلمة · 6 دقائق قراءة</h4>
+                </div>
+                <a href="https://www.modonty.com/articles/ابتسامة-هوليود-قبل-وبعد" target="_blank" rel="noopener noreferrer">
+                  شوف المقال الحقيقي ←
+                </a>
+              </div>
+              <Image src="/features/article.png" alt="مقال حقيقي على مدونتي" width={1920} height={950} />
             </div>
-            <div className="feat-tg-wrap">
-              <div className="feat-tg-col">
-                <div className="feat-tg-col-title"><span>أحداث المقالات</span><span className="feat-tg-count">13</span></div>
-                <div className="feat-tg-chip"><span className="e">👁</span><span>مشاهدة مقال</span></div>
-                <div className="feat-tg-chip"><span className="e">👍</span><span>إعجاب / 👎 عدم إعجاب</span></div>
-                <div className="feat-tg-chip"><span className="e">⭐</span><span>حفظ المقال</span></div>
-                <div className="feat-tg-chip"><span className="e">↗</span><span>مشاركة</span></div>
-                <div className="feat-tg-chip"><span className="e">🎯</span><span>نقرة CTA / 🔗 رابط</span></div>
-                <div className="feat-tg-chip"><span className="e">💬</span><span>تعليق / رد / إعجاب تعليق</span></div>
-                <div className="feat-tg-chip"><span className="e">🎉</span><span>تحويل / 🔥 عميل عالي الاهتمام</span></div>
+
+            <div className="fx-groups">
+              <div className="fx-gcard">
+                <div className="icon">📝</div>
+                <h3>Header احترافي</h3>
+                <p>عنوان بارز · وصف SEO · تاريخ · اسم المنصة.</p>
               </div>
-              <div className="feat-tg-col">
-                <div className="feat-tg-col-title"><span>أحداث صفحتك</span><span className="feat-tg-count">6</span></div>
-                <div className="feat-tg-chip"><span className="e">👁</span><span>زيارة صفحتك</span></div>
-                <div className="feat-tg-chip"><span className="e">➕</span><span>متابع جديد (بالاسم)</span></div>
-                <div className="feat-tg-chip"><span className="e">↗</span><span>مشاركة صفحتك (بالمنصة)</span></div>
-                <div className="feat-tg-chip"><span className="e">⭐</span><span>حفظ صفحتك</span></div>
-                <div className="feat-tg-chip"><span className="e">💬</span><span>تعليق على صفحتك</span></div>
-                <div className="feat-tg-chip"><span className="e">📧</span><span>اشتراك في نشرتك</span></div>
+              <div className="fx-gcard">
+                <div className="icon">📈</div>
+                <h3>إحصائيات كاملة</h3>
+                <p>عدد الكلمات · وقت القراءة · مشاهدات · تعليقات.</p>
               </div>
-              <div className="feat-tg-col">
-                <div className="feat-tg-col-title"><span>تواصل مباشر</span><span className="feat-tg-count">4</span></div>
-                <div className="feat-tg-chip"><span className="e">📩</span><span>رسالة دعم</span></div>
-                <div className="feat-tg-chip"><span className="e">📣</span><span>اهتمام بحملة</span></div>
-                <div className="feat-tg-chip"><span className="e">🙋</span><span>سؤال مباشر (Lead)</span></div>
-                <div className="feat-tg-chip"><span className="e">📅</span><span>طلب حجز <span className="feat-tag-live ms-1.5">افتراضي مفعّل</span></span></div>
+              <div className="fx-gcard">
+                <div className="icon">🖼️</div>
+                <h3>صور + معرض</h3>
+                <p>Hero image high-quality · صور داخلية · Open Graph لِلمشاركة.</p>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">🎯</div>
+                <h3>Sidebar تفاعل</h3>
+                <p>اشترك · مشاركة · تعليق · حفظ · إعجاب.</p>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">🏥</div>
+                <h3>شارة العميل الموثّقة</h3>
+                <p>بطاقة العميل مع صورة، تخصص، وموقع — رابط لِصفحته.</p>
+              </div>
+              <div className="fx-gcard">
+                <div className="icon">🚀</div>
+                <h3>SEO + AEO كامل</h3>
+                <p>JSON-LD · Meta tags · ٢٨ فحص جودة · طلب فهرسة Google.</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* PACKAGES — DB-driven */}
-        <section className="feat-sec" id="packages">
-          <div className="feat-container">
-            <div className="feat-sec-head">
-              <div className="feat-sec-eyebrow">الباقات</div>
-              <h2 className="feat-sec-title">اختر ما يناسب نموّك</h2>
-              <p className="feat-sec-sub">كل الباقات تشمل صفحتك الموثّقة + لوحة التحكم الكاملة + التحليلات + التنبيهات. الفرق في حجم المحتوى الشهري.</p>
+        {/* ─── SECTION 4: YMYL ─── */}
+        <section className="fx-sec">
+          <div className="fx-container">
+            <div className="fx-eyebrow">04 · TRUST</div>
+            <h2>مصداقيتك محميّة</h2>
+            <p className="fx-lead">
+              القطاعات الحساسة (طبية · مالية · قانونية) تحتاج معايير أعلى. إحنا نطبّقها — عشان جوجل يثق فيك، وعميلك يشتري منك.
+            </p>
+
+            <div className="fx-ymyl">
+              <h3>YMYL — المحتوى الحساس (Your Money or Your Life)</h3>
+              <p>
+                أي محتوى يمس <strong>صحة</strong> أو <strong>مال</strong> أو <strong>حقوق</strong> العميل — جوجل يطبّق عليه معايير أعلى (E-E-A-T). إحنا نحمي مصداقيتك.
+              </p>
+              <div className="fx-sectors">
+                <div className="fx-scard">
+                  <div className="icon">⚕️</div>
+                  <h4>القطاع الطبي</h4>
+                  <p>عيادات · مستشفيات · أطباء — توثيق كامل + التزام أخلاقيات.</p>
+                </div>
+                <div className="fx-scard">
+                  <div className="icon">⚖️</div>
+                  <h4>القطاع القانوني</h4>
+                  <p>محامون · مكاتب قانونية — توثيق التخصص + المرجعية.</p>
+                </div>
+                <div className="fx-scard">
+                  <div className="icon">💰</div>
+                  <h4>القطاع المالي</h4>
+                  <p>استشارات مالية · محاسبة · تأمين — معايير SAMA/ZATCA.</p>
+                </div>
+              </div>
             </div>
-            {visiblePlans.length > 0 ? (
-                <div className="feat-pkg">
-                <table className="feat-pkg-table">
+          </div>
+        </section>
+
+        {/* ─── SECTION 5: TELEGRAM ─── */}
+        <section className="fx-sec">
+          <div className="fx-container">
+            <div className="fx-eyebrow">05 · ALERTS</div>
+            <h2>٢٣ تنبيه فوري على تيليجرام</h2>
+            <p className="fx-lead">
+              لا تفوت شي. أي حدث مهم — يوصلك على تيليجرام في ثوان.
+            </p>
+
+            <div className="fx-tg">
+              <div className="fx-tgc"><div className="ico">📈</div><h4>SEO</h4><p>ترتيب · impressions · clicks · errors</p></div>
+              <div className="fx-tgc"><div className="ico">📝</div><h4>المحتوى</h4><p>مقال جاهز · نشر · تحديث</p></div>
+              <div className="fx-tgc"><div className="ico">👥</div><h4>العملاء</h4><p>Lead جديد · حجز · تقييم</p></div>
+              <div className="fx-tgc"><div className="ico">💳</div><h4>الفوترة</h4><p>فاتورة · تجديد · ترقية</p></div>
+              <div className="fx-tgc"><div className="ico">🛡️</div><h4>الأمان</h4><p>دخول · تغيير · موقع مكسور</p></div>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── SECTION 6: PRICING + COMPARE + CTA ─── */}
+        <section className="fx-sec">
+          <div className="fx-container">
+            <div className="fx-eyebrow">06 · CHOOSE</div>
+            <h2>اختر ما يناسب نموّك</h2>
+            <p className="fx-lead">
+              ٤ باقات لمراحل نمو مختلفة. الاشتراك السنوي = ٦ شهور هدية.
+            </p>
+
+            {displayPlans.length > 0 ? (
+              <div className="fx-pkg">
+                <table>
                   <thead>
                     <tr>
-                      <th className="feat-feat">الميزة</th>
-                      {visiblePlans.map((p) => {
-                        const isFree = p.priceMonthly === 0;
-                        const featured = !!p.featuredBadge && p.featuredBadge.trim() !== "";
-                        return (
-                          <th key={p.id}>
-                            {featured && <div className="feat-pkg-pop-badge">{p.featuredBadge || "الأكثر طلبًا"}</div>}
-                            <div className={`feat-pkg-name${featured ? " pop" : ""}`}>{p.name}</div>
-                            <div className="feat-pkg-price">
-                              {isFree ? (
-                                <><b>0</b> {currency}</>
-                              ) : (
-                                <><b>{p.priceMonthly}</b> {currency}/شهر</>
-                              )}
-                            </div>
-                          </th>
-                        );
-                      })}
+                      <th>الميزة</th>
+                      {displayPlans.map((p, i) => (
+                        <th key={p.id} className={i === recIdx ? "rec" : ""}>
+                          <div className="th-inner">
+                            {i === recIdx && <span className="rec-badge">🔥 الأكثر شيوعاً</span>}
+                            <span>{p.name}</span>
+                          </div>
+                        </th>
+                      ))}
                     </tr>
                   </thead>
                   <tbody>
+                    {/* Row 1: Monthly price (from Plan.priceMonthly) */}
                     <tr>
-                      <td className="feat-feat">مقالات شهريًا</td>
-                      {visiblePlans.map((p) => {
-                        const isFree = p.priceMonthly === 0;
-                        const articles = isFree ? "—" : (p.articlesLabel || "—");
-                        return <td key={p.id}>{articles}</td>;
-                      })}
+                      <td>السعر الشهري</td>
+                      {displayPlans.map((p, i) => (
+                        <td key={p.id} className={i === recIdx ? "rec" : ""}>
+                          <span className="price">{p.priceMonthly} {currency}</span>
+                        </td>
+                      ))}
                     </tr>
-                    {PILLAR_FEATURES.map((f, fi) => (
-                      <tr key={fi}>
-                        <td className="feat-feat">{f.label}</td>
-                        {visiblePlans.map((p) => {
-                          const isFree = p.priceMonthly === 0;
-                          const has = f.all || (f.paid && !isFree);
-                          return (
-                            <td key={p.id}>
-                              {has ? <span className="feat-yes">✓</span> : <span className="feat-no">—</span>}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
+                    {/* Row 2: Articles label (from Plan.articlesLabel) */}
+                    <tr>
+                      <td>المقالات</td>
+                      {displayPlans.map((p, i) => (
+                        <td key={p.id} className={i === recIdx ? "rec" : ""}>
+                          {p.articlesLabel || "—"}
+                        </td>
+                      ))}
+                    </tr>
+                    {/* Rows 3+: Comparison matrix (from LandingSection "featuresComparison") */}
+                    {rows.map((row, ridx) =>
+                      row.category ? (
+                        <tr key={ridx} className="cat-row">
+                          <td colSpan={displayPlans.length + 1}>{row.category}</td>
+                        </tr>
+                      ) : (
+                        <tr key={ridx}>
+                          <td>{row.label}</td>
+                          {displayPlans.map((p, i) => {
+                            const SLUG_ORDER = ["presence", "starter", "growth", "scale"];
+                            const dataIdx = SLUG_ORDER.indexOf(p.slug);
+                            return (
+                              <td key={p.id} className={i === recIdx ? "rec" : ""}>
+                                {row.values?.[dataIdx] ?? "—"}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      )
+                    )}
                   </tbody>
                 </table>
-                </div>
-            ) : null}
-            <p className="feat-pkg-note">
-              الأسعار بالـ{country === "EG" ? "جنيه المصري" : "ريال السعودي"} · مزايا كل باقة قابلة للتخصيص من إدارة المنصة. عدد المقالات لكل باقة هو الفرق الأساسي.
+              </div>
+            ) : (
+              <p style={{color:"rgba(255,255,255,.6)",padding:"20px",textAlign:"center"}}>
+                لا توجد باقات متاحة حالياً — تواصل معنا للتفاصيل.
+              </p>
+            )}
+
+            <h3 style={{fontSize:"22px",fontWeight:900,margin:"44px 0 8px",textAlign:"center"}}>إيش الفرق فعلاً؟</h3>
+            <p style={{textAlign:"center",color:"rgba(255,255,255,.65)",fontSize:"14.5px",marginBottom:"20px"}}>
+              قارن بين توظيف فريق داخلي vs اشتراك مدونتي.
             </p>
-          </div>
-        </section>
-
-        {/* COMPARISON */}
-        <section className="feat-sec alt">
-          <div className="feat-container">
-            <div className="feat-sec-head text-center">
-              <div className="feat-sec-eyebrow text-muted-foreground">مقارنة عملية</div>
-              <h2 className="feat-sec-title">إيش الفرق فعلاً؟</h2>
+            <div className="fx-cmp">
+              <div className="fx-cc bad">
+                <h3>❌ توظّف فريق محتوى داخلي</h3>
+                <ul>
+                  <li>راتب كاتب: ٦-١٠ آلاف ريال/شهر</li>
+                  <li>راتب مصمم: ٥-٨ آلاف ريال/شهر</li>
+                  <li>راتب متخصص SEO: ٨-١٥ ألف/شهر</li>
+                  <li>تجهيزات · تدريب · إدارة</li>
+                  <li>مسؤولية العمل · الإجازات</li>
+                  <li>= ٢٠-٣٥ ألف ريال/شهر</li>
+                </ul>
+              </div>
+              <div className="fx-cc good">
+                <h3>✅ اشتراك واحد — نظام كامل</h3>
+                <ul>
+                  <li>اشتراك سنوي: ٦ أشهر مجاناً</li>
+                  <li>فريق كامل جاهز</li>
+                  <li>لوحة تحكم شفافة ٢٤/٧</li>
+                  <li>تنبيهات فورية · دعم مباشر</li>
+                  <li>بلا مسؤوليات موظفين</li>
+                  <li>= توفير ٩٥٪+ من التكلفة</li>
+                </ul>
+              </div>
             </div>
-            <div className="feat-compare-grid">
-              <div className="feat-cc">
-                <div className="feat-cc-eyebrow">الطريقة التقليدية</div>
-                <h3>توظف فريق محتوى داخلي</h3>
-                <div className="feat-cc-price">~444,000 {currency} / سنوياً</div>
-                <ul className="feat-cc-list">
-                  <li><X /><span>راتب 6 موظفين + توظيف + تدريب + إجازات</span></li>
-                  <li><X /><span>أدوات SEO منفصلة بتكلفة إضافية</span></li>
-                  <li><X /><span>تأخير 6+ شهور للبدء قبل ظهور أي نتائج</span></li>
-                  <li><X /><span>ما في شبكة — تبدأ من صفر</span></li>
-                  <li><X /><span>أنت تدير الفريق + تتابع + تشتكي</span></li>
-                </ul>
-              </div>
-              <div className="feat-cc win">
-                <div className="feat-cc-eyebrow">مدوّنتي</div>
-                <h3>اشتراك واحد — نظام كامل</h3>
-                <div className="feat-cc-price">
-                  من {((visiblePlans.find((p) => p.priceMonthly > 0)?.priceMonthly ?? 399) * 12).toLocaleString("en-US")} {currency} / سنوياً
-                </div>
-                <ul className="feat-cc-list">
-                  <li><CheckWhite /><span>كتابة + نشر + متابعة + تقارير — كل شي شامل</span></li>
-                  <li><CheckWhite /><span>أدوات SEO + GSC + GTM مدمجة باللوحة</span></li>
-                  <li><CheckWhite /><span>محتوى احترافي جاهز للنشر — توسع تدريجي حسب الباقة</span></li>
-                  <li><CheckWhite /><span>تنضم لشبكة +19 شركة + جمهور موجود</span></li>
-                  <li><CheckWhite /><span>أنت توافق، نحن ندير الباقي</span></li>
-                </ul>
-              </div>
+
+            <div className="fx-final">
+              <h2>جاهز ترى ترتيبك يتحرّك؟</h2>
+              <p>اشترك سنوياً واكسب ٦ أشهر مجاناً — أو تكلّم معنا عن باقة مخصصة.</p>
+              <Link href={signupHref} className="fx-btn-p">{ctaLabel} ←</Link>
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="fx-btn-s">تكلّم معنا على واتساب</a>
             </div>
           </div>
         </section>
 
-        {/* FINAL CTA */}
-        <section className="feat-final">
-          <div className="feat-final-card">
-            <h2>جاهز ترى ترتيبك يتحرّك؟</h2>
-            <p>اشترك اليوم، وابدأ ببناء حضورك الرقمي مع مرونة كاملة في إدارة الباقة من لوحة التحكم.</p>
-            <div className="feat-ctas">
-              <a href={signupHref} className="feat-btn-white">{ctaLabel}</a>
-              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="feat-btn-ghost">كلّمنا على واتساب</a>
-            </div>
-          </div>
-        </section>
-    </div>
+      </div>
+    </>
   );
 }

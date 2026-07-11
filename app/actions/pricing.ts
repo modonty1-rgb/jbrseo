@@ -28,8 +28,23 @@ function revalidatePricing(country: SupportedCountry) {
   revalidatePath(`/${country.toLowerCase()}/pricing`);
 }
 
-/** Read all 4 plans for a country, ordered by displayOrder. */
+/**
+ * Read VISIBLE plans for a country (respects `visible` flag from admin).
+ * Public-facing pages (features, pricing, signup, landing) MUST use this.
+ */
 export async function getAllPlans(country: SupportedCountry) {
+  assertCountry(country);
+  return prisma.plan.findMany({
+    where: { country, visible: true },
+    orderBy: { displayOrder: "asc" },
+  });
+}
+
+/**
+ * Read ALL plans (including hidden) for a country — ADMIN ONLY.
+ * Used by admin dashboard where hidden plans must still be editable.
+ */
+export async function getAllPlansIncludingHidden(country: SupportedCountry) {
   assertCountry(country);
   return prisma.plan.findMany({
     where: { country },

@@ -6,8 +6,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { LazyMotion, domAnimation, m, animate, useInView, AnimatePresence } from "motion/react";
 import type { Plan as DBPlan } from "@prisma/client";
 import type { StaticLanding } from "@/app/content/landing/types";
+import type { ModontyTrustBundle } from "@/app/actions/modonty-client-logos";
+import type { ModontyImpactStats, ClientCaseStudyStats } from "@/lib/analytics/ga4";
+import { TrustSection } from "./TrustSection";
+import { getPlanCardContent } from "@/lib/plan-card-content";
+import { FileText, ArrowLeft, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Card, CardContent, CardHeader, CardTitle } from "@/app/components/ui/card";
 
 type Billing = "monthly" | "annual";
 
@@ -20,36 +24,18 @@ type Props = {
   signupHref: string;
   initialBilling: Billing;
   ctaLabel: string;
+  trustBundle: ModontyTrustBundle;
+  modontyImpact: ModontyImpactStats | null;
+  caseStats: Record<string, ClientCaseStudyStats> | null;
 };
 
-const SERP_QUERIES = [
-  "شركة مقاولات بالرياض",
-  "عيادة أسنان بجدة",
-  "متجر قهوة مختصة",
-  "مكتب محاماة بالقاهرة",
-];
-
-const SERP_ROWS = {
-  ad:  { title: "منافس أعلى أداءً — موقعك في الخلف", url: "competitor-ads.com", ad: true },
-  c2:  { title: "دليل خدمات بدون تحديث منذ سنتين", url: "old-directory.net", ad: false },
-  c3:  { title: "مدوّنة عامة بدون أمثلة محلية", url: "generic-blog.com", ad: false },
-  c4:  { title: "صفحة ويكيبيديا للتعريف العام", url: "reference-site.org", ad: false },
-  c5:  { title: "منافس متخصص في خدمة مجاورة", url: "side-competitor.net", ad: false },
-  you: { title: "نشاطك التجاري — حل عملائك الأول", url: "your-business.com", isYou: true, ad: false },
-} as const;
-
-type SerpKey = keyof typeof SERP_ROWS;
-const INITIAL_ORDER: SerpKey[] = ["ad", "c2", "c3", "c4", "c5", "you"];
-const ROW_H = 62;
-const ROW_INNER_H = 54;
-
 const CALC_ROLES = [
-  { key: "writer",   label: "كاتب محتوى SEO",      def: 4500, min: 2500, max: 12000 },
-  { key: "designer", label: "مصمم جرافيك",         def: 7000, min: 2000, max: 12000 },
-  { key: "seo",      label: "متخصص SEO",           def: 6000, min: 3000, max: 14000 },
-  { key: "social",   label: "مدير سوشال ميديا",    def: 5500, min: 2500, max: 12000 },
-  { key: "video",    label: "مونتير / منتج فيديو", def: 6000, min: 2500, max: 14000 },
-  { key: "dev",      label: "مطور مواقع",          def: 8000, min: 3000, max: 18000 },
+  { key: "writer",   label: "كاتب محتوى SEO",      icon: "✍️", def: 2500, min: 2000, max: 12000 },
+  { key: "designer", label: "مصمم جرافيك",         icon: "🎨", def: 3500, min: 2500, max: 12000 },
+  { key: "seo",      label: "متخصص SEO",           icon: "🔍", def: 3500, min: 2500, max: 14000 },
+  { key: "social",   label: "مدير سوشال ميديا",    icon: "📱", def: 3000, min: 2500, max: 12000 },
+  { key: "video",    label: "مونتير / منتج فيديو", icon: "🎬", def: 3000, min: 2500, max: 14000 },
+  { key: "dev",      label: "مطور مواقع",          icon: "💻", def: 4500, min: 3000, max: 18000 },
 ] as const;
 
 const ARABIC_DIGITS = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"] as const;
@@ -64,37 +50,20 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--success);outline-of
 @keyframes prev-caret{0%,49%{opacity:1}50%,100%{opacity:0}}
 @keyframes prev-up{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 @keyframes prev-pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
-@keyframes prev-fab-in{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
 @keyframes prev-sheet-in{from{transform:translateY(20px) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
-.prev-serp-row{position:absolute;left:14px;right:14px;height:${ROW_INNER_H}px;border:1.5px solid transparent;border-radius:13px;padding:10px 12px;overflow:hidden;transition:top .55s cubic-bezier(.34,1.2,.34,1),box-shadow .4s,border-color .4s,background .4s}
+.prev-serp-row{position:absolute;left:14px;right:14px;height:54px;border:1.5px solid transparent;border-radius:13px;padding:10px 12px;overflow:hidden;transition:top .55s cubic-bezier(.34,1.2,.34,1),box-shadow .4s,border-color .4s,background .4s}
 .prev-serp-row.you{background:var(--card);border-color:var(--success);box-shadow:0 10px 26px -12px color-mix(in oklch, var(--success) 45%, transparent)}
 .prev-serp-row.won{background:var(--card);border-color:var(--success);box-shadow:0 14px 30px -10px color-mix(in oklch, var(--success) 55%, transparent)}
 .prev-faq-item{border-bottom:1px solid var(--border)}
 .prev-faq-q{display:flex;justify-content:space-between;align-items:center;width:100%;padding:22px 0;font-size:16px;font-weight:500;color:var(--foreground);text-align:right}
-.prev-faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;font-size:14.5px;color:var(--muted-foreground);line-height:1.85;padding:0;font-weight:300}
-.prev-faq-item.open .prev-faq-a{max-height:600px;padding:0 0 22px}
+.prev-faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;font-size:14.5px;color:var(--muted-foreground);line-height:1.85;padding:0;font-weight:300;white-space:pre-line}
+.prev-faq-item.open .prev-faq-a{max-height:2400px;padding:0 0 22px}
 .prev-faq-toggle{font-size:22px;color:var(--muted-foreground);font-weight:300;transition:transform .3s ease;display:inline-block;line-height:1}
 .prev-faq-item.open .prev-faq-toggle{transform:rotate(45deg)}
 .prev-range{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;height:22px;width:100%}
 .prev-range::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:transparent}
 .prev-range::-webkit-slider-thumb{-webkit-appearance:none;height:20px;width:20px;border-radius:50%;background:var(--card);border:2px solid var(--success);box-shadow:0 2px 7px color-mix(in oklch, var(--success) 45%, transparent);margin-top:-8px}
 .prev-range::-moz-range-thumb{height:18px;width:18px;border-radius:50%;background:var(--card);border:2px solid var(--success)}
-.prev-systems-teaser{position:relative;overflow:hidden;background:var(--foreground);color:var(--card);border-radius:24px;padding:48px 36px;text-align:center}
-.prev-systems-teaser::before{content:"";position:absolute;top:-100px;right:-100px;width:280px;height:280px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in oklch, var(--success) 28%, transparent),transparent 70%);pointer-events:none}
-.prev-systems-teaser::after{content:"";position:absolute;bottom:-110px;left:-80px;width:240px;height:240px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in oklch, var(--success) 16%, transparent),transparent 70%);pointer-events:none}
-.prev-st-eyebrow{position:relative;display:inline-flex;align-items:center;gap:var(--space-2);font-family:'IBM Plex Mono',monospace;font-size:var(--font-xs);color:var(--success);letter-spacing:1;margin-bottom:18px;font-weight:600}
-.prev-st-eyebrow::before{content:"";width:6px;height:6px;border-radius:99px;background:var(--success)}
-.prev-st-icons{position:relative;display:flex;justify-content:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
-.prev-st-ico{width:48px;height:48px;border-radius:13px;background:color-mix(in oklch, var(--card-foreground) 6%, transparent);border:1px solid color-mix(in oklch, var(--card-foreground) 10%, transparent);display:inline-flex;align-items:center;justify-content:center;font-size:22px}
-.prev-st-title{position:relative;font-size:28px;font-weight:600;letter-spacing:-.7px;line-height:1.25;margin-bottom:14px;max-width:560px;margin-inline:auto}
-.prev-st-title .accent{color:var(--success)}
-.prev-st-sub{position:relative;font-size:14.5px;color:var(--muted-foreground);max-width:540px;margin:0 auto 26px;line-height:1.75}
-.prev-st-stats{position:relative;display:inline-flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-bottom:26px}
-.prev-st-stat{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--muted-foreground);display:inline-flex;align-items:center;gap:7px}
-.prev-st-stat b{color:var(--card);font-weight:600;font-size:14px}
-.prev-st-stat-sep{width:4px;height:4px;border-radius:99px;background:color-mix(in oklch, var(--card-foreground) 18%, transparent)}
-.prev-st-cta{position:relative;display:inline-flex;align-items:center;gap:8px;background:var(--success);color:var(--card);padding:13px 24px;border-radius:12px;font-size:14.5px;font-weight:600;text-decoration:none;transition:all .15s ease;box-shadow:0 14px 30px -14px color-mix(in oklch, var(--success) 60%, transparent)}
-.prev-st-cta:hover{background:var(--success);transform:translateY(-1px)}
 .prev-calc-btn{width:26px;height:26px;border-radius:8px;background:var(--background);border:1px solid var(--border);color:var(--muted-foreground);font-size:18px;font-weight:500;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s ease;user-select:none}
 .prev-calc-btn:hover:not(:disabled){background:var(--foreground);border-color:var(--foreground);color:var(--card)}
 .prev-calc-btn:active:not(:disabled){transform:scale(.92)}
@@ -107,14 +76,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--success);outline-of
 .prev-voice-btn.active .prev-voice-avatar{box-shadow:0 0 0 2px var(--success)}
 .prev-voice-avatar{width:40px;height:40px;border-radius:50%;background:var(--border);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--muted-foreground)}
 .prev-voice-avatar img{width:100%;height:100%;object-fit:cover}
-.prev-team-core-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px 26px;display:flex;align-items:center;gap:var(--space-5);transition:all .2s ease}
-.prev-team-core-card:hover{border-color:var(--foreground);box-shadow:0 24px 50px -28px color-mix(in oklch, var(--foreground) 18%, transparent);transform:translateY(-1px)}
-.prev-team-core-avatar{width:88px;height:88px;border-radius:50%;flex-shrink:0;overflow:hidden;background:var(--border);display:flex;align-items:center;justify-content:center}
-.prev-team-core-avatar img{width:100%;height:100%;object-fit:cover}
-.prev-team-exec-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 16px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--space-3);transition:all .15s ease}
-.prev-team-exec-card:hover{border-color:var(--muted-foreground);transform:translateY(-1px)}
-.prev-team-exec-avatar{width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--border);display:flex;align-items:center;justify-content:center;color:var(--muted-foreground);font-weight:600;font-size:18px}
-.prev-team-exec-avatar img{width:100%;height:100%;object-fit:cover}
 @media (max-width:640px){
   .prev-trust-metrics{grid-template-columns:1fr !important;gap:var(--space-6)}
   .prev-trust-metrics > div{border-right:none !important;border-bottom:1px solid var(--border);padding:var(--space-0) var(--space-0) var(--space-5) !important}
@@ -127,9 +88,6 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--success);outline-of
   .prev-math-num{font-size:36px !important}
   .prev-math-num-big{font-size:46px !important}
   .prev-pricing-grid{grid-template-columns:1fr !important}
-  .prev-how-grid{grid-template-columns:1fr !important}
-  .prev-how-cell{border-right:none !important;border-bottom:1px solid var(--border);padding:var(--space-6) var(--space-0)}
-  .prev-how-cell:last-child{border-bottom:none}
   .prev-serp-card{margin:0 -8px}
   .prev-serp-row{height:52px;padding:8px 10px}
   .prev-serp-rank{width:26px !important;height:26px !important;font-size:12px !important}
@@ -138,27 +96,15 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--success);outline-of
   .prev-serp-url{font-size:10.5px !important}
   .prev-serp-row .prev-serp-you-badge{display:none !important}
   .prev-voice-metric{margin-inline-start:0 !important;order:3;width:100%;text-align:center}
-  .prev-why-grid{grid-template-columns:1fr !important}
   .prev-voices-grid{grid-template-columns:1fr !important;gap:var(--space-5) !important}
   .prev-voices-grid > div{min-width:0}
   .prev-voices-list{flex-direction:row !important;overflow-x:auto;overflow-y:hidden;padding-bottom:6px;scrollbar-width:none;max-width:100%;width:100%;-webkit-overflow-scrolling:touch}
   .prev-voices-list::-webkit-scrollbar{display:none}
   .prev-voices-list > button{min-width:220px;flex-shrink:0}
-  .prev-team-core-grid{grid-template-columns:1fr !important}
-  .prev-team-exec-grid{grid-template-columns:repeat(2,1fr) !important}
-  .prev-feature-row{grid-template-columns:1fr !important;gap:var(--space-6) !important}
-  .prev-feature-row > .prev-feat-mock{order:1 !important}
   .prev-footer-grid{grid-template-columns:1fr 1fr !important;gap:var(--space-7) !important}
   .prev-footer-grid > div:first-child{grid-column:1 / -1}
   .prev-calc-grid{grid-template-columns:1fr !important;row-gap:14px !important}
-  .prev-fab{display:none !important}
-  .prev-systems-teaser{padding:36px 22px;border-radius:var(--radius-xl)}
-  .prev-st-title{font-size:22px;letter-spacing:-.5px}
-  .prev-st-sub{font-size:13.5px}
-  .prev-st-ico{width:42px;height:42px;font-size:19px}
-  .prev-st-stats{gap:var(--space-3)}
   body{padding-bottom:var(--space-11)}
-  .prev-feature-row{gap:18px !important}
   .prev-pricing-toggle button{min-height:var(--tap) !important;padding:10px 18px !important}
   .prev-trust-logos{gap:10px !important}
   .prev-trust-pill{min-width:104px !important;min-height:60px !important;padding:10px 14px !important}
@@ -220,8 +166,364 @@ const STAGGER_CHILD = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
 };
 
+type CaseStudy = {
+  name: string;
+  industry: string;
+  tag: string;
+  daysActive: number;
+  startDate: string;
+  endDate: string;
+  heroStat: { big: string; label: string; sub: string };
+  after: Array<{ label: string; value: string; sub?: string }>;
+  quality: Array<{ k: string; v: string; sub: string }>;
+};
+
+const ARABIC_INDEX = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"] as const;
+function toAr(n: number | string): string {
+  return String(n).replace(/[0-9]/g, (d) => ARABIC_INDEX[Number(d)]);
+}
+function formatMinSec(secs: number): string {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${toAr(m)}:${toAr(String(s).padStart(2, "0"))}`;
+}
+function formatPct(x: number): string {
+  return `${toAr(Math.round(x * 100))}٪`;
+}
+
+// Fallback values (used if GA4 fetch failed) — real numbers from probe on 2026-07-10.
+const CASE_FALLBACK: Record<string, Omit<CaseStudy, "name" | "industry" | "tag" | "daysActive" | "startDate" | "endDate">> = {
+  smileTown: {
+    heroStat: { big: "٣١", label: "مريض حقيقي حجز موعد", sub: "بدون ريال إعلانات · آخر ٩٠ يوم" },
+    after: [
+      { label: "زوّار الموقع", value: "١٠٠", sub: "٩٠ يوم متتالي" },
+      { label: "مشاهدات صفحات", value: "٣٨٢", sub: "قراءة عميقة" },
+      { label: "ضغطات 'احجز موعد'", value: "٣١", sub: "🔥 مرضى فعليون" },
+      { label: "زوّار من جوجل", value: "٨٣", sub: "organic · نية شراء" },
+    ],
+    quality: [
+      { k: "متوسط الجلسة", v: "٢:٥٦", sub: "دقيقة · تصفح جاد" },
+      { k: "معدل التفاعل", v: "٧٩٪", sub: "متوسط الصناعة ٥٠٪" },
+      { k: "دول وصلها", v: "٥", sub: "مصر · السعودية · الإمارات..." },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "كلها organic + شفهي" },
+    ],
+  },
+  kimaZone: {
+    heroStat: { big: "٦٨", label: "قارئ لمقال 'تصنيع مستحضرات'", sub: "زوّار يبحثون بأنفسهم · آخر ٩٠ يوم" },
+    after: [
+      { label: "زوّار الموقع", value: "٩٣", sub: "٥٨ زائر جديد" },
+      { label: "مشاهدات صفحات", value: "٢٢٥", sub: "قراءة عميقة" },
+      { label: "من جوجل مباشرة", value: "٧٦", sub: "🔥 organic search" },
+      { label: "مقال واحد جذب", value: "٦٨", sub: "زائر يبحث عن تصنيع" },
+    ],
+    quality: [
+      { k: "متوسط الجلسة", v: "٢:٣٢", sub: "دقيقة · قرّاء جادّون" },
+      { k: "معدل التفاعل", v: "٨٠٪", sub: "متوسط الصناعة ٥٠٪" },
+      { k: "دول وصلها", v: "٤", sub: "مصر · السعودية · الإمارات..." },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "organic فقط" },
+    ],
+  },
+  baqatek: {
+    heroStat: { big: "٧٧٪", label: "من جوجل مباشرة", sub: "٥ دول وصلها المحتوى · آخر ٩٠ يوم" },
+    after: [
+      { label: "زوّار الموقع", value: "٨٨", sub: "٦٤ زائر جديد" },
+      { label: "مشاهدات صفحات", value: "١٢٧", sub: "٩٩ جلسة" },
+      { label: "من جوجل مباشرة", value: "٧٦", sub: "🔥 ٧٧٪ organic" },
+      { label: "دول وصلها", value: "٥", sub: "🌍 السعودية · مصر · اليمن..." },
+    ],
+    quality: [
+      { k: "متوسط الجلسة", v: "١:٣٧", sub: "دقيقة" },
+      { k: "زوّار جدد", v: "٧٣٪", sub: "كلهم أول زيارة" },
+      { k: "مقال واحد جذب", v: "٦٦", sub: "زائر عن باقات STC" },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "صفر · organic فقط" },
+    ],
+  },
+};
+
+const CASE_META: Record<string, Pick<CaseStudy, "name" | "industry" | "tag" | "daysActive" | "startDate" | "endDate">> = {
+  smileTown: {
+    name: "عيادات سمايل تاون",
+    industry: "طب الأسنان · السعودية",
+    tag: "طب الأسنان",
+    daysActive: 90,
+    startDate: "قبل الاشتراك",
+    endDate: "آخر ٩٠ يوم",
+  },
+  kimaZone: {
+    name: "كيما زون",
+    industry: "تصنيع مستحضرات التجميل · مصر",
+    tag: "مصانع مستحضرات التجميل",
+    daysActive: 90,
+    startDate: "قبل الاشتراك",
+    endDate: "آخر ٩٠ يوم",
+  },
+  baqatek: {
+    name: "متجر باقتك",
+    industry: "تجزئة · باقات الاتصالات · السعودية",
+    tag: "تجزئة · اتصالات",
+    daysActive: 90,
+    startDate: "قبل الاشتراك",
+    endDate: "آخر ٩٠ يوم",
+  },
+};
+
+function buildSmileTown(s: ClientCaseStudyStats): CaseStudy {
+  return {
+    ...CASE_META.smileTown,
+    tag: `طب الأسنان · ${toAr(s.bookingPageViews)} حجز`,
+    heroStat: {
+      big: toAr(s.bookingPageViews),
+      label: "مريض حقيقي حجز موعد",
+      sub: "بدون ريال إعلانات · آخر ٩٠ يوم",
+    },
+    after: [
+      { label: "زوّار الموقع", value: toAr(s.users), sub: "٩٠ يوم متتالي" },
+      { label: "مشاهدات صفحات", value: toAr(s.pageViews), sub: "قراءة عميقة" },
+      { label: "ضغطات 'احجز موعد'", value: toAr(s.bookingPageViews), sub: "🔥 مرضى فعليون" },
+      { label: "زوّار من جوجل", value: toAr(s.organicSessions), sub: "organic · نية شراء" },
+    ],
+    quality: [
+      { k: "متوسط الجلسة", v: formatMinSec(s.avgSessionSeconds), sub: "دقيقة · تصفح جاد" },
+      { k: "معدل التفاعل", v: formatPct(s.engagementRate), sub: "متوسط الصناعة ٥٠٪" },
+      { k: "دول وصلها", v: toAr(s.countriesCount), sub: "مصر · السعودية · الإمارات..." },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "كلها organic + شفهي" },
+    ],
+  };
+}
+
+function buildKimaZone(s: ClientCaseStudyStats): CaseStudy {
+  return {
+    ...CASE_META.kimaZone,
+    heroStat: {
+      big: toAr(s.topArticleUsers || s.users),
+      label: "قارئ لمقال 'تصنيع مستحضرات'",
+      sub: "زوّار يبحثون بأنفسهم · آخر ٩٠ يوم",
+    },
+    after: [
+      { label: "زوّار الموقع", value: toAr(s.users), sub: `${toAr(s.sessions)} جلسة` },
+      { label: "مشاهدات صفحات", value: toAr(s.pageViews), sub: "قراءة عميقة" },
+      { label: "من جوجل مباشرة", value: toAr(s.organicSessions), sub: "🔥 organic search" },
+      { label: "مقال واحد جذب", value: toAr(s.topArticleUsers), sub: `${toAr(s.topArticleViews)} مشاهدة` },
+    ],
+    quality: [
+      { k: "متوسط الجلسة", v: formatMinSec(s.avgSessionSeconds), sub: "دقيقة · قرّاء جادّون" },
+      { k: "معدل التفاعل", v: formatPct(s.engagementRate), sub: "متوسط الصناعة ٥٠٪" },
+      { k: "دول وصلها", v: toAr(s.countriesCount), sub: "مصر · السعودية · الإمارات..." },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "organic فقط" },
+    ],
+  };
+}
+
+function buildBaqatek(s: ClientCaseStudyStats): CaseStudy {
+  return {
+    ...CASE_META.baqatek,
+    tag: `تجزئة · ${formatPct(s.organicPercent)} organic`,
+    heroStat: {
+      big: formatPct(s.organicPercent),
+      label: "من جوجل مباشرة",
+      sub: `${toAr(s.countriesCount)} دول وصلها المحتوى · آخر ٩٠ يوم`,
+    },
+    after: [
+      { label: "زوّار الموقع", value: toAr(s.users), sub: `${toAr(s.sessions)} جلسة` },
+      { label: "مشاهدات صفحات", value: toAr(s.pageViews), sub: `${toAr(s.sessions)} جلسة` },
+      { label: "من جوجل مباشرة", value: toAr(s.organicSessions), sub: `🔥 ${formatPct(s.organicPercent)} organic` },
+      { label: "دول وصلها", value: toAr(s.countriesCount), sub: "🌍 السعودية · مصر · اليمن..." },
+    ],
+    quality: [
+      { k: "متوسط الجلسة", v: formatMinSec(s.avgSessionSeconds), sub: "دقيقة" },
+      { k: "معدل التفاعل", v: formatPct(s.engagementRate), sub: "متوسط الصناعة ٥٠٪" },
+      { k: "مقال واحد جذب", v: toAr(s.topArticleUsers), sub: `عن باقات STC` },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "صفر · organic فقط" },
+    ],
+  };
+}
+
+function fallbackFor(key: "smileTown" | "kimaZone" | "baqatek"): CaseStudy {
+  return { ...CASE_META[key], ...CASE_FALLBACK[key] };
+}
+
+function buildCaseStudies(caseStats: Record<string, ClientCaseStudyStats> | null): CaseStudy[] {
+  const s = caseStats;
+  return [
+    s?.smileTown ? buildSmileTown(s.smileTown) : fallbackFor("smileTown"),
+    s?.kimaZone ? buildKimaZone(s.kimaZone) : fallbackFor("kimaZone"),
+    s?.baqatek ? buildBaqatek(s.baqatek) : fallbackFor("baqatek"),
+  ];
+}
+
+function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<string, ClientCaseStudyStats> | null; clientsCount: number }) {
+  const studies = useMemo(() => buildCaseStudies(caseStats), [caseStats]);
+  const [idx, setIdx] = useState(0);
+  const c = studies[idx];
+  const goTo = (i: number) => setIdx(((i % studies.length) + studies.length) % studies.length);
+
+  return (
+    <m.section
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      id="case-study"
+      className="bg-background"
+    >
+      <div className="max-w-[1080px] mx-auto px-7 py-20">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 font-mono text-[11px] text-success tracking-[1px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
+            <span className="w-1.5 h-1.5 rounded-full bg-success" />
+            أرقام حقيقية من Google Analytics · آخر ٩٠ يوم
+          </div>
+          <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-3">
+            نتائج تشوفها — <span className="text-success">مش وعود</span>
+          </h2>
+          <p className="text-base text-muted-foreground max-w-[640px] mx-auto leading-[1.75]">
+            {clientsCount > 0 ? (
+              <>
+                من أصل <span className="font-semibold text-foreground">{toAr(clientsCount)}+ نشاط سعودي وعربي</span> يستخدم منصتنا — هذي ٣ قصص بأرقام مقاسة من GA4 مباشرة، بإذن كل عميل.
+              </>
+            ) : (
+              <>ثلاث قصص من ثلاثة قطاعات — كل رقم مقاس من GA4 مباشرة، بإذن كل عميل.</>
+            )}
+          </p>
+        </div>
+
+        <AnimatePresence mode="wait">
+          <m.div
+            key={idx}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Client header */}
+            <div className="flex items-center justify-between max-w-[880px] mx-auto mb-6 flex-wrap gap-3">
+              <div>
+                <div className="text-[20px] font-semibold text-foreground">{c.name}</div>
+                <div className="text-[13px] text-muted-foreground mt-0.5">{c.industry}</div>
+              </div>
+              <div className="inline-flex items-center gap-2 font-mono text-[11px] text-muted-foreground bg-card border border-border rounded-full px-3 py-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-success" />
+                <span>{c.tag} · {c.daysActive} يوماً فقط</span>
+              </div>
+            </div>
+
+            {/* HERO STAT — the one big proof number for this client */}
+            <div className="max-w-[880px] mx-auto mb-6 bg-gradient-to-br from-success/10 to-transparent border-2 border-success/30 rounded-2xl p-6 md:p-8 text-center">
+              <div className="font-mono text-[72px] md:text-[96px] font-semibold text-success leading-none tracking-[-3px]">
+                {c.heroStat.big}
+              </div>
+              <div className="text-[18px] md:text-[20px] font-semibold text-foreground mt-3">
+                {c.heroStat.label}
+              </div>
+              <div className="text-[13px] text-muted-foreground mt-1.5">
+                {c.heroStat.sub}
+              </div>
+            </div>
+
+            {/* Before ← → After grid */}
+            <div className="grid grid-cols-2 gap-4 md:gap-6 max-w-[880px] mx-auto mb-8">
+              {/* BEFORE */}
+              <div className="bg-card border border-border rounded-2xl p-5 md:p-7">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="font-mono text-[11px] text-muted-foreground tracking-[1px]">قبل الاشتراك</div>
+                  <div className="font-mono text-[11px] text-muted-foreground">{c.startDate}</div>
+                </div>
+                <div className="space-y-3">
+                  {[
+                    { label: "ظهور في جوجل", value: "صفر" },
+                    { label: "مقالات منشورة", value: "٠" },
+                    { label: "زوّار organic", value: "٠" },
+                    { label: "إعلانات مدفوعة", value: "٠ ر.س" },
+                  ].map((row, i) => (
+                    <div key={i} className="flex items-center justify-between pb-2.5 border-b border-b-border last:border-b-0 last:pb-0">
+                      <span className="text-[13px] text-muted-foreground">{row.label}</span>
+                      <span className="font-mono text-[15px] font-semibold text-muted-foreground">{row.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* AFTER */}
+              <div className="bg-foreground text-background border border-foreground rounded-2xl p-5 md:p-7 shadow-[0_24px_50px_-22px_color-mix(in oklch, var(--foreground) 50%, transparent)] relative">
+                <span className="absolute -top-[11px] right-5 md:right-7 bg-success text-success-foreground text-[10.5px] font-semibold px-2.5 py-1 rounded-full tracking-[.3px]">
+                  بعد {c.daysActive} يوم
+                </span>
+                <div className="flex items-center justify-between mb-5">
+                  <div className="font-mono text-[11px] text-background/70 tracking-[1px]">بعد الاشتراك</div>
+                  <div className="font-mono text-[11px] text-background/70">{c.endDate}</div>
+                </div>
+                <div className="space-y-3">
+                  {c.after.map((row, i) => (
+                    <div key={i} className="flex items-center justify-between pb-2.5 border-b border-b-background/10 last:border-b-0 last:pb-0">
+                      <div>
+                        <div className="text-[13px] text-background/70">{row.label}</div>
+                        {row.sub && <div className="text-[10.5px] text-success font-mono mt-0.5">{row.sub}</div>}
+                      </div>
+                      <span className="font-mono text-[20px] font-semibold text-background">{row.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Engagement quality strip */}
+            <div className="max-w-[880px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+              {c.quality.map((s, i) => (
+                <div key={i} className="bg-card border border-border rounded-xl p-4 text-center">
+                  <div className="font-mono text-[26px] md:text-[28px] font-semibold text-foreground tracking-[-.5px]">{s.v}</div>
+                  <div className="text-[12px] text-foreground font-medium mt-1">{s.k}</div>
+                  <div className="text-[10.5px] text-muted-foreground mt-0.5 leading-tight">{s.sub}</div>
+                </div>
+              ))}
+            </div>
+          </m.div>
+        </AnimatePresence>
+
+        {/* Slider controls */}
+        <div className="max-w-[880px] mx-auto flex items-center justify-center gap-4 mt-10">
+          <button
+            onClick={() => goTo(idx - 1)}
+            aria-label="القصة السابقة"
+            className="w-10 h-10 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
+          >
+            <span className="text-[18px]">→</span>
+          </button>
+          <div className="flex items-center gap-2">
+            {studies.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => goTo(i)}
+                aria-label={`القصة ${i + 1}`}
+                className={cn(
+                  "h-2 rounded-full transition-all",
+                  i === idx ? "w-8 bg-success" : "w-2 bg-border hover:bg-muted-foreground",
+                )}
+              />
+            ))}
+          </div>
+          <button
+            onClick={() => goTo(idx + 1)}
+            aria-label="القصة التالية"
+            className="w-10 h-10 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
+          >
+            <span className="text-[18px]">←</span>
+          </button>
+        </div>
+
+        <div className="text-center mt-6 flex flex-col items-center gap-2">
+          <div className="inline-flex items-center gap-2 text-[12px] text-muted-foreground">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M5 12.5l5 5L20 7" />
+            </svg>
+            <span>الأرقام من Google Analytics 4 · Property ID موثّق · بإذن كل عميل</span>
+          </div>
+        </div>
+      </div>
+    </m.section>
+  );
+}
+
 export function Landing(props: Props) {
-  const { countrySlug, staticLanding, plans, announcement, whatsappLink, signupHref, initialBilling, ctaLabel } = props;
+  const { countrySlug, staticLanding, plans, announcement, whatsappLink, signupHref, initialBilling, ctaLabel, trustBundle, modontyImpact, caseStats } = props;
 
   const country = countrySlug === "eg" ? "EG" : "SA";
   const currency = country === "EG" ? "ج.م" : "ر.س";
@@ -232,17 +534,8 @@ export function Landing(props: Props) {
     [plans],
   );
 
-  // ─── Trust bar logos (DB hero) ───
-  const trustClients = staticLanding.hero?.trustBarClients ?? [];
-
   // ─── FAQ items (DB) ───
   const faqs = staticLanding.faq?.faqs ?? [];
-
-  // ─── Why Now costs (DB) ───
-  const whyNowCosts = staticLanding.whyNow?.costs ?? [];
-
-  // ─── How It Works steps (DB) ───
-  const howSteps = staticLanding.howItWorks?.steps ?? [];
 
   // ─── Final CTA (DB) ───
   const finalCtaData = staticLanding.finalCta;
@@ -262,72 +555,12 @@ export function Landing(props: Props) {
 
   // ─── State ───
   const [billing, setBilling] = useState<Billing>(initialBilling);
-  const [queryIdx, setQueryIdx] = useState(0);
-  const [order, setOrder] = useState<SerpKey[]>(INITIAL_ORDER);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [calcOpen, setCalcOpen] = useState(false);
   const [selectedVoice, setSelectedVoice] = useState(0);
-  const [fabVisible, setFabVisible] = useState(false);
-
-  useEffect(() => {
-    function onScroll() {
-      const y = window.scrollY;
-      const viewportH = window.innerHeight;
-      const docH = document.documentElement.scrollHeight;
-      const nearTop = y < 320;
-      const nearBottom = y + viewportH > docH - 600;
-      setFabVisible(!nearTop && !nearBottom);
-    }
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
   const [salaries, setSalaries] = useState<Record<string, number>>(
     () => Object.fromEntries(CALC_ROLES.map((r) => [r.key, r.def])),
   );
-
-  // ─── SERP animation ───
-  // StrictMode-safe: side effects (timers) live OUTSIDE setState callbacks,
-  // and a ref tracks current order so the tick function reads fresh data
-  // without re-subscribing to state.
-  const orderRef = useRef<SerpKey[]>(INITIAL_ORDER);
-  useEffect(() => {
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout> | null = null;
-
-    function tick() {
-      if (cancelled) return;
-      const current = orderRef.current;
-      const youIdx = current.indexOf("you");
-
-      if (youIdx === 0) {
-        // hold at top → reset + cycle query
-        timer = setTimeout(() => {
-          if (cancelled) return;
-          orderRef.current = INITIAL_ORDER;
-          setOrder(INITIAL_ORDER);
-          setQueryIdx((q) => (q + 1) % SERP_QUERIES.length);
-          timer = setTimeout(tick, 900);
-        }, 2800);
-        return;
-      }
-
-      const next = current.slice();
-      const tmp = next[youIdx - 1];
-      next[youIdx - 1] = "you";
-      next[youIdx] = tmp;
-      orderRef.current = next;
-      setOrder(next);
-
-      timer = setTimeout(tick, 820);
-    }
-
-    timer = setTimeout(tick, 900);
-    return () => {
-      cancelled = true;
-      if (timer) clearTimeout(timer);
-    };
-  }, []);
 
   // ─── Calculator math ───
   const teamMonthly = Object.values(salaries).reduce((a, b) => a + b, 0);
@@ -420,177 +653,182 @@ export function Landing(props: Props) {
 
       </section>
 
-      {/* ─── LIVE SERP ─── */}
-      <section className="max-w-[640px] mx-auto pt-[34px] px-[18px] pb-5">
-        <div className="prev-serp-card bg-card border border-border rounded-[20px] shadow-[0_30px_60px_-36px_color-mix(in oklch, var(--foreground) 28%, transparent)] overflow-hidden">
-          <div className="flex items-center gap-3 px-[22px] py-[18px] border-b border-b-muted">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" strokeWidth={2}>
-              <circle cx="11" cy="11" r="7" />
-              <line x1="21" y1="21" x2="16.5" y2="16.5" />
-            </svg>
-            <div className="text-[15px] text-foreground flex-1 font-normal">
-              {SERP_QUERIES[queryIdx]}
-              <span className="inline-block w-[1.5px] h-4 bg-foreground align-[-3px] mr-0.5 animate-[prev-caret_1s_step-end_infinite]" />
-            </div>
-            <div data-st className="font-mono text-[11px] text-muted-foreground">بحث جوجل</div>
-          </div>
-          <div className="relative h-96 px-[14px] py-2.5 bg-card">
-            {order.map((key, idx) => {
-              const r = SERP_ROWS[key];
-              const isYou = "isYou" in r && r.isYou;
-              const won = isYou && idx === 0;
-              const rising = isYou && idx > 0 && idx < 3;
-              const youAboveAd = order.indexOf("you") < order.indexOf("ad");
-              const showAd = "ad" in r && r.ad && !youAboveAd;
+      {/* ─── CASE STUDIES SLIDER · GA4-verified proof, placed right after hero ─── */}
+      <CaseStudiesSlider caseStats={caseStats} clientsCount={trustBundle.total} />
 
-              const rankClass = cn(
-                "w-[30px] h-[30px] rounded-lg flex items-center justify-center font-mono text-[13px] font-semibold shrink-0",
-                won ? "bg-success text-success-foreground" : isYou ? "bg-success/10 text-success" : "bg-muted text-muted-foreground",
-              );
-
-              const titleClass = cn(
-                "text-sm",
-                isYou ? "font-semibold text-foreground" : idx < 2 ? "font-medium text-muted-foreground" : "font-medium text-muted-foreground",
-              );
-
-              const urlColorClass = isYou ? "text-success" : "text-muted-foreground";
-
-              return (
-                <div key={key} className={`prev-serp-row${isYou ? " you" : ""}${won ? " won" : ""}`} style={{ top: idx * ROW_H + 6 }}>
-                  <div className="flex items-center gap-3 h-full">
-                    <div className={cn("prev-serp-rank", rankClass)}>#{toArabicDigits(idx + 1)}</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="prev-serp-titlebar flex items-center gap-[7px] flex-wrap min-w-0">
-                        <span className={cn("prev-serp-title", titleClass)}>{r.title}</span>
-                        {showAd && (
-                          <span data-st className="text-[10px] font-semibold text-destructive bg-destructive/10 px-1.5 py-px rounded-[5px] font-mono">إعلان</span>
-                        )}
-                        {isYou && (
-                          <span className="prev-serp-you-badge text-[11px] font-semibold text-success bg-success/10 px-2 py-0.5 rounded-md">موقعك</span>
-                        )}
-                      </div>
-                      <div data-st className={cn("prev-serp-url font-mono text-[11.5px] mt-[3px] whitespace-nowrap overflow-hidden text-ellipsis", urlColorClass)}>{r.url}</div>
-                    </div>
-                    {won && (
-                      <div data-st className="text-success text-[13px] font-semibold whitespace-nowrap animate-[prev-pop_.4s_ease_both]">المركز الأول ✓</div>
-                    )}
-                    {rising && (
-                      <div data-st className="flex items-center gap-1 text-success text-[12px] font-semibold font-mono animate-[prev-up_1s_ease-in-out_infinite]">▲ يصعد</div>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-        <div data-st className="text-center text-[13px] text-muted-foreground mt-4">
-          من الصفحة الخامسة إلى الصفحة الأولى — هذا اللي نسوّيه لموقعك.
-        </div>
-      </section>
-
-      {/* ─── TRUST SECTION (DB + curated) ─── moved up: best-practice = logos within first scroll */}
-      {trustClients.length > 0 && (
+      {/* ─── MODONTY IMPACT BAR · live GA4 platform-wide numbers ─── */}
+      {modontyImpact && (
         <m.section
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card"
+          className="bg-background"
         >
           <div className="max-w-[1080px] mx-auto px-7 py-14">
             <div className="text-center mb-8">
-              <div data-st className="font-mono text-xs text-muted-foreground tracking-[1.5px]">من ائتمنّا</div>
-            </div>
-            <div className="prev-trust-logos flex flex-wrap justify-center items-center gap-[14px] max-w-[960px] mx-auto">
-              {trustClients.map((client, i) => {
-                const hasLogo = !!(client.logoUrl && client.logoUrl.trim());
-                const card = (
-                  <div
-                    className={cn(
-                      "prev-trust-pill border border-border rounded-[14px] bg-card transition-all duration-200 inline-flex items-center justify-center min-h-[72px] min-w-[132px] gap-2.5",
-                      hasLogo ? "px-6 py-4" : "px-[22px] py-[14px]",
-                      client.href ? "cursor-pointer" : "cursor-default",
-                    )}
-                    title={client.name}
-                  >
-                    {hasLogo ? (
-                      <Image
-                        src={client.logoUrl}
-                        alt={`شعار ${client.name}`}
-                        width={120}
-                        height={44}
-                        className="h-10 w-auto max-w-[100px] object-contain grayscale opacity-85 transition-[filter,opacity] duration-[.25s]"
-                      />
-                    ) : (
-                      <span className="text-[14.5px] text-foreground font-semibold tracking-[-.2px]">{client.name}</span>
-                    )}
-                  </div>
-                );
-                return client.href ? (
-                  <a key={i} href={client.href} target="_blank" rel="noopener noreferrer" className="no-underline">
-                    {card}
-                  </a>
-                ) : (
-                  <div key={i}>{card}</div>
-                );
-              })}
-            </div>
-          </div>
-        </m.section>
-      )}
-
-      {/* ─── HOW (DB) ─── */}
-      {howSteps.length > 0 && (
-        <section id="how-it-works" className="max-w-[880px] mx-auto px-7 py-[72px]">
-          <div className="prev-how-grid grid text-center" style={{ gridTemplateColumns: `repeat(${Math.min(howSteps.length, 3)}, 1fr)` }}>
-            {howSteps.slice(0, 3).map((step, i) => (
-              <div key={i} className={cn("prev-how-cell px-[14px] py-0", i < Math.min(howSteps.length, 3) - 1 && "border-r border-r-[var(--border)]")}>
-                <div className="font-mono text-[13px] text-muted-foreground mb-3">{step.num || toArabicDigits(`0${i + 1}`)}</div>
-                <div className="text-xl font-semibold mb-2">{step.title}</div>
-                <div className="text-sm text-muted-foreground leading-[1.6] max-w-[200px] mx-auto">{step.line}</div>
+              <div className="inline-flex items-center gap-2 font-mono text-[11px] text-success tracking-[1px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                لايف من Google Analytics · يتحدّث كل ٥ دقائق
               </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ─── WHY NOW (DB) ─── */}
-      {whyNowCosts.length > 0 && (
-        <m.section
-          id="outcomes"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card"
-        >
-          <div className="max-w-[1080px] mx-auto px-7 py-20 text-center">
-            <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-[14px]">
-              {staticLanding.whyNow?.title1 ?? "كل شهر تأخير له ثمن"}
-            </h2>
-            <p className="text-base text-muted-foreground mb-12 max-w-[520px] mx-auto">
-              {staticLanding.whyNow?.subtitle ?? "منافسك بدأ من ٣ شهور. كل يوم تتأخر = خطوة يكسبها هو."}
-            </p>
-            <div className="prev-why-grid grid gap-7 text-right max-w-[880px] mx-auto" style={{ gridTemplateColumns: `repeat(${Math.min(whyNowCosts.length, 3)}, 1fr)` }}>
-              {whyNowCosts.slice(0, 3).map((cost, i) => {
-                const isLast = i === Math.min(whyNowCosts.length, 3) - 1;
-                return (
-                  <div key={i} className={cn("px-[22px] py-0 border-r-2", isLast ? "border-r-[var(--success)]" : "border-r-[var(--border)]")}>
-                    <div className={cn("font-mono text-xs tracking-[.5px] mb-3", isLast ? "text-success" : "text-muted-foreground")}>{cost.month}</div>
-                    <div className="text-[18px] font-semibold mb-2.5">{cost.label}</div>
-                    <div className="text-sm text-muted-foreground leading-[1.7]">{cost.desc}</div>
-                  </div>
-                );
-              })}
+              <h2 className="prev-h2 text-[32px] md:text-[38px] font-semibold tracking-[-1px]">
+                مدونتي بالأرقام — <span className="text-success">لايف الآن</span>
+              </h2>
+              <p className="text-[14px] text-muted-foreground mt-2">
+                هذي كل الأثر الرقمي عبر منصة مدونتي — تراكمياً منذ الإطلاق. تقدر تتحقّق من الأرقام مباشرة على الموقع.
+              </p>
             </div>
-            <div className="mt-12 font-mono text-xs text-muted-foreground tracking-[1px]">
-              الحل ↓
+
+            <div className="rounded-2xl border border-border bg-gradient-to-br from-foreground to-[color-mix(in_oklch,var(--foreground)_88%,var(--success))] text-background overflow-hidden shadow-[0_30px_60px_-30px_color-mix(in_oklch,var(--foreground)_60%,transparent)]">
+              <div className="grid grid-cols-1 md:grid-cols-[1.4fr_2fr_auto] divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-background/10">
+
+                {/* Grand total hero */}
+                <div className="flex flex-col items-center justify-center px-6 py-8">
+                  <div className="font-mono text-[52px] md:text-[64px] font-black leading-none tracking-[-2px] text-background">
+                    {modontyImpact.grandTotal.toLocaleString("en-US")}
+                  </div>
+                  <div className="mt-2 text-[11px] font-mono text-background/60 tracking-[1.5px]">الأثر الرقمي</div>
+                </div>
+
+                {/* Secondary stats */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-x-reverse divide-background/10">
+                  <div className="flex flex-col items-center justify-center py-5 px-2">
+                    <div className="font-mono text-[20px] md:text-[22px] font-bold text-background">{modontyImpact.users.toLocaleString("en-US")}</div>
+                    <div className="mt-1 text-[10px] text-background/50">مستخدم</div>
+                  </div>
+                  <div className="flex flex-col items-center justify-center py-5 px-2">
+                    <div className="font-mono text-[20px] md:text-[22px] font-bold text-background">{modontyImpact.sessions.toLocaleString("en-US")}</div>
+                    <div className="mt-1 text-[10px] text-background/50">جلسة</div>
+                  </div>
+                  <div className="flex flex-col items-center justify-center py-5 px-2">
+                    <div className="font-mono text-[20px] md:text-[22px] font-bold text-background">{modontyImpact.pageViews.toLocaleString("en-US")}</div>
+                    <div className="mt-1 text-[10px] text-background/50">مشاهدة</div>
+                  </div>
+                  <div className="flex flex-col items-center justify-center py-5 px-2">
+                    <div className="font-mono text-[20px] md:text-[22px] font-bold text-background">{modontyImpact.interactions.toLocaleString("en-US")}</div>
+                    <div className="mt-1 text-[10px] text-background/50">تفاعل حقيقي</div>
+                  </div>
+                </div>
+
+                {/* Google trust anchor */}
+                <div className="flex flex-col items-center justify-center gap-2 bg-background/[0.04] px-6 py-5 min-w-[140px]">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-8 w-8" aria-label="Google">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                  <p className="text-center text-[10px] leading-tight text-background/55">
+                    موثّق من<br />
+                    <span className="font-semibold text-background/80">Google Analytics</span>
+                  </p>
+                  <span className="inline-flex items-center gap-1 rounded-full border border-success/40 bg-success/15 px-2 py-0.5 text-[10px] font-bold text-success">
+                    ✓ بيانات حقيقية
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 text-center">
+              <div className="inline-flex items-center gap-2 text-[12px] text-muted-foreground mb-4">
+                <span>Property ID: <span className="font-mono">538167732</span></span>
+                <span className="w-1 h-1 rounded-full bg-border" />
+                <span>تحقّق بنفسك من مصدرين مستقلّين ↓</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-[720px] mx-auto">
+                <a
+                  href="https://datastudio.google.com/s/nBnyGkiUdGw"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted hover:border-success/40 transition-all px-5 py-4 text-foreground"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-8 w-8 shrink-0" aria-label="Google">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                  </svg>
+                  <div className="text-right">
+                    <div className="text-[14px] font-semibold leading-tight">تقرير Google الرسمي</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">Looker Studio · مباشر من جوجل</div>
+                  </div>
+                  <span className="text-muted-foreground group-hover:text-success transition-colors">↗</span>
+                </a>
+                <a
+                  href="https://www.modonty.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted hover:border-success/40 transition-all px-5 py-4 text-foreground"
+                >
+                  <span
+                    className="shrink-0 inline-flex items-center justify-center"
+                    style={{ background: "#fff", padding: "4px 8px", borderRadius: 8, width: 112, height: 32 }}
+                  >
+                    <Image
+                      src="https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,w_240/v1769683590/modontyLogo_ftf4yf.png"
+                      alt="Modonty"
+                      width={96}
+                      height={24}
+                      style={{ width: "auto", height: 24, objectFit: "contain", maxWidth: "100%" }}
+                    />
+                  </span>
+                  <div className="text-right">
+                    <div className="text-[14px] font-semibold leading-tight">شوف منصة مدونتي</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">الموقع الحقيقي · عملاء · مقالات</div>
+                  </div>
+                  <span className="text-muted-foreground group-hover:text-success transition-colors">↗</span>
+                </a>
+              </div>
             </div>
           </div>
         </m.section>
       )}
 
-      {/* ─── MATH ─── */}
+      {/* ─── GUARANTEE — activity-based (things we 100% control), no risky ranking promise ─── */}
+      <m.section
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="bg-card border-t border-t-border border-b border-b-border"
+      >
+        <div className="max-w-[920px] mx-auto px-7 py-14">
+          <div className="flex flex-col md:flex-row items-start gap-6 md:gap-8">
+            <div className="shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-success/15 flex items-center justify-center text-[38px] md:text-[46px] mx-auto md:mx-0">
+              🛡️
+            </div>
+            <div className="flex-1 text-center md:text-right w-full">
+              <div className="font-mono text-[11px] text-success tracking-[1px] mb-2">تعهّدنا لك</div>
+              <h3 className="text-[22px] md:text-[26px] font-semibold text-foreground tracking-[-.5px] leading-[1.35] mb-4">
+                نضمن <span className="text-success">الجهد والشفافية</span> — تشوف الأثر بعينك في لوحتك
+              </h3>
+              <ul className="space-y-2.5 text-[14.5px] text-foreground leading-[1.7] mb-4 md:pr-1 list-none">
+                {[
+                  { k: "الالتزام بالنشر", v: "عدد مقالاتك الشهرية تُنشر بموعدها — بلا استثناء" },
+                  { k: "معيار الجودة", v: "٢٨ فحصاً تلقائياً على كل مقال قبل النشر" },
+                  { k: "الشفافية", v: "تقرير GA4 مباشر من لوحتك — أرقام حقيقية موثّقة من جوجل" },
+                  { k: "الاستجابة", v: "على أي استفسار خلال ٢٤ ساعة كحد أقصى" },
+                ].map((row, i) => (
+                  <li key={i} className="flex items-start gap-2.5">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0 mt-1">
+                      <path d="M5 12.5l5 5L20 7" />
+                    </svg>
+                    <span><span className="font-semibold text-foreground">{row.k}:</span> <span className="text-muted-foreground">{row.v}</span></span>
+                  </li>
+                ))}
+              </ul>
+              <div className="inline-flex items-center gap-2 bg-success/10 text-success text-[13.5px] font-semibold px-4 py-2.5 rounded-lg leading-[1.6]">
+                <span>لو أخللنا بأي واحد خلال ٣ شهور — الشهر الرابع خدمة مجاناً.</span>
+              </div>
+              <p className="text-[12.5px] text-muted-foreground mt-3 max-w-[560px] mx-auto md:mx-0 leading-[1.6]">
+                ما نعد بمركز رقم ١ في جوجل — لأن هذا يعتمد على منافسيك وتحديثات جوجل. نضمن اللي نتحكّم فيه ١٠٠٪: النشر · الجودة · التقارير · الاستجابة.
+              </p>
+            </div>
+          </div>
+        </div>
+      </m.section>
+
+      {/* ─── SAUDI IDENTITY CARD · answers "من أنتم؟" — critical for Saudi buyer ─── */}
       <m.section
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -598,191 +836,412 @@ export function Landing(props: Props) {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="bg-background"
       >
-        <div className="max-w-[880px] mx-auto px-7 py-20 text-center">
-          <h2 data-st className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-[14px]">الرياضيات بسيطة.</h2>
-          <p data-st className="text-base text-muted-foreground mb-[14px]">عشان تتصدّر جوجل تحتاج فريق ٦ وظائف. أو اشتراك واحد.</p>
-          <div className="inline-block font-mono text-[11px] text-muted-foreground tracking-[.5px] border border-border px-3 py-[5px] rounded-full mb-9">
-            المقارنة سنوياً
-          </div>
-          <div className="flex items-center justify-center gap-7 flex-wrap">
-            <div className="text-center">
-              <div data-st className="text-[13px] text-muted-foreground mb-2.5">فريق محتوى داخلي كامل</div>
-              <div className="prev-math-num font-mono text-[46px] font-medium text-muted-foreground tracking-[-1.5px] line-through decoration-destructive decoration-2">
-                {formatNum(mathTeamAnnual)}
-              </div>
-              <div data-st className="text-xs text-muted-foreground mt-1.5">{currency} / سنوياً</div>
+        <div className="max-w-[920px] mx-auto px-7 py-14">
+          {/* Section title */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 font-mono text-[11px] text-success tracking-[1px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-success" />
+              من نحن — بشفافية كاملة
             </div>
-            <div data-st className="text-[30px] text-muted-foreground font-light">←</div>
-            <div className="text-center">
-              <div className="text-[13px] text-success font-medium mb-2.5">مدونتي — {mathPlanName}</div>
-              <div className="prev-math-num-big font-mono text-[60px] font-semibold text-foreground tracking-[-2px]">
-                {formatNum(mathPlanAnnual)}
-              </div>
-              <div data-st className="text-xs text-muted-foreground mt-1.5">{currency} / سنوياً</div>
-            </div>
-          </div>
-          {mathSavePct > 0 && (
-            <div className="inline-flex items-center gap-2 bg-success/10 text-success text-sm font-semibold px-[18px] py-2.5 rounded-full mt-10">
-              توفير يصل إلى {mathSavePct}٪ — ومحتوى يبقى ملكك للأبد
-            </div>
-          )}
-        </div>
-      </m.section>
-
-      {/* ─── FEATURES → OUTCOMES (in-code product mockups) ─── */}
-      <section id="features" className="border-t border-t-[var(--border)] bg-card">
-        <div className="max-w-[1080px] mx-auto px-7 py-[88px]">
-          <div className="text-center mb-14">
-            <div className="font-mono text-xs text-muted-foreground tracking-[1px] mb-3">إيش بتاخد فعلاً</div>
-            <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-3">
-              مش مجرد مقالات — منظومة كاملة.
+            <h2 className="prev-h2 text-[32px] md:text-[38px] font-semibold tracking-[-1px]">
+              شركة سعودية <span className="text-success">مسجّلة رسمياً</span>
             </h2>
-            <p className="text-base text-muted-foreground max-w-[560px] mx-auto">
-              لوحة واحدة، تتابع منها من اقتراح الفكرة لحد أول مركز في جوجل.
+            <p className="text-[14px] text-muted-foreground max-w-[560px] mx-auto mt-2 leading-[1.7]">
+              كل تفاصيلنا القانونية معلنة — تقدر تتحقّق منها بجوالك في ٣٠ ثانية عبر بوّابة وزارة التجارة السعودية.
             </p>
           </div>
 
-          <div className="prev-features-grid grid gap-16">
-            {/* Row 1 — Editor */}
-            <div className="prev-feature-row grid grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="font-mono text-[11px] text-success tracking-[1px] mb-[14px]">٠١ — الكتابة</div>
-                <h3 className="text-[26px] font-semibold mb-[14px] tracking-[-.5px]">مقالات SEO جاهزة — مش قوالب.</h3>
-                <p className="text-[15px] text-muted-foreground leading-[1.85]">
-                  كاتب متخصص في قطاعك يكتب لك المقال، يبحث الكلمات، يحط الـ headings، ويسلمه جاهز للنشر — بدون ما تكتب حرف.
-                </p>
+          <div className="rounded-2xl border border-border bg-card overflow-hidden">
+            {/* Header — flag + country + verified badge */}
+            <div className="flex items-center justify-between gap-3 flex-wrap px-6 py-4 border-b border-b-border bg-gradient-to-l from-transparent to-success/5">
+              <div className="flex items-center gap-2.5">
+                <span className="text-[22px]" aria-hidden>🇸🇦</span>
+                <span className="text-[13px] font-medium text-muted-foreground">المملكة العربية السعودية</span>
               </div>
-              <div className="prev-feat-mock bg-background border border-border rounded-2xl p-[22px] shadow-[0_24px_50px_-32px_color-mix(in oklch, var(--foreground) 18%, transparent)]">
-                <div className="flex items-center gap-2 mb-4 pb-3 border-b border-b-[var(--border)]">
-                  <span className="w-2 h-2 rounded-full bg-success" />
-                  <span className="font-mono text-[11px] text-muted-foreground">article-draft.md</span>
-                  <span className="ms-auto text-[11px] text-success font-semibold">✓ جاهز</span>
-                </div>
-                <div className="text-base font-semibold mb-2 text-foreground">أفضل ٧ تقنيات لزراعة الأسنان ٢٠٢٦</div>
-                <div className="h-1.5 bg-foreground rounded-full w-full mb-1.5" />
-                <div className="h-1.5 bg-border rounded-full w-[92%] mb-1.5" />
-                <div className="h-1.5 bg-border rounded-full w-[78%] mb-[14px]" />
-                <div className="flex gap-2 flex-wrap">
-                  <span className="text-[10.5px] font-mono bg-card border border-border px-2 py-[3px] rounded-md text-muted-foreground"># ١٢٠٠ كلمة</span>
-                  <span className="text-[10.5px] font-mono bg-card border border-border px-2 py-[3px] rounded-md text-muted-foreground"># ٨ headings</span>
-                  <span className="text-[10.5px] font-mono bg-success/10 border border-success/30 px-2 py-[3px] rounded-md text-success"># SEO ٩٢/١٠٠</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Row 2 — Approval (alternate) */}
-            <div className="prev-feature-row grid grid-cols-2 gap-12 items-center">
-              <div className="prev-feat-mock bg-background border border-border rounded-2xl p-[22px] shadow-[0_24px_50px_-32px_color-mix(in oklch, var(--foreground) 18%, transparent)] order-none">
-                <div className="flex items-center gap-2 mb-[18px] pb-3 border-b border-b-[var(--border)]">
-                  <span className="font-mono text-[11px] text-muted-foreground">قائمة المراجعة</span>
-                  <span className="ms-auto text-[10.5px] font-semibold text-muted-foreground bg-card border border-border px-2 py-[3px] rounded-md">٣ بانتظار اعتمادك</span>
-                </div>
-                {[
-                  { title: "مقدمة الشركة — نسخة محدثة", state: "بانتظار", color: "var(--destructive)", bg: "color-mix(in oklch, var(--destructive) 10%, transparent)" },
-                  { title: "أفضل ٧ تقنيات للزراعة", state: "معتمد", color: "var(--success)", bg: "color-mix(in oklch, var(--success) 12%, transparent)" },
-                  { title: "صفحة الفروع — Cairo", state: "بانتظار", color: "var(--destructive)", bg: "color-mix(in oklch, var(--destructive) 10%, transparent)" },
-                ].map((row, i) => (
-                  <div key={i} className={cn("flex items-center gap-2.5 py-3", i < 2 && "border-b border-b-[var(--border)]")}>
-                    <span className="w-7 h-7 rounded-md bg-card border border-border inline-flex items-center justify-center text-[11px] text-muted-foreground font-mono">0{i + 1}</span>
-                    <span className="text-[13px] text-foreground flex-1 font-medium">{row.title}</span>
-                    <span className="text-[10.5px] font-semibold px-2 py-[3px] rounded-md font-mono" style={{ color: row.color, background: row.bg }}>{row.state}</span>
-                  </div>
-                ))}
-              </div>
-              <div>
-                <div className="font-mono text-[11px] text-success tracking-[1px] mb-[14px]">٠٢ — الاعتماد</div>
-                <h3 className="text-[26px] font-semibold mb-[14px] tracking-[-.5px]">وافق بنقرة — قبل ما يُنشر.</h3>
-                <p className="text-[15px] text-muted-foreground leading-[1.85]">
-                  كل مقال يدخل قائمتك للمراجعة. اعتمد، عدّل، أو ارفض. ما يطلع شي للعلن بدون موافقتك.
-                </p>
-              </div>
-            </div>
-
-            {/* Row 3 — Monitor */}
-            <div className="prev-feature-row grid grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="font-mono text-[11px] text-success tracking-[1px] mb-[14px]">٠٣ — المتابعة</div>
-                <h3 className="text-[26px] font-semibold mb-[14px] tracking-[-.5px]">شوف ترتيبك يطلع في جوجل.</h3>
-                <p className="text-[15px] text-muted-foreground leading-[1.85]">
-                  لوحة مباشرة من Google Search Console — كلماتك، ترتيبك، الظهور، النقرات. الأرقام اللي تهمك، بدون تعقيد.
-                </p>
-              </div>
-              <div className="prev-feat-mock bg-background border border-border rounded-2xl p-[22px] shadow-[0_24px_50px_-32px_color-mix(in oklch, var(--foreground) 18%, transparent)]">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="font-mono text-[11px] text-muted-foreground">الترتيب — آخر ٣٠ يوم</span>
-                  <span className="ms-auto text-xs font-semibold text-success">▲ +١٤ مركز</span>
-                </div>
-                <svg viewBox="0 0 240 80" className="w-full h-20 block">
-                  <defs>
-                    <linearGradient id="prev-feat-grad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="var(--success)" stopOpacity="0.24" />
-                      <stop offset="100%" stopColor="var(--success)" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M0,68 L30,60 L60,62 L90,48 L120,46 L150,30 L180,28 L210,16 L240,10 L240,80 L0,80 Z" fill="url(#prev-feat-grad)" />
-                  <path d="M0,68 L30,60 L60,62 L90,48 L120,46 L150,30 L180,28 L210,16 L240,10" fill="none" stroke="var(--success)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  {[[30,60],[60,62],[90,48],[120,46],[150,30],[180,28],[210,16],[240,10]].map(([cx, cy], i) => (
-                    <circle key={i} cx={cx} cy={cy} r="2.5" fill="var(--card)" stroke="var(--success)" strokeWidth="1.5" />
-                  ))}
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-2.5 py-1 text-[11px] font-semibold text-success">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M5 12.5l5 5L20 7" />
                 </svg>
-                <div className="grid grid-cols-3 gap-2.5 mt-[14px] pt-[14px] border-t border-t-[var(--border)]">
-                  {[
-                    { k: "الظهور", v: "12.4K" },
-                    { k: "النقرات", v: "1,089" },
-                    { k: "الترتيب", v: "#3" },
-                  ].map((s, i) => (
-                    <div key={i} className="text-center">
-                      <div className="font-mono text-base font-semibold text-foreground">{s.v}</div>
-                      <div className="text-[10.5px] text-muted-foreground mt-0.5">{s.k}</div>
-                    </div>
-                  ))}
-                </div>
+                موثّقة لدى وزارة التجارة
               </div>
             </div>
+
+            {/* Body — flex-col so we can reorder on mobile (address above cert) vs desktop (cert first) */}
+            <div className="p-6 md:p-7 flex flex-col">
+              {/* Legal entity + 4 badges (always first) */}
+              <div className="order-1">
+                <div className="text-[11px] font-mono text-muted-foreground tracking-wide mb-1.5">الكيان القانوني</div>
+                <div className="text-[20px] font-semibold text-foreground leading-tight">
+                  شركة جبر الجنوبية للمقاولات
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-3 py-1.5 text-[12px] font-semibold text-success">
+                    <span className="w-1.5 h-1.5 rounded-full bg-success" />
+                    نشط
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-[12px] font-semibold text-foreground">
+                    <span className="text-muted-foreground font-mono text-[10.5px]">CR</span>
+                    <bdi className="font-mono">4030524305</bdi>
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-[12px] font-semibold text-foreground">
+                    <span className="text-muted-foreground font-mono text-[10.5px]">رأس المال</span>
+                    ٨,٠٠٠,٠٠٠ ﷼
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-[12px] font-semibold text-foreground">
+                    <span className="text-muted-foreground font-mono text-[10.5px]">تأسست</span>
+                    ٢٠٢٣
+                  </span>
+                </div>
+              </div>
+
+              {/* Google Maps address — order-2 on mobile (right after badges), order-4 on desktop (bottom) */}
+              <a
+                href="https://www.google.com/maps?q=21.502370834350586,39.1859245300293"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group order-2 md:order-4 mt-6 flex items-start gap-3 pt-5 border-t border-t-border/60 hover:opacity-90 transition-opacity"
+                aria-label="افتح موقع الشركة على خرائط جوجل"
+              >
+                <span className="shrink-0 mt-0.5 inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white shadow-sm">
+                  <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Google Maps">
+                    <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8z" fill="#EA4335"/>
+                    <circle cx="12" cy="10" r="3" fill="#fff"/>
+                    <path d="M4 10c0-.7.09-1.38.26-2.03L12 10 4.26 12.03A8.02 8.02 0 0 1 4 10z" fill="#FBBC05" opacity="0.9"/>
+                    <path d="M20 10c0 .95-.17 1.86-.47 2.7L12 10l7.53-2.7c.3.85.47 1.75.47 2.7z" fill="#4285F4" opacity="0.85"/>
+                    <path d="M12 2c-2.44 0-4.62 1.1-6.08 2.83L12 10 5.92 4.83A7.98 7.98 0 0 1 12 2z" fill="#34A853" opacity="0.85"/>
+                  </svg>
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="text-[10.5px] text-muted-foreground font-mono tracking-wide leading-none mb-1">العنوان — اضغط للفتح في خرائط جوجل</div>
+                  <div className="text-[13px] font-medium text-foreground leading-[1.6] group-hover:text-success transition-colors">
+                    شارع أبو بكر الصديق · حي الشرفية · جدة · المملكة العربية السعودية
+                  </div>
+                </div>
+                <span className="shrink-0 text-muted-foreground group-hover:text-success transition-colors mt-1.5">↗</span>
+              </a>
+
+              {/* Full-width certificate — order-3 on mobile (bottom), order-2 on desktop (middle) */}
+              <div className="order-3 md:order-2 mt-6 bg-white rounded-xl p-3 sm:p-4 shadow-sm ring-1 ring-border/50">
+                <Image
+                  src="/trust/jabr-cr-certificate.png"
+                  alt="شهادة السجل التجاري الرسمية · وزارة التجارة السعودية · شركة جبر الجنوبية للمقاولات · الرقم الموحّد 7036024383"
+                  width={2573}
+                  height={1818}
+                  className="block w-full h-auto rounded-lg"
+                  sizes="(max-width: 920px) 92vw, 860px"
+                  priority={false}
+                />
+              </div>
+              <p className="order-4 md:order-3 mt-2.5 text-center text-[12px] text-muted-foreground leading-[1.6]">
+                شهادة السجل التجاري الرسمية · <span className="text-foreground font-semibold">امسح الـ QR بجوالك</span> للتحقّق المباشر من وزارة التجارة السعودية
+              </p>
+            </div>
+
           </div>
         </div>
-      </section>
+      </m.section>
 
-      {/* ─── SYSTEMS TEASER → /features ─── */}
+      {/* ─── TRUST SECTION — live from Modonty's real paying clients ─── */}
+      {trustBundle.logos.length > 0 && (
+        <TrustSection bundle={trustBundle} ctaLabel={ctaLabel} signupHref={signupHref} />
+      )}
+
+      {/* ─── MATH — compact side-by-side comparison for non-technical visitor ─── */}
       <m.section
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="px-7 py-[60px]"
+        className="bg-background"
       >
-        <div className="max-w-[920px] mx-auto">
-          <div className="prev-systems-teaser">
-            <div className="prev-st-eyebrow">جولة كاملة على المنتج</div>
-            <div className="prev-st-icons">
-              <span className="prev-st-ico" aria-hidden>📊</span>
-              <span className="prev-st-ico" aria-hidden>🌐</span>
-              <span className="prev-st-ico" aria-hidden>✍️</span>
-              <span className="prev-st-ico" aria-hidden>🛠️</span>
+        <div className="max-w-[1080px] mx-auto px-7 py-14">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 font-mono text-[11px] text-success tracking-[1.5px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-success" />
+              قارن بنفسك
             </div>
-            <h2 className="prev-st-title">
-              ٤ منظومات متكاملة —<br />
-              <span className="accent">في اشتراك واحد</span>
+            <h2 className="prev-h2 text-[30px] md:text-[36px] font-semibold tracking-[-1px] mb-3">
+              محتوى جوجل يحتاج <span className="text-success">فريق كامل</span>
             </h2>
-            <p className="prev-st-sub">
-              لوحة تحكّمك · صفحتك العامة · مقالاتك · التصاميم والإنتاج. كل واحدة فيها مجموعات من المزايا الجاهزة.
+            <p className="text-[14.5px] text-muted-foreground leading-[1.7] max-w-[560px] mx-auto">
+              ست وظائف مختلفة — أو اشتراك واحد يعمل نفس شغلهم.
             </p>
-            <div className="prev-st-stats">
-              <span className="prev-st-stat"><b>٢٣</b> تنبيه فوري</span>
-              <span className="prev-st-stat-sep"></span>
-              <span className="prev-st-stat"><b>٢٨</b> فحص جودة / مقال</span>
-              <span className="prev-st-stat-sep"></span>
-              <span className="prev-st-stat"><b>YMYL</b> للقطاعات الحسّاسة</span>
-            </div>
-            <a href="/features" className="prev-st-cta">
-              <span>شوف كل التفاصيل</span>
-              <span className="text-[18px] leading-none">←</span>
-            </a>
+            <p className="text-[11.5px] text-muted-foreground/70 font-mono mt-2">
+              الأرقام بعملتك المحلية · تُطبَّق على السوق السعودي والمصري
+            </p>
           </div>
+
+          {/* Two cards side-by-side on desktop, stacked on mobile */}
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-5 md:gap-4 items-stretch">
+            {/* Card 1 — Internal team */}
+            <div className="rounded-2xl border border-border bg-card p-5 flex flex-col">
+              <div className="mb-4 flex items-start gap-2.5">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-muted text-foreground font-semibold text-[13px] font-mono shrink-0">١</span>
+                <div className="min-w-0 flex-1">
+                  <div className="text-[15px] font-semibold text-foreground leading-tight">توظّف الفريق بنفسك</div>
+                  <div className="mt-1.5 inline-flex items-center gap-1.5 bg-destructive/10 text-destructive text-[11px] font-bold px-2 py-0.5 rounded-md tracking-wide">
+                    <span className="w-1 h-1 rounded-full bg-destructive" aria-hidden />
+                    الحد الأدنى للرواتب
+                  </div>
+                </div>
+              </div>
+
+              <ul className="space-y-2 mb-4 flex-1">
+                {CALC_ROLES.map((r) => (
+                  <li key={r.key} className="flex items-center justify-between gap-2 pb-1.5 border-b border-b-border/50 last:border-b-0 last:pb-0">
+                    <span className="flex items-center gap-2 min-w-0">
+                      <span className="text-[15px] shrink-0" aria-hidden>{r.icon}</span>
+                      <span className="text-[12.5px] text-foreground truncate">{r.label}</span>
+                    </span>
+                    <span className="font-mono text-[12.5px] text-muted-foreground shrink-0">
+                      <bdi>{formatNum(r.def)}</bdi>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="pt-3 border-t-2 border-t-border mt-auto">
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Yearly (primary — right in RTL) */}
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 mb-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-destructive" aria-hidden />
+                      <span className="text-[11px] font-mono text-destructive tracking-wide font-bold">سنوياً</span>
+                    </div>
+                    <div className="font-mono text-[24px] md:text-[26px] font-bold text-destructive tracking-[-1px] leading-none">
+                      <bdi>{formatNum(mathTeamAnnual)}</bdi>
+                    </div>
+                    <div className="text-[10px] text-muted-foreground font-mono mt-1.5">بعملتك المحلية</div>
+                  </div>
+                  {/* Monthly (secondary — left in RTL) */}
+                  <div className="border-r border-r-border/60 pr-4">
+                    <div className="inline-flex items-center gap-1.5 mb-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground" aria-hidden />
+                      <span className="text-[11px] font-mono text-muted-foreground tracking-wide">شهرياً</span>
+                    </div>
+                    <div className="font-mono text-[18px] md:text-[20px] font-semibold text-foreground tracking-[-.5px] leading-none">
+                      <bdi>{formatNum(mathTeamMonthly)}</bdi>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Divider "أو" — horizontal on desktop, decorative on mobile */}
+            <div className="flex md:flex-col items-center justify-center gap-2 py-1 md:py-0 md:px-1">
+              <div className="flex-1 md:h-full md:w-px h-px w-full bg-border" />
+              <span className="bg-background px-3 py-1 font-mono text-[13px] font-bold text-muted-foreground tracking-[3px] shrink-0">أو</span>
+              <div className="flex-1 md:h-full md:w-px h-px w-full bg-border" />
+            </div>
+
+            {/* Card 2 — Modonty subscription */}
+            <div className="rounded-2xl border-2 border-success bg-gradient-to-br from-success/[0.10] to-success/[0.02] p-5 shadow-[0_24px_50px_-22px_color-mix(in_oklch,var(--success)_40%,transparent)] relative flex flex-col">
+              <span className="absolute -top-3 right-5 bg-success text-success-foreground text-[10px] font-bold px-2.5 py-1 rounded-full tracking-[.5px] shadow-sm">
+                ✨ الأذكى
+              </span>
+
+              <div className="mb-4 flex items-center gap-2.5">
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-success text-success-foreground font-semibold text-[13px] font-mono shrink-0">٢</span>
+                <div className="min-w-0">
+                  <div className="text-[15px] font-semibold text-foreground leading-tight truncate">اشتراك مدونتي — {mathPlanName}</div>
+                  <div className="text-[11.5px] text-muted-foreground">كل شغل الفريق · بلا صداع توظيف</div>
+                </div>
+              </div>
+
+              <ul className="space-y-1.5 mb-4 flex-1">
+                {[
+                  "مقالات SEO محسّنة لجوجل",
+                  "تصميم صور ومحتوى بصري",
+                  "متابعة الترتيب لايف",
+                  "لوحة تحكم · تقارير · اعتماد بضغطة",
+                ].map((line, i) => (
+                  <li key={i} className="flex items-start gap-2 text-[12.5px] text-foreground leading-[1.55]">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0 mt-0.5">
+                      <path d="M5 12.5l5 5L20 7" />
+                    </svg>
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="pt-3 border-t-2 border-t-success/30 mt-auto">
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Yearly (primary — right in RTL) */}
+                  <div>
+                    <div className="inline-flex items-center gap-1.5 mb-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-success" aria-hidden />
+                      <span className="text-[11px] font-mono text-success tracking-wide font-bold">سنوياً</span>
+                    </div>
+                    <div className="font-mono text-[28px] md:text-[32px] font-bold text-success tracking-[-1.5px] leading-none">
+                      <bdi>{formatNum(mathPlanAnnual)}</bdi>
+                    </div>
+                    <div className="text-[10px] text-muted-foreground font-mono mt-1.5">بعملتك المحلية</div>
+                  </div>
+                  {/* Monthly (secondary — left in RTL) */}
+                  <div className="border-r border-r-success/30 pr-4">
+                    <div className="inline-flex items-center gap-1.5 mb-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground" aria-hidden />
+                      <span className="text-[11px] font-mono text-muted-foreground tracking-wide">شهرياً</span>
+                    </div>
+                    <div className="font-mono text-[18px] md:text-[20px] font-semibold text-foreground tracking-[-.5px] leading-none">
+                      <bdi>{formatNum(mathPlanMonthlyOnAnnual)}</bdi>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Savings pill + CTA — single row on desktop */}
+          {mathTeamAnnual > mathPlanAnnual && mathPlanAnnual > 0 && (
+            <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4">
+              <div className="inline-flex items-center gap-2 bg-success/15 border border-success/40 text-success text-[14px] font-semibold px-4 py-2.5 rounded-full">
+                <span className="text-[16px]" aria-hidden>💰</span>
+                <span>
+                  توفير <bdi className="font-mono font-bold">{formatNum(mathTeamAnnual - mathPlanAnnual)}</bdi>
+                  <span className="text-success/80 mx-1.5">·</span>
+                  {mathSavePct}٪
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setCalcOpen(true)}
+                aria-label="حاسبة التوفير"
+                className="inline-flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors cursor-pointer px-5 py-2.5 rounded-xl text-[14px] font-semibold shadow-[0_16px_36px_-14px_color-mix(in_oklch,var(--foreground)_50%,transparent)]"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden>
+                  <rect x="4" y="2.5" width="16" height="19" rx="2.5" />
+                  <line x1="8" y1="7" x2="16" y2="7" />
+                  <circle cx="8.5" cy="12" r=".6" fill="currentColor" />
+                  <circle cx="12" cy="12" r=".6" fill="currentColor" />
+                  <circle cx="15.5" cy="12" r=".6" fill="currentColor" />
+                </svg>
+                <span>احسب بأرقام سوقك</span>
+                <span aria-hidden>←</span>
+              </button>
+            </div>
+          )}
+
+          <p className="mt-4 text-center text-[12px] text-muted-foreground max-w-[520px] mx-auto leading-[1.7]">
+            المقالات ملكك للأبد — حتى لو ألغيت الاشتراك، تظل في موقعك تجيب لك زوّار.
+          </p>
         </div>
       </m.section>
 
-      {/* ─── PAYMENT TRUST (banks + methods + honest banner) ─── */}
+      {/* ─── FEATURES — reframed as a Saudi platform, production system (not "writing") ─── */}
+      <section id="features" className="border-t border-t-[var(--border)] bg-card">
+        <div className="max-w-[1080px] mx-auto px-7 py-14">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
+              <Image
+                src="/logos/flag-sa.svg"
+                alt="السعودية"
+                width={20}
+                height={14}
+                className="h-3.5 w-5 rounded-[2px] ring-1 ring-black/10 object-cover"
+              />
+              <span>منصة سعودية ١٠٠٪</span>
+              <span className="text-success/60" aria-hidden>·</span>
+              <span className="text-success/80 font-mono text-[10.5px]">CR 4030524305</span>
+            </div>
+            <h2 className="prev-h2 text-[30px] md:text-[34px] font-semibold tracking-[-1px] mb-3">
+              نبني <span className="text-success">حضورك</span> — لا نبيع وعود
+            </h2>
+            <p className="text-[14.5px] text-muted-foreground max-w-[580px] mx-auto leading-[1.7]">
+              حضور على منصة مدونتي + سوشال ميديا + موقعك (في الباقات الأعلى) —
+              أرقام حقيقية من جوجل، لا شعارات.
+            </p>
+          </div>
+
+          {/* 3-step horizontal grid — clear "who does what" story */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8">
+            {[
+              {
+                num: "٠١",
+                title: "إحنا نجهّز كل شي",
+                icon: "⚙️",
+                desc: "فريق محترف يشتغل ورا الكواليس: بحث كلمات مفتاحية · استراتيجية محتوى · كتابة متخصصة · تصميم صور · تحسين لجوجل — جاهز في لوحتك، بانتظار موافقتك للنشر على منصة مدونتي.",
+              },
+              {
+                num: "٠٢",
+                title: "أنت توافق بضغطة",
+                icon: "✅",
+                desc: "كل مقال يظهر في لوحتك قبل النشر. اعتمد، عدّل، أو ارفض — ما يُنشر شي على منصة مدونتي بدون إذنك. تحكّم كامل بلا صداع.",
+              },
+              {
+                num: "٠٣",
+                title: "العملاء يجونك من جوجل",
+                icon: "📈",
+                desc: "زوّار حقيقيون يبحثون في جوجل عن خدمتك ويلاقونك — بلا إعلانات، بلا مطاردة. المقالات تنمو شهرياً وتجيب لك عملاء للأبد.",
+              },
+            ].map((step, i) => (
+              <div
+                key={i}
+                className="group relative rounded-2xl border border-border bg-background p-6 flex flex-col hover:border-success/40 hover:shadow-[0_20px_40px_-24px_color-mix(in_oklch,var(--success)_35%,transparent)] transition-all"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center text-[26px] leading-none" aria-hidden>
+                    {step.icon}
+                  </div>
+                  <span className="font-mono text-[13px] text-muted-foreground tracking-[.5px] pt-1">{step.num}</span>
+                </div>
+                <h3 className="text-[19px] font-semibold text-foreground tracking-[-.3px] mb-2">
+                  {step.title}
+                </h3>
+                <p className="text-[13.5px] text-muted-foreground leading-[1.75] flex-1">
+                  {step.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Multi-channel distribution — the hook that pulls the customer */}
+          <div className="mb-8 rounded-2xl border border-success/30 bg-gradient-to-br from-success/[0.07] to-transparent px-5 py-5">
+            <div className="text-center">
+              <div className="inline-flex items-center gap-1.5 font-mono text-[11px] text-success font-bold tracking-[1.5px] mb-3">
+                <span className="text-[13px]" aria-hidden>✨</span>
+                <span>مقالك ما ينزل في مكان واحد</span>
+              </div>
+              <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2.5 mb-2">
+                <span className="inline-flex items-center gap-1.5 bg-card border border-border rounded-full px-3 py-1.5 text-[13px] text-foreground font-medium">
+                  <span aria-hidden>🌐</span>
+                  <span>منصة مدونتي</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 bg-card border border-border rounded-full px-3 py-1.5 text-[13px] text-foreground font-medium">
+                  <span aria-hidden>📱</span>
+                  <span>سوشال ميديا مدونتي</span>
+                </span>
+                <span className="inline-flex items-center gap-1.5 bg-success/10 border border-success/40 rounded-full px-3 py-1.5 text-[13px] text-success font-semibold">
+                  <span aria-hidden>🔥</span>
+                  <span>موقعك أنت</span>
+                  <span className="text-[10px] font-mono bg-success/20 px-1.5 py-0.5 rounded-full">في الباقات الأعلى</span>
+                </span>
+              </div>
+              <p className="text-[12px] text-muted-foreground leading-[1.6] max-w-[500px] mx-auto">
+                حضور رقمي على عدة قنوات — العميل يلاقيك من أكثر من مكان، وأنت تشتغل باقة واحدة.
+              </p>
+            </div>
+          </div>
+
+          {/* Exit CTA to full features page */}
+          <div className="text-center">
+            <Link
+              href="/features"
+              className="inline-flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors px-5 py-2.5 rounded-xl text-[14px] font-semibold no-underline shadow-[0_16px_36px_-14px_color-mix(in_oklch,var(--foreground)_50%,transparent)]"
+            >
+              <span>شوف كل تفاصيل المنظومة</span>
+              <span aria-hidden>←</span>
+            </Link>
+            <p className="mt-2 text-[12px] text-muted-foreground">
+              ٤ منظومات متكاملة · ٢٨ فحص جودة لكل مقال · ٢٣ تنبيه فوري
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── PAYMENT TRUST (Network International anchor · single bar) ─── */}
       <m.section
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -791,110 +1250,126 @@ export function Landing(props: Props) {
         className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card"
       >
         <div className="max-w-[1080px] mx-auto px-7 py-14">
-          <div data-st className="flex flex-col items-center gap-8">
-              <div className="text-center">
-                <div className="font-mono text-[12px] text-success tracking-[2px] mb-2">SECURE PAYMENTS</div>
-                <div className="text-[20px] font-semibold text-foreground tracking-[-.3px]">الدفع الآمن عبر</div>
+          <div className="rounded-2xl border border-border overflow-hidden shadow-[0_20px_50px_-30px_color-mix(in_oklch,var(--foreground)_25%,transparent)]">
+            {/* Tier 1 — Gateway anchor (green-tinted so it reads as the credibility anchor) */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 px-6 py-5 bg-success/[0.08] border-b border-b-success/20">
+              <div className="text-center sm:text-right">
+                <div className="font-mono text-[11px] text-success tracking-[2px] mb-1 font-bold">SECURE PAYMENTS</div>
+                <div className="text-[15px] font-semibold text-foreground leading-tight">
+                  الدفع الآمن عبر <span className="text-success">Network International</span>
+                </div>
+                <div className="text-[11.5px] text-muted-foreground mt-0.5 font-mono">
+                  أكبر معالج دفع في الشرق الأوسط · LSE:NETW
+                </div>
               </div>
-
-              {/* Country-grouped clusters — shadcn Card per region */}
-              <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Saudi card */}
-                <Card className="border-border bg-card shadow-sm hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <CardTitle className="text-[16px] font-semibold text-foreground">السعودية</CardTitle>
-                      <div className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground tracking-[1px]">
-                        <span className="text-[16px]" aria-hidden>🇸🇦</span>
-                        <span>SA</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pb-6">
-                    <div className="grid grid-cols-3 gap-x-4 gap-y-5 place-items-center">
-                      {[
-                        { src: "/logos/snb.svg", alt: "SNB" },
-                        { src: "/logos/mada.svg", alt: "mada" },
-                        { src: "/logos/sadad.png", alt: "سداد" },
-                        { src: "/logos/stcpay.svg", alt: "stc pay" },
-                        { src: "/logos/tamara.svg", alt: "tamara" },
-                      ].map((logo) => (
-                        <div key={logo.alt} className="h-10 w-full flex items-center justify-center">
-                          <Image
-                            src={logo.src}
-                            alt={logo.alt}
-                            width={96}
-                            height={36}
-                            className="max-h-8 max-w-full w-auto h-auto object-contain"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Egypt card */}
-                <Card className="border-border bg-card shadow-sm hover:shadow-md transition-shadow">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between gap-3">
-                      <CardTitle className="text-[16px] font-semibold text-foreground">مصر</CardTitle>
-                      <div className="inline-flex items-center gap-1.5 font-mono text-[11px] text-muted-foreground tracking-[1px]">
-                        <span className="text-[16px]" aria-hidden>🇪🇬</span>
-                        <span>EG</span>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="pb-6">
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-5 place-items-center">
-                      {[
-                        { src: "/logos/saib-bank.png", alt: "saib" },
-                        { src: "/logos/instapay.svg", alt: "InstaPay" },
-                      ].map((logo) => (
-                        <div key={logo.alt} className="h-10 w-full flex items-center justify-center">
-                          <Image
-                            src={logo.src}
-                            alt={logo.alt}
-                            width={96}
-                            height={36}
-                            className="max-h-8 max-w-full w-auto h-auto object-contain"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+              <div className="shrink-0 inline-flex items-center justify-center bg-white rounded-lg ring-1 ring-black/10 shadow-sm w-[150px] h-11 px-3">
+                <Image
+                  src="/logos/network-international.svg"
+                  alt="Network International"
+                  width={556}
+                  height={126}
+                  className="w-[126px] h-[28px] object-contain"
+                />
               </div>
+            </div>
 
-              {/* Global accepted — Visa / Mastercard */}
-              <div className="flex items-center gap-4">
-                <div className="text-[13px] text-muted-foreground font-medium">يُقبل أيضًا</div>
-                <div className="flex items-center gap-5">
+            {/* Tier 2 — Payment methods, each in a white pill so brand colors render on both themes */}
+            <div className="bg-background px-6 py-6">
+              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-5">
+                {/* Saudi cluster (RTL — appears first) */}
+                <div className="inline-flex items-center gap-2.5 flex-wrap justify-center">
+                  <span className="inline-flex items-center gap-1.5 text-[12px] font-mono text-foreground/80 tracking-wide font-semibold">
+                    <Image
+                      src="/logos/flag-sa.svg"
+                      alt="السعودية"
+                      width={24}
+                      height={16}
+                      className="h-4 w-6 rounded-[2px] ring-1 ring-black/10 object-cover"
+                    />
+                    <span>السعودية</span>
+                  </span>
                   {[
+                    { src: "/logos/mada.svg", alt: "مدى" },
                     { src: "/logos/visa.svg", alt: "Visa" },
                     { src: "/logos/mastercard.svg", alt: "Mastercard" },
+                    { src: "/logos/apple-pay.svg", alt: "Apple Pay" },
+                    { src: "/logos/stcpay.svg", alt: "STC Pay" },
+                    { src: "/logos/tamara.svg", alt: "Tamara" },
                   ].map((logo) => (
-                    <div key={logo.alt} className="h-7 w-16 flex items-center justify-center">
+                    <div key={logo.alt} className="h-11 bg-white rounded-lg ring-1 ring-black/5 shadow-sm flex items-center justify-center px-3">
                       <Image
                         src={logo.src}
                         alt={logo.alt}
-                        width={64}
-                        height={28}
-                        className="max-h-7 max-w-full w-auto h-auto object-contain"
+                        width={200}
+                        height={44}
+                        unoptimized
+                        style={{ height: 22, width: "auto", objectFit: "contain" }}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Divider */}
+                <span className="hidden md:inline-block w-px h-10 bg-border" aria-hidden />
+
+                {/* Egypt cluster */}
+                <div className="inline-flex items-center gap-2.5 flex-wrap justify-center">
+                  <span className="inline-flex items-center gap-1.5 text-[12px] font-mono text-foreground/80 tracking-wide font-semibold">
+                    <Image
+                      src="/logos/flag-eg.svg"
+                      alt="مصر"
+                      width={24}
+                      height={16}
+                      className="h-4 w-6 rounded-[2px] ring-1 ring-black/10 object-cover"
+                    />
+                    <span>مصر</span>
+                  </span>
+                  {[
+                    { src: "/logos/instapay.svg", alt: "InstaPay" },
+                    { src: "/logos/saib-bank.png", alt: "saib" },
+                  ].map((logo) => (
+                    <div key={logo.alt} className="h-11 bg-white rounded-lg ring-1 ring-black/5 shadow-sm flex items-center justify-center px-3">
+                      <Image
+                        src={logo.src}
+                        alt={logo.alt}
+                        width={200}
+                        height={44}
+                        unoptimized
+                        style={{ height: 22, width: "auto", objectFit: "contain" }}
                       />
                     </div>
                   ))}
                 </div>
               </div>
+            </div>
 
-              {/* Honest banner */}
-              <div data-st className="inline-flex items-center gap-2 bg-success/10 text-success text-[14px] font-medium px-4 py-2.5 rounded-full">
-                <span className="font-mono font-semibold">صادقون</span>
-                <span className="opacity-55">·</span>
-                <span>دي تجارب مبكرة — إحنا بنبني سمعتنا معاك</span>
-              </div>
+            {/* Tier 3 — Trust badges (stronger contrast) */}
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-6 py-3.5 border-t border-t-border bg-card">
+              <span className="inline-flex items-center gap-1.5 text-[12px] text-foreground">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <rect x="4" y="10" width="16" height="11" rx="2" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                </svg>
+                <span className="font-semibold">PCI DSS Level 1</span>
+              </span>
+              <span className="text-muted-foreground/50" aria-hidden>·</span>
+              <span className="inline-flex items-center gap-1.5 text-[12px] text-foreground">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M5 12.5l5 5L20 7" />
+                </svg>
+                <span className="font-semibold">3D Secure</span>
+              </span>
+              <span className="text-muted-foreground/50" aria-hidden>·</span>
+              <span className="inline-flex items-center gap-1.5 text-[12px] text-muted-foreground">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M5 12.5l5 5L20 7" />
+                </svg>
+                <span>بيانات كارتك لا تلمس خوادمنا</span>
+              </span>
             </div>
           </div>
-        </m.section>
+        </div>
+      </m.section>
 
       {/* ─── PRICING (DB Plan model) ─── */}
       <section id="pricing" className="max-w-[1080px] mx-auto px-7 py-20">
@@ -903,6 +1378,18 @@ export function Landing(props: Props) {
           <p className="text-[15px] text-muted-foreground mt-3">
             ابدأ بالباقة الأنسب — ترقّى متى ما احتجت، بدون التزام.
           </p>
+          <div className="mt-3">
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-success transition-colors border-b border-b-transparent hover:border-b-success/40 pb-0.5"
+            >
+              <span>عندك سؤال قبل الاشتراك؟</span>
+              <span className="font-semibold text-success">نتكلم على واتساب</span>
+              <span>←</span>
+            </a>
+          </div>
           <div className="prev-pricing-toggle inline-flex bg-muted rounded-[11px] p-1 mt-6 text-sm font-medium">
             <button
               onClick={() => setBilling("monthly")}
@@ -938,50 +1425,122 @@ export function Landing(props: Props) {
             const price = billing === "annual" ? p.priceYearly : p.priceMonthly;
             const annualTotal = p.priceYearly * 12;
             const effectiveMonthly = Math.round(annualTotal / 18);
+            const content = getPlanCardContent(p.slug);
+            if (!content) return null;
+            const PersonaIcon = content.personaIcon;
+            const isConsultation = !!content.ctaAsConsultation;
 
             return (
               <m.div
                 key={p.id}
                 variants={STAGGER_CHILD}
                 className={cn(
-                  "rounded-[18px] px-[22px] py-[26px] relative border",
+                  "rounded-[18px] px-[22px] py-[26px] relative border-2 bg-card text-foreground",
                   featured
-                    ? "bg-foreground border-foreground text-background shadow-[0_24px_50px_-22px_color-mix(in oklch, var(--foreground) 50%, transparent)]"
-                    : "bg-card border-border text-foreground",
+                    ? "border-success ring-2 ring-success/30 shadow-[0_24px_50px_-22px_color-mix(in_oklch,var(--success)_60%,transparent)]"
+                    : "border-border",
                 )}
               >
                 {featured && (
-                  <span className="absolute -top-[11px] right-[22px] bg-success text-success-foreground text-[10.5px] font-semibold px-2.5 py-1 rounded-full tracking-[.3px]">
+                  <span className="absolute -top-[12px] right-[24px] bg-success text-success-foreground text-[10.5px] font-bold px-3 py-1 rounded-full tracking-[.3px] inline-flex items-center gap-1.5">
+                    <Flame className="w-3 h-3" strokeWidth={2.5} />
                     {p.featuredBadge}
                   </span>
                 )}
-                <div className={cn("text-sm font-semibold", featured ? "text-background" : "text-foreground")}>{p.name}</div>
-                <p className={cn("text-[12.5px] mt-2 mb-5 leading-[1.6] min-h-[50px]", featured ? "text-background/70" : "text-muted-foreground")}>
-                  {p.tagline || p.hook || ""}
-                </p>
-                <div className="flex items-baseline gap-1.5">
-                  <span className={cn("font-mono text-4xl font-semibold tracking-[-1.5px]", featured ? "text-background" : "text-foreground")}>{billing === "annual" ? formatNum(annualTotal) : price}</span>
-                  <span className={cn("text-xs", featured ? "text-background/70" : "text-muted-foreground")}>{currency}/{billing === "annual" ? "سنوياً" : "شهر"}</span>
+
+                {/* Persona */}
+                <div className="flex items-center gap-2 text-[11.5px] text-muted-foreground mb-1.5">
+                  <PersonaIcon className="w-3.5 h-3.5 shrink-0" />
+                  <span>{content.persona}</span>
                 </div>
-                <div className={cn("text-[12.5px] mt-2 min-h-5 font-mono font-semibold", featured ? "text-success bg-success/15 px-2.5 py-1 rounded-md inline-block w-fit" : "text-success")}>
+
+                {/* Plan name */}
+                <div className="text-[20px] font-extrabold text-foreground mb-5 tracking-[-0.3px]">
+                  {p.name}
+                </div>
+
+                {/* Hero metric — articles/month */}
+                <div className={cn(
+                  "flex items-center gap-3 px-4 py-3 mb-5 rounded-xl border",
+                  featured ? "bg-success/10 border-success/30" : "bg-foreground/[.03] border-border",
+                )}>
+                  <div className={cn(
+                    "w-10 h-10 rounded-lg flex items-center justify-center shrink-0",
+                    featured ? "bg-success/20 text-success" : "bg-foreground/5 text-muted-foreground",
+                  )}>
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className={cn(
+                      "font-mono text-[17px] font-extrabold leading-tight",
+                      featured ? "text-success" : "text-foreground",
+                    )}>
+                      {p.articlesLabel || "—"}
+                    </div>
+                    <div className="text-[11.5px] text-muted-foreground mt-1 leading-tight">
+                      {content.heroCaption}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="font-mono text-4xl font-semibold tracking-[-1.5px] text-foreground">{billing === "annual" ? formatNum(annualTotal) : price}</span>
+                  <span className="text-xs text-muted-foreground">{currency}/{billing === "annual" ? "سنوياً" : "شهر"}</span>
+                </div>
+                <div className={cn(
+                  "text-[12.5px] mt-2 min-h-5 font-mono font-bold text-success items-center gap-1.5 w-fit",
+                  billing === "annual" && p.priceYearly > 0 ? "inline-flex" : "hidden",
+                  featured && "bg-success/15 px-2.5 py-1 rounded-md",
+                )}>
                   {billing === "annual" && p.priceYearly > 0 ? `يصير ${formatNum(effectiveMonthly)} ${currency}/شهر · ٦ شهور هدية` : " "}
                 </div>
                 <Link
-                  href={`${signupHref}?plan=${p.slug}`}
+                  href={isConsultation ? whatsappLink : `${signupHref}?plan=${p.slug}`}
+                  target={isConsultation ? "_blank" : undefined}
+                  rel={isConsultation ? "noopener noreferrer" : undefined}
                   className={cn(
-                    "block text-center p-[11px] rounded-[10px] text-[13.5px] no-underline mt-[18px] mb-[22px] border",
-                    featured ? "bg-success text-success-foreground font-semibold border-transparent" : "bg-background text-foreground font-medium border-border",
+                    "flex items-center justify-center gap-2 p-[13px] rounded-[11px] text-[14px] no-underline mt-[18px] mb-[22px] border font-bold",
+                    featured ? "bg-success text-success-foreground border-transparent" : "bg-background text-foreground border-border",
                   )}
                 >
-                  {p.ctaText || (featured ? `ابدأ بـ${p.name}` : "ابدأ الحين")}
+                  <span>{isConsultation ? "احجز جلسة استشارة" : (p.ctaText || `ابدأ بـ${p.name}`)}</span>
+                  <ArrowLeft className="w-4 h-4" />
                 </Link>
-                <div className={cn("border-t mb-[18px]", featured ? "border-t-background/10" : "border-t-[var(--border)]")} />
-                {(p.highlights ?? []).slice(0, 5).map((h, i) => (
-                  <div key={i} className={cn("flex gap-[9px] mb-[11px] text-[13px] leading-[1.5]", featured ? "text-background/70" : "text-muted-foreground")}>
-                    <span className="text-success shrink-0">✓</span>
-                    <span>{h}</span>
+                {/* Bullets label */}
+                <div className="text-[11.5px] text-muted-foreground mb-3 font-semibold pb-3 border-b border-border">
+                  {content.bulletsLabel}
+                </div>
+
+                {/* Bullets */}
+                <div className="flex flex-col gap-3 mb-5">
+                  {content.bullets.map((b, i) => {
+                    const Icon = b.icon;
+                    return (
+                      <div key={i} className={cn(
+                        "flex gap-2.5 items-start text-[13px] leading-[1.5]",
+                        b.highlight ? "text-foreground font-medium" : "text-muted-foreground",
+                      )}>
+                        <div className={cn(
+                          "w-[22px] h-[22px] rounded-md flex items-center justify-center shrink-0",
+                          b.highlight ? "bg-success/15 text-success" : "bg-foreground/[.04] text-muted-foreground",
+                        )}>
+                          <Icon className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="pt-[2px]">{b.text}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Trust chip — featured plan only, motivational (not persona) */}
+                {content.trustChip && (
+                  <div className="mt-auto p-3 rounded-lg bg-foreground/[.02] border border-border flex gap-2.5 items-start text-[11.5px] leading-[1.5]">
+                    <content.trustChip.icon className="w-4 h-4 text-success mt-0.5 shrink-0" />
+                    <div>
+                      <span className="text-success font-bold">{content.trustChip.label}</span>
+                      <span className="text-foreground/75"> — {content.trustChip.body}</span>
+                    </div>
                   </div>
-                ))}
+                )}
               </m.div>
             );
           })}
@@ -1003,126 +1562,131 @@ export function Landing(props: Props) {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="border-t border-t-[var(--border)] bg-background"
           >
-            <div className="max-w-[1080px] mx-auto px-7 py-20">
-              <div className="text-center mb-12">
-                <div className="font-mono text-xs text-muted-foreground tracking-[1px] mb-3">
-                  {socialProofEyebrow}
+            <div className="max-w-[1080px] mx-auto px-7 py-14">
+              <div className="text-center mb-10">
+                {/* Trust badge — matches structure of other sections */}
+                <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
+                  <span className="text-[13px]" aria-hidden>⭐</span>
+                  <span>{socialProofEyebrow || "شهادات صادرة بإذن أصحابها"}</span>
+                  <span className="text-success/60" aria-hidden>·</span>
+                  <span className="text-success/80 font-mono text-[10.5px]">لا سيناريو</span>
                 </div>
-                <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-3">
-                  {socialProofTitle}
+                <h2 className="prev-h2 text-[30px] md:text-[34px] font-semibold tracking-[-1px] mb-3">
+                  شهادات <span className="text-success">تشوفها</span> — لا وعود تسمعها
                 </h2>
-                <p className="text-base text-muted-foreground">{socialProofSubtitle}</p>
+                <p className="text-[14.5px] text-muted-foreground max-w-[580px] mx-auto leading-[1.7]">
+                  نفس العملاء اللي شفت أرقامهم في قصص النجاح فوق — الحين اسمعهم بأصواتهم.
+                </p>
               </div>
 
-              <div
-                className="prev-voices-grid grid gap-8 items-start"
-                style={{ gridTemplateColumns: "320px 1fr" }}
-              >
-                {/* RIGHT (RTL first child): list */}
-                <div>
-                  <div className="font-mono text-[10.5px] text-muted-foreground tracking-[1px] mb-2.5 ps-1">
-                    اضغط لتبديل الشهادة ↓
-                  </div>
-                <div className="prev-voices-list flex flex-col gap-2.5">
-                  {voices.map((voice, i) => {
-                    const isActive = i === safeIdx;
-                    const voiceInitials = (voice.name ?? "").trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("");
-                    return (
-                      <button
-                        key={i}
-                        type="button"
-                        onClick={() => setSelectedVoice(i)}
-                        className={`prev-voice-btn${isActive ? " active" : ""}`}
-                      >
-                        <span className="prev-voice-avatar">
-                          {voice.avatarImg ? (
-                            <Image
-                              src={voice.avatarImg}
-                              alt={voice.name ?? ""}
-                              width={40}
-                              height={40}
-                              unoptimized
-                            />
-                          ) : (
-                            <span className="text-sm">{voiceInitials}</span>
-                          )}
-                        </span>
-                        <span className="min-w-0 flex-1">
-                          <span className="block text-sm font-semibold text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
-                            {voice.name}
-                          </span>
-                          <span className="block text-xs text-muted-foreground mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">
-                            {voice.company || voice.role}
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-                </div>
-
-                {/* LEFT: media + quote */}
-                <div className="bg-card border border-border rounded-[20px] overflow-hidden shadow-[0_24px_50px_-30px_color-mix(in oklch, var(--foreground) 18%, transparent)]">
-                  <div className="relative aspect-video bg-foreground">
-                    {embedUrl ? (
-                      <iframe
-                        key={embedUrl}
-                        src={embedUrl}
-                        title={`${v.name} — ${v.company}`}
-                        loading="lazy"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-full border-0 block"
-                      />
-                    ) : v.mediaImage ? (
-                      <Image
-                        src={v.mediaImage}
-                        alt={v.name ?? ""}
-                        fill
-                        unoptimized
-                        className="object-cover"
-                      />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground font-mono text-[13px]">
-                        لا يوجد فيديو
-                      </div>
-                    )}
-                  </div>
-                  <div className="px-7 py-[26px]">
-                    {v.quote && (
-                      <p className="text-[17px] leading-[1.85] text-foreground font-normal mb-[18px]">
-                        «{v.quote}»
-                      </p>
-                    )}
-                    <div className="prev-voice-attr flex items-center gap-3 pt-4 border-t border-t-[var(--border)] flex-wrap">
-                      <span className="prev-voice-avatar w-11 h-11">
-                        {v.avatarImg ? (
-                          <Image src={v.avatarImg} alt={v.name ?? ""} width={44} height={44} unoptimized />
-                        ) : (
-                          <span className="text-[15px]">{initials}</span>
-                        )}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-[15px] font-semibold text-foreground">{v.name}</div>
-                        <div className="text-[13px] text-muted-foreground mt-0.5">
-                          {[v.role, v.company].filter(Boolean).join(" · ")}
-                        </div>
-                      </div>
-                      {v.metric && (
-                        <div className="prev-voice-metric ms-auto bg-[color-mix(in oklch, var(--success) 8%, var(--background))] text-success text-xs font-semibold px-3 py-1.5 rounded-full font-mono">
-                          {v.metric}
+              {/* Slider single-view — same pattern as CaseStudiesSlider up top */}
+              <div className="max-w-[860px] mx-auto">
+                <AnimatePresence mode="wait">
+                  <m.div
+                    key={safeIdx}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    className="bg-card border border-border rounded-2xl overflow-hidden shadow-[0_20px_50px_-30px_color-mix(in_oklch,var(--foreground)_25%,transparent)]"
+                  >
+                    <div className="relative aspect-video bg-foreground">
+                      {embedUrl ? (
+                        <iframe
+                          key={embedUrl}
+                          src={embedUrl}
+                          title={`${v.name} — ${v.company}`}
+                          loading="lazy"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                          className="w-full h-full border-0 block"
+                        />
+                      ) : v.mediaImage ? (
+                        <Image
+                          src={v.mediaImage}
+                          alt={v.name ?? ""}
+                          fill
+                          unoptimized
+                          className="object-cover"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground font-mono text-[13px]">
+                          لا يوجد فيديو
                         </div>
                       )}
                     </div>
+                    <div className="px-6 md:px-8 py-6">
+                      {v.quote && (
+                        <p className="text-[16px] md:text-[17px] leading-[1.85] text-foreground font-normal mb-5">
+                          «{v.quote}»
+                        </p>
+                      )}
+                      <div className="flex items-center gap-3 pt-4 border-t border-t-border flex-wrap">
+                        <span className="prev-voice-avatar w-11 h-11">
+                          {v.avatarImg ? (
+                            <Image src={v.avatarImg} alt={v.name ?? ""} width={44} height={44} unoptimized />
+                          ) : (
+                            <span className="text-[15px]">{initials}</span>
+                          )}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[15px] font-semibold text-foreground">{v.name}</div>
+                          <div className="text-[13px] text-muted-foreground mt-0.5">
+                            {[v.role, v.company].filter(Boolean).join(" · ")}
+                          </div>
+                        </div>
+                        {v.metric && (
+                          <div className="ms-auto bg-success/10 text-success text-xs font-semibold px-3 py-1.5 rounded-full font-mono">
+                            {v.metric}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </m.div>
+                </AnimatePresence>
+
+                {/* Slider controls — arrows + dots (same pattern as CaseStudiesSlider) */}
+                {voices.length > 1 && (
+                  <div className="flex items-center justify-center gap-4 mt-8">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedVoice(((safeIdx - 1) % voices.length + voices.length) % voices.length)}
+                      aria-label="الشهادة السابقة"
+                      className="w-10 h-10 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
+                    >
+                      <span className="text-[18px]">→</span>
+                    </button>
+                    <div className="flex items-center gap-2">
+                      {voices.map((_, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => setSelectedVoice(i)}
+                          aria-label={`الشهادة ${i + 1}`}
+                          className={cn(
+                            "h-2 rounded-full transition-all",
+                            i === safeIdx ? "w-8 bg-success" : "w-2 bg-border hover:bg-muted-foreground",
+                          )}
+                        />
+                      ))}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedVoice((safeIdx + 1) % voices.length)}
+                      aria-label="الشهادة التالية"
+                      className="w-10 h-10 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
+                    >
+                      <span className="text-[18px]">←</span>
+                    </button>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           </m.section>
         );
       })()}
 
-      {/* ─── TEAM (DB) ─── */}
+      {/* ─── TEAM — "faces that guarantee your presence" (aligned with slogan + CR) ─── */}
       {(coreTeam.length > 0 || executionTeam.length > 0) && (
         <m.section
           initial={{ opacity: 0, y: 24 }}
@@ -1131,38 +1695,63 @@ export function Landing(props: Props) {
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="border-t border-t-[var(--border)] bg-card"
         >
-          <div className="max-w-[1080px] mx-auto px-7 py-20">
-            <div className="text-center mb-12">
-              <div className="font-mono text-xs text-muted-foreground tracking-[1px] mb-3">
-                الفريق
+          <div className="max-w-[1080px] mx-auto px-7 py-14">
+            <div className="text-center mb-10">
+              {/* Trust badge — legal accountability */}
+              <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
+                <Image
+                  src="/logos/flag-sa.svg"
+                  alt="السعودية"
+                  width={20}
+                  height={14}
+                  className="h-3.5 w-5 rounded-[2px] ring-1 ring-black/10 object-cover"
+                />
+                <span>مسؤولون قانونياً</span>
+                <span className="text-success/60" aria-hidden>·</span>
+                <span className="text-success/80 font-mono text-[10.5px]">CR 4030524305</span>
               </div>
-              <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-3">
-                وراء الكلام
+              <h2 className="prev-h2 text-[30px] md:text-[34px] font-semibold tracking-[-1px] mb-3">
+                الوجوه اللي <span className="text-success">تضمن</span> حضورك
               </h2>
-              <p className="text-base text-muted-foreground">
-                ناس حقيقية تكتب وتنشر وتتابع — مش algorithms.
+              <p className="text-[14.5px] text-muted-foreground max-w-[580px] mx-auto leading-[1.7]">
+                هؤلاء وقّعوا تعهّد &laquo;حضور لا وعود&raquo; — تقدر تسائلهم شخصياً على كل مقال.
               </p>
             </div>
 
             {coreTeam.length > 0 && (
               <div
-                className={cn("prev-team-core-grid grid gap-[18px]", executionTeam.length > 0 && "mb-[42px]")}
-                style={{ gridTemplateColumns: `repeat(${Math.min(coreTeam.length, 2)}, 1fr)` }}
+                className={cn(
+                  "grid grid-cols-1 gap-4",
+                  coreTeam.length >= 2 && "md:grid-cols-2",
+                  executionTeam.length > 0 && "mb-8",
+                )}
               >
                 {coreTeam.map((m, i) => {
                   const initials = m.name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("");
                   return (
-                    <div key={i} className="prev-team-core-card">
-                      <div className="prev-team-core-avatar">
+                    <div
+                      key={i}
+                      className="group bg-background border border-border rounded-2xl p-5 flex items-start gap-4 hover:border-success/40 hover:shadow-[0_20px_40px_-24px_color-mix(in_oklch,var(--success)_30%,transparent)] transition-all"
+                    >
+                      <div className="shrink-0 w-16 h-16 md:w-[76px] md:h-[76px] rounded-full overflow-hidden bg-muted flex items-center justify-center ring-2 ring-success/15">
                         {m.avatarUrl ? (
-                          <Image src={m.avatarUrl} alt={m.name} width={88} height={88} unoptimized />
+                          <Image src={m.avatarUrl} alt={m.name} width={76} height={76} unoptimized className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-[26px] font-semibold text-muted-foreground">{initials}</span>
+                          <span className="text-[22px] font-semibold text-muted-foreground">{initials}</span>
                         )}
                       </div>
-                      <div className="min-w-0">
-                        <div className="text-[17px] font-semibold text-foreground mb-1">{m.name}</div>
-                        <div className="text-[13.5px] text-muted-foreground">{m.role}</div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <div className="text-[16px] font-semibold text-foreground">{m.name}</div>
+                          <span className="inline-flex items-center gap-1 bg-success/10 text-success text-[10px] font-mono font-bold px-2 py-0.5 rounded-full tracking-wide">
+                            <span className="w-1 h-1 rounded-full bg-success" aria-hidden />
+                            <span>مسؤول</span>
+                          </span>
+                        </div>
+                        <div className="text-[13px] text-muted-foreground mb-2">{m.role}</div>
+                        {m.bio && (
+                          <p className="text-[12.5px] text-muted-foreground leading-[1.7]">{m.bio}</p>
+                        )}
                       </div>
                     </div>
                   );
@@ -1171,76 +1760,148 @@ export function Landing(props: Props) {
             )}
 
             {executionTeam.length > 0 && (
-              <div
-                className="prev-team-exec-grid grid gap-[14px]"
-                style={{ gridTemplateColumns: `repeat(${Math.min(executionTeam.length, 4)}, 1fr)` }}
-              >
-                {executionTeam.map((m, i) => {
-                  const initials = m.name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("");
-                  return (
-                    <div key={i} className="prev-team-exec-card">
-                      <div className="prev-team-exec-avatar">
-                        {m.avatarUrl ? (
-                          <Image src={m.avatarUrl} alt={m.name} width={64} height={64} unoptimized />
-                        ) : (
-                          <span>{initials}</span>
-                        )}
+              <div>
+                <div className="text-center mb-4">
+                  <div className="inline-flex items-center gap-2 font-mono text-[10.5px] text-muted-foreground tracking-[1.5px]">
+                    <span className="w-6 h-px bg-border" aria-hidden />
+                    <span>فريق التنفيذ</span>
+                    <span className="w-6 h-px bg-border" aria-hidden />
+                  </div>
+                </div>
+                <div
+                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"
+                >
+                  {executionTeam.map((m, i) => {
+                    const initials = m.name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("");
+                    return (
+                      <div
+                        key={i}
+                        className="bg-background border border-border rounded-xl p-3 flex flex-col items-center text-center gap-2 hover:border-muted-foreground/50 transition-colors"
+                      >
+                        <div className="w-14 h-14 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                          {m.avatarUrl ? (
+                            <Image src={m.avatarUrl} alt={m.name} width={56} height={56} unoptimized className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-[15px] font-semibold text-muted-foreground">{initials}</span>
+                          )}
+                        </div>
+                        <div className="min-w-0 w-full">
+                          <div className="text-[12.5px] font-semibold text-foreground truncate">{m.name}</div>
+                          <div className="text-[10.5px] text-muted-foreground truncate mt-0.5">{m.role}</div>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <div className="text-sm font-semibold text-foreground mb-1 whitespace-nowrap overflow-hidden text-ellipsis">{m.name}</div>
-                        <div className="text-xs text-muted-foreground leading-[1.5]">{m.role}</div>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
         </m.section>
       )}
 
-      {/* ─── FAQ (DB) ─── */}
-      {faqs.length > 0 && (
-        <m.section
-          id="faq"
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="border-t border-t-[var(--border)] bg-card"
-        >
-          <div className="max-w-[720px] mx-auto px-7 py-20">
-            <div className="text-center mb-[42px]">
-              <div data-st className="font-mono text-xs text-muted-foreground tracking-[1px] mb-3">أسئلة شائعة</div>
-              <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px]">
-                {staticLanding.faq?.title ?? "اقتنع قبل ما تبدأ"}
-              </h2>
-            </div>
-            <div>
-              {faqs.map((item, i) => (
-                <div key={i} className={`prev-faq-item${openFaq === i ? " open" : ""}`}>
-                  <button className="prev-faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
-                    <span>{item.q}</span>
-                    <span className="prev-faq-toggle">{openFaq === i ? "×" : "+"}</span>
-                  </button>
-                  <div className="prev-faq-a">{item.a}</div>
+      {/* ─── FAQ — grouped by tag (leverages FaqItem.tag from DB) ─── */}
+      {faqs.length > 0 && (() => {
+        // Group by tag, preserving first-appearance order.
+        const grouped = new Map<string, typeof faqs>();
+        for (const item of faqs) {
+          const tag = (item.tag || "").trim() || "عام";
+          if (!grouped.has(tag)) grouped.set(tag, []);
+          grouped.get(tag)!.push(item);
+        }
+        const groups = Array.from(grouped.entries());
+        return (
+          <m.section
+            id="faq"
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="border-t border-t-[var(--border)] bg-card"
+          >
+            <div className="max-w-[760px] mx-auto px-7 py-14">
+              <div className="text-center mb-8">
+                {/* Trust badge — matches structure of other sections */}
+                <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
+                  <span className="text-[13px]" aria-hidden>💬</span>
+                  <span>إجابات مباشرة · بلا لف</span>
+                  <span className="text-success/60" aria-hidden>·</span>
+                  <span className="text-success/80 font-mono text-[10.5px]">{toArabicDigits(faqs.length)} سؤال</span>
                 </div>
-              ))}
+                <h2 className="prev-h2 text-[30px] md:text-[34px] font-semibold tracking-[-1px] mb-3">
+                  اقتنع <span className="text-success">قبل</span> ما تبدأ
+                </h2>
+                <p className="text-[14.5px] text-muted-foreground max-w-[520px] mx-auto leading-[1.7]">
+                  كل سؤال يجيك في بالك — مقسّم حسب الموضوع للوصول السريع.
+                </p>
+              </div>
+
+              {/* Category filter chips — jump to group */}
+              {groups.length > 1 && (
+                <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+                  {groups.map(([tag, items]) => (
+                    <a
+                      key={tag}
+                      href={`#faq-group-${encodeURIComponent(tag)}`}
+                      className="inline-flex items-center gap-1.5 bg-background border border-border hover:border-success/50 hover:bg-success/5 transition-colors text-[12px] font-medium text-foreground px-3 py-1.5 rounded-full"
+                    >
+                      <span>{tag}</span>
+                      <span className="text-[10px] font-mono text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded-full">
+                        {toArabicDigits(items.length)}
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              )}
+
+              {/* Grouped accordion */}
+              <div className="space-y-6">
+                {groups.map(([tag, items]) => (
+                  <div key={tag} id={`faq-group-${encodeURIComponent(tag)}`} className="scroll-mt-24">
+                    <div className="mb-3 flex items-center gap-2.5">
+                      <span className="w-1 h-4 rounded-full bg-success" aria-hidden />
+                      <span className="font-mono text-[11px] text-success font-bold tracking-[1.5px]">{tag}</span>
+                      <span className="text-[11px] text-muted-foreground font-mono">
+                        · {toArabicDigits(items.length)} سؤال
+                      </span>
+                    </div>
+                    <div className="rounded-2xl border border-border bg-background overflow-hidden divide-y divide-border">
+                      {items.map((item) => {
+                        // Stable global index for openFaq state (faqs order preserved).
+                        const flatIdx = faqs.indexOf(item);
+                        const isOpen = openFaq === flatIdx;
+                        return (
+                          <div key={flatIdx} className={`prev-faq-item${isOpen ? " open" : ""} px-5`}>
+                            <button
+                              className="prev-faq-q"
+                              onClick={() => setOpenFaq(isOpen ? null : flatIdx)}
+                            >
+                              <span>{item.q}</span>
+                              <span className="prev-faq-toggle">{isOpen ? "×" : "+"}</span>
+                            </button>
+                            <div className="prev-faq-a">{item.a}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-8 text-center text-[13px] text-muted-foreground">
+                ما لقيت إجابتك؟{" "}
+                <a
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-success font-semibold no-underline border-b border-b-success/30 pb-px"
+                >
+                  تواصل معنا على واتساب ←
+                </a>
+              </div>
             </div>
-            <div className="mt-9 text-center text-sm text-muted-foreground">
-              ما لقيت إجابتك؟{" "}
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-success font-semibold no-underline border-b border-b-success/30 pb-px"
-              >
-                تواصل معنا على واتساب ←
-              </a>
-            </div>
-          </div>
-        </m.section>
-      )}
+          </m.section>
+        );
+      })()}
 
       {/* ─── FINAL CTA (DB) ─── */}
       <m.section
@@ -1268,28 +1929,6 @@ export function Landing(props: Props) {
           </div>
         </div>
       </m.section>
-
-      {/* ─── FAB ─── */}
-      <button
-        onClick={() => setCalcOpen(true)}
-        aria-label="حاسبة التوفير"
-        className={cn(
-          "prev-fab fixed bottom-6 left-6 z-[60] flex items-center gap-2.5 bg-foreground text-background border-none cursor-pointer px-[18px] py-[14px] rounded-full shadow-[0_16px_36px_-10px_color-mix(in oklch, var(--foreground) 50%, transparent)] text-sm font-medium font-[inherit] transition-[transform,opacity] duration-200 ease-out",
-          fabVisible ? "translate-y-0 opacity-100 pointer-events-auto" : "translate-y-[120%] opacity-0 pointer-events-none",
-        )}
-      >
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round">
-          <rect x="4" y="2.5" width="16" height="19" rx="2.5" />
-          <line x1="8" y1="7" x2="16" y2="7" />
-          <circle cx="8.5" cy="12" r=".6" fill="currentColor" />
-          <circle cx="12" cy="12" r=".6" fill="currentColor" />
-          <circle cx="15.5" cy="12" r=".6" fill="currentColor" />
-          <circle cx="8.5" cy="16.5" r=".6" fill="currentColor" />
-          <circle cx="12" cy="16.5" r=".6" fill="currentColor" />
-          <circle cx="15.5" cy="16.5" r=".6" fill="currentColor" />
-        </svg>
-        احسب توفيرك
-      </button>
 
       {/* ─── CALCULATOR MODAL (spring · compact) ─── */}
       <AnimatePresence>

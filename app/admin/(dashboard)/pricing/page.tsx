@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getAllPlans } from "@/app/actions/pricing";
+import { getAllPlansIncludingHidden } from "@/app/actions/pricing";
 import { getMeta } from "@/app/actions/pricing-meta";
 import { AdminCountryPill } from "../_components/AdminCountryPill";
 import { AdminBillingToggle } from "./AdminBillingToggle";
@@ -32,7 +32,7 @@ export default async function AdminPricingPage({
   searchParams: Promise<{ country?: string; billing?: string }>;
 }) {
   const { country, annual } = await resolveParams(searchParams);
-  const [plans, meta] = await Promise.all([getAllPlans(country), getMeta(country)]);
+  const [plans, meta] = await Promise.all([getAllPlansIncludingHidden(country), getMeta(country)]);
   const ui = dbMetaToPricingUi(meta);
   const slugs = plans.map((p) => p.slug as Slug);
   // Tier ladder: each paid plan inherits the one below it. Maps slug → name of previous paid tier.
