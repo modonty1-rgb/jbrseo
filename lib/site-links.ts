@@ -4,7 +4,7 @@ export type NavLinkItem = { href: string; label: string };
 export type FooterLinkItem = { label: string; href: string };
 
 const NAV_SA: NavLinkItem[] = [
-  { href: "/#how-it-works", label: "الخطوات" },
+  { href: "/#case-study", label: "قصص نجاح" },
   { href: "/#social-proof", label: "الشهادات" },
   { href: "/features", label: "المميزات" },
   { href: "/#pricing", label: "الأسعار" },
@@ -12,7 +12,7 @@ const NAV_SA: NavLinkItem[] = [
 ];
 
 const NAV_EG: NavLinkItem[] = [
-  { href: "/#how-it-works", label: "الخطوات" },
+  { href: "/#case-study", label: "قصص نجاح" },
   { href: "/#social-proof", label: "الشهادات" },
   { href: "/features", label: "المميزات" },
   { href: "/#pricing", label: "الأسعار" },
@@ -37,8 +37,7 @@ const FOOTER_LINKS: FooterLinkItem[] = [
   { label: "من نحن", href: "/about" },
   { label: "الفريق", href: "/team" },
   { label: "المميزات", href: "/features" },
-  { label: "كيف نعمل", href: "/#how-it-works" },
-  { label: "النتائج", href: "/#outcomes" },
+  { label: "قصص نجاح", href: "/#case-study" },
   { label: "الأسعار", href: "/#pricing" },
   { label: "الشهادات", href: "/#social-proof" },
   { label: "الأسئلة", href: "/#faq" },
@@ -51,6 +50,7 @@ export function getFooterLinks(_country?: SupportedCountry, basePath?: string): 
 export const LEGAL_LINKS: FooterLinkItem[] = [
   { label: "سياسة الخصوصية", href: "/privacy" },
   { label: "شروط الاستخدام", href: "/terms" },
+  { label: "خريطة الموقع", href: "/sitemap.xml" },
 ];
 
 function waMeFromEnv(key: string, fallbackDigits: string): string {

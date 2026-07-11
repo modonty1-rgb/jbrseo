@@ -11,9 +11,6 @@ export type PricingPlan = {
 };
 
 export type SectionHeadings = {
-  whyNow?: { eyebrow: string; title: string };
-  howItWorks?: { eyebrow: string; title: string };
-  outcomes?: { eyebrow: string; title: string };
   socialProof?: { eyebrow: string; title: string };
   pricingTeaser?: { eyebrow: string; title: string; highlightBadge?: string };
   faq?: { eyebrow: string; title: string };
@@ -35,9 +32,6 @@ export type LandingContent = {
   staticLanding?: StaticLanding;
   landing: {
     hero: { h1: string; subheadline: string; benefits: string[]; proof: string; cta: string };
-    whyNow: { lines: string[] };
-    howItWorks: { steps: { title: string; line: string }[] };
-    outcomes: { title: string; line: string }[];
     socialProof: {
       testimonial: { name: string; role: string; quote: string; metric: string; image?: string };
       testimonials?: { name: string; role: string; quote: string; metric: string; image?: string }[];
@@ -57,18 +51,12 @@ export type LandingContent = {
   landingImages: Record<string, string>;
   sectionImages?: {
     hero: string;
-    whyNow: string;
-    howItWorks: string;
-    outcomes: string;
     socialProof: string;
     faq: string;
     finalCta: string;
   };
   sectionImageAlts?: {
     hero: string;
-    whyNow: string;
-    howItWorks: string;
-    outcomes: string;
     socialProof: string;
     faq: string;
     finalCta: string;

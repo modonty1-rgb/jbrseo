@@ -7,6 +7,7 @@ import type { LandingContent, PricingPlan, SocialLinks, SupportedCountry } from 
 import { prisma } from "./prisma";
 import { PRICING_CTA_LINK } from "./constants";
 import { getLandingSectionOverride } from "./landing-sections";
+import { DEFAULT_CTA_LABEL } from "./site-settings.types";
 
 function formatPriceForCountry(value: number, country: SupportedCountry): string {
   if (value === 0) return "مجاناً";
@@ -105,10 +106,9 @@ function normalizeSocialLinks(input: unknown): SocialLinks {
 }
 
 async function getStaticFallback(): Promise<LandingContent> {
-  const [{ landing, seo }, { landingImages }, { footerTexts }] = await Promise.all([
+  const [{ landing, seo }, { landingImages }] = await Promise.all([
     import("@/app/content/landing"),
     import("@/app/content/landing-images"),
-    import("@/lib/texts"),
   ]);
   const plansWithLink = landing.pricingTeaser.plans.map((p) => ({ ...p, ctaLink: "/signup" }));
   return {
@@ -132,24 +132,18 @@ async function getStaticFallback(): Promise<LandingContent> {
     },
     sectionImages: {
       hero: "",
-      whyNow: "",
-      howItWorks: "",
-      outcomes: "",
       socialProof: "",
       faq: "",
       finalCta: "",
     },
     tracking: { gtmId: "" },
-    siteSettings: { ctaLabel: "ابدأ مجاناً — بدون بطاقة", whatsappNumber: "", socialLinks: {} },
+    siteSettings: { ctaLabel: DEFAULT_CTA_LABEL, whatsappNumber: "", socialLinks: {} },
     sectionHeadings: {
-      whyNow: { eyebrow: "لماذا الآن", title: "كل شهر تأخير له ثمن" },
-      howItWorks: { eyebrow: "الطريقة", title: "كيف نعمل" },
-      outcomes: { eyebrow: "النتائج", title: "ما الذي تحصل عليه" },
       socialProof: { eyebrow: "الشهادات", title: "شركاء يثقون بنا" },
       pricingTeaser: { eyebrow: "الخطط", title: "اختر خطتك", highlightBadge: "الأكثر شيوعاً" },
       faq: { eyebrow: "الأسئلة", title: "أسئلة شائعة" },
     },
-    footer: { brandName: footerTexts.brandName, copyright: footerTexts.copyright },
+    footer: { brandName: "JBRSEO", copyright: "© JBRSEO. جميع الحقوق محفوظة." },
     pricingPage: {
       title: "خطة الأسعار — مدونتي",
       description: "اختر الباقة المناسبة: ستارتر، غروث، أو سكيل. ادفع 12، استلم 18 شهراً.",
@@ -181,7 +175,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
   ]);
 
   const staticLanding = staticLandingRaw;
-  const defaultCta = "ابدأ مجاناً — بدون بطاقة";
+  const defaultCta = DEFAULT_CTA_LABEL;
   const sectionCta =
     (pricingTeaserOverride && typeof pricingTeaserOverride === "object" && "cta" in pricingTeaserOverride && typeof (pricingTeaserOverride as { cta?: string }).cta === "string"
       ? (pricingTeaserOverride as { cta: string }).cta

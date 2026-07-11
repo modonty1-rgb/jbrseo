@@ -355,10 +355,6 @@
   100% { transform: translateX(-50%); }
 }
 
-@media (hover: hover) {
-  .outcomes-card.group:hover { transform: translateY(-6px); }
-}
-
 /* ─── UTILITY CLASSES ────────────────────────── */
 
 .animate-fade-in-up {
@@ -483,6 +479,12 @@ html {
   border-radius: var(--radius);
 }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Utility: hide scrollbar while keeping element scrollable — used by the
+   trust section's horizontal tab list so the row scrolls cleanly on
+   narrow screens without the OS scrollbar showing. */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
 
 @layer base {
   *,
