@@ -1,0 +1,720 @@
+<!doctype html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JBRSEO — SEO Overhaul TO-DO · 2026-07-10</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a; --card: #141414; --card-2: #1c1c1c; --border: #2a2a2a;
+    --text: #f5f5f5; --muted: #a1a1aa; --muted-2: #71717a;
+    --primary: #f59e0b; --primary-glow: rgba(245, 158, 11, .15);
+    --success: #22c55e; --success-glow: rgba(34,197,94,.12);
+    --danger: #ef4444; --info: #3b82f6; --warn: #f97316;
+    --radius: 12px; --code-bg: #0d0d0d;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: 'Tajawal', system-ui, -apple-system, sans-serif;
+    font-size: 15px; line-height: 1.7;
+  }
+
+  /* Layout */
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px 120px; }
+
+  /* Header */
+  .top {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(10, 10, 10, .95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+  }
+  .top-inner { max-width: 1080px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .brand { font-weight: 900; font-size: 18px; color: var(--primary); letter-spacing: -.5px; }
+  .brand small { color: var(--muted); font-weight: 400; margin-inline-start: 8px; }
+
+  /* Progress bar */
+  .progress-container { max-width: 1080px; margin: 12px auto 0; padding: 0 20px; }
+  .progress-bar { background: var(--card-2); height: 8px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+  .progress-fill { background: linear-gradient(90deg, var(--success), #16a34a); height: 100%; transition: width .5s ease; }
+  .progress-stats { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--muted); }
+
+  /* Hero */
+  .hero {
+    background: linear-gradient(135deg, var(--card) 0%, var(--card-2) 100%);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px; margin-top: 24px;
+  }
+  .hero h1 { margin: 0 0 8px; font-size: 24px; font-weight: 900; letter-spacing: -.5px; }
+  .hero p { color: var(--muted); font-size: 14px; margin: 8px 0; }
+  .hero-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 16px; }
+  .stat { background: rgba(255,255,255,.03); border: 1px solid var(--border); border-radius: 10px; padding: 12px; text-align: center; }
+  .stat .n { font-size: 22px; font-weight: 900; color: var(--primary); font-family: 'JetBrains Mono', monospace; }
+  .stat .l { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* Priority section */
+  .priority-section { margin: 40px 0 24px; scroll-margin-top: 90px; }
+  .priority-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+  .priority-header h2 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: -.3px; }
+  .priority-header .count { color: var(--muted); font-size: 13px; }
+
+  .priority-critical h2::before { content: '🔴 '; }
+  .priority-important h2::before { content: '🟠 '; }
+  .priority-later h2::before { content: '🟡 '; }
+
+  /* Task cards */
+  .task {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; margin: 12px 0; position: relative;
+    transition: all .2s ease;
+  }
+  .task:hover { border-color: rgba(245,158,11,.4); transform: translateY(-1px); }
+  .task.done {
+    background: var(--success-glow); border-color: rgba(34,197,94,.4);
+    opacity: .85;
+  }
+  .task.done .task-title { text-decoration: line-through; color: var(--muted); }
+  .task.done::after {
+    content: '✅';
+    position: absolute;
+    top: 20px; inset-inline-start: 20px;
+    font-size: 24px;
+  }
+  .task.in-progress { border-color: rgba(245,158,11,.6); box-shadow: 0 0 20px -8px var(--primary); }
+  .task.in-progress::before {
+    content: '⏳';
+    position: absolute;
+    top: 20px; inset-inline-start: 20px;
+    font-size: 20px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 50% { opacity: .5; } }
+
+  .task-header {
+    display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;
+  }
+  .task-number {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--card-2); border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 8px;
+    font-weight: 700; font-size: 13px; color: var(--primary);
+    flex-shrink: 0;
+  }
+  .task.done .task-number { color: var(--success); border-color: rgba(34,197,94,.3); }
+  .task-title { font-size: 16px; font-weight: 700; margin: 4px 0 0; flex: 1; }
+  .task-status {
+    font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; flex-shrink: 0;
+  }
+  .task-status.pending { background: rgba(161,161,170,.15); color: var(--muted); border: 1px solid rgba(161,161,170,.3); }
+  .task-status.in-progress { background: rgba(245,158,11,.15); color: var(--primary); border: 1px solid rgba(245,158,11,.3); }
+  .task-status.done { background: rgba(34,197,94,.15); color: var(--success); border: 1px solid rgba(34,197,94,.3); }
+
+  .task-meta { color: var(--muted); font-size: 12px; margin: 8px 0; display: flex; gap: 12px; flex-wrap: wrap; }
+  .task-meta span { display: inline-flex; align-items: center; gap: 4px; }
+  .task-meta code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; color: var(--primary); font-size: 11px; direction: ltr; unicode-bidi: embed; }
+
+  .task-section { margin: 12px 0; }
+  .task-section h4 {
+    font-size: 11px; margin: 0 0 6px; color: var(--muted-2);
+    text-transform: uppercase; letter-spacing: 1px; font-weight: 700;
+  }
+  .task-section p { margin: 0 0 6px; font-size: 14px; }
+
+  /* Before/After */
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 8px 0; }
+  @media (max-width: 720px) { .ba { grid-template-columns: 1fr; } }
+  .ba > div { border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+  .ba .before { background: rgba(239,68,68,.05); border-color: rgba(239,68,68,.2); }
+  .ba .after { background: rgba(34,197,94,.05); border-color: rgba(34,197,94,.2); }
+  .ba h5 { margin: 0 0 6px; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+  .ba .before h5 { color: var(--danger); }
+  .ba .after h5 { color: var(--success); }
+  .ba code { display: block; padding: 8px 10px; background: var(--code-bg); border-radius: 6px; direction: rtl; margin-top: 4px; color: var(--text); font-size: 12.5px; line-height: 1.6; }
+
+  /* Filters/nav */
+  .nav {
+    display: flex; gap: 8px; margin: 16px 0 24px; flex-wrap: wrap;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 10px;
+  }
+  .nav a {
+    padding: 8px 16px; background: var(--card-2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); text-decoration: none; font-size: 13px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav a:hover { border-color: var(--primary); color: var(--primary); }
+  .nav a .count { background: rgba(255,255,255,.1); padding: 1px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+
+  /* Legend */
+  .legend {
+    display: flex; gap: 16px; margin: 16px 0; font-size: 12px; color: var(--muted);
+    flex-wrap: wrap; padding: 12px 16px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 4px; }
+
+  /* Utility */
+  hr { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
+  .muted { color: var(--muted); font-size: 13px; }
+  code { font-family: 'JetBrains Mono', 'Cascadia Code', monospace; }
+
+  /* Footer */
+  .file-info {
+    text-align: center; color: var(--muted-2); font-size: 12px;
+    padding: 24px; border-top: 1px solid var(--border); margin-top: 40px;
+  }
+  .file-info code { color: var(--primary); }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="top-inner">
+    <div class="brand">JBRSEO · SEO Overhaul <small>TO-DO List</small></div>
+    <div style="font-size: 12px; color: var(--muted);">آخر تحديث: <strong id="lastUpdate" style="color: var(--primary);">2026-07-10</strong></div>
+  </div>
+  <div class="progress-container">
+    <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+    <div class="progress-stats">
+      <span><strong style="color: var(--success);">0</strong> منجزة من <strong>20</strong></span>
+      <span>0% من الشغل</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- HERO -->
+<div class="hero">
+  <h1>قائمة مهام تحسين السيو</h1>
+  <p>مبنية على audit كامل + بحث سوق ٢٠٢٦ + تحليل SERP الفعلي. الترتيب: <strong>الحرج أولاً</strong>. كل مهمة تخلص أعلّم عليها ✅ وأحدّث الملف.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="n">20</div><div class="l">مهمة</div></div>
+    <div class="stat"><div class="n" style="color: var(--danger);">11</div><div class="l">حرجة</div></div>
+    <div class="stat"><div class="n" style="color: var(--warn);">5</div><div class="l">مهمة</div></div>
+    <div class="stat"><div class="n" style="color: var(--muted);">4</div><div class="l">لاحقاً</div></div>
+    <div class="stat"><div class="n" style="color: var(--success);">0</div><div class="l">منجزة</div></div>
+  </div>
+</div>
+
+<div class="legend">
+  <span><span class="task-status pending">Pending</span> بانتظار موافقة</span>
+  <span><span class="task-status in-progress">In-Progress</span> جاري التنفيذ</span>
+  <span><span class="task-status done">Done</span> منجزة ✅</span>
+</div>
+
+<div class="nav">
+  <a href="#critical">🔴 حرجة <span class="count">11</span></a>
+  <a href="#important">🟠 مهمة <span class="count">5</span></a>
+  <a href="#later">🟡 لاحقاً <span class="count">4</span></a>
+</div>
+
+<!-- ══════════════════ CRITICAL ══════════════════ -->
+<section class="priority-section priority-critical" id="critical">
+  <div class="priority-header">
+    <h2>حرجة — يجب الإصلاح فوراً</h2>
+    <div class="count">١١ مهمة · تأثير SEO مباشر + كلمات مفتاحية مفقودة</div>
+  </div>
+
+  <!-- Task 1 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-1">
+    <div class="task-header">
+      <span class="task-number">C-01</span>
+      <div style="flex: 1;">
+        <div class="task-title">meta title يستخدم «بالسعودية» بدل «في السعودية»</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="seo"</code> · title</span>
+          <span>🎯 SERP match</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>المشكلة</h4>
+      <p>١٠٠٪ من نتائج SERP Top-10 تستخدم «في السعودية». الصياغة الحالية تفوّت التطابق مع كل المنافسين.</p>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح</h4>
+      <div class="ba">
+        <div class="before"><h5>قبل</h5><code>خدمات سيو بالسعودية — أحصل علي عملاء من جوجل بلا إعلانات</code></div>
+        <div class="after"><h5>بعد</h5><code>أفضل شركة سيو في السعودية · اشتراك محتوى شهري للبحث و AI | JBRSEO</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task 2 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-2">
+    <div class="task-header">
+      <span class="task-number">C-02</span>
+      <div style="flex: 1;">
+        <div class="task-title">meta description لا تبدأ بكلمة مفتاحية</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="seo"</code> · description</span>
+          <span>🎯 CTR في SERP</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>المشكلة</h4>
+      <p>يبدأ الوصف بـ«محتوى شهري» — كلمة generic. يفضّل البدء بكلمة مفتاحية قوية.</p>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح</h4>
+      <div class="ba">
+        <div class="before"><h5>قبل</h5><code>محتوى شهري احترافي يبني حضورك في محركات البحث والذكاء الاصطناعي. {clientCount} علامة تجارية تعتمد علينا…</code></div>
+        <div class="after"><h5>بعد</h5><code>اشتراك محتوى سيو شهري للسوق السعودي — نكتب وننشر ونحسّن للبحث والذكاء الاصطناعي. {clientCount} علامة تجارية تعتمد علينا.</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task 3 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-3">
+    <div class="task-header">
+      <span class="task-number">C-03</span>
+      <div style="flex: 1;">
+        <div class="task-title">Hero H1 يذكر «جوجل» فقط — بدون AI</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="hero"</code> · h1Line1</span>
+          <span>🎯 AEO/GEO</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>المشكلة</h4>
+      <p>٤٢٪ من البحث في GCC يمر عبر ChatGPT. الرسالة الحالية «جوجل جوجل جوجل» متخلّفة عن السوق.</p>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح (Option A · recommended)</h4>
+      <div class="ba">
+        <div class="before"><h5>قبل</h5><p><strong>H1L1:</strong> ابنِ حضورك على جوجل الحين<br><strong>H1L2:</strong> بدون إعلانات • بدون فريق داخلي</p></div>
+        <div class="after"><h5>بعد</h5><p><strong>H1L1:</strong> شركاء سعوديون في البحث والذكاء الاصطناعي<br><strong>H1L2:</strong> اشتراك محتوى شهري · بدون إعلانات · بدون فريق داخلي</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task 4 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-4">
+    <div class="task-header">
+      <span class="task-number">C-04</span>
+      <div style="flex: 1;">
+        <div class="task-title">Hero.proof فيه رقم جامد «+١٢٠ شركة»</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="hero"</code> · proof</span>
+          <span>🎯 يتقادم</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>المشكلة</h4>
+      <p>الرقم ما يتحدّث مع نمو مدونتي. نفس مشكلة `{clientCount}` اللي حللناها في SEO description.</p>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح</h4>
+      <div class="ba">
+        <div class="before"><h5>قبل</h5><code>+١٢٠ شركة سعودية بدأت تجيب عملاء من جوجل — امتى دورك؟</code></div>
+        <div class="after"><h5>بعد</h5><code>{clientCount} علامة تجارية سعودية تنمو معنا — امتى دورك؟</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task 5 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-5">
+    <div class="task-header">
+      <span class="task-number">C-05</span>
+      <div style="flex: 1;">
+        <div class="task-title">Hero.sub بيذكر «جوجل» فقط — بدون ChatGPT/AI</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="hero"</code> · sub</span>
+          <span>🎯 AEO/GEO</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح</h4>
+      <div class="ba">
+        <div class="before"><h5>قبل</h5><code>فريقنا يكتب محتوى سيو احترافي ينشر على موقعك — جوجل يجيبلك عملاء جاهزين للشراء كل يوم.</code></div>
+        <div class="after"><h5>بعد</h5><code>فريق سعودي يكتب وينشر ويحسّن محتواك للبحث و ChatGPT و Perplexity — أنت تركّز على البيع.</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task 6 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-6">
+    <div class="task-header">
+      <span class="task-number">C-06</span>
+      <div style="flex: 1;">
+        <div class="task-title">pricingPage · title + description فارغين في DB</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="pricingPage"</code></span>
+          <span>🎯 صفحة تحويل تجارية</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>المشكلة</h4>
+      <p>الحقول فارغة → يستخدم fallback من الكود اللي فيه صياغة قديمة بدون «اشتراك» و «AI».</p>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح (تعبئة الحقول)</h4>
+      <div class="ba">
+        <div class="after" style="grid-column: 1/-1;"><h5>القيم الجديدة</h5>
+          <p><strong>title:</strong> <code>أسعار خدمات السيو في السعودية · اشتراك شهري من 110 ريال | JBRSEO</code></p>
+          <p><strong>description:</strong> <code>اختر خطة اشتراك سيو شهري تناسب نشاطك — من الحضور إلى الريادة. جميع الخطط تشمل كتابة ونشر وتحسين للبحث والذكاء الاصطناعي.</code></p>
+          <p><strong>h1:</strong> <code>خطط اشتراك السيو الشهري</code></p>
+          <p><strong>intro:</strong> <code>٤ خطط شهرية بدون التزام طويل. الاشتراك السنوي = ٦ أشهر مجانية.</code></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task 7 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-7">
+    <div class="task-header">
+      <span class="task-number">C-07</span>
+      <div style="flex: 1;">
+        <div class="task-title">FAQ · ١٠ أسئلة لا تطابق People-Also-Ask</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="faq"</code></span>
+          <span>🎯 Featured Snippet</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح</h4>
+      <p style="font-size: 13px;">إعادة صياغة الأسئلة لتطابق نمط PAA السعودي + إضافة سؤال ChatGPT.</p>
+      <div class="ba">
+        <div class="before"><h5>قبل (سؤالان مثالاً)</h5>
+          <p>· كم يستغرق ظهور النتائج؟<br>· كيف يكون السعر؟</p>
+        </div>
+        <div class="after"><h5>بعد</h5>
+          <p>· <strong>متى أشوف نتائج السيو؟</strong><br>· <strong>كم تكلفة السيو في السعودية؟ (خطط من 110 ريال)</strong></p>
+        </div>
+      </div>
+      <p class="muted">التفاصيل الكاملة للأسئلة العشرة + سؤال ChatGPT الجديد في <code>SEO-OVERHAUL-LOG.md</code>.</p>
+    </div>
+  </div>
+
+  <!-- Task 8 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-8">
+    <div class="task-header">
+      <span class="task-number">C-08</span>
+      <div style="flex: 1;">
+        <div class="task-title">Code fallback · page.tsx يذكر «مدونتي» + «Leads مصنّفة»</div>
+        <div class="task-meta">
+          <span>📍 <code>app/[country]/(marketingShell)/page.tsx:30</code></span>
+          <span>🎯 Brand + كلمة إنجليزية</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح</h4>
+      <div class="ba">
+        <div class="before"><h5>قبل</h5><code>مدونتي — منصة المحتوى العربي. مقالات تتصدر جوجل… وقاعدة Leads مصنّفة — بدون كتابة حرف واحد. ابدأ مجاناً بدون بطاقة ائتمان.</code></div>
+        <div class="after"><h5>بعد</h5><code>اشتراك محتوى سيو شهري للسوق السعودي — نكتب وننشر ونحسّن للبحث والذكاء الاصطناعي. من 110 ريال شهرياً.</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task 9 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-9">
+    <div class="task-header">
+      <span class="task-number">C-09</span>
+      <div style="flex: 1;">
+        <div class="task-title">Code fallback · pricing/page.tsx بصياغة قديمة</div>
+        <div class="task-meta">
+          <span>📍 <code>app/[country]/(marketingShell)/pricing/page.tsx:23-26</code></span>
+          <span>🎯 fallback SEO</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح</h4>
+      <div class="ba">
+        <div class="before"><h5>قبل</h5><p><strong>TITLE:</strong> أسعار خدمة السيو العربي — اختر خطتك وابدأ | مدونتي</p></div>
+        <div class="after"><h5>بعد</h5><p><strong>TITLE:</strong> أسعار خدمات سيو في السعودية · اشتراك شهري من 110 ريال | JBRSEO</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task 10 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-10">
+    <div class="task-header">
+      <span class="task-number">C-10</span>
+      <div style="flex: 1;">
+        <div class="task-title">Code fallback · features/page.tsx بصياغة قديمة</div>
+        <div class="task-meta">
+          <span>📍 <code>app/features/page.tsx:11-13</code></span>
+          <span>🎯 fallback SEO</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح</h4>
+      <div class="ba">
+        <div class="before"><h5>قبل</h5><p><strong>TITLE:</strong> كل المزايا — مدوّنتي<br><strong>DESC:</strong> …23 تنبيه تيليجرام، وأسعار الباقات.</p></div>
+        <div class="after"><h5>بعد</h5><p><strong>TITLE:</strong> مزايا اشتراك السيو الشهري | JBRSEO<br><strong>DESC:</strong> كل ما تحصل عليه في اشتراك JBRSEO الشهري: كتابة سيو + نشر + تحسين للبحث و AI + لوحة تحكم + تنبيهات.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task 11 -->
+  <div class="task" data-priority="critical" data-status="pending" id="task-11">
+    <div class="task-header">
+      <span class="task-number">C-11</span>
+      <div style="flex: 1;">
+        <div class="task-title">socialProof.subtitle يوحي بشركة ناشئة</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="socialProof"</code> · subtitle</span>
+          <span>🎯 ثقة السوق السعودي</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>المشكلة</h4>
+      <p>«تجارب مبكرة من شركات آمنت بالفكرة من الأول» — يزرع في ذهن العميل السعودي «إنها شركة startup ما زلت تحاول تكبر». السوق السعودي يفضّل الشركات الراسخة.</p>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح</h4>
+      <div class="ba">
+        <div class="before"><h5>قبل</h5><code>تجارب مبكرة من شركات آمنت بالفكرة من الأول</code></div>
+        <div class="after"><h5>بعد</h5><code>تجارب حقيقية من علامات تجارية سعودية اختارت الاستثمار في المحتوى</code></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ IMPORTANT ══════════════════ -->
+<section class="priority-section priority-important" id="important">
+  <div class="priority-header">
+    <h2>مهمة — بعد الحرجة</h2>
+    <div class="count">٥ مهام · محتوى الباقات والأقسام الداعمة</div>
+  </div>
+
+  <!-- Task 12 -->
+  <div class="task" data-priority="important" data-status="pending" id="task-12">
+    <div class="task-header">
+      <span class="task-number">I-12</span>
+      <div style="flex: 1;">
+        <div class="task-title">PriceSectionMeta.ctaSubheadline فيها رقم جامد «+١٢٠ نشاط»</div>
+        <div class="task-meta">
+          <span>📍 <code>PriceSectionMeta</code> · SA + EG</span>
+          <span>🎯 dynamic count</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الإصلاح</h4>
+      <p>استبدال «+١٢٠ نشاط تجاري…» بـ <code>{clientCount}</code> template (نفس النمط في hero.proof).</p>
+    </div>
+  </div>
+
+  <!-- Task 13 -->
+  <div class="task" data-priority="important" data-status="pending" id="task-13">
+    <div class="task-header">
+      <span class="task-number">I-13</span>
+      <div style="flex: 1;">
+        <div class="task-title">outcomes.metric «+٣٧٠٠٪» رقم جامد</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="outcomes"</code></span>
+          <span>🎯 template أو تعديل</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>خيار الإصلاح</h4>
+      <p>(أ) استبدال بجملة عامة «نمو عضوي متسارع» — (ب) template dynamic من متوسط عملاء فعلي — (ج) اترك ولكن أضف disclaimer «* متوسط عملائنا».</p>
+    </div>
+  </div>
+
+  <!-- Task 14 -->
+  <div class="task" data-priority="important" data-status="pending" id="task-14">
+    <div class="task-header">
+      <span class="task-number">I-14</span>
+      <div style="flex: 1;">
+        <div class="task-title">Plan taglines + hooks بدون keywords SEO</div>
+        <div class="task-meta">
+          <span>📍 <code>Plan.tagline + Plan.hook × 8</code></span>
+          <span>🎯 تحسين الاشتراك card</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>مثال (presence)</h4>
+      <div class="ba">
+        <div class="before"><h5>قبل</h5><code>tagline: أقل تكلفة لظهور حقيقي على جوجل — بدون التزام طويل</code></div>
+        <div class="after"><h5>بعد</h5><code>tagline: أرخص باقة اشتراك سيو شهري — للبحث والذكاء الاصطناعي</code></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task 15 -->
+  <div class="task" data-priority="important" data-status="pending" id="task-15">
+    <div class="task-header">
+      <span class="task-number">I-15</span>
+      <div style="flex: 1;">
+        <div class="task-title">whyNow لا يذكر مخاطر التخلّف عن AI</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="whyNow"</code></span>
+          <span>🎯 AEO urgency</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الإضافة المقترحة</h4>
+      <p>إضافة cost رابع: «كل شهر بدون ظهور في ChatGPT/Perplexity = عميل يسأل ولا يذكرك».</p>
+    </div>
+  </div>
+
+  <!-- Task 16 -->
+  <div class="task" data-priority="important" data-status="pending" id="task-16">
+    <div class="task-header">
+      <span class="task-number">I-16</span>
+      <div style="flex: 1;">
+        <div class="task-title">FAQ بدون schema.org FAQPage markup</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingJsonLd.tsx</code> أو مماثل</span>
+          <span>🎯 Featured Snippet</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الإضافة</h4>
+      <p>إضافة FAQ schema markup للأسئلة العشرة → فرصة الظهور في Featured Snippet + People Also Ask.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════ LATER ══════════════════ -->
+<section class="priority-section priority-later" id="later">
+  <div class="priority-header">
+    <h2>لاحقاً — تحسينات كبرى</h2>
+    <div class="count">٤ مهام · بعد اكتمال الحرجة والمهمة</div>
+  </div>
+
+  <!-- Task 17 -->
+  <div class="task" data-priority="later" data-status="pending" id="task-17">
+    <div class="task-header">
+      <span class="task-number">L-17</span>
+      <div style="flex: 1;">
+        <div class="task-title">إضافة Entity signals (Vision 2030 · Mada · STC Pay · ZATCA)</div>
+        <div class="task-meta">
+          <span>📍 كل الأقسام</span>
+          <span>🎯 AEO regional signals</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الفكرة</h4>
+      <p>ذكر Vision 2030 في about + Mada/STC Pay في PriceSectionMeta.trustItems + ZATCA في legal. هذي كلمات محرّكات AI تربطها بالسعودية.</p>
+    </div>
+  </div>
+
+  <!-- Task 18 -->
+  <div class="task" data-priority="later" data-status="pending" id="task-18">
+    <div class="task-header">
+      <span class="task-number">L-18</span>
+      <div style="flex: 1;">
+        <div class="task-title">صفحات المدن (الرياض · جدة · الدمام)</div>
+        <div class="task-meta">
+          <span>📍 صفحات جديدة</span>
+          <span>🎯 Local SEO</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الفكرة</h4>
+      <p>3 صفحات: <code>/sa/riyadh</code>, <code>/sa/jeddah</code>, <code>/sa/dammam</code>. كل صفحة تستهدف «شركة سيو الرياض» إلخ. مشروع منفصل — لاحقاً.</p>
+    </div>
+  </div>
+
+  <!-- Task 19 -->
+  <div class="task" data-priority="later" data-status="pending" id="task-19">
+    <div class="task-header">
+      <span class="task-number">L-19</span>
+      <div style="flex: 1;">
+        <div class="task-title">إعادة كتابة about page (SEO + entity signals)</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="about"</code></span>
+          <span>🎯 E-E-A-T</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الفكرة</h4>
+      <p>تحديث story + values + fitFor بلغة SEO-friendly + ذكر Vision 2030 + أرقام dynamic.</p>
+    </div>
+  </div>
+
+  <!-- Task 20 -->
+  <div class="task" data-priority="later" data-status="pending" id="task-20">
+    <div class="task-header">
+      <span class="task-number">L-20</span>
+      <div style="flex: 1;">
+        <div class="task-title">حذف section «pricing» المكرّر من DB</div>
+        <div class="task-meta">
+          <span>📍 <code>LandingSection.section="pricing"</code></span>
+          <span>🎯 تنظيف</span>
+        </div>
+      </div>
+      <span class="task-status pending">Pending</span>
+    </div>
+    <div class="task-section">
+      <h4>الفكرة</h4>
+      <p>الـ section مكرّر مع Plan model — مو مستخدم في الكود بعد الـ refactor. تنظيف DB.</p>
+    </div>
+  </div>
+</section>
+
+<div class="file-info">
+  ملف حي · مبني على <code>documents/context/SEO-OVERHAUL-LOG.md</code><br>
+  كل مهمة تخلص أعلّم عليها ✅ + أحدّث progress bar فوق
+</div>
+
+</div>
+
+<script>
+  // Update progress bar based on completed tasks
+  (function updateProgress() {
+    const tasks = document.querySelectorAll('.task');
+    const done = document.querySelectorAll('.task[data-status="done"]').length;
+    const total = tasks.length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    const fill = document.querySelector('.progress-fill');
+    const stats = document.querySelector('.progress-stats');
+    if (fill) fill.style.width = pct + '%';
+    if (stats) {
+      stats.innerHTML =
+        '<span><strong style="color: var(--success);">' + done + '</strong> منجزة من <strong>' + total + '</strong></span>' +
+        '<span>' + pct + '% من الشغل</span>';
+    }
+    // Update hero stat too
+    const heroStats = document.querySelectorAll('.hero-stats .stat .n');
+    if (heroStats[4]) heroStats[4].textContent = done;
+  })();
+</script>
+
+</body>
+</html>

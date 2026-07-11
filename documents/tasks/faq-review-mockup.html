@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مراجعة FAQ — JBRSEO (evidence-backed)</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#f8fafc;color:#0f172a;font-family:"Segoe UI","Tahoma","Noto Sans Arabic",sans-serif;line-height:1.7}
+  a{color:#059669}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px 20px 80px}
+  header{background:linear-gradient(135deg,#059669,#047857);color:#fff;border-radius:16px;padding:28px 24px;margin-bottom:20px;box-shadow:0 10px 30px -10px rgba(5,150,105,.4)}
+  header h1{font-size:26px;font-weight:800;margin-bottom:8px}
+  header p{font-size:14px;opacity:.95}
+  .stats{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+  .stat{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600}
+  .stat b{font-weight:800}
+  .filters{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:14px;margin-bottom:16px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .filters .lbl{font-size:13px;color:#64748b;font-weight:700;margin-inline-end:8px}
+  .chip{background:#f1f5f9;color:#334155;border:1px solid #e2e8f0;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+  .chip:hover{background:#e2e8f0}
+  .chip.active{background:#059669;color:#fff;border-color:#047857}
+  .list{display:flex;flex-direction:column;gap:14px}
+  .card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+  .card.hide{display:none}
+  .qhead{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+  .qnum{background:#059669;color:#fff;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;font-size:14px}
+  .qtitle{font-size:17px;font-weight:800;color:#0f172a;flex:1;line-height:1.5}
+  .tag{display:inline-block;background:#f1f5f9;color:#0891b2;border:1px solid #cffafe;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700;margin-inline-end:6px}
+  .evidence{background:#fefce8;border:1px solid #fde047;border-radius:8px;padding:8px 12px;font-size:12px;color:#854d0e;margin-bottom:12px}
+  .evidence b{color:#713f12}
+  .answer{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px 16px;font-size:14.5px;color:#1e293b;line-height:1.85}
+  .answer ul,.answer ol{padding-inline-start:22px;margin:6px 0}
+  .answer li{margin-bottom:4px}
+  .answer p{margin-bottom:8px}
+  .answer p:last-child{margin-bottom:0}
+  .answer strong{color:#047857;font-weight:800}
+  .answer table{border-collapse:collapse;width:100%;margin:8px 0;background:#fff;border-radius:8px;overflow:hidden}
+  .answer th,.answer td{border:1px solid #e2e8f0;padding:8px 12px;text-align:right;font-size:13.5px}
+  .answer th{background:#f1f5f9;font-weight:700}
+  .footer-note{margin-top:24px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:16px;font-size:14px;color:#1e40af}
+  .footer-note b{color:#1e3a8a}
+  .cat-header{margin:24px 0 8px;padding-inline-start:8px;font-size:14px;font-weight:800;color:#059669;letter-spacing:.3px}
+  @media(max-width:600px){
+    .qtitle{font-size:15px}
+    header h1{font-size:20px}
+    .answer{font-size:13.5px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>📋 مراجعة FAQ — JBRSEO</h1>
+  <p>١٨ سؤال مبني على data حقيقي: Google Autocomplete السعودية + Google PAA + تحليل ٩ منافسين مصنّفين</p>
+  <div class="stats">
+    <div class="stat"><b>١٣٩</b> اقتراح autocomplete حقيقي</div>
+    <div class="stat"><b>٣٠+</b> سؤال PAA من جوجل السعودية</div>
+    <div class="stat"><b>٩</b> منافسين مصنّفين</div>
+    <div class="stat"><b>٤٠+</b> سؤال منافس تم استخلاصه</div>
+  </div>
+</header>
+
+<div class="filters">
+  <span class="lbl">فلترة بالتصنيف:</span>
+  <button class="chip active" data-cat="all">الكل (١٨)</button>
+  <button class="chip" data-cat="basics">🎯 الأساسيات (٣)</button>
+  <button class="chip" data-cat="choose">🏆 اختيار الشركة (٢)</button>
+  <button class="chip" data-cat="service">📦 الخدمة (٢)</button>
+  <button class="chip" data-cat="results">⏱️ النتائج (٣)</button>
+  <button class="chip" data-cat="pricing">💰 التسعير (٢)</button>
+  <button class="chip" data-cat="who">🎯 لمن؟ (٣)</button>
+  <button class="chip" data-cat="ai">🤖 AI و ChatGPT (٢)</button>
+  <button class="chip" data-cat="sub">🔁 الاشتراك (١)</button>
+</div>
+
+<div class="list" id="list">
+
+<div class="cat-header" data-cat="basics">🎯 الأساسيات</div>
+
+<div class="card" data-cat="basics">
+  <div class="qhead">
+    <div class="qnum">١</div>
+    <div>
+      <div class="qtitle">ما هو السيو (SEO) وليش يحتاجه نشاطي في السعودية؟</div>
+      <span class="tag">basics</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> PAA×٣ ("ما هو السيو وما هي فائدته؟") + منافس Internet Solutions + سواعد + autocomplete "ما هو السيو" ×٣</div>
+  <div class="answer">
+    <p><strong>السيو (SEO) هو تحسين ظهور موقعك في محركات البحث (زي جوجل · Bing · ChatGPT · Perplexity) بدون إعلانات مدفوعة.</strong> لمّا العميل يبحث عن خدمتك — سواء في محرك بحث تقليدي أو في AI Assistant — السيو هو اللي يخليك تطلع له بدل منافسك.</p>
+    <p>في السعودية: <strong>٩٠٪ من قرارات الشراء تبدأ من محركات البحث</strong> (جوجل يستحوذ ٩٥٪+ محلياً، ChatGPT/Perplexity ينمون بسرعة في ٢٠٢٦). لو ما ظاهر — أنت غير موجود عملياً بالنسبة للعميل.</p>
+  </div>
+</div>
+
+<div class="card" data-cat="basics">
+  <div class="qhead">
+    <div class="qnum">٢</div>
+    <div>
+      <div class="qtitle">ما الفرق بين السيو (SEO) وإعلانات جوجل (Google Ads)؟</div>
+      <span class="tag">basics</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> PAA ("الفرق بين Google Ads و SEO") + ٤ منافسين (Vision, SEO Smarter, Serajj, Sutoua) + autocomplete "الفرق بين seo و sea/sem"</div>
+  <div class="answer">
+    <table>
+      <thead><tr><th></th><th>السيو (SEO)</th><th>إعلانات جوجل</th></tr></thead>
+      <tbody>
+        <tr><td>التكلفة</td><td>بسيطة مقارنة بالإعلانات الممولة</td><td>مرتفعة — تدفع لكل زائر يضغط</td></tr>
+        <tr><td>النتيجة</td><td>تراكمية — تكبر مع الوقت</td><td>تنتهي لحظة توقف الإعلان</td></tr>
+        <tr><td>الثقة</td><td>العميل يثق بها أكثر</td><td>٤٨٪ يتجاهلون الإعلانات</td></tr>
+        <tr><td>متى تظهر</td><td>٢-٣ شهور</td><td>فوراً</td></tr>
+      </tbody>
+    </table>
+    <p><strong>السيو استثمار طويل. الإعلانات مصروف مستمر.</strong> الاثنين مو منافسين — إحنا نركّز على السيو لأنه يبني لك أصل يبقى معك.</p>
+  </div>
+</div>
+
+<div class="card" data-cat="basics">
+  <div class="qhead">
+    <div class="qnum">٣</div>
+    <div>
+      <div class="qtitle">ما الفرق بين SEO و SEM و GEO/AEO؟</div>
+      <span class="tag">basics</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> PAA ("الفرق بين SEM و SEO") + autocomplete "الفرق بين seo و geo" (GEO كلمة ٢٠٢٦ جديدة) + Amazon Ads competitor content</div>
+  <div class="answer">
+    <ul>
+      <li><strong>SEO</strong> = تحسين ظهورك في نتائج محركات البحث الطبيعية (جوجل · Bing · DuckDuckGo).</li>
+      <li><strong>SEM</strong> = مصطلح شامل يجمع SEO + الإعلانات المدفوعة في محركات البحث (Google Ads · Bing Ads).</li>
+      <li><strong>AEO / GEO</strong> = Answer/Generative Engine Optimization — تحسين ظهورك في ChatGPT · Perplexity · Google AI Overviews.</li>
+    </ul>
+    <p><strong>إحنا نشتغل SEO + AEO معاً في ٢٠٢٦</strong> لأن نصف الباحثين اليوم يسألون AI مباشرة — لو ما ظاهر في AI، خسرت نصف السوق.</p>
+  </div>
+</div>
+
+<div class="cat-header" data-cat="choose">🏆 اختيار الشركة</div>
+
+<div class="card" data-cat="choose">
+  <div class="qhead">
+    <div class="qnum">٤</div>
+    <div>
+      <div class="qtitle">هل نتائج مدونتي مضمونة؟ (الإجابة الصادقة)</div>
+      <span class="tag">choose</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> ٣ منافسين (Serajj, Tibah, IS) + PAA implied. الجواب الصادق = differentiator نادر</div>
+  <div class="answer">
+    <p><strong>الترتيب في محركات البحث نفسه — لا. أي شركة تقول «مضمون ترتيب» تكذب.</strong> ولا جوجل ولا Bing ولا ChatGPT/Perplexity يضمن ترتيب لأي أحد — الخوارزميات ديناميكية وتتغيّر.</p>
+    <p><strong>لكن اللي إحنا نضمنه ١٠٠٪ (وتقدر تتحقق منه بنفسك):</strong></p>
+    <ul>
+      <li>✅ <strong>Schema Markup صحيح ١٠٠٪</strong> — Structured Data (JSON-LD) مطبّق على كل صفحة. تشيك بـ <a href="https://search.google.com/test/rich-results" target="_blank" rel="noopener">Rich Results Test من جوجل</a>.</li>
+      <li>✅ <strong>Technical SEO مثالي</strong> — سرعة الصفحة · Core Web Vitals · Mobile-friendly · Sitemap · Robots.txt. تشيك بـ PageSpeed Insights + Lighthouse.</li>
+      <li>✅ <strong>On-page SEO مطبّق كامل</strong> — Title · Meta · Headings · Alt · Internal linking · Canonical URLs. تراجعها بعينك في كل مقال.</li>
+      <li>✅ <strong>Off-page SEO منظّم</strong> — استراتيجية Backlinks · Brand mentions · Local citations · قنوات نشر متعددة.</li>
+      <li>✅ <strong>YMYL Compliance</strong> — للمحتوى الحساس (طبي · مالي · قانوني) نطبّق E-E-A-T signals حسب Google Quality Rater Guidelines.</li>
+    </ul>
+    <p><strong>لمّا الأساس صح ١٠٠٪ — النتائج تجيك بشكل طبيعي مع الوقت.</strong> تشوف التحسّن شهر ورا شهر في تقاريرك.</p>
+  </div>
+</div>
+
+<div class="card" data-cat="choose">
+  <div class="qhead">
+    <div class="qnum">٥</div>
+    <div>
+      <div class="qtitle">بعد شهرين من الاشتراك — كيف أتأكد بنفسي إن مدونتي تشتغل؟</div>
+      <span class="tag">choose</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> إطار empowerment — العميل يتحقق بنفسه بدون أدوات. Trust بلا paranoia. Differentiator</div>
+  <div class="answer">
+    <p><strong>أبسط طريقة — بدون أدوات ولا خبير:</strong></p>
+    <p>افتح <strong>جوجل</strong> وابحث عن خدمتك زي ما عميلك يبحث:</p>
+    <ul>
+      <li>"أفضل عيادة أسنان [مدينتك]"</li>
+      <li>"مطعم [تخصصك] في [حيّك]"</li>
+      <li>"متجر [منتجك] الرياض"</li>
+    </ul>
+    <p><strong>✅ لقيت نفسك؟</strong> الشغل يشتغل — إحنا نطبّق الوعد.</p>
+    <p><strong>❓ ما لقيت نفسك؟</strong> علامة استفهام — تعال نتكلم، تقاريرك الشهرية عندك التفسير الكامل.</p>
+    <p><strong>هذه أوضح طريقة تتحقق بنفسك — بدون واسطة، بدون تعقيد.</strong></p>
+  </div>
+</div>
+
+<div class="cat-header" data-cat="service">📦 الخدمة</div>
+
+<div class="card" data-cat="service">
+  <div class="qhead">
+    <div class="qnum">٦</div>
+    <div>
+      <div class="qtitle">وش يشمل اشتراك مدونتي؟</div>
+      <span class="tag">service</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> نسخة لهجة Vision السعودية ("وش يشمل السيو عند فجن؟") + ٤ منافسين (IS×٣, Sawaed, Vision). لهجة صريحة = trust</div>
+  <div class="answer">
+    <p>كل باقة تشمل:</p>
+    <ul>
+      <li>📝 محتوى SEO احترافي (عدد المقالات حسب الباقة)</li>
+      <li>🎯 بحث كلمات مفتاحية لسوقك السعودي/المستهدف</li>
+      <li>📊 لوحة تحكم شفافة عليها كل شي بالتفصيل</li>
+      <li>📈 كل التقارير مباشرة (live) في لوحتك (Modonty console) — تفتح وتشوف كل شي في وقته، بدون تعقيد</li>
+      <li>✅ موافقتك قبل نشر كل مقال</li>
+      <li>🔄 مراجعة المسودة والتعديل قبل النشر</li>
+      <li>📱 نشر متعدد القنوات (منصة مدونتي · سوشال ميديا · موقعك حسب الباقة)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" data-cat="service">
+  <div class="qhead">
+    <div class="qnum">٧</div>
+    <div>
+      <div class="qtitle">من يكتب المحتوى — بشر ولا AI؟ وبأي لهجة؟</div>
+      <span class="tag">service</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> Our unique claim + ٢٠٢٦ trend (autocomplete "chatgpt seo" ×٩) + معلومة منتظرة</div>
+  <div class="answer">
+    <p><strong>فريق بشري محترف يكتب.</strong> AI يساعدنا في البحث والتحليل — <strong>مو في الكتابة</strong>.</p>
+  </div>
+</div>
+
+<div class="cat-header" data-cat="results">⏱️ النتائج</div>
+
+<div class="card" data-cat="results">
+  <div class="qhead">
+    <div class="qnum">٨</div>
+    <div>
+      <div class="qtitle">متى تبدأ نتائج مدونتي تظهر؟</div>
+      <span class="tag">results</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> 🔥 <b>#١ signal</b> — ٧ من ٩ منافسين يجاوبونه + PAA + autocomplete. لهجة Vision "متى تبدأ النتائج تظهر؟"</div>
+  <div class="answer">
+    <p><strong>الشغل يبدأ عند اشتراكك — تفتح لوحتك، تلقى كل شي يمشي قدامك.</strong></p>
+    <ul>
+      <li>مسودات المقالات تصلك للموافقة قبل النشر.</li>
+      <li>المقالات المنشورة تتراكم كأصل رقمي في مدونتي.</li>
+      <li>الأرقام والنمو تشوفها تتحرك مباشرة في لوحتك.</li>
+    </ul>
+    <p><strong>الفرق الحاسم عن الإعلانات:</strong> مدونتي أصل يبقى معك ويكبر — الإعلانات مصروف يختفي بمجرد ما تتوقف.</p>
+  </div>
+</div>
+
+<div class="card" data-cat="results">
+  <div class="qhead">
+    <div class="qnum">٩</div>
+    <div>
+      <div class="qtitle">كيف أعرف إن مدونتي تشتغل — وش المؤشرات؟</div>
+      <span class="tag">results</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> GAP — منافس واحد فقط (SEO Smarter) يعالج القياس. فرصة</div>
+  <div class="answer">
+    <p><strong>٤ مؤشرات تشوفها مباشرة في لوحتك:</strong></p>
+    <ol>
+      <li><strong>الظهور (Impressions)</strong> — كم مرة موقعك ظهر في محركات البحث.</li>
+      <li><strong>النقرات (Clicks)</strong> — كم عميل ضغط ودخل عندك.</li>
+      <li><strong>الترتيب (Position)</strong> — رقمك في نتيجة كل كلمة مفتاحية.</li>
+      <li><strong>الزيارات العضوية</strong> — العملاء اللي جاؤك بحث بدون إعلان.</li>
+    </ol>
+    <p><strong>كل الأرقام قدامك مباشرة في لوحتك — تفتح وتشوف.</strong></p>
+  </div>
+</div>
+
+<div class="card" data-cat="results">
+  <div class="qhead">
+    <div class="qnum">١٠</div>
+    <div>
+      <div class="qtitle">كيف أتابع الأرقام والتقارير؟</div>
+      <span class="tag">results</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> نموذج live dashboard — بلا انتظار تقارير أو أدوات خارجية</div>
+  <div class="answer">
+    <p><strong>كل شي في لوحتك — دايماً قدامك.</strong></p>
+    <ul>
+      <li>تفتح لوحة مدونتي وقت ما تبي · تلقى كل الأرقام قدامك.</li>
+      <li>ما فيه انتظار تقرير · اللوحة هي التقرير الحي.</li>
+      <li>الشفافية بلا حواجز — تشوف بعينك في وقته.</li>
+    </ul>
+    <p><strong>🚀 ميزة الباقات الأعلى:</strong> صلاحية عرض (view-only) في Google Search Console لمحتواك — تتحقق من الأرقام مباشرة من مصدرها الرسمي عند جوجل.</p>
+  </div>
+</div>
+
+<div class="cat-header" data-cat="pricing">💰 التسعير</div>
+
+<div class="card" data-cat="pricing">
+  <div class="qhead">
+    <div class="qnum">١١</div>
+    <div>
+      <div class="qtitle">إيش الفرق بين الاشتراك الشهري والسنوي؟</div>
+      <span class="tag">pricing</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> Business logic — السنوي هو الخيار الأمثل (استثمار تراكمي) + هدية ٦ شهور. يستبدل سؤالَي الباقات والتكلفة</div>
+  <div class="answer">
+    <table>
+      <thead><tr><th></th><th>شهري</th><th>سنوي 🎁</th></tr></thead>
+      <tbody>
+        <tr><td>الدفع</td><td>كل شهر</td><td>دفعة واحدة</td></tr>
+        <tr><td>المدة الفعلية</td><td>شهر بشهر</td><td><strong>١٢ شهر بسعر ٦ شهور</strong></td></tr>
+        <tr><td>التوفير</td><td>—</td><td><strong>~٥٠٪</strong></td></tr>
+        <tr><td>تثبيت السعر</td><td>عرضة للتغيّر</td><td><strong>مثبّت ١٢ شهر</strong></td></tr>
+      </tbody>
+    </table>
+    <p><strong>ليش السنوي هو الخيار الذكي؟</strong></p>
+    <ul>
+      <li>💰 <strong>ستة شهور هدية</strong> — تدفع سعر ٦، تستفيد ١٢.</li>
+      <li>📈 <strong>مدونتي استثمار تراكمي</strong> — كل شهر يبني على اللي قبله. الاشتراك المتقطع يكسر المسار.</li>
+      <li>🔒 <strong>سعرك محفوظ سنة كاملة</strong> — لو ارتفع السعر لاحقاً، أنت في مأمن.</li>
+      <li>🎯 <strong>راحة بال</strong> — بدون تجديد شهري، تركّز على شغلك.</li>
+    </ul>
+    <p><strong>💡 توصيتنا:</strong> السنوي — أفضل قيمة + أفضل نتائج + أفضل راحة بال.</p>
+  </div>
+</div>
+
+<div class="card" data-cat="pricing">
+  <div class="qhead">
+    <div class="qnum">١٢</div>
+    <div>
+      <div class="qtitle">هل الأسعار شاملة ضريبة القيمة المضافة (VAT)؟</div>
+      <span class="tag">pricing</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> SA compliance requirement — implied. ولا منافس يذكرها صراحة</div>
+  <div class="answer">
+    <p><strong>نعم — كل الأسعار المعروضة تشمل ضريبة القيمة المضافة ١٥٪</strong> (SA VAT).</p>
+    <p>تصلك <strong>فاتورة ضريبية رسمية</strong> بعد كل دفعة — معتمدة من هيئة الزكاة والضريبة والجمارك (ZATCA) وتقدر تستخدمها في حساباتك.</p>
+  </div>
+</div>
+
+<div class="cat-header" data-cat="who">🎯 لمن؟</div>
+
+<div class="card" data-cat="who">
+  <div class="qhead">
+    <div class="qnum">١٣</div>
+    <div>
+      <div class="qtitle">هل مدونتي مناسبة لمتجري الإلكتروني (سلة · زد · شوبيفاي)؟</div>
+      <span class="tag">who</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> 🔥 autocomplete ×٤ ("تحسين محركات البحث للمتجر الإلكتروني") + ٣ منافسين (Sawaed, Vision, Sutoua) + platforms GAP (سلة/زد صراحة)</div>
+  <div class="answer">
+    <p><strong>نعم — بس بطريقة صادقة.</strong></p>
+    <p>مقالاتك تُنشر على منصة مدونتي، مبنية على كلمات بيها نية شراء (buying intent). <strong>كل مقال فيه رابط طبيعي يودّي القارئ إلى:</strong></p>
+    <ul>
+      <li>🛒 <strong>متجرك أو صفحة المنتج</strong> (سلة · زد · شوبيفاي · WooCommerce · موقعك)</li>
+      <li>🏥 <strong>صفحة الحجز أونلاين</strong> — للعيادات · المكاتب · مقدّمي الخدمات (تشتغل داخل مدونتي)</li>
+    </ul>
+    <p><strong>يعني:</strong> إحنا نبني لك سلم يوصل الزائر من جوجل إلى متجرك أو صفحة حجزك — مو نعمل تحسين داخل متجرك.</p>
+  </div>
+</div>
+
+<div class="card" data-cat="who">
+  <div class="qhead">
+    <div class="qnum">١٤</div>
+    <div>
+      <div class="qtitle">هل مدونتي مناسبة لعيادتي · مطعمي · متجري المحلي؟</div>
+      <span class="tag">who</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> autocomplete "سيو للعيادات/المتاجر/المطاعم" + Local intent gap — بدون وعود GMB/reviews</div>
+  <div class="answer">
+    <p><strong>نعم — الأنشطة المحلية من أكبر المستفيدين من مدونتي.</strong></p>
+    <p>مقالاتك تُنشر على منصة مدونتي، مبنية على بحث محلي (مثل "أفضل عيادة أسنان في الملز"). <strong>كل مقال:</strong></p>
+    <ul>
+      <li>📍 مرتبط بموقعك ومنطقتك الجغرافية</li>
+      <li>📞 فيه رابط طبيعي يودّي القارئ لصفحة الحجز · التواصل · موقعك على مدونتي</li>
+      <li>🎯 يستهدف نية العميل المحلي اللي يبحث عنك الآن</li>
+    </ul>
+    <p><strong>يعني:</strong> عميل قريب منك يبحث في جوجل، يلاقي مقالك، ينقر ينحجز أو يتصل — بدون ما يمر بمنافسك.</p>
+  </div>
+</div>
+
+<div class="card" data-cat="who">
+  <div class="qhead">
+    <div class="qnum">١٥</div>
+    <div>
+      <div class="qtitle">هل احتاج موقع إلكتروني جاهز عشان اشترك؟</div>
+      <span class="tag">who</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> ✅ تم التحقق من صفحة عميل حقيقي (Pain Core Clinic) — قائمة العناصر مطابقة للواقع. Major selling point</div>
+  <div class="answer">
+    <p><strong>لا — إحنا نغطّي الحالتين.</strong></p>
+    <p><strong>🌐 عندك موقع إلكتروني:</strong> نربطه بمدونتي، ونحسّن ظهوره في محركات البحث حسب باقتك.</p>
+    <p><strong>✨ ما عندك موقع؟</strong> مدونتي تعطيك <strong>صفحة عميل كاملة</strong> تحلّ محل الموقع الإلكتروني:</p>
+    <ul>
+      <li>📌 <strong>هيدر احترافي:</strong> لوغو · اسم · تخصص · موقع</li>
+      <li>📞 <strong>وسائل تواصل كاملة:</strong> هاتف · واتساب · بريد · اتجاهات على خريطة قوقل</li>
+      <li>🗓️ <strong>زر "احجز الآن"</strong> — حجز أونلاين مباشر</li>
+      <li>🛍️ <strong>قائمة خدماتك أو منتجاتك</strong></li>
+      <li>⭐ <strong>آراء العملاء + معرض الأعمال</strong></li>
+      <li>ℹ️ <strong>نبذة + بياناتك القانونية + ساعات العمل</strong></li>
+      <li>❓ <strong>الأسئلة الشائعة</strong> — تجاوب عملاءك تلقائياً</li>
+      <li>📈 <strong>مؤشرات أداء</strong> — الأثر الرقمي · الزيارات · التفاعل</li>
+    </ul>
+    <p><strong>يعني:</strong> صفحتك في مدونتي = موقع إلكتروني احترافي جاهز، مربوط بمقالاتك، بدون حاجة لدومين أو مبرمج.</p>
+</div>
+
+<div class="cat-header" data-cat="ai">🤖 AI و ChatGPT</div>
+
+<div class="card" data-cat="ai">
+  <div class="qhead">
+    <div class="qnum">١٦</div>
+    <div>
+      <div class="qtitle">كيف يظهر موقعي في ChatGPT · Perplexity · Google AI Overviews (AEO)؟</div>
+      <span class="tag">ai</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> 🔥 <b>HUGE GAP</b> — ولا منافس واحد يعالج AEO/GEO. autocomplete "chatgpt seo" ×٩. أكبر فرصة ٢٠٢٦</div>
+  <div class="answer">
+    <p><strong>AEO (Answer Engine Optimization)</strong> — الجيل الجديد من السيو. إحنا نطبق ٣ تقنيات:</p>
+    <ol>
+      <li><strong>Structured Data (JSON-LD)</strong> — نضيف Schema markup يفهمه AI مباشرة.</li>
+      <li><strong>محتوى «سؤال-إجابة»</strong> — نكتب على شكل يستهلكه ChatGPT (زي هذي الصفحة نفسها).</li>
+      <li><strong>Citations &amp; Authority Signals</strong> — نبني مصادر ودلائل يستشهد بها AI في إجاباته.</li>
+    </ol>
+    <p><strong>نتيجة عملية:</strong> لمّا مستخدم يسأل ChatGPT عن خدمة زي خدمتك، تكون أنت المصدر اللي يذكره — بدل منافسك.</p>
+  </div>
+</div>
+
+<div class="card" data-cat="ai">
+  <div class="qhead">
+    <div class="qnum">١٧</div>
+    <div>
+      <div class="qtitle">هل السيو انتهى بسبب ChatGPT والذكاء الاصطناعي؟</div>
+      <span class="tag">ai</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> autocomplete "هل السيو انتهى" + trend ٢٠٢٦ + GAP</div>
+  <div class="answer">
+    <p><strong>لا — بالعكس، السيو تطور.</strong> الأرقام:</p>
+    <ul>
+      <li>Google لسه <strong>٨٥٪</strong> من البحث العالمي في ٢٠٢٦.</li>
+      <li>ChatGPT/Perplexity <strong>يستشهدون بمواقع مصنّفة في جوجل</strong> — لو ما أنت في جوجل، أنت مو في AI.</li>
+      <li>Google AI Overviews <strong>يعرض روابط للمواقع المصنّفة الأولى</strong>.</li>
+    </ul>
+    <p><strong>السيو + AEO = خطة ٢٠٢٦ الصحيحة.</strong> اللي ما يشتغل السيو الآن يخسر قناتين مجانيتين معاً.</p>
+  </div>
+</div>
+
+<div class="cat-header" data-cat="sub">🔁 الاشتراك</div>
+
+<div class="card" data-cat="sub">
+  <div class="qhead">
+    <div class="qnum">١٨</div>
+    <div>
+      <div class="qtitle">كيف أرقّي أو أنزّل باقتي؟</div>
+      <span class="tag">sub</span>
+    </div>
+  </div>
+  <div class="evidence"><b>Evidence:</b> مبسّط — تفاصيل الإلغاء/الملكية تُعرض في الشروط والأحكام، مو في FAQ</div>
+  <div class="answer">
+    <p>للترقية أو التنزيل أو أي تغيير على اشتراكك، تواصل مع الدعم من لوحتك في مدونتي — نساعدك خطوة بخطوة.</p>
+</div>
+
+</div>
+
+<div class="footer-note">
+  <b>📝 كيف نراجع سوا:</b> اعطني رقم السؤال + تعليقك (مثلاً: <b>«٧: شيل النقطة الأخيرة»</b> أو <b>«١٠: مو ٦ شهور، خلها ٤»</b>). أعدّل، ونشوف النسخة النهائية قبل الـ push.
+</div>
+
+</div>
+
+<script>
+  const chips = document.querySelectorAll('.chip');
+  const cards = document.querySelectorAll('.card, .cat-header');
+  chips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const cat = chip.dataset.cat;
+      cards.forEach(card => {
+        if (cat === 'all' || card.dataset.cat === cat) {
+          card.classList.remove('hide');
+        } else {
+          card.classList.add('hide');
+        }
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

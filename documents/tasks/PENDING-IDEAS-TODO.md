@@ -4,6 +4,12 @@
 
 ---
 
+## 2026-07-10 — Looker Studio · قبل الـ Production Push
+
+- [ ] **تعديل تقرير Looker Studio ليطابق Impact Bar** — الأرقام الحين مختلفة (شريطنا SINCE=2025-01-01 بينما Looker افتراضي "last 12 months"). لو العميل ضغط زر Google شاف أرقام أقل من شريطنا = فقدان مصداقية. الخطوات الكاملة موثّقة في [`LOOKER-STUDIO-SETUP.md`](./LOOKER-STUDIO-SETUP.md) — ٧ خطوات · دقيقتان · يحتاج حساب Google المالك للتقرير.
+
+---
+
 ## 2026-06-15 — Post `/preview` → `/sa` migration
 
 - [ ] **نقل ملفات `app/preview/[country]/*.tsx` إلى موقعها النهائي** — `app/[country]/(marketingShell)/_components/` مع إزالة prefix `Preview` (مثل `PreviewNavbar` → `Navbar`). حالياً الـ /sa والـ /eg يستوردون من مسار `/preview/...` وهذا غير سليم على المدى الطويل.

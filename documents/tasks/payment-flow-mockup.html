@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JBRSEO — مسار الدفع (Mockup)</title>
+<style>
+  :root {
+    --bg: #FAFAF7;
+    --card: #FFFFFF;
+    --fg: #0A0A0A;
+    --fg-muted: #6B6B62;
+    --border: #E5E5DC;
+    --primary: #0A0A0A;
+    --primary-fg: #FFFFFF;
+    --success: #10B981;
+    --success-fg: #FFFFFF;
+    --success-soft: rgba(16, 185, 129, 0.12);
+    --destructive: #DC2626;
+    --destructive-soft: rgba(220, 38, 38, 0.12);
+    --accent: #FDE047;
+    --shadow: 0 12px 30px -18px rgba(10, 10, 10, 0.18);
+    --shadow-lg: 0 24px 50px -22px rgba(10, 10, 10, 0.28);
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+    background: linear-gradient(180deg, #F4F4EE 0%, #EDEDE3 100%);
+    color: var(--fg);
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+    line-height: 1.6;
+  }
+
+  /* ═══ NAVIGATION ═══ */
+  .mockup-nav {
+    max-width: 1200px;
+    margin: 0 auto 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 20px;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 12px;
+    z-index: 50;
+  }
+
+  .mockup-nav-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+
+  .mockup-nav-title {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .mockup-nav-title span {
+    color: var(--fg-muted);
+    font-weight: 500;
+    font-size: 13px;
+    margin-inline-start: 8px;
+  }
+
+  .mockup-nav-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .mockup-nav-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    font-family: inherit;
+  }
+
+  .mockup-nav-btn:hover {
+    background: #F4F4EE;
+    border-color: var(--fg-muted);
+  }
+
+  .mockup-nav-btn.active {
+    background: var(--fg);
+    color: var(--primary-fg);
+    border-color: var(--fg);
+  }
+
+  /* ═══ SCREEN CONTAINER ═══ */
+  .screen {
+    display: none;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .screen.active { display: block; }
+
+  .screen-header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .screen-header h2 {
+    font-size: 17px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .screen-header .step-badge {
+    background: var(--fg);
+    color: var(--primary-fg);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .screen-header p {
+    font-size: 13.5px;
+    color: var(--fg-muted);
+    margin-top: 6px;
+  }
+
+  /* ═══ CHECKOUT PAGE (Screens 1-3) ═══ */
+  .checkout-wrapper {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .checkout-top-bar {
+    background: var(--fg);
+    color: var(--primary-fg);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .checkout-logo {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 1px;
+  }
+
+  .checkout-security {
+    font-size: 11.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .checkout-body {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 0;
+    min-height: 640px;
+  }
+
+  @media (max-width: 900px) {
+    .checkout-body { grid-template-columns: 1fr; }
+  }
+
+  .checkout-form-side {
+    padding: 32px 36px;
+    border-inline-end: 1px solid var(--border);
+  }
+
+  .checkout-summary-side {
+    padding: 32px 30px;
+    background: #FAFAF7;
+  }
+
+  .checkout-heading {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+
+  .checkout-subheading {
+    color: var(--fg-muted);
+    font-size: 13.5px;
+    margin-bottom: 26px;
+  }
+
+  .steps-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 12px 16px;
+    background: #F4F4EE;
+    border-radius: var(--radius-sm);
+  }
+
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--fg-muted);
+    font-weight: 600;
+  }
+
+  .step-num {
+    background: var(--border);
+    color: var(--fg-muted);
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .step.active .step-num {
+    background: var(--fg);
+    color: var(--primary-fg);
+  }
+
+  .step.active { color: var(--fg); }
+
+  .step.done .step-num {
+    background: var(--success);
+    color: var(--success-fg);
+  }
+
+  .step-separator {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 40px;
+  }
+
+  .form-section {
+    margin-bottom: 24px;
+  }
+
+  .form-section-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .form-section-title::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    background: var(--fg);
+    border-radius: 2px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .form-row.full { grid-template-columns: 1fr; }
+
+  .form-field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: 6px;
+  }
+
+  .form-field input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--card);
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color .15s;
+  }
+
+  .form-field input:focus {
+    outline: none;
+    border-color: var(--fg);
+  }
+
+  .form-field input::placeholder { color: #B0B0A5; }
+
+  /* Card iframe simulated fields */
+  .card-fields {
+    background: linear-gradient(135deg, #FFFFFF 0%, #FBFBF6 100%);
+    border: 2px dashed rgba(16, 185, 129, 0.35);
+    border-radius: var(--radius-sm);
+    padding: 18px;
+    position: relative;
+    margin-top: 4px;
+  }
+
+  .card-fields::before {
+    content: 'حقول من N-Genius (iframes) — بيانات البطاقة تذهب مباشرة للبنك';
+    position: absolute;
+    top: -10px;
+    inset-inline-start: 12px;
+    background: var(--success);
+    color: var(--success-fg);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.3px;
+  }
+
+  .card-fields .form-field input {
+    background: #FFFFFF;
+    border-color: var(--border);
+  }
+
+  .card-brands {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .brand-chip {
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--fg-muted);
+    letter-spacing: 0.3px;
+  }
+
+  .captcha-box {
+    background: #F4F4EE;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: var(--fg-muted);
+    margin: 16px 0;
+  }
+
+  .captcha-check {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--success);
+    border-radius: 3px;
+    background: var(--success);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--success-fg);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .pay-btn {
+    width: 100%;
+    background: var(--fg);
+    color: var(--primary-fg);
+    border: none;
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: inherit;
+    transition: opacity .15s;
+    margin-top: 8px;
+  }
+
+  .pay-btn:hover { opacity: 0.9; }
+
+  .pay-btn .amount { font-size: 17px; font-weight: 800; }
+
+  .pay-notice {
+    text-align: center;
+    color: var(--fg-muted);
+    font-size: 11.5px;
+    margin-top: 14px;
+    line-height: 1.7;
+  }
+
+  /* ═══ SUMMARY SIDE ═══ */
+  .summary-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fg-muted);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+
+  .summary-plan-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px 16px;
+    margin-bottom: 18px;
+    position: relative;
+  }
+
+  .summary-plan-badge {
+    position: absolute;
+    top: -10px;
+    inset-inline-end: 14px;
+    background: var(--success);
+    color: var(--success-fg);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 10.5px;
+    font-weight: 700;
+  }
+
+  .summary-plan-name {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .summary-plan-desc {
+    color: var(--fg-muted);
+    font-size: 12px;
+    margin-bottom: 12px;
+  }
+
+  .summary-plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+
+  .summary-plan-features li {
+    padding: 4px 0;
+    font-size: 12.5px;
+    color: var(--fg);
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .summary-plan-features li::before {
+    content: '✓';
+    color: var(--success);
+    font-weight: 800;
+  }
+
+  .price-lines {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+
+  .price-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+  }
+
+  .price-line .label { color: var(--fg-muted); }
+
+  .price-line.total {
+    padding-top: 10px;
+    margin-top: 6px;
+    border-top: 1px solid var(--border);
+    font-weight: 800;
+    font-size: 15px;
+  }
+
+  .savings-callout {
+    background: var(--success-soft);
+    color: var(--success);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 12.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  /* ═══ PROCESSING (Screen 3) ═══ */
+  .processing-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 60px 40px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .spinner {
+    width: 56px;
+    height: 56px;
+    border: 4px solid var(--border);
+    border-top-color: var(--fg);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 24px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .processing-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .processing-subtitle {
+    color: var(--fg-muted);
+    font-size: 14px;
+    max-width: 460px;
+    margin: 0 auto 24px;
+    line-height: 1.7;
+  }
+
+  .processing-3ds-note {
+    background: #FEF3C7;
+    color: #92400E;
+    border-radius: var(--radius-sm);
+    padding: 12px 18px;
+    font-size: 12.5px;
+    max-width: 440px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: start;
+  }
+
+  /* ═══ SUCCESS (Screen 4) ═══ */
+  .success-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 50px 40px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .success-icon {
+    width: 84px;
+    height: 84px;
+    background: var(--success);
+    color: var(--success-fg);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 42px;
+    margin-bottom: 22px;
+    box-shadow: 0 12px 40px -12px rgba(16, 185, 129, 0.5);
+  }
+
+  .success-title {
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .success-subtitle {
+    color: var(--fg-muted);
+    font-size: 14.5px;
+    margin-bottom: 30px;
+    line-height: 1.7;
+  }
+
+  .success-details {
+    background: #FAFAF7;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px;
+    text-align: start;
+    margin-bottom: 24px;
+  }
+
+  .success-detail {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 13px;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .success-detail:last-child { border-bottom: none; }
+
+  .success-detail .label { color: var(--fg-muted); }
+
+  .success-detail .value { font-weight: 700; direction: ltr; text-align: end; }
+
+  .email-notice {
+    background: var(--success-soft);
+    color: var(--success);
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    font-size: 13px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    font-weight: 600;
+  }
+
+  .console-btn {
+    display: inline-block;
+    background: var(--success);
+    color: var(--success-fg);
+    padding: 15px 32px;
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+    transition: opacity .15s;
+    margin-bottom: 16px;
+  }
+
+  .console-btn:hover { opacity: 0.9; }
+
+  .resend-link {
+    display: block;
+    color: var(--fg-muted);
+    font-size: 12.5px;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ═══ FAILURE (Screen 5) ═══ */
+  .failure-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 50px 40px;
+    text-align: center;
+    box-shadow: var(--shadow-lg);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  .failure-icon {
+    width: 84px;
+    height: 84px;
+    background: var(--destructive);
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 44px;
+    margin-bottom: 22px;
+    box-shadow: 0 12px 40px -12px rgba(220, 38, 38, 0.5);
+    font-weight: 300;
+  }
+
+  .failure-title {
+    font-size: 24px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .failure-subtitle {
+    color: var(--fg-muted);
+    font-size: 14px;
+    margin-bottom: 22px;
+  }
+
+  .failure-reason {
+    background: var(--destructive-soft);
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    color: var(--destructive);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    font-size: 13.5px;
+    text-align: start;
+    margin-bottom: 26px;
+  }
+
+  .failure-reason strong { display: block; margin-bottom: 4px; }
+
+  .failure-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-retry {
+    background: var(--fg);
+    color: var(--primary-fg);
+    border: none;
+    padding: 14px 30px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .btn-whatsapp {
+    background: #25D366;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ═══ EMAIL PREVIEWS (Screens 6-7) ═══ */
+  .email-preview-wrapper {
+    background: #E5E7EB;
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+  }
+
+  .email-client-frame {
+    background: #FFFFFF;
+    border-radius: 8px;
+    max-width: 620px;
+    margin: 0 auto;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .email-client-header {
+    background: #F9FAFB;
+    padding: 12px 18px;
+    border-bottom: 1px solid #E5E7EB;
+    font-size: 12.5px;
+  }
+
+  .email-client-header .row {
+    display: flex;
+    gap: 8px;
+    padding: 3px 0;
+  }
+
+  .email-client-header .label {
+    color: #6B7280;
+    min-width: 60px;
+    font-weight: 600;
+  }
+
+  .email-client-header .value { color: #111827; }
+
+  .email-body {
+    padding: 32px 28px;
+    color: #111827;
+    line-height: 1.75;
+  }
+
+  .email-logo {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E5E7EB;
+    margin-bottom: 22px;
+  }
+
+  .email-logo-text {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 2px;
+  }
+
+  .email-greeting {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .email-paragraph {
+    font-size: 14px;
+    color: #374151;
+    margin-bottom: 14px;
+  }
+
+  .credentials-box {
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin: 20px 0;
+  }
+
+  .credentials-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    font-size: 13.5px;
+  }
+
+  .credentials-row .label {
+    color: #6B7280;
+    font-weight: 600;
+  }
+
+  .credentials-row .value {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    direction: ltr;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .warning-box {
+    background: #FEF3C7;
+    color: #78350F;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 12.5px;
+    margin: 16px 0;
+    border-inline-start: 4px solid #F59E0B;
+  }
+
+  .email-cta {
+    display: inline-block;
+    background: #10B981;
+    color: #FFFFFF;
+    padding: 14px 32px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14.5px;
+    margin: 12px 0;
+  }
+
+  .email-footer {
+    border-top: 1px solid #E5E7EB;
+    padding-top: 18px;
+    margin-top: 24px;
+    font-size: 11.5px;
+    color: #9CA3AF;
+    text-align: center;
+  }
+
+  /* Invoice specific */
+  .invoice-header-row {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #111827;
+    margin-bottom: 24px;
+  }
+
+  .invoice-title-block h1 {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .invoice-title-block .invoice-num {
+    color: #6B7280;
+    font-size: 13px;
+    font-family: 'Courier New', monospace;
+    direction: ltr;
+  }
+
+  .invoice-meta {
+    text-align: end;
+    font-size: 12.5px;
+    color: #6B7280;
+  }
+
+  .invoice-meta strong { color: #111827; }
+
+  .invoice-parties {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px dashed #E5E7EB;
+  }
+
+  .invoice-party h4 {
+    font-size: 11px;
+    color: #6B7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .invoice-party p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: #111827;
+  }
+
+  .invoice-items {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  .invoice-items th {
+    text-align: start;
+    padding: 10px 12px;
+    background: #F9FAFB;
+    font-size: 12px;
+    color: #6B7280;
+    font-weight: 700;
+    border-bottom: 1px solid #E5E7EB;
+  }
+
+  .invoice-items td {
+    padding: 14px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid #E5E7EB;
+  }
+
+  .invoice-totals {
+    background: #F9FAFB;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+  }
+
+  .invoice-total-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 13px;
+  }
+
+  .invoice-total-line.grand {
+    padding-top: 10px;
+    margin-top: 6px;
+    border-top: 2px solid #111827;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  .payment-badge {
+    display: inline-block;
+    background: #D1FAE5;
+    color: #065F46;
+    padding: 5px 14px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+  }
+
+  /* ═══ ANNOTATIONS ═══ */
+  .annotation {
+    max-width: 1200px;
+    margin: 20px auto 0;
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-inline-start: 4px solid #F59E0B;
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+    font-size: 13px;
+    color: #78350F;
+    line-height: 1.7;
+  }
+
+  .annotation strong { color: #451A03; display: block; margin-bottom: 4px; font-size: 13.5px; }
+  .annotation code { background: #FEF3C7; padding: 1px 6px; border-radius: 4px; font-size: 12px; direction: ltr; display: inline-block; }
+  .annotation ul { padding-inline-start: 20px; margin-top: 6px; }
+  .annotation li { margin-bottom: 3px; }
+
+  /* Utility */
+  .filled input { color: var(--fg); }
+  .icon { display: inline-block; }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav class="mockup-nav">
+  <div class="mockup-nav-header">
+    <div class="mockup-nav-title">
+      JBRSEO — مسار الدفع
+      <span>معاينة قبل البرمجة · تصميم ملزم بعد الموافقة</span>
+    </div>
+  </div>
+  <div class="mockup-nav-buttons">
+    <button class="mockup-nav-btn active" data-screen="s1">١. Checkout (فارغ)</button>
+    <button class="mockup-nav-btn" data-screen="s2">٢. Checkout (مُعبّأ)</button>
+    <button class="mockup-nav-btn" data-screen="s3">٣. جاري الدفع</button>
+    <button class="mockup-nav-btn" data-screen="s4">٤. نجاح</button>
+    <button class="mockup-nav-btn" data-screen="s5">٥. فشل</button>
+    <button class="mockup-nav-btn" data-screen="s6">٦. إيميل الترحيب</button>
+    <button class="mockup-nav-btn" data-screen="s7">٧. إيميل الفاتورة</button>
+  </div>
+</nav>
+
+<!-- ═══════════════ SCREEN 1: CHECKOUT (empty) ═══════════════ -->
+<section class="screen active" id="s1">
+  <div class="screen-header">
+    <h2><span class="step-badge">شاشة ١</span> صفحة الـ Checkout — الحالة الابتدائية</h2>
+    <p>العميل ضغط "ابدأ الحين" على باقة الزخم/سنوي في <code>/sa#pricing</code>، ووصل إلى <code>/sa/checkout?plan=growth&billing=annual</code>. النموذج فارغ، الحقول جاهزة للتعبئة.</p>
+  </div>
+
+  <div class="checkout-wrapper">
+    <div class="checkout-top-bar">
+      <div class="checkout-logo">◤ JBRSEO</div>
+      <div class="checkout-security">🔒 اتصال مشفّر · N-Genius Payment</div>
+    </div>
+
+    <div class="checkout-body">
+      <div class="checkout-form-side">
+        <h1 class="checkout-heading">إتمام الاشتراك</h1>
+        <p class="checkout-subheading">دقيقة واحدة تفصلك عن ظهورك على جوجل</p>
+
+        <div class="steps-indicator">
+          <span class="step active"><span class="step-num">١</span> بياناتك</span>
+          <span class="step-separator"></span>
+          <span class="step"><span class="step-num">٢</span> الدفع</span>
+          <span class="step-separator"></span>
+          <span class="step"><span class="step-num">٣</span> تفعيل الحساب</span>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">معلوماتك</div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>الاسم الكامل</label>
+              <input type="text" placeholder="محمد أحمد">
+            </div>
+            <div class="form-field">
+              <label>الجوال</label>
+              <input type="text" placeholder="+966 5X XXX XXXX" dir="ltr">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-field">
+              <label>البريد الإلكتروني (سيصلك عليه بيانات دخول لوحة التحكم)</label>
+              <input type="email" placeholder="you@example.com" dir="ltr">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>اسم النشاط التجاري</label>
+              <input type="text" placeholder="مقهى الأصالة">
+            </div>
+            <div class="form-field">
+              <label>نوع النشاط</label>
+              <input type="text" placeholder="مطعم / مقهى / خدمة">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">بيانات البطاقة</div>
+          <div class="card-fields">
+            <div class="form-row full">
+              <div class="form-field">
+                <label>رقم البطاقة</label>
+                <input type="text" placeholder="XXXX XXXX XXXX XXXX" dir="ltr">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label>تاريخ الانتهاء</label>
+                <input type="text" placeholder="MM / YY" dir="ltr">
+              </div>
+              <div class="form-field">
+                <label>CVV</label>
+                <input type="text" placeholder="•••" dir="ltr">
+              </div>
+            </div>
+          </div>
+          <div class="card-brands">
+            <span class="brand-chip">مدى</span>
+            <span class="brand-chip">VISA</span>
+            <span class="brand-chip">Mastercard</span>
+            <span class="brand-chip">Apple Pay</span>
+            <span class="brand-chip">3D Secure</span>
+          </div>
+        </div>
+
+        <div class="captcha-box">
+          <span class="captcha-check">✓</span>
+          <span>Cloudflare Turnstile · تم التحقق آلياً — أنت لست بوت</span>
+        </div>
+
+        <button class="pay-btn">
+          <span>🔒 ادفع الآن</span>
+          <span class="amount">14,338 ر.س</span>
+        </button>
+
+        <p class="pay-notice">
+          بضغطك "ادفع" فأنت توافق على شروط الاستخدام وسياسة الاسترجاع.<br>
+          الاسترجاع الكامل خلال ١٤ يوم.
+        </p>
+      </div>
+
+      <div class="checkout-summary-side">
+        <div class="summary-title">◆ ملخص طلبك</div>
+
+        <div class="summary-plan-card">
+          <span class="summary-plan-badge">الأكثر اختياراً ✦</span>
+          <div class="summary-plan-name">الزخم</div>
+          <div class="summary-plan-desc">نعرّفك على العميل الجاهز للشراء قبل غيرك</div>
+          <ul class="summary-plan-features">
+            <li>٨ مقالات شهرياً</li>
+            <li>تقييم ذكي للزوار (٠-١٠٠)</li>
+            <li>١٢ تنبيه تيليجرام</li>
+            <li>٢ فيديو شهرياً</li>
+            <li>ظهور في البحث الذكي</li>
+          </ul>
+        </div>
+
+        <div class="savings-callout">
+          <span>🎁</span>
+          <span>اشتراك سنوي: ٦ شهور هدية — يصير 693 ر.س/شهر</span>
+        </div>
+
+        <div class="price-lines">
+          <div class="price-line"><span class="label">الاشتراك السنوي</span><span>12,468 ر.س</span></div>
+          <div class="price-line"><span class="label">ضريبة القيمة المضافة (١٥٪)</span><span>1,870 ر.س</span></div>
+          <div class="price-line total"><span>الإجمالي المستحق</span><span>14,338 ر.س</span></div>
+        </div>
+
+        <div style="text-align:center; font-size:11.5px; color: var(--fg-muted); padding: 12px; background: var(--card); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+          مدة الاشتراك: ١٢ شهر · التفعيل خلال دقيقة من الدفع
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <strong>ملاحظات تقنية — الشاشة ١</strong>
+    <ul>
+      <li>حقول البطاقة الثلاثة (رقم/تاريخ/CVV) هي <code>iframes</code> من N-Genius Hosted Session — البيانات ما تمر عبر خادمنا.</li>
+      <li>الأسعار DB-driven من نموذج <code>Plan</code> (نفس مصدر صفحة الأسعار).</li>
+      <li>ضريبة القيمة المضافة تُحسب: <code>priceYearly × 12 × 0.15</code>.</li>
+      <li>Turnstile widget فعّال قبل ما يتمكن العميل من الضغط "ادفع".</li>
+      <li>المسار: <code>/sa/checkout?plan=growth&billing=annual</code></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ SCREEN 2: CHECKOUT (filled) ═══════════════ -->
+<section class="screen" id="s2">
+  <div class="screen-header">
+    <h2><span class="step-badge">شاشة ٢</span> صفحة الـ Checkout — الحالة المُعبّأة</h2>
+    <p>العميل ملأ كل الحقول، الزر جاهز للضغط. هذي الحالة المطابقة للحالة ١ لكن بالحقول المعبأة.</p>
+  </div>
+
+  <div class="checkout-wrapper">
+    <div class="checkout-top-bar">
+      <div class="checkout-logo">◤ JBRSEO</div>
+      <div class="checkout-security">🔒 اتصال مشفّر · N-Genius Payment</div>
+    </div>
+
+    <div class="checkout-body">
+      <div class="checkout-form-side filled">
+        <h1 class="checkout-heading">إتمام الاشتراك</h1>
+        <p class="checkout-subheading">دقيقة واحدة تفصلك عن ظهورك على جوجل</p>
+
+        <div class="steps-indicator">
+          <span class="step active"><span class="step-num">١</span> بياناتك</span>
+          <span class="step-separator"></span>
+          <span class="step"><span class="step-num">٢</span> الدفع</span>
+          <span class="step-separator"></span>
+          <span class="step"><span class="step-num">٣</span> تفعيل الحساب</span>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">معلوماتك</div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>الاسم الكامل</label>
+              <input type="text" value="خالد محمد الحربي">
+            </div>
+            <div class="form-field">
+              <label>الجوال</label>
+              <input type="text" value="+966 54 101 8020" dir="ltr">
+            </div>
+          </div>
+          <div class="form-row full">
+            <div class="form-field">
+              <label>البريد الإلكتروني</label>
+              <input type="email" value="khalid@example.com" dir="ltr">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>اسم النشاط التجاري</label>
+              <input type="text" value="مقهى الأصالة">
+            </div>
+            <div class="form-field">
+              <label>نوع النشاط</label>
+              <input type="text" value="مقهى">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-section-title">بيانات البطاقة</div>
+          <div class="card-fields">
+            <div class="form-row full">
+              <div class="form-field">
+                <label>رقم البطاقة</label>
+                <input type="text" value="4548 8713 •••• 5760" dir="ltr">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-field">
+                <label>تاريخ الانتهاء</label>
+                <input type="text" value="06 / 27" dir="ltr">
+              </div>
+              <div class="form-field">
+                <label>CVV</label>
+                <input type="text" value="•••" dir="ltr">
+              </div>
+            </div>
+          </div>
+          <div class="card-brands">
+            <span class="brand-chip">مدى</span>
+            <span class="brand-chip">VISA</span>
+            <span class="brand-chip">Mastercard</span>
+            <span class="brand-chip">Apple Pay</span>
+            <span class="brand-chip">3D Secure</span>
+          </div>
+        </div>
+
+        <div class="captcha-box">
+          <span class="captcha-check">✓</span>
+          <span>Cloudflare Turnstile · تم التحقق</span>
+        </div>
+
+        <button class="pay-btn">
+          <span>🔒 ادفع الآن</span>
+          <span class="amount">14,338 ر.س</span>
+        </button>
+
+        <p class="pay-notice">
+          بضغطك "ادفع" فأنت توافق على شروط الاستخدام وسياسة الاسترجاع.<br>
+          الاسترجاع الكامل خلال ١٤ يوم.
+        </p>
+      </div>
+
+      <div class="checkout-summary-side">
+        <div class="summary-title">◆ ملخص طلبك</div>
+
+        <div class="summary-plan-card">
+          <span class="summary-plan-badge">الأكثر اختياراً ✦</span>
+          <div class="summary-plan-name">الزخم</div>
+          <div class="summary-plan-desc">نعرّفك على العميل الجاهز للشراء قبل غيرك</div>
+          <ul class="summary-plan-features">
+            <li>٨ مقالات شهرياً</li>
+            <li>تقييم ذكي للزوار (٠-١٠٠)</li>
+            <li>١٢ تنبيه تيليجرام</li>
+            <li>٢ فيديو شهرياً</li>
+            <li>ظهور في البحث الذكي</li>
+          </ul>
+        </div>
+
+        <div class="savings-callout">
+          <span>🎁</span>
+          <span>اشتراك سنوي: ٦ شهور هدية — يصير 693 ر.س/شهر</span>
+        </div>
+
+        <div class="price-lines">
+          <div class="price-line"><span class="label">الاشتراك السنوي</span><span>12,468 ر.س</span></div>
+          <div class="price-line"><span class="label">ضريبة القيمة المضافة (١٥٪)</span><span>1,870 ر.س</span></div>
+          <div class="price-line total"><span>الإجمالي المستحق</span><span>14,338 ر.س</span></div>
+        </div>
+
+        <div style="text-align:center; font-size:11.5px; color: var(--fg-muted); padding: 12px; background: var(--card); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+          مدة الاشتراك: ١٢ شهر · التفعيل خلال دقيقة من الدفع
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <strong>ملاحظات — الشاشة ٢</strong>
+    <ul>
+      <li>Client-side validation جارٍ (Zod schema — نفس اللي مستخدم في jbrseo).</li>
+      <li>رقم البطاقة يعرض ٤ خانات آخر فقط للتأكيد (Hosted Session يعطينا هذي الميزة).</li>
+      <li>عند الضغط: <code>server action</code> يستدعي <code>N-Genius Order API</code> لإنشاء طلب دفع، ثم يبدأ 3DS إذا لزم.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ SCREEN 3: PROCESSING ═══════════════ -->
+<section class="screen" id="s3">
+  <div class="screen-header">
+    <h2><span class="step-badge">شاشة ٣</span> جاري تأكيد الدفع</h2>
+    <p>لحظات بعد الضغط "ادفع" — الطلب أرسل لـ N-Genius، والبنك يقرر. لو البطاقة تتطلب 3DS، تظهر رسالة تحقق.</p>
+  </div>
+
+  <div class="processing-panel">
+    <div class="spinner"></div>
+    <h2 class="processing-title">جاري تأكيد الدفع مع البنك…</h2>
+    <p class="processing-subtitle">
+      لا تغلق هذه الصفحة، ولا تضغط "رجوع".<br>
+      العملية تستغرق ٥-١٥ ثانية عادة.
+    </p>
+    <div class="processing-3ds-note">
+      <span style="font-size:16px;">💡</span>
+      <div>
+        <strong style="display:block; margin-bottom:2px;">قد يطلب منك البنك رمز تحقق</strong>
+        سيصلك رمز على جوالك، أو تُوجَّه لتطبيق البنك للموافقة. أدخل الرمز المطلوب لإكمال العملية.
+      </div>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <strong>ملاحظات — الشاشة ٣</strong>
+    <ul>
+      <li>الحالة الفعلية للطلب في DB: <code>Order.status = "pending_gateway"</code>.</li>
+      <li>3DS challenge (لو مطلوب) يظهر داخل نفس الصفحة عبر Hosted Session iframe.</li>
+      <li>Timeout: ٦٠ ثانية كحد أقصى → ننتقل تلقائياً لشاشة الفشل مع خيار إعادة المحاولة.</li>
+      <li>لا نعتمد على الـ redirect لتأكيد الدفع — الويبهوك من N-Genius هو مصدر الحقيقة.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ SCREEN 4: SUCCESS ═══════════════ -->
+<section class="screen" id="s4">
+  <div class="screen-header">
+    <h2><span class="step-badge">شاشة ٤</span> تم الدفع بنجاح</h2>
+    <p>الدفع نجح، جبرسيو استدعى مدونتي، حساب العميل أُنشئ، إيميل الترحيب أُرسل.</p>
+  </div>
+
+  <div class="success-panel">
+    <div class="success-icon">✓</div>
+    <h1 class="success-title">تم الدفع بنجاح!</h1>
+    <p class="success-subtitle">
+      اشتراكك في باقة <strong>الزخم</strong> فعّال الآن.<br>
+      أرسلنا بيانات دخول لوحة التحكم إلى بريدك.
+    </p>
+
+    <div class="success-details">
+      <div class="success-detail">
+        <span class="label">رقم الطلب</span>
+        <span class="value">JBR-2026-00042</span>
+      </div>
+      <div class="success-detail">
+        <span class="label">الباقة</span>
+        <span class="value">الزخم — سنوي</span>
+      </div>
+      <div class="success-detail">
+        <span class="label">المبلغ المدفوع</span>
+        <span class="value">14,338 ر.س</span>
+      </div>
+      <div class="success-detail">
+        <span class="label">تاريخ التفعيل</span>
+        <span class="value">2026-07-09</span>
+      </div>
+      <div class="success-detail">
+        <span class="label">تاريخ التجديد</span>
+        <span class="value">2027-07-09</span>
+      </div>
+      <div class="success-detail">
+        <span class="label">طريقة الدفع</span>
+        <span class="value">مدى •••• 5760</span>
+      </div>
+    </div>
+
+    <div class="email-notice">
+      ✉ الإيميل أُرسل إلى <strong style="direction:ltr;">khalid@example.com</strong>
+    </div>
+
+    <a href="#" class="console-btn">افتح لوحة تحكمك على مدونتي ←</a>
+    <button class="resend-link">لم يصل الإيميل؟ إعادة الإرسال</button>
+  </div>
+
+  <div class="annotation">
+    <strong>ملاحظات — الشاشة ٤</strong>
+    <ul>
+      <li>الحالة في DB: <code>Order.status = "captured"</code>, <code>Payment.status = "success"</code>.</li>
+      <li>في نفس اللحظة: <code>jbrseo</code> استدعى <code>POST admin.modonty.com/api/internal/onboard-client</code> بتوقيع HMAC.</li>
+      <li>مدونتي أنشأت <code>Client</code>، أصدرت <code>Invoice</code>، أرسلت إيميلين (ترحيب + فاتورة) عبر Resend.</li>
+      <li>الزر "افتح لوحة تحكمك" يودّي على: <code>https://console.modonty.com/login?email=...</code></li>
+      <li>يمكن استخدام Impersonation Token لدخول تلقائي بدون كلمة سر (ticket ٦٠ ثانية).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ SCREEN 5: FAILURE ═══════════════ -->
+<section class="screen" id="s5">
+  <div class="screen-header">
+    <h2><span class="step-badge">شاشة ٥</span> فشل الدفع</h2>
+    <p>البنك رفض العملية. سبب واضح، وخيار إعادة المحاولة أو التواصل عبر واتساب.</p>
+  </div>
+
+  <div class="failure-panel">
+    <div class="failure-icon">×</div>
+    <h1 class="failure-title">لم يتم الدفع</h1>
+    <p class="failure-subtitle">
+      لا تقلق، لم يُخصم أي مبلغ من بطاقتك.
+    </p>
+
+    <div class="failure-reason">
+      <strong>السبب:</strong>
+      البنك رفض العملية. تأكد من الرصيد المتاح أو استخدم بطاقة أخرى.
+      <br><br>
+      <span style="font-family:'Courier New', monospace; direction:ltr; font-size:11px; opacity:0.7;">Code: DO_NOT_HONOR</span>
+    </div>
+
+    <div class="failure-actions">
+      <button class="btn-retry">حاول مرة ثانية ←</button>
+      <button class="btn-whatsapp">
+        <span>واتساب معنا</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <strong>ملاحظات — الشاشة ٥</strong>
+    <ul>
+      <li>الحالة في DB: <code>Order.status = "failed"</code>, <code>Payment.status = "declined"</code>.</li>
+      <li>نحفظ سبب الفشل من N-Genius (<code>DECLINED_BY_ISSUER</code>, <code>INSUFFICIENT_FUNDS</code>, <code>3DS_FAILED</code>, إلخ) في DB للتحليل.</li>
+      <li>"حاول مرة ثانية" يرجع للشاشة ١ مع نفس بيانات النموذج (ما نضطر يعيد التعبئة).</li>
+      <li>لا نُنشئ Client في مدونتي، ولا نرسل أي إيميل.</li>
+      <li>حد أقصى ٣ محاولات في الجلسة الواحدة، بعدها نعرض "تواصل معنا" فقط.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ SCREEN 6: WELCOME EMAIL ═══════════════ -->
+<section class="screen" id="s6">
+  <div class="screen-header">
+    <h2><span class="step-badge">شاشة ٦</span> إيميل الترحيب + بيانات الدخول</h2>
+    <p>يُرسل من مدونتي (Resend) خلال ثواني من الدفع الناجح. المرسل: <code>modonty@modonty.com</code></p>
+  </div>
+
+  <div class="email-preview-wrapper">
+    <div class="email-client-frame">
+      <div class="email-client-header">
+        <div class="row"><span class="label">من:</span><span class="value">مدونتي &lt;modonty@modonty.com&gt;</span></div>
+        <div class="row"><span class="label">إلى:</span><span class="value">khalid@example.com</span></div>
+        <div class="row"><span class="label">الموضوع:</span><span class="value"><strong>مرحباً بك في مدونتي — بيانات دخول لوحة التحكم</strong></span></div>
+      </div>
+      <div class="email-body">
+        <div class="email-logo">
+          <div class="email-logo-text">مدونتي</div>
+        </div>
+
+        <div class="email-greeting">مرحباً خالد،</div>
+        <p class="email-paragraph">
+          شكراً على اشتراكك في باقة <strong>الزخم</strong> — نحن متحمسون لبدء رحلة ظهورك على جوجل معك.
+        </p>
+        <p class="email-paragraph">
+          حسابك على لوحة التحكم (console) جاهز، وبيانات دخولك بالأسفل:
+        </p>
+
+        <div class="credentials-box">
+          <div class="credentials-row">
+            <span class="label">🌐 الرابط</span>
+            <span class="value">console.modonty.com</span>
+          </div>
+          <div class="credentials-row" style="margin-top:8px;">
+            <span class="label">👤 اسم المستخدم</span>
+            <span class="value">khalid@example.com</span>
+          </div>
+          <div class="credentials-row" style="margin-top:8px;">
+            <span class="label">🔐 كلمة المرور المؤقتة</span>
+            <span class="value">xY7pQ2Wr</span>
+          </div>
+        </div>
+
+        <div class="warning-box">
+          ⚠️ <strong>هام:</strong> غيّر كلمة المرور بعد أول دخول من: <em>الإعدادات ← الأمان</em>.
+        </div>
+
+        <div style="text-align:center; margin-top:10px;">
+          <a href="#" class="email-cta">افتح لوحة التحكم ←</a>
+        </div>
+
+        <p class="email-paragraph" style="margin-top:24px;">
+          <strong>الخطوات التالية:</strong>
+        </p>
+        <p class="email-paragraph">
+          ١. سجّل دخولك بالبيانات أعلاه<br>
+          ٢. أكمل ملف نشاطك التجاري (يساعدنا نكتب محتوى دقيق)<br>
+          ٣. سيبدأ فريقنا بكتابة أول مقال لك خلال ٢٤ ساعة
+        </p>
+
+        <p class="email-paragraph" style="margin-top:20px;">
+          أي استفسار، ردّ على هذا الإيميل مباشرة أو تواصل معنا عبر واتساب.
+        </p>
+
+        <p class="email-paragraph" style="margin-top:16px;">
+          مع أطيب التحيات،<br>
+          <strong>فريق مدونتي</strong>
+        </p>
+
+        <div class="email-footer">
+          هذه الرسالة أُرسلت من modonty.com<br>
+          إذا لم تكن أنت من طلب هذا الاشتراك، تجاهل الرسالة أو تواصل معنا.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <strong>ملاحظات — الشاشة ٦</strong>
+    <ul>
+      <li>القالب موجود في مدونتي: <code>admin/lib/email/templates/client-welcome.ts</code> (يُعدّل ليدعم الاسم الجديد + Impersonation link).</li>
+      <li>Password: <code>crypto.randomBytes(6).toString("base64url")</code> — عشوائي لكل عميل (لا `admin123`).</li>
+      <li>Resend tags: <code>emailType=welcome</code>, <code>clientId=...</code>, <code>orderId=...</code> (لتتبع الوصول والفتح).</li>
+      <li>الرابط قد يحمل Impersonation token يدخل العميل بدون كلمة سر (خيار).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ═══════════════ SCREEN 7: INVOICE EMAIL ═══════════════ -->
+<section class="screen" id="s7">
+  <div class="screen-header">
+    <h2><span class="step-badge">شاشة ٧</span> إيميل الفاتورة</h2>
+    <p>يُرسل فوراً بعد إيميل الترحيب. المرسل: <code>modonty@modonty.com</code></p>
+  </div>
+
+  <div class="email-preview-wrapper">
+    <div class="email-client-frame">
+      <div class="email-client-header">
+        <div class="row"><span class="label">من:</span><span class="value">مدونتي &lt;modonty@modonty.com&gt;</span></div>
+        <div class="row"><span class="label">إلى:</span><span class="value">khalid@example.com</span></div>
+        <div class="row"><span class="label">الموضوع:</span><span class="value"><strong>فاتورة JBR-2026-00042 — الزخم (سنوي)</strong></span></div>
+      </div>
+      <div class="email-body">
+
+        <div class="invoice-header-row">
+          <div class="invoice-title-block">
+            <h1>فاتورة رسمية</h1>
+            <div class="invoice-num">JBR-2026-00042</div>
+          </div>
+          <div class="invoice-meta">
+            <div>تاريخ الإصدار</div>
+            <strong>2026-07-09</strong>
+            <br><br>
+            <span class="payment-badge">✓ مدفوع</span>
+          </div>
+        </div>
+
+        <div class="invoice-parties">
+          <div class="invoice-party">
+            <h4>البائع</h4>
+            <p>
+              <strong>مدونتي</strong><br>
+              modonty.com<br>
+              الرقم الضريبي: XXXXXXXXXXX<br>
+              الرياض — السعودية
+            </p>
+          </div>
+          <div class="invoice-party">
+            <h4>العميل</h4>
+            <p>
+              <strong>خالد محمد الحربي</strong><br>
+              مقهى الأصالة<br>
+              khalid@example.com<br>
+              +966 54 101 8020
+            </p>
+          </div>
+        </div>
+
+        <table class="invoice-items">
+          <thead>
+            <tr>
+              <th>البند</th>
+              <th style="text-align:center; width:80px;">المدة</th>
+              <th style="text-align:end; width:120px;">المبلغ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <strong>باقة الزخم — اشتراك سنوي</strong><br>
+                <span style="color:#6B7280; font-size:12px;">من 2026-07-09 إلى 2027-07-09</span>
+              </td>
+              <td style="text-align:center;">١٢ شهر</td>
+              <td style="text-align:end; direction:ltr;">12,468.00 ر.س</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="invoice-totals">
+          <div class="invoice-total-line">
+            <span>المجموع الفرعي</span>
+            <span style="direction:ltr;">12,468.00 ر.س</span>
+          </div>
+          <div class="invoice-total-line">
+            <span>ضريبة القيمة المضافة (١٥٪)</span>
+            <span style="direction:ltr;">1,870.20 ر.س</span>
+          </div>
+          <div class="invoice-total-line grand">
+            <span>الإجمالي</span>
+            <span style="direction:ltr;">14,338.20 ر.س</span>
+          </div>
+        </div>
+
+        <div style="background:#F0FDF4; border-radius:8px; padding:14px 18px; margin: 20px 0; font-size:13px;">
+          <strong>معلومات الدفع:</strong><br>
+          <span style="color:#065F46;">✓ تم الدفع بواسطة بطاقة مدى المنتهية بـ 5760 في 2026-07-09 الساعة 14:32</span><br>
+          <span style="color:#6B7280; font-size:12px; direction:ltr; display:inline-block; margin-top:4px;">Reference: NG-P-2026-8734XY</span>
+        </div>
+
+        <p class="email-paragraph" style="margin-top:20px; color:#374151;">
+          شكراً لثقتك بنا. لأي استفسار حول هذه الفاتورة، تواصل معنا على <strong>modonty@modonty.com</strong>.
+        </p>
+
+        <div class="email-footer">
+          هذه فاتورة مُصدرة إلكترونياً — لا تحتاج ختم أو توقيع<br>
+          modonty.com · جميع الحقوق محفوظة © 2026
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="annotation">
+    <strong>ملاحظات — الشاشة ٧</strong>
+    <ul>
+      <li>القالب في مدونتي: <code>admin/lib/email/templates/invoice.ts</code> (موجود مسبقاً، نضيف تكيّف).</li>
+      <li>الترقيم من <code>Counter</code> model في مدونتي — atomic, gapless (<code>MOD-2026-XXXXX</code> أو <code>JBR-2026-XXXXX</code>).</li>
+      <li>الفاتورة تُخزّن في DB (Invoice) للسجل والمراجعة الضريبية.</li>
+      <li>⚠️ لاحقاً: نلتزم بمتطلبات ZATCA لإصدار فاتورة إلكترونية معتمدة (QR + XML).</li>
+      <li>Reference من N-Genius يُخزّن لأي نزاع مع البنك.</li>
+    </ul>
+  </div>
+</section>
+
+<script>
+  const buttons = document.querySelectorAll('.mockup-nav-btn');
+  const screens = document.querySelectorAll('.screen');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.screen;
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      screens.forEach(s => s.classList.remove('active'));
+      document.getElementById(target).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Keyboard: 1-7 keys switch screens
+  document.addEventListener('keydown', (e) => {
+    const num = parseInt(e.key);
+    if (num >= 1 && num <= 7) {
+      const btn = document.querySelector(`.mockup-nav-btn[data-screen="s${num}"]`);
+      if (btn) btn.click();
+    }
+  });
+</script>
+
+</body>
+</html>

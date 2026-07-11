@@ -1,0 +1,628 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>كروت الأسعار — Mockup v2 (Lucide) · JBRSEO</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0a0a0b;
+      --card: #17171a;
+      --border: #262629;
+      --border-2: #38383d;
+      --text: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --text-dim: #71717a;
+      --success: #22c55e;
+      --success-dim: #16a34a;
+      --success-bg: rgba(34,197,94,0.12);
+      --success-border: rgba(34,197,94,0.35);
+      --success-glow: rgba(34,197,94,0.25);
+      --amber: #f59e0b;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, sans-serif;
+      line-height: 1.6;
+      padding: 40px 24px 80px;
+    }
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    /* Icon primitives */
+    .icon {
+      width: 16px; height: 16px; flex-shrink: 0;
+      stroke: currentColor; fill: none;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    }
+    .icon-lg { width: 20px; height: 20px; }
+    .icon-xl { width: 28px; height: 28px; }
+    .icon-badge { width: 14px; height: 14px; stroke-width: 2.5; }
+
+    /* ─── HEADER ─── */
+    .doc-header { text-align: center; margin-bottom: 48px; }
+    .doc-header h1 {
+      font-size: 28px; font-weight: 900; letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .doc-header p {
+      color: var(--text-muted); font-size: 14px;
+      max-width: 640px; margin: 0 auto;
+    }
+    .lucide-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--success-bg); color: var(--success);
+      padding: 4px 10px; border-radius: 999px;
+      font-size: 11.5px; font-weight: 700;
+      margin-top: 12px;
+    }
+
+    /* ─── PRINCIPLES ─── */
+    .principles {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .principle { display: flex; flex-direction: column; gap: 6px; }
+    .principle-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px;
+      color: var(--success);
+      background: var(--success-bg);
+      padding: 4px 9px; border-radius: 5px;
+      align-self: flex-start;
+    }
+    .principle h3 { font-size: 14px; font-weight: 700; color: var(--text); }
+    .principle p {
+      font-size: 12.5px; color: var(--text-muted); line-height: 1.55;
+    }
+
+    /* ─── CARDS GRID ─── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      padding: 32px 24px 24px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    .card.featured {
+      border-color: var(--success);
+      box-shadow: 0 24px 60px -24px var(--success-glow);
+    }
+    .featured-badge {
+      position: absolute;
+      top: -13px; right: 24px;
+      background: var(--success);
+      color: #052e12;
+      font-size: 11px; font-weight: 800;
+      padding: 6px 12px 6px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.3px;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+
+    /* Persona header */
+    .persona-row {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-dim); font-size: 11.5px; font-weight: 500;
+      margin-bottom: 6px;
+    }
+    .persona-row .icon { color: var(--text-dim); width: 14px; height: 14px; }
+    .card-name {
+      font-size: 20px; font-weight: 800; color: var(--text);
+      margin-bottom: 20px; letter-spacing: -0.3px;
+    }
+
+    /* Hero metric */
+    .hero-metric {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 16px;
+      margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .card.featured .hero-metric {
+      background: var(--success-bg);
+      border-color: var(--success-border);
+    }
+    .hero-metric-icon-wrap {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+    }
+    .card.featured .hero-metric-icon-wrap {
+      background: rgba(34,197,94,0.18);
+      color: var(--success);
+    }
+    .hero-metric-body { flex: 1; }
+    .hero-metric-value {
+      font-size: 18px; font-weight: 800; color: var(--text);
+      font-family: ui-monospace, monospace;
+      display: block; margin-bottom: 2px;
+    }
+    .card.featured .hero-metric-value { color: var(--success); }
+    .hero-metric-label {
+      font-size: 12px; color: var(--text-muted); display: block;
+    }
+
+    /* Price */
+    .price-block { margin-bottom: 4px; }
+    .price {
+      font-size: 36px; font-weight: 800; color: var(--text);
+      font-family: ui-monospace, monospace;
+      letter-spacing: -1px;
+      display: flex; align-items: baseline; gap: 6px;
+      margin-bottom: 6px;
+    }
+    .price-currency {
+      font-size: 12px; color: var(--text-muted); font-weight: 500;
+      font-family: -apple-system, sans-serif;
+    }
+    .price-effective {
+      font-size: 12.5px; color: var(--success); font-weight: 700;
+      font-family: ui-monospace, monospace;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .card.featured .price-effective {
+      background: var(--success-bg);
+      padding: 5px 10px; border-radius: 6px;
+    }
+
+    /* CTA */
+    .cta {
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 13px 14px; border-radius: 11px;
+      font-size: 14px; font-weight: 700;
+      text-decoration: none;
+      margin: 18px 0;
+      border: 1px solid var(--border-2);
+      color: var(--text);
+      background: rgba(255,255,255,0.03);
+      transition: all 0.15s;
+    }
+    .cta:hover { background: rgba(255,255,255,0.06); }
+    .card.featured .cta {
+      background: var(--success);
+      color: #052e12;
+      border-color: var(--success);
+      font-weight: 800;
+    }
+    .card.featured .cta:hover { background: var(--success-dim); }
+
+    /* Features */
+    .features-label {
+      font-size: 11.5px; color: var(--text-dim);
+      margin-bottom: 12px;
+      font-weight: 600;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .features { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+    .feature {
+      display: flex; gap: 10px; align-items: flex-start;
+      font-size: 13px; line-height: 1.5;
+      color: var(--text-muted);
+    }
+    .feature-icon-wrap {
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.04);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+    .feature.highlight { color: var(--text); font-weight: 500; }
+    .feature.highlight .feature-icon-wrap {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+    .feature-text { padding-top: 2px; }
+
+    /* Trust chip */
+    .card-trust {
+      margin-top: auto;
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 11.5px; color: var(--text-dim); line-height: 1.5;
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+    .card-trust .icon { color: var(--text-muted); margin-top: 2px; }
+    .card-trust b { color: var(--text-muted); font-weight: 600; }
+
+    /* Rationale */
+    .rationale {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+    .rat-note {
+      background: rgba(245, 158, 11, 0.06);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 12px; color: var(--text-muted); line-height: 1.6;
+    }
+    .rat-note b { color: var(--amber); font-weight: 700; }
+
+    /* Compare */
+    .compare-section {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+    .compare-section h2 {
+      font-size: 18px; font-weight: 800; margin-bottom: 16px; color: var(--text);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .compare-col {
+      background: var(--card);
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-size: 13px; line-height: 1.7; color: var(--text-muted);
+    }
+    .compare-col.bad { border: 1px solid rgba(239,68,68,0.3); }
+    .compare-col.good { border: 1px solid var(--success-border); }
+    .compare-col h3 {
+      font-size: 13px; font-weight: 800; margin-bottom: 10px; color: var(--text);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .compare-col.bad h3 { color: #ef4444; }
+    .compare-col.good h3 { color: var(--success); }
+    .compare-col ul { list-style: none; padding: 0; }
+    .compare-col li {
+      padding: 5px 0;
+      border-bottom: 1px dashed var(--border);
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .compare-col li:last-child { border-bottom: 0; }
+    .compare-col li .icon { margin-top: 4px; }
+    .compare-col.bad li .icon { color: #ef4444; }
+    .compare-col.good li .icon { color: var(--success); }
+
+    /* Approve */
+    .approve-section {
+      text-align: center;
+      background: var(--card);
+      border: 2px solid var(--success);
+      border-radius: 14px;
+      padding: 28px 24px;
+    }
+    .approve-section h2 {
+      font-size: 18px; font-weight: 800; color: var(--text); margin-bottom: 10px;
+    }
+    .approve-section p {
+      color: var(--text-muted); font-size: 13.5px;
+      max-width: 620px; margin: 0 auto 12px;
+    }
+    .approve-section code {
+      background: rgba(34,197,94,0.15); color: var(--success);
+      padding: 4px 10px; border-radius: 6px;
+      font-family: ui-monospace, monospace; font-size: 12.5px;
+    }
+
+    @media (max-width: 900px) {
+      .cards-grid, .rationale, .principles, .compare-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<!-- ─── LUCIDE ICON REGISTRY ─── -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <defs>
+    <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></symbol>
+    <symbol id="i-trending-up" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24"><path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"/><path d="M5 21h14"/></symbol>
+    <symbol id="i-file-text" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+    <symbol id="i-layout-template" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="7" rx="1"/><rect x="3" y="14" width="9" height="7" rx="1"/><rect x="16" y="14" width="5" height="7" rx="1"/></symbol>
+    <symbol id="i-share-2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></symbol>
+    <symbol id="i-megaphone" viewBox="0 0 24 24"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></symbol>
+    <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-message-circle" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></symbol>
+    <symbol id="i-link-2" viewBox="0 0 24 24"><path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></symbol>
+    <symbol id="i-calendar-check" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></symbol>
+    <symbol id="i-stethoscope" viewBox="0 0 24 24"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></symbol>
+    <symbol id="i-user-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662"/></symbol>
+    <symbol id="i-line-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></symbol>
+    <symbol id="i-timer" viewBox="0 0 24 24"><line x1="10" y1="2" x2="14" y2="2"/><line x1="12" y1="14" x2="15" y2="11"/><circle cx="12" cy="14" r="8"/></symbol>
+    <symbol id="i-calendar-range" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M17 14h-6"/><path d="M13 18H7"/><path d="M7 14h.01"/><path d="M17 18h.01"/></symbol>
+    <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol>
+    <symbol id="i-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-x-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></symbol>
+    <symbol id="i-arrow-left" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></symbol>
+    <symbol id="i-gift" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></symbol>
+    <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  </defs>
+</svg>
+
+<div class="container">
+  <div class="doc-header">
+    <h1>كروت الأسعار — التصميم المقترح (v2)</h1>
+    <p>مبني من ٣ زوايا: العميل السعودي غير التقني · Senior UI/UX · Senior Marketing &amp; Sales</p>
+    <div class="lucide-chip">
+      <svg class="icon" style="width:12px;height:12px"><use href="#i-sparkles"/></svg>
+      أيقونات Lucide — نفس ما يستخدمه Vercel · Linear · Stripe
+    </div>
+  </div>
+
+  <!-- Principles -->
+  <div class="principles">
+    <div class="principle">
+      <span class="principle-tag">
+        <svg class="icon" style="width:10px;height:10px"><use href="#i-users"/></svg>
+        من زاوية العميل
+      </span>
+      <h3>وضوح فوري — بدون تخمين</h3>
+      <p>عدد المقالات + صفحة العميل + الميزة المميزة تظهر في كل كارت. بلا أسهم، بلا جارجن. العميل يفهم في ٥ ثواني.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-tag">
+        <svg class="icon" style="width:10px;height:10px"><use href="#i-layout-template"/></svg>
+        من زاوية UI/UX
+      </span>
+      <h3>Hierarchy واحدة صارمة</h3>
+      <p>Persona → Hero metric → Price → CTA → Features → Trust chip. كل كارت نفس البنية عشان العين تقارن.</p>
+    </div>
+    <div class="principle">
+      <span class="principle-tag">
+        <svg class="icon" style="width:10px;height:10px"><use href="#i-trending-up"/></svg>
+        من زاوية Sales
+      </span>
+      <h3>كل كارت يبيع نفسه</h3>
+      <p>Persona fit + Outcome bullets + Risk reversal (٦ شهور هدية) + CTA يناسب المستوى. بلا مقارنة داخل الكارت.</p>
+    </div>
+  </div>
+
+  <!-- Cards -->
+  <div class="cards-grid">
+
+    <!-- Card 1: الانطلاقة -->
+    <div class="card">
+      <div class="persona-row">
+        <svg class="icon"><use href="#i-sparkles"/></svg>
+        <span>للنشاط الجديد الحابس على أول عملاء من قوقل</span>
+      </div>
+      <div class="card-name">الانطلاقة</div>
+
+      <div class="hero-metric">
+        <div class="hero-metric-icon-wrap"><svg class="icon icon-lg"><use href="#i-file-text"/></svg></div>
+        <div class="hero-metric-body">
+          <span class="hero-metric-value">٤ مقالات سيو / شهر</span>
+          <span class="hero-metric-label">بحث + كتابة + تصميم + نشر — كامل</span>
+        </div>
+      </div>
+
+      <div class="price-block">
+        <div class="price">4,788<span class="price-currency">ر.س/سنوياً</span></div>
+        <div class="price-effective">
+          <svg class="icon" style="width:12px;height:12px"><use href="#i-gift"/></svg>
+          بيصير ٢٦٦ ر.س/شهر · ٦ شهور هدية
+        </div>
+      </div>
+
+      <a href="#" class="cta">ابدأ بالانطلاقة <svg class="icon"><use href="#i-arrow-left"/></svg></a>
+
+      <div class="features-label">اللي بتحصل عليه:</div>
+      <div class="features">
+        <div class="feature highlight">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-layout-template"/></svg></div>
+          <span class="feature-text">صفحة عميل احترافية (بديل موقع إلكتروني)</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-share-2"/></svg></div>
+          <span class="feature-text">نشر على منصة مدونتي</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-megaphone"/></svg></div>
+          <span class="feature-text">سوشال ميديا مدونتي</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-shield-check"/></svg></div>
+          <span class="feature-text">شارة «موثّق» + بيانات قانونية</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-message-circle"/></svg></div>
+          <span class="feature-text">زر واتساب + سؤال مباشر تحت المقال</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: الزخم (FEATURED) -->
+    <div class="card featured">
+      <div class="featured-badge">
+        <svg class="icon icon-badge"><use href="#i-flame"/></svg>
+        الأكثر اختياراً
+      </div>
+
+      <div class="persona-row">
+        <svg class="icon"><use href="#i-trending-up"/></svg>
+        <span>للنشاط الجاد اللي يبي يتوسّع بسرعة</span>
+      </div>
+      <div class="card-name">الزخم</div>
+
+      <div class="hero-metric">
+        <div class="hero-metric-icon-wrap"><svg class="icon icon-lg"><use href="#i-file-text"/></svg></div>
+        <div class="hero-metric-body">
+          <span class="hero-metric-value">٨ مقالات سيو / شهر</span>
+          <span class="hero-metric-label">ضعف الانطلاقة · نشر أسرع · حملات إيميل</span>
+        </div>
+      </div>
+
+      <div class="price-block">
+        <div class="price">12,468<span class="price-currency">ر.س/سنوياً</span></div>
+        <div class="price-effective">
+          <svg class="icon" style="width:12px;height:12px"><use href="#i-gift"/></svg>
+          بيصير ٦٩٣ ر.س/شهر · ٦ شهور هدية
+        </div>
+      </div>
+
+      <a href="#" class="cta">ابدأ بالزخم <svg class="icon"><use href="#i-arrow-left"/></svg></a>
+
+      <div class="features-label">كل اللي في الانطلاقة +</div>
+      <div class="features">
+        <div class="feature highlight">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-link-2"/></svg></div>
+          <span class="feature-text">رابط لموقعك الخاص (للمتاجر/المواقع)</span>
+        </div>
+        <div class="feature highlight">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-calendar-check"/></svg></div>
+          <span class="feature-text">نظام حجوزات «احجز الآن»</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-mail"/></svg></div>
+          <span class="feature-text">٤ حملات إيميل ماركتنق شهرياً</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-sparkles"/></svg></div>
+          <span class="feature-text">محتواك جاهز للذكاء الاصطناعي</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-stethoscope"/></svg></div>
+          <span class="feature-text">توثيق مؤهلات الكاتب (طبي/مالي/قانوني)</span>
+        </div>
+      </div>
+
+      <div class="card-trust">
+        <svg class="icon" style="color:var(--success)"><use href="#i-flame"/></svg>
+        <div style="color:var(--text);font-weight:600"><b style="color:var(--success)">الأفضل قيمة مقابل السعر</b> — القرار الاقتصادي الذكي</div>
+      </div>
+    </div>
+
+    <!-- Card 3: الريادة -->
+    <div class="card">
+      <div class="persona-row">
+        <svg class="icon"><use href="#i-crown"/></svg>
+        <span>مشروع سيو كامل مع مدير حساب مخصص</span>
+      </div>
+      <div class="card-name">الريادة</div>
+
+      <div class="hero-metric">
+        <div class="hero-metric-icon-wrap"><svg class="icon icon-lg"><use href="#i-file-text"/></svg></div>
+        <div class="hero-metric-body">
+          <span class="hero-metric-value">١٢ مقال سيو / شهر</span>
+          <span class="hero-metric-label">استراتيجية شاملة · نشر في نفس اليوم</span>
+        </div>
+      </div>
+
+      <div class="price-block">
+        <div class="price">28,788<span class="price-currency">ر.س/سنوياً</span></div>
+        <div class="price-effective">
+          <svg class="icon" style="width:12px;height:12px"><use href="#i-gift"/></svg>
+          بيصير 1,599 ر.س/شهر · ٦ شهور هدية
+        </div>
+      </div>
+
+      <a href="#" class="cta">احجز جلسة استشارة <svg class="icon"><use href="#i-arrow-left"/></svg></a>
+
+      <div class="features-label">كل اللي في الزخم +</div>
+      <div class="features">
+        <div class="feature highlight">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-user-circle"/></svg></div>
+          <span class="feature-text">مدير حساب مخصص لك</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-mail"/></svg></div>
+          <span class="feature-text">٨ حملات إيميل ماركتنق شهرياً</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-line-chart"/></svg></div>
+          <span class="feature-text">صلاحية على Google Search Console (أرقام قوقل الرسمية)</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-timer"/></svg></div>
+          <span class="feature-text">رد على استفساراتك خلال ٤ ساعات</span>
+        </div>
+        <div class="feature">
+          <div class="feature-icon-wrap"><svg class="icon"><use href="#i-calendar-range"/></svg></div>
+          <span class="feature-text">جلسة استراتيجية ربع سنوية</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Rationale -->
+  <div class="rationale">
+    <div class="rat-note">
+      <b>الانطلاقة:</b> ما نخفي أنها الأدنى — نبيعها كـ "بداية ذكية" لعميل حابس على أول زوار. أيقونة Sparkles للبداية.
+    </div>
+    <div class="rat-note">
+      <b>الزخم (المميزة):</b> بادج Flame + توهج + CTA أخضر + سرد "ضعف الانطلاقة". أيقونات Highlighted (رابط + حجوزات) للتمييز البصري.
+    </div>
+    <div class="rat-note">
+      <b>الريادة:</b> أيقونة Crown + CTA "احجز جلسة استشارة" — يقلل احتكاك الشراء المباشر، ويرفع القيمة المتصوّرة (Enterprise-style).
+    </div>
+  </div>
+
+  <!-- Before vs After -->
+  <div class="compare-section">
+    <h2><svg class="icon icon-lg" style="color:var(--amber)"><use href="#i-target"/></svg> مقارنة: قبل ↔ بعد</h2>
+    <div class="compare-grid">
+      <div class="compare-col bad">
+        <h3><svg class="icon"><use href="#i-x-circle"/></svg> التصميم الحالي</h3>
+        <ul>
+          <li><svg class="icon"><use href="#i-x-circle"/></svg><span>عدد المقالات مخفي في كارت الزخم والريادة</span></li>
+          <li><svg class="icon"><use href="#i-x-circle"/></svg><span>صفحة العميل مو ظاهرة (المنطق شالها لأنها متكررة)</span></li>
+          <li><svg class="icon"><use href="#i-x-circle"/></svg><span>أسهم "موسّع → تنافسي" تحيّر غير التقني</span></li>
+          <li><svg class="icon"><use href="#i-x-circle"/></svg><span>"GSC" بلا شرح</span></li>
+          <li><svg class="icon"><use href="#i-x-circle"/></svg><span>ما فيه persona — العميل ما يعرف لأيّها هو الأنسب</span></li>
+          <li><svg class="icon"><use href="#i-x-circle"/></svg><span>إيموجي 📄🔥 تعطي إحساس consumer، مو enterprise</span></li>
+        </ul>
+      </div>
+      <div class="compare-col good">
+        <h3><svg class="icon"><use href="#i-check-circle"/></svg> التصميم المقترح</h3>
+        <ul>
+          <li><svg class="icon"><use href="#i-check-circle"/></svg><span>Hero metric = عدد المقالات في وسط كل كارت</span></li>
+          <li><svg class="icon"><use href="#i-check-circle"/></svg><span>صفحة العميل بارزة في الانطلاقة (الأساس)</span></li>
+          <li><svg class="icon"><use href="#i-check-circle"/></svg><span>قيم مطلقة بلا أسهم — سهل الفهم</span></li>
+          <li><svg class="icon"><use href="#i-check-circle"/></svg><span>GSC مشروحة: "أرقام قوقل الرسمية عن موقعك"</span></li>
+          <li><svg class="icon"><use href="#i-check-circle"/></svg><span>Persona + Trust chip في كل كارت</span></li>
+          <li><svg class="icon"><use href="#i-check-circle"/></svg><span>أيقونات Lucide — نفس ما يستخدمه Vercel / Stripe / Linear</span></li>
+          <li><svg class="icon"><use href="#i-check-circle"/></svg><span>CTA مختلف حسب المستوى (ابدأ vs احجز جلسة)</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Approve -->
+  <div class="approve-section">
+    <h2>خطوات التنفيذ إذا اعتمدت التصميم</h2>
+    <p>
+      إذا اعتمدت التصميم، أطبّقه في <code>app/components/landing/Landing.tsx</code>:
+      (١) استبدال الإيموجي بمكونات <code>lucide-react</code>،
+      (٢) إضافة حقول <code>persona</code> + <code>trustChip</code> لكل باقة في DB،
+      (٣) إعادة كتابة <code>getPlanKeyFeatures</code> لتشمل قيم مطلقة بدل الأسهم،
+      (٤) hero metric = <code>plan.articlesLabel</code> من DB.
+    </p>
+      <p style="color: var(--success); font-weight: 700; margin-top: 10px;">قل "أعتمد" فأبدأ التطبيق — أو أي تعديل يشد نظرك.</p>
+  </div>
+</div>
+</html>

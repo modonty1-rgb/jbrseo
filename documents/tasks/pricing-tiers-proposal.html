@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اقتراح تقسيم المزايا على الباقات — Sales Manager Proposal</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#0a0a0a;color:#fff;font-family:"Segoe UI","Tahoma","Noto Sans Arabic",sans-serif;line-height:1.7}
+  .wrap{max-width:1220px;margin:0 auto;padding:24px 20px 80px}
+
+  header.hero{background:linear-gradient(135deg,#065f46,#047857);border-radius:16px;padding:28px 24px;margin-bottom:20px}
+  header.hero h1{font-size:26px;font-weight:800;margin-bottom:8px}
+  header.hero p{font-size:14px;opacity:.9}
+  .research-badge{display:inline-block;background:rgba(255,255,255,.15);padding:6px 12px;border-radius:99px;font-size:12px;font-weight:600;margin-top:12px}
+
+  .section{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:22px;margin-bottom:18px}
+  .section h2{font-size:20px;font-weight:800;margin-bottom:16px;color:#4ade80;border-inline-start:4px solid #059669;padding-inline-start:12px}
+  .section h3{font-size:16px;font-weight:800;margin:14px 0 8px}
+  .section p{font-size:14px;color:rgba(255,255,255,.8);margin-bottom:10px}
+
+  /* Tier headers */
+  .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+  @media(max-width:900px){.tiers{grid-template-columns:repeat(2,1fr)}}
+  .tier-card{padding:18px;border-radius:12px;text-align:center;border:1px solid rgba(255,255,255,.1)}
+  .tier-card.t1{background:rgba(148,163,184,.08);border-color:rgba(148,163,184,.2)}
+  .tier-card.t2{background:rgba(59,130,246,.08);border-color:rgba(59,130,246,.25)}
+  .tier-card.t3{background:linear-gradient(135deg,rgba(74,222,128,.15),rgba(4,120,87,.15));border-color:rgba(74,222,128,.4);position:relative}
+  .tier-card.t4{background:rgba(168,85,247,.08);border-color:rgba(168,85,247,.3)}
+  .tier-card .rec-pill{position:absolute;top:-11px;right:50%;transform:translateX(50%);background:#059669;color:#fff;font-size:10px;font-weight:900;padding:3px 10px;border-radius:99px;white-space:nowrap}
+  .tier-card h4{font-size:16px;font-weight:900;margin-bottom:4px}
+  .tier-card .price{font-size:24px;font-weight:900;color:#4ade80;margin:4px 0}
+  .tier-card .price small{font-size:11px;color:rgba(255,255,255,.6);font-weight:500}
+  .tier-card .tagline{font-size:12px;color:rgba(255,255,255,.7);margin-top:6px;font-weight:600;line-height:1.5;min-height:32px}
+
+  /* Comparison table */
+  .cmp-table{overflow-x:auto;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.08);border-radius:12px}
+  .cmp-table table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:820px}
+  .cmp-table th,.cmp-table td{padding:10px 8px;text-align:center;border-bottom:1px solid rgba(255,255,255,.05)}
+  .cmp-table th{background:rgba(255,255,255,.04);font-weight:800;font-size:12px;color:#4ade80;position:sticky;top:0}
+  .cmp-table td.feat{text-align:right;color:rgba(255,255,255,.9);font-weight:600;padding-inline-start:12px;width:280px}
+  .cmp-table td.new-badge{position:relative}
+  .cmp-table td.new-badge .new-tag{position:absolute;top:2px;left:2px;background:#f59e0b;color:#0a0a0a;font-size:9px;font-weight:900;padding:1px 5px;border-radius:4px}
+  .cmp-table .yes{color:#4ade80;font-weight:900}
+  .cmp-table .no{color:rgba(255,255,255,.35)}
+  .cmp-table .num{color:#4ade80;font-weight:800}
+  .cmp-table td.rec{background:rgba(74,222,128,.06)}
+  .cmp-table thead th.rec{background:rgba(74,222,128,.15)}
+  .cmp-table tr.cat-row td{background:rgba(255,255,255,.02);color:#4ade80;font-weight:800;font-size:11px;letter-spacing:.5px;text-transform:uppercase;padding:10px 12px}
+
+  /* Rationale cards */
+  .rationale-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  @media(max-width:800px){.rationale-grid{grid-template-columns:1fr}}
+  .rat-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:16px}
+  .rat-card h4{font-size:13px;font-weight:800;color:#4ade80;margin-bottom:8px;font-family:'IBM Plex Mono',monospace;letter-spacing:.3px}
+  .rat-card p{font-size:13px;color:rgba(255,255,255,.75);line-height:1.65}
+
+  /* Add-new features */
+  .add-new{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:14px 16px;margin:12px 0}
+  .add-new .badge{background:#f59e0b;color:#0a0a0a;font-size:10px;font-weight:900;padding:2px 8px;border-radius:4px;display:inline-block;margin-bottom:6px}
+  .add-new h4{font-size:14px;margin-bottom:4px}
+  .add-new p{font-size:13px;color:rgba(255,255,255,.7)}
+
+  /* Sales narrative box */
+  .narrative{background:rgba(4,120,87,.08);border:1px solid rgba(74,222,128,.3);border-radius:10px;padding:14px 18px;margin-top:10px;font-size:14px;font-style:italic;color:rgba(255,255,255,.9)}
+  .narrative b{color:#4ade80;font-style:normal}
+
+  /* Callouts */
+  .critical{background:rgba(220,38,38,.08);border:1px solid rgba(248,113,113,.3);border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13.5px;color:rgba(255,255,255,.9)}
+  .callout{background:rgba(59,130,246,.06);border:1px solid rgba(96,165,250,.3);border-radius:10px;padding:14px 18px;margin:10px 0;font-size:13.5px}
+
+  ul.clean{list-style:none;padding:0}
+  ul.clean li{font-size:13px;padding:5px 0;color:rgba(255,255,255,.8)}
+  ul.clean li::before{content:"→ ";color:#4ade80;font-weight:900}
+
+  .final-note{background:linear-gradient(135deg,#065f46,#047857);border-radius:12px;padding:20px;margin-top:24px;font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>🎯 اقتراح تقسيم المزايا — Sales Manager Proposal</h1>
+  <p>مبني على تحليل ٤ منصات عالمية (HubSpot · Semrush · Wix · Squarespace) — أنماط توزيع الـ tiers، نفسية الترقية، والـ metric-based limits.</p>
+  <span class="research-badge">📚 المصادر: HubSpot Marketing/Content Hub · Semrush · Wix · Squarespace</span>
+</header>
+
+<!-- =============== KEY INSIGHT =============== -->
+<div class="section">
+  <h2>🔑 الأنماط الـ ٣ اللي كل الشركات الكبيرة تستخدمها</h2>
+  <div class="rationale-grid">
+    <div class="rat-card">
+      <h4>A · METRIC LIMITS</h4>
+      <p>ما تحدد الميزات بس — تحدد <b>الأرقام</b>. مثال: Wix 2GB → 50GB → 100GB → Unlimited. Semrush 500 → 500 → 1,500 → 5,000 كلمة مفتاحية. <b>الأسهل والأصح</b> لِلترقية.</p>
+    </div>
+    <div class="rat-card">
+      <h4>B · FEATURE GATES</h4>
+      <p>ميزة كاملة تظهر في Tier ٢+ بس (مثل E-commerce في Wix Core). العميل يشوف "Booking غير متاح في باقتي" → يترقّى.</p>
+    </div>
+    <div class="rat-card">
+      <h4>C · SERVICE LEVEL</h4>
+      <p>مو الميزات نفسها، بل <b>مستوى الخدمة</b>: SLA · مدير حساب مخصص · Priority queue · دعم ٤ ساعات vs ٤٨ ساعة. أهم upsell في Tier ٤.</p>
+    </div>
+    <div class="rat-card">
+      <h4>💡 "Branding Tax" (الترقية الأولى)</h4>
+      <p>HubSpot Free يعرض branding على كل شي → أول شي Starter يشيله. <b>خلي شعار "مدعوم بمدونتي" ظاهر في باقة حضور فقط</b> — أقوى دافع للترقية.</p>
+    </div>
+  </div>
+</div>
+
+<!-- =============== TIER HEADERS =============== -->
+<div class="section">
+  <h2>💰 الباقات الـ ٤ — Sales Narrative</h2>
+  <div class="tiers">
+    <div class="tier-card t1">
+      <h4>حضور</h4>
+      <div class="price">١١٠<small> ر.س/شهر</small></div>
+      <div class="tagline">"ابدأ ظهورك أونلاين"</div>
+    </div>
+    <div class="tier-card t2">
+      <h4>الانطلاقة</h4>
+      <div class="price">٤٩٩<small> ر.س/شهر</small></div>
+      <div class="tagline">"شغّل نموّك"</div>
+    </div>
+    <div class="tier-card t3">
+      <span class="rec-pill">🔥 الأكثر شيوعاً</span>
+      <h4>الزخم</h4>
+      <div class="price">١٢٩٩<small> ر.س/شهر</small></div>
+      <div class="tagline">"أنت الأقوى في مجالك"</div>
+    </div>
+    <div class="tier-card t4">
+      <h4>الريادة</h4>
+      <div class="price">٢٩٩٩<small> ر.س/شهر</small></div>
+      <div class="tagline">"منصّتك الخاصّة"</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>💡 استراتيجية:</strong> الزخم (١٢٩٩) هو <b>"the sweet spot"</b> — نصمّم كل الـ marketing حوله. Squarespace يسمّي هذي الباقة "the right choice for most" — نفس الأسلوب يشتغل هنا.
+  </div>
+</div>
+
+<!-- =============== FULL COMPARISON =============== -->
+<div class="section">
+  <h2>📊 الجدول الكامل — ١٧ ميزة + ٦ metric limits جديدة</h2>
+  <div class="cmp-table">
+    <table>
+      <thead>
+        <tr>
+          <th class="feat">الميزة</th>
+          <th>حضور<br><small style="font-weight:500;color:#94a3b8">١١٠</small></th>
+          <th>الانطلاقة<br><small style="font-weight:500;color:#94a3b8">٤٩٩</small></th>
+          <th class="rec">الزخم 🔥<br><small style="font-weight:500;color:#94a3b8">١٢٩٩</small></th>
+          <th>الريادة<br><small style="font-weight:500;color:#94a3b8">٢٩٩٩</small></th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Cat 1: الأساسيات -->
+        <tr class="cat-row"><td colspan="5">🌐 الأساسيات (بنية النشر)</td></tr>
+        <tr><td class="feat">📄 صفحة عميل عامة (بديل موقع)</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">🌐 نشر على منصة مدونتي</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">📱 سوشال ميديا مدونتي</td><td class="no">—</td><td class="yes">✓</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">🌍 نشر على موقعك الخاص (backlink)</td><td class="no">—</td><td class="no">—</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">🛡️ شارة "موثّق" + بيانات قانونية</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">✨ إزالة branding "مدعوم بمدونتي"</td><td class="no">—</td><td class="yes">✓</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+
+        <!-- Cat 2: المحتوى -->
+        <tr class="cat-row"><td colspan="5">✍️ إنتاج المحتوى</td></tr>
+        <tr><td class="feat">📝 عدد المقالات/شهر</td><td class="num">١</td><td class="num">٤-٥</td><td class="num rec">٨-١٠</td><td class="num">١٦-٢٠</td></tr>
+        <tr><td class="feat">🔍 بحث كلمات مفتاحية</td><td class="yes">أساسي</td><td class="yes">موسّع</td><td class="yes rec">تنافسي</td><td class="yes">إستراتيجي</td></tr>
+        <tr><td class="feat">🎨 تصميم صور احترافية + OG</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">✅ موافقتك قبل نشر كل مقال</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">⚡ Priority Publishing Queue <span style="background:#f59e0b;color:#0a0a0a;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900;margin-inline-start:4px">جديد</span></td><td class="no">—</td><td class="no">—</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+
+        <!-- Cat 3: العملاء -->
+        <tr class="cat-row"><td colspan="5">👥 اكتساب العملاء</td></tr>
+        <tr><td class="feat">📅 نظام حجوزات "احجز الآن"</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">🎯 Leads/شهر <span style="background:#f59e0b;color:#0a0a0a;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900;margin-inline-start:4px">جديد</span></td><td class="num">٢٥</td><td class="num">١٠٠</td><td class="num rec">٥٠٠</td><td class="num">غير محدود</td></tr>
+        <tr><td class="feat">⭐ آراء وتقييمات العملاء</td><td class="yes">قراءة فقط</td><td class="yes">+ رد</td><td class="yes rec">+ رد</td><td class="yes">+ رد</td></tr>
+        <tr><td class="feat">📧 مشتركو النشرة <span style="background:#f59e0b;color:#0a0a0a;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900;margin-inline-start:4px">جديد</span></td><td class="num">٢٠٠</td><td class="num">٥٠٠</td><td class="num rec">٢,٠٠٠</td><td class="num">غير محدود</td></tr>
+
+        <!-- Cat 4: التحليل والتنبيهات -->
+        <tr class="cat-row"><td colspan="5">📈 التحليل والتنبيهات</td></tr>
+        <tr><td class="feat">📊 تقارير مباشرة في اللوحة</td><td class="yes">أساسي</td><td class="yes">كامل</td><td class="yes rec">كامل</td><td class="yes">كامل</td></tr>
+        <tr><td class="feat">🔔 تنبيهات تيليجرام</td><td class="num">٥ من ٢٣</td><td class="num">٢٣ كاملة</td><td class="num rec">٢٣ كاملة</td><td class="num">٢٣ كاملة</td></tr>
+        <tr><td class="feat">🔎 Google Search Console (view-only)</td><td class="no">—</td><td class="no">—</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">📅 تقرير SEO شهري مفصّل <span style="background:#f59e0b;color:#0a0a0a;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900;margin-inline-start:4px">جديد</span></td><td class="no">—</td><td class="no">—</td><td class="yes rec">✓</td><td class="yes">أسبوعي</td></tr>
+
+        <!-- Cat 5: SEO المتقدم -->
+        <tr class="cat-row"><td colspan="5">🚀 SEO + AI متقدم</td></tr>
+        <tr><td class="feat">🤖 SEO أساسي + JSON-LD</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">🎯 AEO (ChatGPT · Perplexity · Gemini) <span style="background:#dc2626;color:#fff;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900;margin-inline-start:4px">مهم</span></td><td class="no">—</td><td class="no">—</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">⚕️ توثيق YMYL (طبي/مالي/قانوني)</td><td class="no">—</td><td class="no">—</td><td class="yes rec">✓</td><td class="yes">✓</td></tr>
+
+        <!-- Cat 6: الخدمة والدعم -->
+        <tr class="cat-row"><td colspan="5">🎧 الخدمة والدعم</td></tr>
+        <tr><td class="feat">⏱️ SLA رد الدعم <span style="background:#f59e0b;color:#0a0a0a;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900;margin-inline-start:4px">جديد</span></td><td class="num">٧٢ ساعة</td><td class="num">٤٨ ساعة</td><td class="num rec">٢٤ ساعة</td><td class="num">٤ ساعات</td></tr>
+        <tr><td class="feat">👤 مدير حساب مخصص</td><td class="no">—</td><td class="no">—</td><td class="no rec">—</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">📞 اتصال واتساب مباشر بالفريق <span style="background:#f59e0b;color:#0a0a0a;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900;margin-inline-start:4px">جديد</span></td><td class="no">—</td><td class="no">—</td><td class="yes rec">✓</td><td class="yes">✓ ٢٤/٧</td></tr>
+        <tr><td class="feat">🎨 صفحة عميل بتصميم مخصص <span style="background:#f59e0b;color:#0a0a0a;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900;margin-inline-start:4px">جديد</span></td><td class="no">—</td><td class="no">—</td><td class="no rec">—</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">🔌 API + Webhooks (integration) <span style="background:#f59e0b;color:#0a0a0a;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900;margin-inline-start:4px">جديد</span></td><td class="no">—</td><td class="no">—</td><td class="no rec">—</td><td class="yes">✓</td></tr>
+        <tr><td class="feat">📅 جلسة استراتيجية مع المؤسس <span style="background:#f59e0b;color:#0a0a0a;font-size:9px;padding:1px 5px;border-radius:3px;font-weight:900;margin-inline-start:4px">جديد</span></td><td class="no">—</td><td class="no">—</td><td class="no rec">—</td><td class="yes">ربع سنوية</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- =============== RATIONALE PER TIER =============== -->
+<div class="section">
+  <h2>🧠 التبرير — لماذا هذا التوزيع؟</h2>
+
+  <h3 style="color:#94a3b8">حضور (١١٠ ر.س) — "The Foot in the Door"</h3>
+  <p><strong>الهدف:</strong> يقبل يجرّب المنصة، يشوف القيمة الأساسية، وينحصر بحدود تدفعه للترقية.</p>
+  <ul class="clean">
+    <li>مقال واحد شهرياً بس — يحس بالحاجة لأكثر</li>
+    <li>Leads محدودة (٢٥) — لو نجح، محتاج ترقية بسرعة</li>
+    <li>شعار "مدعوم بمدونتي" ظاهر — <b>Branding Tax</b> (نفس نمط HubSpot Free)</li>
+    <li>سوشال ميديا مقفلة — أول feature-gate</li>
+  </ul>
+  <div class="narrative">"ابدأ ظهورك على جوجل بـ ١١٠ ريال — <b>صفحة كاملة + مقال شهري + Leads.</b>"</div>
+
+  <h3 style="color:#60a5fa">الانطلاقة (٤٩٩ ر.س) — "The First Real Upgrade"</h3>
+  <p><strong>الهدف:</strong> "خلاص، تجاوزت مرحلة التجربة — أنا شركة حقيقية."</p>
+  <ul class="clean">
+    <li>مقالات تكفي حضور مستمر (٤-٥/شهر)</li>
+    <li>إزالة branding مدونتي — <b>الجائزة الأولى</b> للترقية</li>
+    <li>سوشال ميديا مدونتي مفعّلة — قناة توزيع إضافية</li>
+    <li>Leads تكفي عمليات صغيرة (١٠٠/شهر)</li>
+    <li>٢٣ تنبيه تيليجرام كاملة (كان ٥ في حضور)</li>
+  </ul>
+  <div class="narrative">"شغّل نموّك — <b>مقالات + ليدز + نشرة، بلا علامة مدونتي.</b>"</div>
+
+  <h3 style="color:#4ade80">🔥 الزخم (١٢٩٩ ر.س) — "THE SWEET SPOT (الأكثر مبيعاً)"</h3>
+  <p><strong>الهدف:</strong> الباقة اللي نصمّم الـ marketing حولها. أعلى ARPU + أقل churn.</p>
+  <ul class="clean">
+    <li><b>AEO (ChatGPT/Perplexity/Gemini)</b> — أهم upsell trigger في ٢٠٢٦</li>
+    <li>Google Search Console access — العميل يشوف الأرقام من مصدرها</li>
+    <li>YMYL certification — للقطاعات الحساسة</li>
+    <li>نشر على موقع العميل (backlink) — مضاعف SEO</li>
+    <li>Leads ٥٠٠/شهر · Newsletter ٢,٠٠٠ — يكفي شركة نامية</li>
+    <li>Priority publishing queue — النشر أسرع (نفس Wix Priority)</li>
+    <li>WhatsApp مباشر للفريق — تجربة عربية-سعودية</li>
+    <li>SLA ٢٤ ساعة</li>
+  </ul>
+  <div class="narrative">"أنت الأقوى في مجالك — <b>AEO + YMYL + backlink لموقعك + Priority.</b>"</div>
+
+  <h3 style="color:#a855f7">الريادة (٢٩٩٩ ر.س) — "Enterprise / Platform Buyer"</h3>
+  <p><strong>الهدف:</strong> الشركة الكبيرة اللي تبي علاقة، مو مجرد أداة.</p>
+  <ul class="clean">
+    <li>مدير حساب مخصص — <b>العلاقة الشخصية</b> (السعودي يقدّرها)</li>
+    <li>API + Webhooks — للتكامل مع CRM/ERP (Enterprise justification)</li>
+    <li>صفحة بتصميم مخصص — مو من template</li>
+    <li>مقالات ١٦-٢٠/شهر (٢-٣x من الزخم)</li>
+    <li>SLA ٤ ساعات + واتساب ٢٤/٧</li>
+    <li>Unlimited Leads + Newsletter</li>
+    <li>جلسة استراتيجية ربع سنوية مع Khalid — <b>المؤسس نفسه</b></li>
+  </ul>
+  <div class="narrative">"منصّتك الخاصّة — <b>استراتيجي مخصّص + API + رد خلال ٤ ساعات + جلسة معي كل ربع.</b>"</div>
+</div>
+
+<!-- =============== NEW FEATURES ADDED =============== -->
+<div class="section">
+  <h2>🆕 المزايا الجديدة اللي أقترح إضافتها</h2>
+  <p>الـ ١٧ ميزة الحالية ممتازة، بس تحتاج <b>٧ إضافات</b> لتقوية التمييز بين الباقات (مبنية على أنماط HubSpot/Semrush/Wix):</p>
+
+  <div class="add-new">
+    <span class="badge">جديد #1</span>
+    <h4>Priority Publishing Queue (الزخم+)</h4>
+    <p>مقالات الباقات العليا تُنشر بسرعة أكبر (نفس أسبوع vs الأسبوع التالي). نفس Wix Priority.</p>
+  </div>
+
+  <div class="add-new">
+    <span class="badge">جديد #2</span>
+    <h4>Metric-Based Leads Cap (٢٥ · ١٠٠ · ٥٠٠ · Unlimited)</h4>
+    <p>عدد الـ leads اللي يجمعها العميل شهرياً. الترقية = حاجة فعلية لعميل نجح.</p>
+  </div>
+
+  <div class="add-new">
+    <span class="badge">جديد #3</span>
+    <h4>Newsletter Subscribers Cap (٢٠٠ · ٥٠٠ · ٢,٠٠٠ · Unlimited)</h4>
+    <p>حد أعلى لعدد المشتركين في نشرة العميل — نفس نمط MailChimp/HubSpot.</p>
+  </div>
+
+  <div class="add-new">
+    <span class="badge">جديد #4</span>
+    <h4>Response SLA (٧٢h · ٤٨h · ٢٤h · ٤h)</h4>
+    <p>وقت رد الدعم. أقوى upsell للـ enterprise (نفس نمط HubSpot Enterprise).</p>
+  </div>
+
+  <div class="add-new">
+    <span class="badge">جديد #5</span>
+    <h4>WhatsApp مباشر للفريق (الزخم+)</h4>
+    <p>خط واتساب مباشر بدل تذاكر الدعم — يناسب السوق السعودي (العلاقة الشخصية أهم من dashboards).</p>
+  </div>
+
+  <div class="add-new">
+    <span class="badge">جديد #6</span>
+    <h4>صفحة بتصميم مخصص (الريادة فقط)</h4>
+    <p>بدل template ثابت، تصميم مخصص للعميل — يبرر الـ enterprise price (نفس Wix Business Elite Dev Tools).</p>
+  </div>
+
+  <div class="add-new">
+    <span class="badge">جديد #7</span>
+    <h4>API + Webhooks (الريادة فقط)</h4>
+    <p>تكامل مع CRM/ERP للشركات الكبيرة. أقوى Enterprise gate (نفس HubSpot Enterprise API).</p>
+  </div>
+
+  <div class="add-new">
+    <span class="badge">جديد #8</span>
+    <h4>جلسة استراتيجية ربع سنوية مع Khalid (الريادة فقط)</h4>
+    <p>لقاء مع المؤسس ٤ مرات/سنة. الـ enterprise يبي علاقة مع "الرأس" — مو موظف.</p>
+  </div>
+</div>
+
+<!-- =============== CRITICAL INSIGHTS =============== -->
+<div class="section">
+  <h2>⚡ ملاحظات حرجة</h2>
+
+  <div class="critical">
+    <strong>🎯 موطن مدونتي التنافسي غير موجود في أي منصة درستها:</strong>
+    <p style="margin-top:8px">"محتوى بشري ١٠٠٪، AI للبحث فقط" — HubSpot و Wix و Squarespace كلها الآن تدفع AI-generated content. Modonty لوحدها تفصل. <b>هذا مو مجرد ميزة — هذي هوية.</b> ضعه في كل باقة كتوضيح، ليس ميزة قابلة للترقية.</p>
+  </div>
+
+  <div class="callout">
+    <strong>💡 نصيحة نفسية:</strong> صمّم الـ Landing حول <b>الزخم (١٢٩٩)</b>. اجعل حضور يبدو "لِلمجرّبين فقط"، والانطلاقة "تشتغل بس ما تنمو بسرعة"، والريادة "للشركات الكبيرة". النتيجة: أغلب المبيعات على الزخم = أعلى ARPU.
+  </div>
+
+  <div class="callout">
+    <strong>🔒 Branding Tax:</strong> حضور تعرض "مدعوم بمدونتي" في صفحة العميل. الانطلاقة+ تشيلها. <b>هذا أقوى دافع للترقية</b> (HubSpot Free اعتمد على هذا بس طول عمره — نجح).
+  </div>
+
+  <div class="critical">
+    <strong>⚠️ قبل الاعتماد النهائي — تحقّق:</strong>
+    <p style="margin-top:8px">١. Priority Queue: <b>تقدر تنفّذها فعلاً</b> في نظام النشر؟<br>
+    ٢. WhatsApp مباشر: مين يرد؟ Khalid ولا فريق خاص؟<br>
+    ٣. API + Webhooks: <b>موجودة</b> ولا محتاجة بناء؟<br>
+    ٤. SLA ٤ ساعات: تقدر تلتزم فيها ٢٤/٧؟</p>
+  </div>
+</div>
+
+<div class="final-note">
+  <strong>💰 المتوقع من هذا التوزيع:</strong>
+  <ul style="margin-top:10px;padding-inline-start:20px">
+    <li>عملاء حضور (١١٠) → ٤٠٪ يترقّون خلال ٣ شهور بسبب Branding + Leads Cap</li>
+    <li>عملاء الانطلاقة (٤٩٩) → ٢٥٪ يترقّون للزخم بسبب AEO/YMYL/GSC</li>
+    <li>الزخم (١٢٩٩) = الباقة الأعلى مبيعاً (٥٠-٦٠٪ من إجمالي الاشتراكات)</li>
+    <li>الريادة (٢٩٩٩) = ١٠-١٥٪ لكن أعلى ARPU (يعوّض الباقي)</li>
+  </ul>
+  <p style="margin-top:14px;font-size:15px"><strong>راجع الاقتراح — لو موافقك، أطبقه على DB (comparison rows) + أعدّل features/page.tsx.</strong></p>
+</div>
+
+</div>
+</body>
+</html>

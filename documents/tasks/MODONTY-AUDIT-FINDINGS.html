@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>دراسة مدونتي — النتائج + الهوكات القوية</title>
+<style>
+  :root {
+    --bg: #0b0f1a;
+    --panel: #131a2b;
+    --panel-2: #1a2340;
+    --border: #2a3557;
+    --ink: #eef2ff;
+    --ink-2: #b8c1e0;
+    --muted: #8a95bd;
+    --brand: #ffb84a;
+    --brand-2: #ff8a3d;
+    --ok: #4ade80;
+    --hot: #ff5470;
+    --warm: #ffa940;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", "Tahoma", system-ui, sans-serif;
+    background: linear-gradient(180deg, #0b0f1a 0%, #101529 100%);
+    color: var(--ink);
+    line-height: 1.75;
+    padding: 32px 20px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+  header {
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(255,184,74,0.08), rgba(255,138,61,0.04));
+    border-radius: 20px;
+    padding: 32px 28px;
+    margin-bottom: 28px;
+  }
+  h1 {
+    font-size: clamp(24px, 4vw, 34px);
+    margin: 0 0 12px;
+    background: linear-gradient(90deg, var(--brand), var(--brand-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .sub { color: var(--ink-2); font-size: 16px; margin: 0; }
+  .meta { color: var(--muted); font-size: 13px; margin-top: 12px; }
+  section {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 26px;
+    margin-bottom: 22px;
+  }
+  h2 {
+    font-size: 22px;
+    margin: 0 0 8px;
+    color: var(--brand);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  h2 .num {
+    background: linear-gradient(135deg, var(--brand), var(--brand-2));
+    color: #1a0f00;
+    width: 34px; height: 34px;
+    border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 16px;
+  }
+  h3 {
+    font-size: 17px;
+    color: var(--ink);
+    margin: 22px 0 10px;
+    padding-inline-start: 12px;
+    border-inline-start: 4px solid var(--brand);
+  }
+  p { color: var(--ink-2); margin: 8px 0 14px; }
+  .lead { color: var(--ink); font-size: 15.5px; margin-bottom: 18px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+    margin: 14px 0;
+  }
+  .card {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .card .k { color: var(--brand); font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .card .v { color: var(--ink-2); font-size: 13.5px; line-height: 1.65; }
+  ul { padding-inline-start: 22px; margin: 8px 0 16px; color: var(--ink-2); }
+  li { margin-bottom: 6px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0 18px;
+    font-size: 13.5px;
+  }
+  th, td {
+    padding: 10px 12px;
+    text-align: start;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  th {
+    color: var(--brand);
+    background: var(--panel-2);
+    font-weight: 700;
+    font-size: 13px;
+  }
+  td { color: var(--ink-2); }
+  .table-wrap { overflow-x: auto; }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    background: rgba(255,184,74,0.15);
+    color: var(--brand);
+    border: 1px solid rgba(255,184,74,0.35);
+  }
+  .badge.hot { background: rgba(255,84,112,0.15); color: var(--hot); border-color: rgba(255,84,112,0.35); }
+  .badge.ok { background: rgba(74,222,128,0.15); color: var(--ok); border-color: rgba(74,222,128,0.35); }
+  .badge.warm { background: rgba(255,169,64,0.15); color: var(--warm); border-color: rgba(255,169,64,0.35); }
+  .hook {
+    background: linear-gradient(135deg, rgba(255,184,74,0.10), rgba(255,138,61,0.05));
+    border: 1px solid rgba(255,184,74,0.28);
+    border-radius: 16px;
+    padding: 18px;
+    margin: 12px 0;
+  }
+  .hook .headline {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--brand);
+    margin: 0 0 8px;
+  }
+  .hook .why { color: var(--ink-2); font-size: 13.5px; margin: 0 0 8px; }
+  .hook .where {
+    font-size: 12px;
+    color: var(--muted);
+    padding-top: 8px;
+    border-top: 1px dashed rgba(255,255,255,0.08);
+    margin-top: 8px;
+  }
+  code {
+    background: var(--panel-2);
+    color: var(--brand);
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-family: "Consolas", ui-monospace, monospace;
+    font-size: 12.5px;
+    direction: ltr;
+    display: inline-block;
+  }
+  .path { color: var(--muted); font-size: 11.5px; direction: ltr; text-align: start; font-family: ui-monospace, monospace; }
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 14px 0 20px;
+  }
+  .kpi {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+  }
+  .kpi .n {
+    font-size: 26px;
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--brand), var(--brand-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .kpi .l { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+  .callout {
+    background: rgba(255,84,112,0.08);
+    border: 1px solid rgba(255,84,112,0.28);
+    border-radius: 14px;
+    padding: 16px;
+    margin: 14px 0;
+  }
+  .callout strong { color: var(--hot); }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12.5px;
+    padding: 20px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>دراسة كاملة لمدونتي — النتائج، الفوائد لـ JBRSEO، والهوكات القوية</h1>
+  <p class="sub">مراجعة شاملة للـ schema والـ code والـ dashboard — لتظهر القيمة الحقيقية اللي يستلمها المشترك.</p>
+  <p class="meta">التاريخ: ٢٠٢٦-٠٧-١٠ · المصدر: <code>MODONTY/</code> (٣ تطبيقات + Prisma schema بـ ٣٠٦٣ سطر) · الفحص: مباشر من الكود</p>
+</header>
+
+<div class="kpi-strip">
+  <div class="kpi"><div class="n">٢٠</div><div class="l">موديول في لوحة تحكم العميل</div></div>
+  <div class="kpi"><div class="n">٢٧</div><div class="l">حدث GA4 يتم تتبعه تلقائياً</div></div>
+  <div class="kpi"><div class="n">٢٣</div><div class="l">تنبيه تلجرام قابل للتفعيل</div></div>
+  <div class="kpi"><div class="n">٢٨</div><div class="l">فحص جودة قبل النشر</div></div>
+  <div class="kpi"><div class="n">٩</div><div class="l">قوالب إيميل احترافية</div></div>
+  <div class="kpi"><div class="n">١٦+</div><div class="l">تكامل خارجي</div></div>
+</div>
+
+<!-- ================ SECTION 1 ================ -->
+<section>
+  <h2><span class="num">١</span>ايش لقيت — الصورة الكاملة</h2>
+  <p class="lead">مدونتي مو "منصة كتابة مقالات". هي منظومة كاملة: صفحة عامة للعميل + لوحة تحكم بمستوى مؤسسي + تحليلات لحظية + نظام Leads scoring + تنبيهات فورية + شبكة تعرّض داخلية. القيمة اللي يستلمها العميل أضعاف اللي يفهمه من الـ copy الحالي على JBRSEO.</p>
+
+  <h3>أ. صفحة عامة كاملة للعميل — modonty.com/clients/{slug}</h3>
+  <div class="grid">
+    <div class="card"><div class="k">هيرو كامل</div><div class="v">غلاف + شعار + اسم + مدينة + شارة موثّق + بطاقة تأثير Google</div></div>
+    <div class="card"><div class="k">شريط إحصائيات حي</div><div class="v">متابعون · مقالات · مشاهدات · تقييم · عدد المراجعات</div></div>
+    <div class="card"><div class="k">Services + Achievements</div><div class="v">خدمات بأيقونات + إنجازات موثّقة → JSON-LD OfferCatalog</div></div>
+    <div class="card"><div class="k">تقييمات نجوم</div><div class="v">١-٥ نجوم + نص · وحدة لكل زائر · AggregateRating</div></div>
+    <div class="card"><div class="k">فريق العمل</div><div class="v">أعضاء بصور وسيرة → employee: Person[] في Schema.org</div></div>
+    <div class="card"><div class="k">فيديو تعريفي</div><div class="v">YouTube أو Cloudinary → VideoObject JSON-LD</div></div>
+    <div class="card"><div class="k">معرض أعمال + FAQ</div><div class="v">صور بـ alt (Google Images) + أسئلة → FAQPage JSON-LD</div></div>
+    <div class="card"><div class="k">Location + ساعات دوام</div><div class="v">خريطة + رابط GBP + PlaceId + شارة «مفتوح الآن» لحظياً</div></div>
+    <div class="card"><div class="k">3 أوضاع للـ CTA</div><div class="v">NONE / FORM (dialog حجز) / LINK (wa.me أو https أو tel:)</div></div>
+    <div class="card"><div class="k">شريط سفلي ثابت</div><div class="v">Book · Follow · Favorite · Share (٦ منصات) · Subscribe</div></div>
+    <div class="card"><div class="k">فقاعة واتساب</div><div class="v">FAB عائم يفتح wa.me برقم العميل</div></div>
+    <div class="card"><div class="k">٩ صفحات فرعية</div><div class="v">about · contact · photos · followers · reviews · reels · likes · mentions · book</div></div>
+  </div>
+
+  <h3>ب. لوحة تحكم — ٢٠ موديول (console.modonty.com)</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>الموديول</th><th>ماذا يعمل</th><th>القيمة الظاهرة للعميل</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Home</strong></td><td>KPIs · trends · action items · top articles · traffic sources · 7-day chart</td><td>مشهد شامل بضغطة واحدة</td></tr>
+      <tr><td><strong>Analytics</strong></td><td>GA4 realtime + deep-dive + audience + behavior + timing + CWV + campaigns + insights</td><td>يشوف زوّاره الآن + من وين + على وين ينقر</td></tr>
+      <tr><td><strong>Articles queue</strong></td><td>Workflow: WRITING → DRAFT → AWAITING_APPROVAL → PUBLISHED (أو NEEDS_REVISION)</td><td>يوافق أو يطلب تعديل بضغطة</td></tr>
+      <tr><td><strong>Content quota</strong></td><td>«نُشِر X من Y مقال — متبقّي Z» + تاريخ التجديد</td><td>يعرف بالضبط ايش استلم من باقته</td></tr>
+      <tr><td><strong>SEO (٣ تبويبات)</strong></td><td>Intake dynamic · Competitors · Keywords + intent + priority</td><td>يوجّه المحتوى لكلماته المستهدفة</td></tr>
+      <tr><td><strong>Site Health</strong></td><td>SSL · headers · DNS · robots · sitemap · meta · schema · CWV · PageSpeed</td><td>درجة A+ → F لموقعه الخاص لحظياً</td></tr>
+      <tr><td><strong>Media Library</strong></td><td>Cloudinary + alt · caption · credit · license · EXIF · geo</td><td>مكتبة صور احترافية جاهزة للسيو</td></tr>
+      <tr><td><strong>Gallery</strong></td><td>معرض بـ alt إلزامي لكل صورة</td><td>فهرسة في Google Images تلقائياً</td></tr>
+      <tr><td><strong>Page Content</strong></td><td>تحرير خدمات + فريق + إنجازات + اعتمادات + فيديو</td><td>يعدّل صفحته العامة بنفسه</td></tr>
+      <tr><td><strong>Page FAQ + Article FAQs</strong></td><td>أسئلة الزوار → موافقة → FAQPage JSON-LD</td><td>Featured Snippets في Google</td></tr>
+      <tr><td><strong>Client Comments</strong></td><td>Moderation للتعليقات على صفحته + ردود متداخلة</td><td>يتحكّم في نبرة صفحته</td></tr>
+      <tr><td><strong>Reviews</strong></td><td>KPIs + Moderation + AggregateRating JSON-LD</td><td>نجوم في نتائج Google</td></tr>
+      <tr><td><strong>Article Comments</strong></td><td>PENDING → APPROVED / REJECTED + nested replies</td><td>تفاعل موثوق مع القرّاء</td></tr>
+      <tr><td><strong>Leads</strong> <span class="badge hot">مفاجأة</span></td><td>Score 0-100 (view + time + interaction + conversion) · HOT/WARM/COLD/QUALIFIED</td><td>يعرف مين قريب يشتري قبل ما يتصل</td></tr>
+      <tr><td><strong>Bookings</strong></td><td>Pipeline (new → contacted → done → archived) + مصدر الحجز</td><td>CRM مصغّر مدمج</td></tr>
+      <tr><td><strong>Questions</strong></td><td>Q&amp;A من الزوّار مباشرة → ينشر كـ FAQ</td><td>محتوى جديد بدون كتابة</td></tr>
+      <tr><td><strong>Subscribers</strong></td><td>قائمة + GDPR consent + churn%</td><td>قاعدة عملاء محمية قانونياً</td></tr>
+      <tr><td><strong>Support</strong></td><td>Inbox + reply + statuses</td><td>خدمة عملاء بدون أدوات خارجية</td></tr>
+      <tr><td><strong>Campaigns</strong></td><td>OWN / INDUSTRY / FULL reach — يستهدف مشتركي مدونتي كلها</td><td>Reach هائل بدون ميديا مدفوعة</td></tr>
+      <tr><td><strong>Settings + Profile</strong></td><td>Subscription · Telegram pairing · notification prefs · Profile Completeness gauge · YMYL</td><td>تحكم كامل بحسابه</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>ج. تجربة المقال — مو نص عادي</h3>
+  <div class="grid">
+    <div class="card"><div class="k">نسخة صوتية</div><div class="v"><code>audioUrl</code> + مشغّل HTML5 داخل المقال</div></div>
+    <div class="card"><div class="k">TL;DR تلقائي</div><div class="v">أهم النقاط من H2 headings</div></div>
+    <div class="card"><div class="k">فهرس محتوى</div><div class="v">TOC قابل للطي + reading progress bar</div></div>
+    <div class="card"><div class="k">Citations</div><div class="v">مصادر خارجية موثّقة → isBasedOn JSON-LD</div></div>
+    <div class="card"><div class="k">Author bio E-E-A-T</div><div class="v">بيو الكاتب + مؤهلاته</div></div>
+    <div class="card"><div class="k">Related من ٤ مصادر</div><div class="v">مقال · عميل · كاتب · تصنيف</div></div>
+    <div class="card"><div class="k">Ask-Client dialog</div><div class="v">سؤال من الزائر → صندوق العميل</div></div>
+    <div class="card"><div class="k">Book-from-article</div><div class="v">حجز مباشر من داخل المقال</div></div>
+    <div class="card"><div class="k">Versions history</div><div class="v">Snapshot لكل تعديل — رجوع بضغطة</div></div>
+    <div class="card"><div class="k">Slug OTP</div><div class="v">2FA لتغيير الـ slug — يحمي backlinks</div></div>
+  </div>
+
+  <h3>د. الجودة والامتثال</h3>
+  <ul>
+    <li><strong>٢٨ فحص pre-publish:</strong> content / seo / media / structured-data / eeat — Blocking + Warnings + Suggestions</li>
+    <li><strong>Auto-fix engine:</strong> إصلاح تلقائي للثغرات الشائعة قبل النشر</li>
+    <li><strong>YMYL system:</strong> طبي/قانوني/مالي + Licensing Authority + disclaimer موقّع بإصدار</li>
+    <li><strong>Entity disambiguation:</strong> Wikidata IDs للكلمات الدلالية</li>
+    <li><strong>JSON-LD validator:</strong> Adobe validator + AJV + قواعد مخصّصة</li>
+    <li><strong>GSC + IndexNow:</strong> طلب فهرسة تلقائي على Google و Bing</li>
+    <li><strong>Auto social posts:</strong> نشر تلقائي على FB · Instagram · Twitter</li>
+  </ul>
+
+  <h3>هـ. شبكة التعرّض داخل modonty.com</h3>
+  <p>العميل ما يشتري صفحة معزولة — يدخل شبكة كاملة:</p>
+  <ul>
+    <li>Homepage feed + Trending page + Categories + Tags + Industries + Authors</li>
+    <li>Partners strip مع فلترة بالقطاع (shortcut للـ isFeatured)</li>
+    <li>Trust page عام (يبني ثقة القارئ في كل الشبكة)</li>
+    <li>Reels feed (TikTok-style) — ميزة جاهزة</li>
+    <li>Public analytics page — يثبت أن الترافيك حقيقي</li>
+    <li>Backlinks من نطاق موثوق (<code>modonty.com</code>) لكل عميل</li>
+    <li>Chatbot RAG (Cohere + Serper web fallback)</li>
+  </ul>
+</section>
+
+<!-- ================ SECTION 2 ================ -->
+<section>
+  <h2><span class="num">٢</span>ايش نستفيد منه في JBRSEO</h2>
+  <p class="lead">الكوبي الحالي على JBRSEO يبيع "كتابة سيو + نشر". القيمة الحقيقية اللي يستلمها العميل ٥ أضعاف. المكسب: تحويل أعلى، سعر أرفع، احتفاظ أطول.</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>ما اللي في مدونتي</th><th>كيف نستفيد منه في JBRSEO</th><th>الأثر التسويقي</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Leads scoring HOT/WARM/COLD</strong></td>
+        <td>نضيف section جديد: «تعرف على عميلك المحتمل قبل ما يتصل»</td>
+        <td><span class="badge hot">قوي جداً</span> — يحوّل السيو من "ترافيك" إلى "عملاء جاهزين"</td>
+      </tr>
+      <tr>
+        <td><strong>GA4 realtime + deep-dive</strong></td>
+        <td>screenshot من الـ console داخل صفحة features</td>
+        <td><span class="badge hot">دليل بصري</span> — لا كلام مجرد</td>
+      </tr>
+      <tr>
+        <td><strong>Site Health A+→F</strong></td>
+        <td>«نراقب صحة موقعك ٢٤/٧» — تصنيف يومي</td>
+        <td><span class="badge ok">مبرّر لسعر أعلى</span></td>
+      </tr>
+      <tr>
+        <td><strong>٢٣ تنبيه تلجرام</strong></td>
+        <td>«نبّهك على تلجرام لحظة يتفاعل زائر مع محتواك»</td>
+        <td><span class="badge warm">ميزة نادرة</span> — منافسينا ما يقدّمونها</td>
+      </tr>
+      <tr>
+        <td><strong>Bookings + Questions + Support</strong></td>
+        <td>«CRM مصغّر مدمج — استقبل الحجوزات والأسئلة مباشرة»</td>
+        <td><span class="badge ok">يوفّر على العميل ٢٠٠+ ريال شهرياً</span> بدون CRM خارجي</td>
+      </tr>
+      <tr>
+        <td><strong>٢٨ فحص جودة + Adobe validator</strong></td>
+        <td>«كل مقال يمرّ على ٢٨ فحص جودة قبل النشر»</td>
+        <td><span class="badge ok">ثقة</span> — دليل الاحترافية</td>
+      </tr>
+      <tr>
+        <td><strong>YMYL + Licensing Authority</strong></td>
+        <td>section مخصّصة للعيادات والمحامين والمكاتب المالية</td>
+        <td><span class="badge hot">قطاع منفصل عالي القيمة</span></td>
+      </tr>
+      <tr>
+        <td><strong>Reviews مع AggregateRating JSON-LD</strong></td>
+        <td>«نجومك تظهر في نتائج Google مباشرة»</td>
+        <td><span class="badge ok">CTR أعلى في SERPs</span></td>
+      </tr>
+      <tr>
+        <td><strong>Auto social posts (FB · IG · Twitter)</strong></td>
+        <td>«ننشر لك على السوشيال تلقائياً — بدون تدخّل منك»</td>
+        <td><span class="badge warm">توسيع القيمة</span> — سيو + سوشيال</td>
+      </tr>
+      <tr>
+        <td><strong>Network exposure داخل modonty.com</strong></td>
+        <td>«محتواك يعرض على شبكتنا — Homepage · Trending · Partners»</td>
+        <td><span class="badge ok">Reach إضافي</span> بدون تكلفة</td>
+      </tr>
+      <tr>
+        <td><strong>٩ صفحات فرعية للعميل</strong></td>
+        <td>«موقع كامل (مو صفحة) — عن · تواصل · صور · فيديو · حجز»</td>
+        <td><span class="badge hot">يبرّر الاشتراك</span> حتى لو ما نشر أي مقال</td>
+      </tr>
+      <tr>
+        <td><strong>Public analytics page + Trust page</strong></td>
+        <td>روابط شفافية في footer JBRSEO: «شوف ترافيك شبكتنا الحقيقي»</td>
+        <td><span class="badge ok">مصداقية عالية</span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ================ SECTION 3 ================ -->
+<section>
+  <h2><span class="num">٣</span>هوكات قوية جاهزة للإضافة</h2>
+  <p class="lead">١٠ hooks جاهزة نضيفها للـ landing — كل واحد مبني على ميزة موجودة فعلياً في الكود.</p>
+
+  <div class="hook">
+    <p class="headline">١. «نعرف مين قريب يشتري — قبل ما يتصل»</p>
+    <p class="why">Leads scoring 0-100 + تصنيف HOT/WARM/COLD/QUALIFIED. يخلي السيو مو مجرد "ترافيك".</p>
+    <p class="where">الوضع في: hero.proof · outcomes · features new card · pricing.value</p>
+  </div>
+
+  <div class="hook">
+    <p class="headline">٢. «شوف زوّارك اللحظة دي — realtime على لوحة تحكمك»</p>
+    <p class="why">GA4 realtime داخل console + 30-min event stream. Screenshot من الكونسول = دليل بصري قاطع.</p>
+    <p class="where">الوضع في: features gallery · trust section · outcomes</p>
+  </div>
+
+  <div class="hook">
+    <p class="headline">٣. «موقعك ينفحص كل يوم — درجة A+ → F»</p>
+    <p class="why">Site Health module يفحص SSL + headers + DNS + robots + sitemap + meta + schema + CWV + PageSpeed لحظياً.</p>
+    <p class="where">الوضع في: outcomes.items · features card</p>
+  </div>
+
+  <div class="hook">
+    <p class="headline">٤. «ينبّهك تلجرام لحظة يتفاعل زائر — ٢٣ نوع تنبيه»</p>
+    <p class="why">يقربك من عملائك بدون فتح الجوال. Pairing بكود ٦ خانات، مدة ١٠ دقائق. ميزة نادرة في السوق.</p>
+    <p class="where">الوضع في: features new section (بديل عن whyNow القديم)</p>
+  </div>
+
+  <div class="hook">
+    <p class="headline">٥. «CRM مصغّر مدمج — استقبل حجوزات + أسئلة + رسائل بدون أدوات خارجية»</p>
+    <p class="why">Bookings pipeline + Questions Q&amp;A + Support inbox. يوفّر ٢٠٠+ ريال شهرياً على أدوات منفصلة.</p>
+    <p class="where">الوضع في: pricing.valueBundle · features.categoryLeads</p>
+  </div>
+
+  <div class="hook">
+    <p class="headline">٦. «كل مقال يمرّ على ٢٨ فحص جودة قبل ما يوصلك»</p>
+    <p class="why">Pre-publish audit مع blocking/warnings/suggestions + Auto-fix engine + Content quality scorer + Adobe validator.</p>
+    <p class="where">الوضع في: qualityBar new section · howItWorks step 3</p>
+  </div>
+
+  <div class="hook">
+    <p class="headline">٧. «نجوم عملائك تظهر في Google — AggregateRating موصول تلقائياً»</p>
+    <p class="why">Reviews module مع 1-5 نجوم + AggregateRating JSON-LD → CTR أعلى في نتائج البحث.</p>
+    <p class="where">الوضع في: outcomes · features.categorySeo</p>
+  </div>
+
+  <div class="hook">
+    <p class="headline">٨. «موقع كامل داخل مدونتي — عن · تواصل · صور · فيديو · حجز»</p>
+    <p class="why">٩ صفحات فرعية لكل عميل + hero + services + gallery + team + reviews + FAQ + JSON-LD كامل. مو مجرد "صفحة سيو".</p>
+    <p class="where">الوضع في: features.categorySite · pricing.valueBundle · hero.proof</p>
+  </div>
+
+  <div class="hook">
+    <p class="headline">٩. «للعيادات والمحامين والاستشاريين — نظام YMYL معتمد»</p>
+    <p class="why">YMYL system + Licensing Authority per country + Content responsibility disclaimer موقّع بإصدار. E-E-A-T كامل.</p>
+    <p class="where">الوضع في: قسم/صفحة مخصّصة للـ YMYL — قطاع منفصل عالي السعر</p>
+  </div>
+
+  <div class="hook">
+    <p class="headline">١٠. «محتواك يعرض على شبكة modonty.com — Homepage · Trending · Partners»</p>
+    <p class="why">Network effects حقيقية: Backlinks من نطاق موثوق + تعرّض على homepage feed + trending + partners strip + reels.</p>
+    <p class="where">الوضع في: outcomes · features.categoryNetwork (جديد)</p>
+  </div>
+
+  <div class="callout">
+    <strong>ملاحظة مهمة:</strong> كل هوك مبني على كود موجود فعلياً — لا وعود مبالغ فيها. مسارات الكود موثّقة في تقرير الـ audit الكامل في <code>documents/context/SEO-OVERHAUL-LOG.md</code> (سأضيف قسم جديد هناك).
+  </div>
+</section>
+
+<!-- ================ SECTION 4 — Next steps ================ -->
+<section>
+  <h2><span class="num">٤</span>الخطوة الجاية</h2>
+  <p class="lead">توافق على أي هوكات؟ أنا مستعد أفتح الـ DB، أعرض BEFORE (النص الحالي) → AFTER (الاقتراح) لكل section، تراجعها وحدة وحدة، ثم أنفّذ التحديث بأمان.</p>
+  <ul>
+    <li><strong>خيار أ:</strong> نبدأ بـ <code>howItWorks</code> — إعادة صياغة الخطوات الثلاث حول القيمة الحقيقية</li>
+    <li><strong>خيار ب:</strong> نبدأ بـ <code>outcomes</code> — إضافة نتائج ملموسة (Leads scoring, Site Health, GA4 realtime)</li>
+    <li><strong>خيار ج:</strong> نبدأ بـ <code>features</code> page — إضافة الـ ٨ مزايا المفقودة كـ cards</li>
+    <li><strong>خيار د:</strong> Plan.highlights — كل باقة توضح مزاياها الفعلية (مو مجرد عدد مقالات)</li>
+    <li><strong>خيار هـ:</strong> قسم جديد كلياً في الـ landing لـ YMYL (قطاع منفصل)</li>
+  </ul>
+</section>
+
+<footer>
+  ملف مرجعي — أنشئ في ٢٠٢٦-٠٧-١٠ · JBRSEO SEO Overhaul · Modonty Feature Audit
+</footer>
+
+</div>
+</body>
+</html>

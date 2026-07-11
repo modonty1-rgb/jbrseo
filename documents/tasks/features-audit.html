@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Audit — /features (JBRSEO) vs Modonty + Console</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#f8fafc;color:#0f172a;font-family:"Segoe UI","Tahoma","Noto Sans Arabic",sans-serif;line-height:1.7}
+  a{color:#059669}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 80px}
+  header.hero{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;border-radius:16px;padding:28px 24px;margin-bottom:20px}
+  header.hero h1{font-size:26px;font-weight:800;margin-bottom:8px}
+  header.hero p{font-size:14px;opacity:.9;max-width:820px}
+  .stats{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+  .stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;flex:1;min-width:150px}
+  .stat b{display:block;font-size:22px;font-weight:800;margin-bottom:2px}
+  .stat b.warn{color:#fbbf24}
+  .stat b.bad{color:#f87171}
+  .stat b.good{color:#4ade80}
+
+  .section{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.03)}
+  .section h2{font-size:18px;font-weight:800;margin-bottom:14px;color:#0f172a;border-inline-start:4px solid #059669;padding-inline-start:12px}
+  .section h3{font-size:15px;font-weight:800;margin:16px 0 8px}
+  .section p{font-size:14px;color:#334155;margin-bottom:10px}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}}
+
+  .card{border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;font-size:13.5px;background:#fff}
+  .card.ok{border-color:#86efac;background:#f0fdf4}
+  .card.warn{border-color:#fcd34d;background:#fffbeb}
+  .card.bad{border-color:#fca5a5;background:#fef2f2}
+  .card.rec{border-color:#93c5fd;background:#eff6ff}
+  .card b{font-weight:800;display:block;margin-bottom:4px}
+  .card small{color:#64748b;font-size:11.5px}
+
+  .tag{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10.5px;font-weight:800;letter-spacing:.3px;margin-inline-end:4px}
+  .tag.ok{background:#dcfce7;color:#166534}
+  .tag.warn{background:#fef3c7;color:#92400e}
+  .tag.bad{background:#fee2e2;color:#991b1b}
+  .tag.rec{background:#dbeafe;color:#1e40af}
+  .tag.count{background:#f1f5f9;color:#0f172a}
+
+  .curr-map{background:#0f172a;color:#e2e8f0;border-radius:12px;padding:20px;font-family:"IBM Plex Mono","Consolas",monospace;font-size:12.5px;line-height:1.9;overflow-x:auto;margin:12px 0}
+  .curr-map .h1{color:#4ade80;font-weight:800}
+  .curr-map .h2{color:#fbbf24}
+  .curr-map .h3{color:#94a3b8}
+  .curr-map .count{color:#f87171;font-weight:700}
+
+  .rec-list{background:#f0f9ff;border:1px solid #93c5fd;border-radius:10px;padding:16px;margin-top:10px}
+  .rec-list ol{padding-inline-start:22px}
+  .rec-list li{margin-bottom:8px;font-size:13.5px}
+
+  .proposal{background:linear-gradient(135deg,#065f46,#047857);color:#fff;border-radius:14px;padding:22px;margin-top:20px}
+  .proposal h2{color:#fff;border:none;padding:0;font-size:20px;margin-bottom:10px}
+  .proposal .step{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 14px;margin-top:10px;font-size:14px}
+  .proposal .step b{display:block;font-weight:800;margin-bottom:4px;font-size:14.5px}
+  .proposal .step small{opacity:.8;font-size:12px;display:block;margin-top:6px}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+  table th,table td{border:1px solid #e2e8f0;padding:8px 10px;text-align:right}
+  table th{background:#f1f5f9;font-weight:800}
+  table td small{color:#64748b;font-size:11px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="hero">
+  <h1>🔍 دراسة /features مقارنة بمنصة مدونتي والـ Console</h1>
+  <p>تحليل شامل للصفحة الحالية على <code>localhost:3000/features</code> — البنية · التغطية · الفجوات · التوصيات. مبني على فحص live للصفحة + بيانات مدونتي (Pain Core Clinic كنموذج) + توثيق FAQ.</p>
+  <div class="stats">
+    <div class="stat"><b class="warn">٦٠</b>عناوين h1/h2/h3 — <span style="opacity:.7">مرهقة للزائر</span></div>
+    <div class="stat"><b>٢١,٤٣٧</b>حرف محتوى — <span style="opacity:.7">مطوّل جداً</span></div>
+    <div class="stat"><b class="good">٧</b>أقسام رئيسية</div>
+    <div class="stat"><b class="good">✓</b>Dark theme متسق</div>
+    <div class="stat"><b class="bad">٠</b>screenshots حقيقية</div>
+    <div class="stat"><b class="warn">٤</b>مواطن تكرار</div>
+  </div>
+</header>
+
+<div class="section">
+  <h2>🗺️ الخريطة الحالية (كاملة)</h2>
+  <div class="curr-map">
+<span class="h1">H1</span> — اشتراك واحد — منظومة كاملة (Hero + 4 stats: 4·29·23·4)
+├─ <span class="h2">H2 (1) لوحة تحكّمك — كل شيء في عينك</span>  <span class="count">[20 h3 card]</span>
+│  ├─ اللوحة الرئيسية · تحليلات GA4 · Core Web Vitals · فحص صحة الموقع
+│  ├─ إدارة المقالات · خط الإنتاج · محتوى صفحتك · المعرض
+│  ├─ الملف التجاري · اكتمال SEO · التوثيق YMYL · تقييمات الزوّار
+│  ├─ إشراف التعليقات · FAQ · Leads · الحجوزات
+│  └─ الدعم · أدوات SEO · تنبيهات تيليجرام · الاشتراك
+├─ <span class="h2">H2 (2) صفحتك العامة في مدوّنتي</span>  <span class="count">[13 h3 card]</span>
+│  ├─ هوية · شارة موثّق · أقسام · أزرار · مفتوح الآن
+│  ├─ نشرة بريدية · ظهور في الواجهة · شريط الشركاء · إحصائيات
+│  └─ JSON-LD · Sitemaps · مشاركة احترافية
+├─ <span class="h2">H2 (3) مقالاتك — محتوى يبيع</span>  <span class="count">[9 h3 card]</span>
+│  ├─ تجربة قراءة · نسخة صوتية · صور · تفاعل
+│  └─ سؤال=Lead · حجز · ذات صلة · الرائجة
+├─ <span class="h2">H2 (4) التصاميم والإنتاج التقني</span>  <span class="count">[5 h3 card]</span>
+│  └─ SEO كامل · JSON-LD · صور+OG · بوّابة 28 فحص · طلب فهرسة
+├─ <span class="h2">H2 (5) مصداقيتك = ثقة جوجل — YMYL</span>  <span class="count">[3 sector card]</span>
+│  └─ الطبي · القانوني · المالي
+├─ <span class="h2">H2 (6) 23 تنبيه فوري على تيليجرام</span>  <span class="count">[23 مربّع]</span>
+├─ <span class="h2">H2 (7) اختر ما يناسب نموّك (Pricing)</span>  <span class="count">[جدول 4 باقات]</span>
+├─ <span class="h2">H2 (8) إيش الفرق فعلاً؟</span>  <span class="count">[2 card compare]</span>
+└─ <span class="h2">H2 (9) جاهز ترى ترتيبك يتحرّك؟</span>  <span class="count">[Final CTA]</span>
+  </div>
+</div>
+
+<div class="section">
+  <h2>✅ ما يشتغل صح (خله كما هو)</h2>
+  <div class="grid">
+    <div class="card ok"><span class="tag ok">✅ صح</span><b>Dark theme متسق</b>يطابق الـ Nav + Footer الجديد.</div>
+    <div class="card ok"><span class="tag ok">✅ صح</span><b>القسم ٢ (صفحة العميل)</b>الـ ١٣ ميزة مطابقة لما شفناه على Pain Core Clinic (شفت الصفحة live، متطابق).</div>
+    <div class="card ok"><span class="tag ok">✅ صح</span><b>Trust/YMYL section</b>(طبي · قانوني · مالي) — كارت أبيض بارز بين الأقسام الداكنة، يحلّ محل تقنية visual anchor.</div>
+    <div class="card ok"><span class="tag ok">✅ صح</span><b>Pricing table (٤ باقات)</b>مقارنة clean بالمميزات.</div>
+    <div class="card ok"><span class="tag ok">✅ صح</span><b>القسم الأخير "إيش الفرق فعلاً؟"</b>مقارنة "توظف فريق داخلي vs اشتراك واحد" — قوي للـ conversion.</div>
+    <div class="card ok"><span class="tag ok">✅ صح</span><b>H1 عنوان قوي</b>"اشتراك واحد — منظومة كاملة" — واضح ومباشر.</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>⚠️ المشاكل الرئيسية</h2>
+  <div class="grid">
+    <div class="card bad"><span class="tag bad">🔥 حرج</span><b>٦٠ عنوان = overwhelm</b>ما فيه visitor يقرأ ٢٠+ ميزة في section واحد. الـ scannability = صفر. المفروض max 8-10 items per section.</div>
+    <div class="card bad"><span class="tag bad">🔥 حرج</span><b>القسم ١ "لوحة التحكم" (٢٠ card)</b>يقرأ كـ admin manual مو كـ marketing. العميل ما يهمّه "خط الإنتاج والحصة" — يهمّه "شغلي بيتنفّذ".</div>
+    <div class="card bad"><span class="tag bad">🔥 حرج</span><b>صفر screenshots حقيقية</b>كل الكروت نصية. الـ visitor يبي يشوف اللوحة والصفحة والمقال. صور المنتج = ذهب.</div>
+    <div class="card warn"><span class="tag warn">⚠️ تكرار</span><b>SEO مذكور في ٣ أقسام</b>القسم ١ (أدوات SEO)، القسم ٣ (SEO كامل لكل مقال في design section)، القسم ٤ (SEO كامل). Consolidate.</div>
+    <div class="card warn"><span class="tag warn">⚠️ تكرار</span><b>JSON-LD مذكور مرتين</b>القسم ٢ "بيانات منظمة" + القسم ٤ "بيانات منظمة مولّدة". Duplicate.</div>
+    <div class="card warn"><span class="tag warn">⚠️ تكرار</span><b>Sitemap مذكور مرتين</b>القسم ٢ + القسم ٤. Duplicate.</div>
+    <div class="card warn"><span class="tag warn">⚠️ تكرار</span><b>"الحجز" مذكور مرتين</b>القسم ١ (الحجوزات) + القسم ٣ (حجز من المقال). واضح إنها نفس الميزة من angles مختلفة.</div>
+    <div class="card warn"><span class="tag warn">⚠️ ضعف</span><b>Telegram section ٢٣ بند</b>الـ ٢٣ تنبيه tag-by-tag = تفصيل زائد. اختصار إلى ٤-٥ عائلات أهم.</div>
+    <div class="card warn"><span class="tag warn">⚠️ ضعف</span><b>"Core Web Vitals"</b>مصطلح تقني — العميل غير التقني ما يفهم. Rename to "سرعة موقعك".</div>
+    <div class="card warn"><span class="tag warn">⚠️ ضعف</span><b>"YMYL" مصطلح Google technical</b>يجب شرحه كـ "المحتوى الحساس (طبي/مالي/قانوني)".</div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>🆚 مقارنة مع مدونتي (الواقع)</h2>
+  <p>فحصت صفحة عميل حقيقي على mdonty.com (Pain Core Clinic) وقارنت. النتيجة:</p>
+  <table>
+    <thead><tr><th>الميزة</th><th>مذكورة في /features؟</th><th>موجودة في مدونتي؟</th><th>حالة</th></tr></thead>
+    <tbody>
+      <tr><td>هيدر (لوگو · اسم · تخصص)</td><td>نعم (القسم ٢)</td><td>✅ نعم</td><td><span class="tag ok">مطابق</span></td></tr>
+      <tr><td>وسائل تواصل كاملة</td><td>نعم (القسم ٢)</td><td>✅ نعم (هاتف · واتساب · إيميل · اتجاهات)</td><td><span class="tag ok">مطابق</span></td></tr>
+      <tr><td>زر "احجز الآن"</td><td>نعم (٢ ذكر)</td><td>✅ نعم</td><td><span class="tag ok">مطابق</span></td></tr>
+      <tr><td>قائمة الخدمات</td><td>نعم (القسم ٢ "أقسام غنية")</td><td>✅ نعم</td><td><span class="tag ok">مطابق</span></td></tr>
+      <tr><td>معرض الأعمال</td><td>نعم (القسم ٢)</td><td>✅ نعم (٤ صور)</td><td><span class="tag ok">مطابق</span></td></tr>
+      <tr><td>آراء العملاء (Reviews)</td><td>نعم (القسم ٢)</td><td>✅ نعم (قسم فارغ في مثالنا لكن exists)</td><td><span class="tag ok">مطابق</span></td></tr>
+      <tr><td>ساعات العمل / "مفتوح الآن"</td><td>نعم (القسم ٢)</td><td>✅ نعم</td><td><span class="tag ok">مطابق</span></td></tr>
+      <tr><td>البيانات القانونية / السجل التجاري</td><td>نعم (القسم ٢ "شارة موثّق")</td><td>✅ نعم (Legal Info section)</td><td><span class="tag ok">مطابق</span></td></tr>
+      <tr><td>FAQ للعميل</td><td>نعم (القسم ١)</td><td>✅ نعم (قسم موجود، حتى لو فارغ)</td><td><span class="tag ok">مطابق</span></td></tr>
+      <tr><td>مؤشرات أداء (Impact/Views/Engagement)</td><td>نعم (القسم ٢ "إحصائيات الشبكة")</td><td>✅ نعم (86,120 · 57,647 · 17,522 · 932)</td><td><span class="tag ok">مطابق</span></td></tr>
+      <tr><td>مقالات + نسخة صوتية</td><td>نعم (القسم ٣)</td><td>⚠️ محتاج تحقّق live</td><td><span class="tag warn">تحقق</span></td></tr>
+      <tr><td>Leads (سؤال مباشر = Lead)</td><td>نعم (القسم ٣ + Console)</td><td>⚠️ محتاج تحقّق live</td><td><span class="tag warn">تحقق</span></td></tr>
+      <tr><td>Newsletter مدمجة</td><td>نعم (القسم ٢)</td><td>⚠️ محتاج تحقّق live</td><td><span class="tag warn">تحقق</span></td></tr>
+      <tr><td>٢٣ تنبيه تيليجرام</td><td>نعم (H2 خاص)</td><td>⚠️ يحتاج تأكيد الرقم الدقيق</td><td><span class="tag warn">تحقق</span></td></tr>
+      <tr><td>YMYL — القطاعات ٣ (طبي · قانوني · مالي)</td><td>نعم</td><td>⚠️ محتاج تحقّق live (ميزة أم claim؟)</td><td><span class="tag warn">تحقق</span></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h2>💡 التوصيات المرتّبة</h2>
+
+  <div class="rec-list">
+    <h3 style="margin-top:0">Priority 1 — بنية جديدة (المستفيد الأكبر)</h3>
+    <ol>
+      <li><strong>اخفض إلى ٥ أقسام رئيسية</strong> بدلاً من ٧-٩. البنية المقترحة (تحت).</li>
+      <li><strong>ادمج القسم ١ (Console) والقسم ٢ (Public page)</strong> — كلاهما "شغل مدونتي"، فرّقهما لكن تحت h2 واحد.</li>
+      <li><strong>حذف القسم ٤ (التصاميم والإنتاج)</strong> — محتواه مكرّر مع Console + Public page.</li>
+      <li><strong>قسم Telegram (٢٣) إلى ٥ فقط</strong>: تنبيهات SEO · تنبيهات المحتوى · تنبيهات العملاء · تنبيهات المالية · تنبيهات الأمان.</li>
+    </ol>
+  </div>
+
+  <div class="rec-list">
+    <h3 style="margin-top:0">Priority 2 — Visual (screenshots حقيقية)</h3>
+    <ol>
+      <li><strong>screenshot اللوحة الرئيسية</strong> — image واحدة تعوّض ١٠ كروت نصية.</li>
+      <li><strong>screenshot صفحة عميل حقيقي</strong> — مثل Pain Core Clinic (بعد إذن العميل).</li>
+      <li><strong>screenshot مقال حقيقي</strong> يظهر: صور · نسخة صوتية · Leads · حجز.</li>
+      <li><strong>Loom/Video walkthrough</strong> ٢ دقيقة يجول باللوحة — استثمار عالي القيمة.</li>
+    </ol>
+  </div>
+
+  <div class="rec-list">
+    <h3 style="margin-top:0">Priority 3 — النبرة والوضوح</h3>
+    <ol>
+      <li><strong>غيّر "Core Web Vitals" → "سرعة موقعك"</strong>.</li>
+      <li><strong>غيّر "YMYL" → "المحتوى الحساس (الطبي · القانوني · المالي)"</strong> + شرح قصير.</li>
+      <li><strong>غيّر "خط الإنتاج والحصة" → "متابعة تنفيذ باقتك"</strong>.</li>
+      <li><strong>لغة كل كارت</strong> — من "ميزة تقنية" إلى "فايدة للعميل" (Benefit-focused، مو Feature-focused).</li>
+    </ol>
+  </div>
+</div>
+
+<div class="proposal">
+  <h2>🎯 البنية المقترحة (٥ أقسام فقط)</h2>
+  <div class="step">
+    <b>Section 1 — لوحة تحكّمك في مدونتي 📊</b>
+    كل حاجة في مكان واحد: أرقامك · محتواك · عملاءك · مالك.
+    ٦ groups (بدل ٢٠): (1) نظرة عامة · (2) المحتوى · (3) العملاء والحجوزات · (4) الأداء والسرعة · (5) الفوترة · (6) تنبيهات تيليجرام.
+    <small>✅ يشمل الـ ٢٠ كارت الحالية موزّعة على ٦ groups + <strong>screenshot اللوحة</strong>.</small>
+  </div>
+  <div class="step">
+    <b>Section 2 — صفحتك العامة (بديل موقعك الإلكتروني) 🌐</b>
+    ١٣ عنصر موجود في الصفحة الفعلية.
+    <small>✅ نفس الكروت الحالية + <strong>screenshot صفحة عميل حقيقي</strong> (Pain Core Clinic بإذن).</small>
+  </div>
+  <div class="step">
+    <b>Section 3 — كيف تُصنع مقالاتك ✍️</b>
+    من البحث → للنشر → للتحويل.
+    ٥-٧ نقاط بدل ٩+٥ الحالية (دمج القسم ٣ والقسم ٤).
+    <small>✅ يشمل: بحث الكلمات · كتابة بشرية · تصميم صور · SEO/JSON-LD/OG · بوّابة ٢٨ فحص · طلب فهرسة · Leads/حجز من المقال + <strong>screenshot مقال حقيقي</strong>.</small>
+  </div>
+  <div class="step">
+    <b>Section 4 — مصداقيتك محميّة 🛡️</b>
+    (كان القسم ٥) YMYL بمسمّى واضح.
+    <small>✅ ٣ قطاعات (طبي · قانوني · مالي) + شرح: "المحتوى اللي يمس صحة أو مال أو حقوق العميل — نطبق معايير أعلى".</small>
+  </div>
+  <div class="step">
+    <b>Section 5 — الباقات والمقارنة 💰</b>
+    Pricing table (٤ باقات) + "إيش الفرق فعلاً؟" (توظيف vs اشتراك) + Final CTA.
+    <small>✅ دمج ٣ أقسام (Pricing + Comparison + CTA) في section واحد بلا فقدان محتوى.</small>
+  </div>
+</div>
+
+<div class="section">
+  <h2>📌 خلاصة</h2>
+  <p><strong>الصفحة قوية محتوى، ضعيفة بنية.</strong> كل الـ features مذكورة (حرفياً)، لكن الطريقة مرهقة:</p>
+  <ul style="padding-inline-start:22px;margin-top:8px">
+    <li>٦٠ عنوان = زائر يهرب بعد ثوان.</li>
+    <li>٠ screenshots = يقرأ نص بدل ما يشوف منتج.</li>
+    <li>تكرار (SEO ×٣ · JSON-LD ×٢ · Sitemap ×٢ · Booking ×٢).</li>
+    <li>مصطلحات تقنية (Core Web Vitals · YMYL · JSON-LD) بلا شرح.</li>
+  </ul>
+  <p><strong>الإصلاح:</strong> ٥ أقسام (بدل ٩) + ٤ screenshots حقيقية + شرح المصطلحات + دمج التكرار = صفحة تحوّل ٣-٤ أضعاف.</p>
+
+  <p style="margin-top:14px"><strong>وافقت على البنية المقترحة؟</strong> ابدأ التنفيذ (٥ خطوات، كل خطوة أعرضها قبل التنفيذ)؟ أو تعديلات على المقترح؟</p>
+</div>
+
+</div>
+</body>
+</html>

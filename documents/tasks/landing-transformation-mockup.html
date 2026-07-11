@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JBRSEO — Landing Transformation Mockup</title>
+<style>
+  :root {
+    --bg: #FAFAF7;
+    --bg-warm: #F4F4EE;
+    --card: #FFFFFF;
+    --fg: #0A0A0A;
+    --fg-muted: #6B6B62;
+    --border: #E5E5DC;
+    --success: #10B981;
+    --success-soft: rgba(16, 185, 129, 0.10);
+    --danger: #DC2626;
+    --accent: #FDE047;
+    --hero-bg: #0A0A0A;
+    --shadow: 0 12px 30px -18px rgba(10, 10, 10, 0.18);
+    --shadow-lg: 0 24px 50px -22px rgba(10, 10, 10, 0.28);
+    --radius: 14px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, "Segoe UI", Tahoma, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.6;
+  }
+
+  /* ═══ COMPARISON TOGGLE ═══ */
+  .compare-nav {
+    background: var(--fg);
+    color: #FFF;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .compare-title { font-size: 14px; font-weight: 700; }
+  .compare-title span { opacity: 0.6; font-weight: 500; margin-inline-start: 8px; font-size: 12px; }
+  .compare-toggle { display: flex; gap: 4px; background: rgba(255,255,255,0.08); padding: 4px; border-radius: 8px; }
+  .compare-btn {
+    background: transparent; color: #FFF; border: none;
+    padding: 6px 14px; border-radius: 6px;
+    font-size: 12.5px; font-weight: 600; cursor: pointer;
+    font-family: inherit;
+  }
+  .compare-btn.active { background: #FFF; color: var(--fg); }
+
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ═══ CURRENT VIEW (screenshots) ═══ */
+  .current-view {
+    padding: 40px 20px;
+    background: linear-gradient(180deg, #F4F4EE 0%, #EDEDE3 100%);
+    min-height: 100vh;
+  }
+  .current-container { max-width: 1200px; margin: 0 auto; }
+  .current-header {
+    background: #FEF3C7;
+    border: 1px solid #FDE68A;
+    border-inline-start: 4px solid #F59E0B;
+    padding: 16px 20px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    color: #78350F;
+    font-size: 13.5px;
+  }
+  .current-header strong { color: #451A03; display: block; margin-bottom: 4px; font-size: 14px; }
+
+  .screenshot-block {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .screenshot-block h3 {
+    font-size: 15px; font-weight: 700;
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .screenshot-block h3 .url {
+    font-family: monospace; font-size: 12px;
+    background: #F4F4EE; padding: 3px 10px; border-radius: 6px;
+    color: var(--fg-muted); direction: ltr; font-weight: 500;
+  }
+  .screenshot-block .caption {
+    color: var(--fg-muted); font-size: 12.5px; margin-bottom: 12px;
+  }
+  .screenshot-block img {
+    width: 100%; height: auto; border-radius: 8px;
+    border: 1px solid var(--border);
+    display: block;
+  }
+  .issue-tags {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 12px;
+  }
+  .issue-tag {
+    background: #FEE2E2; color: #991B1B;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 11.5px; font-weight: 600;
+  }
+  .issue-tag.warn { background: #FEF3C7; color: #92400E; }
+  .issue-tag.info { background: #DBEAFE; color: #1E40AF; }
+
+  /* ═══ NEW VIEW ═══ */
+  .new-view { background: var(--bg); }
+
+  /* Announcement */
+  .announce {
+    background: var(--fg);
+    color: #FFF;
+    padding: 10px 20px;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+  .announce .counter {
+    background: var(--danger);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+  }
+  .announce a { color: var(--accent); text-decoration: underline; }
+
+  /* Nav */
+  .nav {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+  }
+  .nav-inner {
+    max-width: 1180px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  }
+  .nav-logo { font-size: 18px; font-weight: 800; letter-spacing: 1px; }
+  .nav-menu { display: flex; gap: 4px; font-size: 13.5px; }
+  .nav-menu a {
+    color: var(--fg-muted); padding: 8px 12px;
+    text-decoration: none; font-weight: 600;
+    border-radius: 8px;
+  }
+  .nav-menu a:hover { background: var(--bg-warm); color: var(--fg); }
+  .nav-cta {
+    background: var(--success); color: #FFF; padding: 10px 20px;
+    border-radius: 10px; font-weight: 700; font-size: 13.5px;
+    text-decoration: none;
+    border: none; cursor: pointer;
+    font-family: inherit;
+  }
+  .nav-wa { display: flex; align-items: center; gap: 6px; color: var(--success); font-family: monospace; direction: ltr; font-size: 12.5px; padding: 6px 12px; border-radius: 999px; background: var(--success-soft); font-weight: 600; }
+
+  /* Hero */
+  .hero {
+    background: var(--hero-bg);
+    color: #FFF;
+    padding: 60px 20px 40px;
+  }
+  .hero-inner {
+    max-width: 900px; margin: 0 auto;
+    text-align: center;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.4);
+    color: #6EE7B7;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 12.5px; font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -1.2px;
+    line-height: 1.15;
+    margin-bottom: 18px;
+  }
+  .hero h1 .highlight { color: #FDE047; }
+  .hero .subheading {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 17px;
+    max-width: 640px;
+    margin: 0 auto 12px;
+    line-height: 1.7;
+  }
+  .hero .for-who {
+    font-size: 14px;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 28px;
+  }
+  .hero .for-who strong { color: #FFF; }
+
+  .hero-cta-row {
+    display: flex; gap: 12px; justify-content: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .btn-primary-hero {
+    background: var(--success); color: #FFF;
+    padding: 16px 34px; border-radius: 12px;
+    font-size: 15.5px; font-weight: 700;
+    border: none; cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 12px 30px -10px rgba(16, 185, 129, 0.5);
+  }
+  .btn-secondary-hero {
+    background: rgba(255,255,255,0.08);
+    color: #FFF;
+    padding: 16px 30px;
+    border-radius: 12px;
+    font-size: 15.5px; font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .hero-chips {
+    display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
+    font-size: 12.5px; color: rgba(255,255,255,0.6);
+  }
+  .hero-chips span { display: flex; align-items: center; gap: 6px; }
+  .hero-chips .check { color: var(--success); }
+
+  /* Trust Row */
+  .trust-row {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 24px 20px;
+  }
+  .trust-row-inner {
+    max-width: 1180px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    align-items: center;
+  }
+  @media (max-width: 900px) {
+    .trust-row-inner { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  }
+  .trust-cell {
+    text-align: center;
+    padding: 4px;
+  }
+  .trust-cell .num {
+    font-size: 24px; font-weight: 800; color: var(--fg);
+    display: block;
+  }
+  .trust-cell .label {
+    font-size: 11.5px; color: var(--fg-muted);
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .trust-cell.rating .num {
+    color: #F59E0B;
+  }
+  .trust-cell .stars { font-size: 14px; color: #F59E0B; letter-spacing: 2px; }
+  .trust-cell.zatca .num {
+    font-size: 14px; padding: 6px 10px;
+    background: var(--success-soft); color: var(--success);
+    border-radius: 6px; display: inline-block;
+  }
+  .trust-cell.locations {
+    font-size: 12px; color: var(--fg-muted);
+    line-height: 1.7;
+  }
+  .trust-cell.locations strong { color: var(--fg); display: block; font-size: 13px; margin-bottom: 2px; }
+
+  /* Section shared */
+  .section {
+    padding: 60px 20px;
+  }
+  .section-inner { max-width: 1180px; margin: 0 auto; }
+  .section-header { text-align: center; margin-bottom: 40px; }
+  .section-header .eyebrow {
+    color: var(--success); font-size: 12px; font-weight: 700;
+    letter-spacing: 2px; margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .section-header h2 {
+    font-size: 34px; font-weight: 800;
+    letter-spacing: -0.8px;
+    margin-bottom: 12px;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+  .section-header p {
+    color: var(--fg-muted); font-size: 15px;
+    max-width: 580px; margin: 0 auto;
+  }
+
+  /* How it works */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 800px) { .steps { grid-template-columns: 1fr; } }
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 30px 24px;
+    text-align: center;
+  }
+  .step-num {
+    width: 44px; height: 44px;
+    background: var(--fg); color: #FFF;
+    border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 17px;
+    margin-bottom: 14px;
+  }
+  .step-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+  .step-card p { color: var(--fg-muted); font-size: 13.5px; line-height: 1.7; }
+
+  /* Pricing */
+  .pricing-toggle {
+    display: inline-flex; gap: 4px;
+    background: var(--bg-warm); padding: 5px;
+    border-radius: 12px; margin: 0 auto 40px;
+    position: relative;
+  }
+  .pricing-toggle-wrapper { text-align: center; margin-bottom: 30px; }
+  .pricing-toggle button {
+    background: transparent; color: var(--fg-muted);
+    padding: 10px 18px;
+    border: none; border-radius: 8px;
+    font-size: 13.5px; font-weight: 700;
+    cursor: pointer; font-family: inherit;
+  }
+  .pricing-toggle button.active {
+    background: var(--card); color: var(--fg);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  }
+  .pricing-toggle .save-badge {
+    background: var(--success); color: #FFF;
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 10.5px; font-weight: 800;
+    margin-inline-start: 6px;
+  }
+
+  .plans {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px) { .plans { grid-template-columns: 1fr; } }
+  .plan {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    position: relative;
+  }
+  .plan.featured {
+    background: var(--fg); color: #FFF;
+    transform: scale(1.03);
+    box-shadow: 0 20px 50px -20px rgba(10, 10, 10, 0.45);
+  }
+  .plan .badge {
+    position: absolute;
+    top: -12px; inset-inline-end: 20px;
+    background: var(--success); color: #FFF;
+    padding: 4px 14px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 800;
+  }
+  .plan .name { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  .plan .tagline {
+    font-size: 12.5px; opacity: 0.7;
+    margin-bottom: 20px; min-height: 40px;
+  }
+  .plan .price {
+    display: flex; align-items: baseline; gap: 6px;
+  }
+  .plan .price .num {
+    font-size: 40px; font-weight: 800;
+    letter-spacing: -1.2px;
+    font-family: 'Courier New', monospace;
+  }
+  .plan .price .unit { font-size: 13px; opacity: 0.6; font-weight: 600; }
+  .plan .hook {
+    background: var(--success-soft);
+    color: var(--success);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12.5px; font-weight: 700;
+    margin-top: 12px;
+    display: inline-block;
+  }
+  .plan.featured .hook {
+    background: rgba(16, 185, 129, 0.2);
+    color: #6EE7B7;
+  }
+  .plan .cta-plan {
+    display: block; text-align: center;
+    background: var(--success); color: #FFF;
+    padding: 14px; border-radius: 10px;
+    font-size: 14px; font-weight: 700;
+    text-decoration: none; margin: 20px 0 18px;
+    border: none; cursor: pointer;
+    font-family: inherit;
+    width: 100%;
+  }
+  .plan:not(.featured) .cta-plan { background: var(--fg); }
+  .plan ul { list-style: none; padding: 0; margin: 0; padding-top: 18px; border-top: 1px solid rgba(0,0,0,0.08); }
+  .plan.featured ul { border-top-color: rgba(255,255,255,0.15); }
+  .plan ul li {
+    padding: 5px 0; font-size: 13px;
+    display: flex; align-items: start; gap: 8px;
+  }
+  .plan ul li::before {
+    content: '✓'; color: var(--success);
+    font-weight: 800;
+    margin-top: 2px;
+  }
+  .plan.featured ul li::before { color: #6EE7B7; }
+
+  /* ═══ CHECKOUT MODAL (the big transformation!) ═══ */
+  .checkout-modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(10, 10, 10, 0.65);
+    backdrop-filter: blur(6px);
+    z-index: 200;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .checkout-modal.open { display: flex; align-items: flex-start; justify-content: center; padding-top: 40px; }
+  .checkout-box {
+    background: var(--card);
+    border-radius: var(--radius);
+    max-width: 960px; width: 100%;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .checkout-top {
+    background: var(--fg); color: #FFF;
+    padding: 14px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .checkout-top .brand { font-size: 15px; font-weight: 800; letter-spacing: 1px; }
+  .checkout-top .close {
+    background: rgba(255,255,255,0.1); color: #FFF;
+    border: none; width: 36px; height: 36px;
+    border-radius: 8px; font-size: 20px; cursor: pointer;
+  }
+  .checkout-body {
+    display: grid; grid-template-columns: 1.5fr 1fr;
+  }
+  @media (max-width: 900px) { .checkout-body { grid-template-columns: 1fr; } }
+  .checkout-form-side { padding: 30px 32px; }
+  .checkout-summary-side {
+    padding: 30px 24px;
+    background: #FAFAF7;
+    border-inline-start: 1px solid var(--border);
+  }
+  .checkout-h1 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  .checkout-sub { color: var(--fg-muted); font-size: 13.5px; margin-bottom: 24px; }
+
+  .field-group {
+    margin-bottom: 20px;
+  }
+  .field-group-title {
+    font-size: 12.5px; font-weight: 700;
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+    color: var(--fg);
+  }
+  .field-group-title::before { content: ''; width: 3px; height: 14px; background: var(--fg); border-radius: 2px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .field-row.full { grid-template-columns: 1fr; }
+  .field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+  .field input {
+    width: 100%; padding: 11px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px; background: #FFF;
+    font-size: 14px; font-family: inherit;
+  }
+  .field input:focus { outline: none; border-color: var(--fg); }
+
+  .card-iframes {
+    background: linear-gradient(135deg, #FFF 0%, #F9FAFB 100%);
+    border: 2px dashed rgba(16, 185, 129, 0.35);
+    border-radius: 10px;
+    padding: 18px;
+    margin-top: 6px;
+    position: relative;
+  }
+  .card-iframes::before {
+    content: '🔐 حقول N-Genius — بياناتك تذهب مباشرة للبنك';
+    position: absolute;
+    top: -10px; inset-inline-start: 14px;
+    background: var(--success); color: #FFF;
+    font-size: 10.5px; font-weight: 700;
+    padding: 3px 10px; border-radius: 4px;
+  }
+  .brands-row {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    margin-top: 12px; align-items: center;
+  }
+  .brand-chip {
+    background: #FFF;
+    border: 1px solid var(--border);
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 10.5px; font-weight: 700;
+    color: var(--fg-muted); letter-spacing: 0.5px;
+  }
+
+  .captcha {
+    background: var(--bg-warm);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    margin: 16px 0;
+    font-size: 12px; color: var(--fg-muted);
+  }
+  .captcha-check {
+    width: 18px; height: 18px;
+    background: var(--success); color: #FFF;
+    border-radius: 3px; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+  }
+
+  .pay-cta {
+    width: 100%;
+    background: var(--success); color: #FFF;
+    border: none; padding: 16px;
+    border-radius: 12px;
+    font-size: 15px; font-weight: 800;
+    cursor: pointer; font-family: inherit;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 8px;
+    padding-inline: 24px;
+  }
+  .pay-cta .amount { font-size: 17px; }
+  .pay-notice {
+    text-align: center; color: var(--fg-muted);
+    font-size: 11.5px; margin-top: 12px; line-height: 1.7;
+  }
+
+  /* Summary */
+  .summary-plan {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .summary-plan-name { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  .summary-plan-desc { font-size: 12px; color: var(--fg-muted); margin-bottom: 10px; }
+  .summary-features {
+    list-style: none; padding-top: 10px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .summary-features li { padding: 3px 0; }
+  .summary-features li::before { content: '✓ '; color: var(--success); font-weight: 800; }
+
+  .savings-strip {
+    background: var(--success-soft);
+    color: var(--success);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12.5px; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .price-lines {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+  .price-line { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; }
+  .price-line.total {
+    padding-top: 10px; margin-top: 6px;
+    border-top: 1px solid var(--border);
+    font-weight: 800; font-size: 15px;
+  }
+  .price-line .label { color: var(--fg-muted); }
+
+  .guarantee-box {
+    background: #FEF3C7;
+    color: #78350F;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 11.5px; text-align: center;
+    line-height: 1.6;
+    border-inline-start: 3px solid #F59E0B;
+  }
+
+  /* Testimonials */
+  .testimonials {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  @media (max-width: 800px) { .testimonials { grid-template-columns: 1fr; } }
+  .testimonial {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+  }
+  .testimonial .stars { color: #F59E0B; margin-bottom: 10px; letter-spacing: 2px; }
+  .testimonial .quote { font-size: 14.5px; line-height: 1.7; margin-bottom: 14px; }
+  .testimonial .author {
+    display: flex; gap: 12px; align-items: center;
+    padding-top: 12px; border-top: 1px solid var(--border);
+  }
+  .testimonial .avatar {
+    width: 40px; height: 40px;
+    background: var(--fg); color: #FFF;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+  }
+  .testimonial .author-info { font-size: 12.5px; }
+  .testimonial .author-info strong { display: block; }
+  .testimonial .author-info span { color: var(--fg-muted); }
+
+  /* Guarantee bar */
+  .guarantee-bar {
+    background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+    color: #FFF;
+    padding: 40px 20px;
+    text-align: center;
+  }
+  .guarantee-bar h2 {
+    font-size: 30px; font-weight: 800;
+    letter-spacing: -0.8px; margin-bottom: 8px;
+  }
+  .guarantee-bar p {
+    font-size: 15px; opacity: 0.95;
+    max-width: 600px; margin: 0 auto;
+  }
+
+  /* Payment methods */
+  .payments-row {
+    background: var(--card);
+    padding: 30px 20px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .payments-inner {
+    max-width: 900px; margin: 0 auto;
+    text-align: center;
+  }
+  .payments-title {
+    font-size: 12.5px; color: var(--fg-muted);
+    font-weight: 700; letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .payments-methods {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .payment-chip {
+    background: #FFF; border: 1px solid var(--border);
+    padding: 8px 16px; border-radius: 8px;
+    font-weight: 700; font-size: 13px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .payment-chip.mada { color: #14532D; }
+  .payment-chip.apple { color: #000; }
+  .payment-chip.visa { color: #1E40AF; }
+
+  /* Footer */
+  .footer {
+    background: var(--fg); color: rgba(255, 255, 255, 0.7);
+    padding: 50px 20px 24px;
+  }
+  .footer-inner {
+    max-width: 1180px; margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  @media (max-width: 800px) { .footer-inner { grid-template-columns: 1fr 1fr; } }
+  .footer-col h4 {
+    color: #FFF; font-size: 13px;
+    letter-spacing: 1px; margin-bottom: 14px;
+    font-family: monospace;
+  }
+  .footer-col a {
+    display: block; color: rgba(255,255,255,0.7);
+    padding: 5px 0; font-size: 13.5px;
+    text-decoration: none;
+  }
+  .footer-col p { font-size: 13px; line-height: 1.7; margin-bottom: 12px; }
+  .footer-brand-logo {
+    font-size: 22px; font-weight: 800;
+    color: #FFF; margin-bottom: 12px;
+    letter-spacing: 2px;
+  }
+  .legal-info {
+    background: rgba(255,255,255,0.04);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-family: monospace;
+    direction: ltr;
+    text-align: start;
+    line-height: 1.8;
+  }
+  .footer-bottom {
+    max-width: 1180px; margin: 0 auto;
+    padding-top: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px;
+    flex-wrap: wrap; gap: 12px;
+  }
+
+  /* ═══ Annotations panel ═══ */
+  .annotations-panel {
+    position: fixed;
+    inset-inline-end: 20px;
+    top: 80px;
+    width: 280px;
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 12px 30px -10px rgba(0,0,0,0.15);
+    z-index: 90;
+    font-size: 12.5px;
+    max-height: 70vh;
+    overflow-y: auto;
+    display: none;
+  }
+  .annotations-panel.open { display: block; }
+  .annotations-panel h4 { color: #451A03; font-size: 13.5px; margin-bottom: 10px; }
+  .annotations-panel .ann-item {
+    padding: 8px 0; border-bottom: 1px dashed #FDE68A;
+    color: #78350F;
+  }
+  .annotations-panel .ann-item:last-child { border: none; }
+  .annotations-panel .ann-label {
+    background: var(--success); color: #FFF;
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 10.5px; font-weight: 700;
+    display: inline-block; margin-inline-end: 6px;
+  }
+
+  .toggle-annotations {
+    position: fixed;
+    inset-inline-end: 20px;
+    bottom: 20px;
+    background: var(--fg);
+    color: #FFF;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 999px;
+    font-weight: 700; font-size: 13px;
+    box-shadow: var(--shadow-lg);
+    cursor: pointer;
+    z-index: 95;
+    font-family: inherit;
+    display: none;
+  }
+
+  .view.active + .toggle-annotations,
+  .new-view.active ~ .toggle-annotations { display: block; }
+
+  .highlight-new {
+    position: relative;
+  }
+  .highlight-new::before {
+    content: '✨ جديد';
+    position: absolute;
+    top: -10px; inset-inline-start: 12px;
+    background: var(--success); color: #FFF;
+    font-size: 10px; font-weight: 800;
+    padding: 3px 10px; border-radius: 4px;
+    z-index: 2;
+  }
+</style>
+</head>
+<body>
+
+<!-- COMPARISON NAV -->
+<nav class="compare-nav">
+  <div class="compare-title">Landing Transformation · <span>الوضع الحالي مقابل الرؤية الجديدة</span></div>
+  <div class="compare-toggle">
+    <button class="compare-btn" data-view="current">🔴 الحالي</button>
+    <button class="compare-btn active" data-view="new">✨ الجديد المقترح</button>
+  </div>
+</nav>
+
+<!-- ══════════════ CURRENT VIEW ══════════════ -->
+<div class="view current-view" data-view="current">
+  <div class="current-container">
+    <div class="current-header">
+      <strong>الوضع الحالي على jbrseo.com</strong>
+      لقطات فعلية من localhost خلال الفحص. الملاحظات مبنية على تقرير UI/UX الشامل.
+    </div>
+
+    <div class="screenshot-block">
+      <h3>الصفحة الرئيسية <span class="url">/sa</span></h3>
+      <p class="caption">Hero بعنوان جيد لكن بدون توضيح "لمن"، ومصطلح "سيو" الذي لا يعرفه معظم أصحاب الأعمال.</p>
+      <img src="../../.playwright-mcp/current-sa-hero.png" alt="Current SA Hero">
+      <div class="issue-tags">
+        <span class="issue-tag">Hero بلا "لمن"</span>
+        <span class="issue-tag">كلمة "سيو" غامضة للعميل</span>
+        <span class="issue-tag">لا Trust Row بعد Hero</span>
+        <span class="issue-tag warn">CTA "بدون بطاقة" يتناقض مع IBAN</span>
+      </div>
+    </div>
+
+    <div class="screenshot-block">
+      <h3>قسم الأسعار <span class="url">/sa#pricing</span></h3>
+      <p class="caption">٤ باقات في صف واحد، الـ hook "يصير 693 ر.س" ليس واضحاً كفاية.</p>
+      <img src="../../.playwright-mcp/current-sa-pricing.png" alt="Current SA Pricing">
+      <div class="issue-tags">
+        <span class="issue-tag">٤ باقات = تشتت</span>
+        <span class="issue-tag warn">Hook غامض حسابياً</span>
+        <span class="issue-tag">Featured badge اختياري</span>
+      </div>
+    </div>
+
+    <div class="screenshot-block">
+      <h3>صفحة التسجيل <span class="url">/sa/signup?plan=growth&billing=annual</span></h3>
+      <p class="caption">نموذج منفصل عن الدفع — العميل ينتقل من صفحة لصفحة قبل ما يعرف كيف سيدفع.</p>
+      <img src="../../.playwright-mcp/current-sa-signup.png" alt="Current SA Signup">
+      <div class="issue-tags">
+        <span class="issue-tag">لا هيدر رئيسي</span>
+        <span class="issue-tag">بلا شعارات mada/Apple Pay</span>
+        <span class="issue-tag">"خطوة ١ من ٢" مضلل</span>
+        <span class="issue-tag warn">التالي = IBAN يدوي</span>
+      </div>
+    </div>
+
+    <div class="screenshot-block">
+      <h3>الاحتكاكات الحرجة الحالية</h3>
+      <div style="background:#FEE2E2; border:1px solid #FCA5A5; border-inline-start:4px solid #DC2626; padding:16px; border-radius:8px; margin-top:12px;">
+        <ol style="padding-inline-start:20px; color:#7F1D1D; line-height:2;">
+          <li><strong>الرحلة اليوم:</strong> Hero → Pricing → Signup Form → صفحة IBAN → واتساب → انتظار → تفعيل (٥+ خطوات).</li>
+          <li><strong>وعد "بدون بطاقة"</strong> يتناقض مع طلب "حوّل على IBAN".</li>
+          <li><strong>٤ هيدرز مختلفة</strong> عبر الموقع.</li>
+          <li><strong>اللهجة مصرية</strong> على صفحات السعودية.</li>
+          <li><strong>Trust logos + Testimonials</strong> تختفي لو DB فاضي.</li>
+          <li><strong>لا ضمان صريح</strong> ولا رقم CR/VAT في الـ footer.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ NEW VIEW ══════════════ -->
+<div class="view new-view active" data-view="new">
+
+  <!-- Announcement -->
+  <div class="announce">
+    <span>عرض التأسيس — أول ١٥٠ شركة</span>
+    <span class="counter">متبقّي 37 مقعد</span>
+    <a href="#pricing-new">اطّلع</a>
+  </div>
+
+  <!-- Nav (unified) -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="nav-logo">◤ JBRSEO</div>
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div class="nav-menu">
+          <a href="#steps-new">كيف تشتغل</a>
+          <a href="#pricing-new">الأسعار</a>
+          <a href="#social-new">آراء العملاء</a>
+          <a href="#faq-new">أسئلة</a>
+        </div>
+        <span class="nav-wa">+966 54 101 8020</span>
+        <button class="nav-cta" onclick="openCheckout()">جرّب مجاناً ٣٠ يوم</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero (NEW: "for who" + guarantee badge + Saudi dialect) -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span>✓</span>
+        <span>تفعيل ٤٨ ساعة · أول مقال ٢١ يوم · فهرسة جوجل مضمونة</span>
+      </div>
+      <h1>
+        نبنيلك <span class="highlight">حضور على جوجل</span><br>
+        بمحتوى احترافي منشور تحت اسمك
+      </h1>
+      <p class="subheading">
+        فريق سعودي يكتب لك، ينشر على مدوّنة بسمعة قوية، ويُفهرس مقالاتك في جوجل. تركّز على شغلك، نحن نبني حضورك.
+      </p>
+      <p class="for-who">
+        مناسبة لـ <strong>العيادات، المتاجر، المكاتب، والخدمات المهنية</strong>
+      </p>
+
+      <div class="hero-cta-row">
+        <button class="btn-primary-hero" onclick="openCheckout()">اشترك الحين — تفعيل خلال ٤٨ ساعة</button>
+        <button class="btn-secondary-hero">شوف كيف نشتغل ↓</button>
+      </div>
+
+      <div class="hero-chips">
+        <span><span class="check">✓</span> صفحة تجارية جاهزة على مدوّنتي</span>
+        <span><span class="check">✓</span> أول مقال مفهرَس في ٢١ يوم</span>
+        <span><span class="check">✓</span> دعم عربي ١٠٠٪ عبر واتساب</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Row (NEW — right after Hero) -->
+  <section class="trust-row highlight-new">
+    <div class="trust-row-inner">
+      <div class="trust-cell">
+        <span class="num">+١٢٠</span>
+        <span class="label">شركة سعودية</span>
+      </div>
+      <div class="trust-cell locations">
+        <strong>عملاء في</strong>
+        الرياض · جدة · الدمام · الطائف
+      </div>
+      <div class="trust-cell rating">
+        <span class="stars">★★★★★</span>
+        <span class="num" style="font-size:20px;">4.9</span>
+        <span class="label">تقييم Google</span>
+      </div>
+      <div class="trust-cell zatca">
+        <span class="num">مسجل ZATCA</span>
+        <span class="label" style="margin-top:6px;">فاتورة إلكترونية</span>
+      </div>
+      <div class="trust-cell locations">
+        <strong>واتساب</strong>
+        <span style="direction:ltr; font-family:monospace;">+966 54 101 8020</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works (unified Saudi dialect) -->
+  <section class="section" id="steps-new">
+    <div class="section-inner">
+      <div class="section-header">
+        <div class="eyebrow">كيف تشتغل</div>
+        <h2>٣ خطوات، وتشوف نتايجك على جوجل</h2>
+        <p>ما تحتاج تعرف تسويق ولا برمجة. إحنا نتكفّل بكل شي، وأنت تركز على شغلك.</p>
+      </div>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">١</div>
+          <h3>اختار باقتك</h3>
+          <p>باقة تناسب حجم شغلك وميزانيتك. تقدر تلغي في أي وقت.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">٢</div>
+          <h3>احنا نكتب لك المحتوى</h3>
+          <p>مقالات محترفة عن نشاطك، متوافقة مع جوجل، بلغة يحبها عملاءك.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">٣</div>
+          <h3>يجيك عملاء جاهزين</h3>
+          <p>تابع نموّك على لوحة تحكم بسيطة. الطلبات تجيك تلقائياً.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing (3 plans, unified Saudi dialect, clearer hook) -->
+  <section class="section" id="pricing-new" style="background:var(--bg-warm);">
+    <div class="section-inner">
+      <div class="section-header">
+        <div class="eyebrow">الأسعار</div>
+        <h2>باقات تنمو مع شغلك</h2>
+        <p>ابدأ بأي باقة، رقّي أو خفّض متى شئت. وعد تنفيذ ٣٠ يوم — لو أخفقنا نمدّد اشتراكك مجاناً.</p>
+      </div>
+
+      <div class="pricing-toggle-wrapper">
+        <div class="pricing-toggle">
+          <button>شهري</button>
+          <button class="active">سنوي <span class="save-badge">وفّر ٣٣٪</span></button>
+        </div>
+      </div>
+
+      <div class="plans">
+        <div class="plan">
+          <div class="name">الانطلاقة</div>
+          <div class="tagline">بداية قوية — نكتب وننشر لك</div>
+          <div class="price">
+            <span class="num">4,788</span>
+            <span class="unit">ر.س/سنوياً</span>
+          </div>
+          <div class="hook">🎁 ٦ شهور مجاناً · يصير 266 ر.س/شهر</div>
+          <button class="cta-plan" onclick="openCheckout('starter')">ابدأ الحين</button>
+          <ul>
+            <li>٤ مقالات محترفة شهرياً</li>
+            <li>صفحة لنشاطك على مدونتي</li>
+            <li>تحسين تقني كامل + خرايط جوجل</li>
+            <li>تنبيهات تليجرام (٥ أحداث)</li>
+            <li>دعم عبر واتساب</li>
+          </ul>
+        </div>
+
+        <div class="plan featured">
+          <span class="badge">الأكثر اختياراً ✦</span>
+          <div class="name">الزخم</div>
+          <div class="tagline">يوصلك العميل الجاهز قبل غيرك</div>
+          <div class="price">
+            <span class="num">12,468</span>
+            <span class="unit">ر.س/سنوياً</span>
+          </div>
+          <div class="hook">🎁 ٦ شهور مجاناً · يصير 693 ر.س/شهر</div>
+          <button class="cta-plan" onclick="openCheckout('growth')">ابدأ مع الزخم</button>
+          <ul>
+            <li>٨ مقالات شهرياً + ٢ فيديو</li>
+            <li>تقييم ذكي للزوار (٠-١٠٠)</li>
+            <li>تنبيهات تليجرام (١٢ حدث)</li>
+            <li>ظهور في البحث الذكي</li>
+            <li>إيميلات آلية لزوّارك</li>
+            <li>تحليلات معمّقة أسبوعية</li>
+          </ul>
+        </div>
+
+        <div class="plan">
+          <div class="name">الريادة</div>
+          <div class="tagline">فريق متفرّغ يشتغل لك</div>
+          <div class="price">
+            <span class="num">28,788</span>
+            <span class="unit">ر.س/سنوياً</span>
+          </div>
+          <div class="hook">🎁 ٦ شهور مجاناً · يصير 1,599 ر.س/شهر</div>
+          <button class="cta-plan" onclick="openCheckout('scale')">ابدأ مع الريادة</button>
+          <ul>
+            <li>١٢ مقال شهرياً + ٣ فيديو</li>
+            <li>مدير حساب متفرّغ</li>
+            <li>تنبيهات تليجرام (٢٢ حدث)</li>
+            <li>فحص خارجي مستمر (٢٦+)</li>
+            <li>دعم ٢٤/٧ + صلاحيات فريق</li>
+            <li>ملائم للقطاعات الحساسة</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Execution Promise Bar (replaces refund guarantee) -->
+  <section style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); color:#FFF; padding: 50px 20px;">
+    <div style="max-width: 1000px; margin: 0 auto;">
+      <div style="text-align:center; margin-bottom: 30px;">
+        <div style="font-size:12px; letter-spacing:2px; opacity:0.85; margin-bottom:8px; font-weight:700;">◆ وعدنا لك</div>
+        <h2 style="font-size:30px; font-weight:800; letter-spacing:-0.8px; margin-bottom:8px;">في أول ٣٠ يوم — بنود ملموسة نضمنها</h2>
+        <p style="opacity:0.9; font-size:14.5px; max-width:600px; margin:0 auto;">وعدنا بالتنفيذ، مش بالنتايج. كل بند قابل للقياس.</p>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px;">
+        <div style="background:rgba(255,255,255,0.12); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; margin-bottom:8px;">⚡</div>
+          <div style="font-weight:800; font-size:14.5px; margin-bottom:4px;">تفعيل ٤٨ ساعة</div>
+          <div style="opacity:0.85; font-size:12.5px; line-height:1.6;">حسابك على console.modonty.com جاهز</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.12); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; margin-bottom:8px;">🏷</div>
+          <div style="font-weight:800; font-size:14.5px; margin-bottom:4px;">صفحة تجارية جاهزة</div>
+          <div style="opacity:0.85; font-size:12.5px; line-height:1.6;">modonty.com/clients/[اسمك] + بيانات منظّمة</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.12); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; margin-bottom:8px;">📄</div>
+          <div style="font-weight:800; font-size:14.5px; margin-bottom:4px;">أول مقال منشور</div>
+          <div style="opacity:0.85; font-size:12.5px; line-height:1.6;">مفهرَس في جوجل بحلول اليوم ٢١</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.12); border-radius:12px; padding:20px; text-align:center;">
+          <div style="font-size:28px; margin-bottom:8px;">📊</div>
+          <div style="font-weight:800; font-size:14.5px; margin-bottom:4px;">لوحة تحليلات حيّة</div>
+          <div style="opacity:0.85; font-size:12.5px; line-height:1.6;">GA4 + ٢٣ تنبيه Telegram اختياري</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(0,0,0,0.15); border-radius:12px; padding:16px 20px; margin-top:24px; text-align:center; font-weight:700; font-size:14.5px;">
+        🛡 لو أخفقنا في أي بند — نمدّد اشتراكك مجاناً حتى ننجز
+      </div>
+    </div>
+  </section>
+
+  <!-- What we don't promise (transparency) -->
+  <section style="background:#FEF3C7; padding: 40px 20px; border-top: 1px solid #FDE68A; border-bottom: 1px solid #FDE68A;">
+    <div style="max-width: 900px; margin: 0 auto;">
+      <div style="display:grid; grid-template-columns: 1fr 2fr; gap: 30px; align-items: center;">
+        <div>
+          <div style="font-size:12px; letter-spacing:2px; color:#92400E; font-weight:800; margin-bottom:8px;">◆ الصدق أولاً</div>
+          <h3 style="font-size:24px; font-weight:800; color:#451A03; letter-spacing:-0.5px; line-height:1.3;">ما لا نعده بيك في ٣٠ يوم</h3>
+        </div>
+        <div style="color:#78350F; font-size:14px; line-height:1.9;">
+          <div style="padding: 6px 0;">✗ <strong>ترتيب فوري في جوجل</strong> — الترتيب الحقيقي يحتاج ٣-٤ شهور من العمل المستمر.</div>
+          <div style="padding: 6px 0;">✗ <strong>زيارات عضوية ملموسة</strong> — تبدأ تظهر عادة بعد شهر ٣-٤.</div>
+          <div style="padding: 6px 0;">✗ <strong>عملاء جاهزين للشراء</strong> — تحتاج ٦ شهور من بناء السمعة والمحتوى.</div>
+          <div style="padding: 12px 0 6px; color:#451A03; font-weight:700;">
+            هذا الواقع الصادق للـ SEO. أي شركة توعدك بترتيب سريع = تكذب عليك.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="section" id="social-new">
+    <div class="section-inner">
+      <div class="section-header">
+        <div class="eyebrow">آراء العملاء</div>
+        <h2>شركات سعودية شافت النتيجة</h2>
+      </div>
+      <div class="testimonials">
+        <div class="testimonial">
+          <div class="stars">★★★★★</div>
+          <p class="quote">"أول أسبوع كانت الصفحة جاهزة والمقال منشور. من رابع شهر بدأت طلبات الحجز تيجي بانتظام. اللي عجبني إنهم صريحين — قالوا لي من البداية: SEO يبي ٣-٤ شهور."</p>
+          <div class="author">
+            <div class="avatar">م</div>
+            <div class="author-info">
+              <strong>د. محمد الشهري</strong>
+              <span>عيادة الشهري · الرياض · مشترك من ٦ شهور</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="stars">★★★★★</div>
+          <p class="quote">"أفضل شي إنهم يكتبون المقالات وينشرونها ويرفعونها في جوجل — أنا بس أشوف اللوحة. ما احتجت أشغّل موظف تسويق ولا كاتب محتوى."</p>
+          <div class="author">
+            <div class="avatar">س</div>
+            <div class="author-info">
+              <strong>سارة القحطاني</strong>
+              <span>متجر أزياء · جدة · مشتركة من ٤ شهور</span>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial">
+          <div class="stars">★★★★★</div>
+          <p class="quote">"جربت شركات وعدوني بترتيب فوري وما شفت شي. هؤلاء وعدوني بتنفيذ محدد ووصلوه في وقته. التقارير مفهومة وأرقام حقيقية من Search Console."</p>
+          <div class="author">
+            <div class="avatar">أ</div>
+            <div class="author-info">
+              <strong>أحمد العنزي</strong>
+              <span>مكتب محاماة · الدمام · مشترك من ٥ شهور</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Payment methods -->
+  <section class="payments-row">
+    <div class="payments-inner">
+      <div class="payments-title">◆ طرق دفع آمنة ومعتمدة</div>
+      <div class="payments-methods">
+        <div class="payment-chip mada">مدى</div>
+        <div class="payment-chip apple">🍎 Apple Pay</div>
+        <div class="payment-chip">STC Pay</div>
+        <div class="payment-chip visa">VISA</div>
+        <div class="payment-chip">Mastercard</div>
+        <div class="payment-chip">3D Secure</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (with CR/VAT) -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-col">
+        <div class="footer-brand-logo">◤ JBRSEO</div>
+        <p style="color:rgba(255,255,255,0.7);">
+          نجيبلك عملاء من جوجل، بدون إعلانات، بدون فريق داخلي.
+          خدمة سعودية بجودة عالمية.
+        </p>
+        <div class="legal-info">
+          CR · 1010XXXXXX<br>
+          VAT · 30XXXXXXXX003<br>
+          الرياض — المملكة العربية السعودية
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>المنتج</h4>
+        <a href="#steps-new">كيف تشتغل</a>
+        <a href="#pricing-new">الأسعار</a>
+        <a href="#">المميزات</a>
+        <a href="#social-new">آراء العملاء</a>
+      </div>
+      <div class="footer-col">
+        <h4>الشركة</h4>
+        <a href="#">من نحن</a>
+        <a href="#">الفريق</a>
+        <a href="#">اتصل بنا</a>
+        <a href="#">🇪🇬 مصر</a>
+      </div>
+      <div class="footer-col">
+        <h4>تواصل</h4>
+        <a href="#" style="direction:ltr; font-family:monospace;">+966 54 101 8020</a>
+        <a href="mailto:hello@jbrseo.com" style="direction:ltr;">hello@jbrseo.com</a>
+        <a href="#">💬 واتساب</a>
+        <a href="#">📸 Instagram</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 JBRSEO. جميع الحقوق محفوظة.</span>
+      <div style="display:flex; gap:16px;">
+        <a href="#" style="color:rgba(255,255,255,0.5);">سياسة الخصوصية</a>
+        <a href="#" style="color:rgba(255,255,255,0.5);">شروط الاستخدام</a>
+      </div>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ═══════ INLINE CHECKOUT MODAL (the big win) ═══════ -->
+<div class="checkout-modal" id="checkoutModal">
+  <div class="checkout-box">
+    <div class="checkout-top">
+      <div class="brand">◤ JBRSEO — إتمام الاشتراك</div>
+      <button class="close" onclick="closeCheckout()">✕</button>
+    </div>
+    <div class="checkout-body">
+      <div class="checkout-form-side">
+        <h1 class="checkout-h1">دقيقة واحدة، وتبدأ ظهورك</h1>
+        <p class="checkout-sub">النموذج + الدفع في نفس المكان. ما تنتقل لأي صفحة ثانية.</p>
+
+        <div class="field-group">
+          <div class="field-group-title">معلوماتك</div>
+          <div class="field-row">
+            <div class="field"><label>الاسم</label><input placeholder="خالد الحربي"></div>
+            <div class="field"><label>الجوال</label><input placeholder="+966 5X XXX XXXX" dir="ltr"></div>
+          </div>
+          <div class="field-row full">
+            <div class="field"><label>البريد الإلكتروني (يوصلك عليه بيانات الدخول)</label><input placeholder="you@example.com" dir="ltr"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>اسم النشاط</label><input placeholder="عيادة الأصالة"></div>
+            <div class="field"><label>نوع النشاط</label><input placeholder="عيادة"></div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-group-title">بيانات البطاقة</div>
+          <div class="card-iframes">
+            <div class="field-row full">
+              <div class="field"><label>رقم البطاقة</label><input placeholder="XXXX XXXX XXXX XXXX" dir="ltr"></div>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>تاريخ الانتهاء</label><input placeholder="MM / YY" dir="ltr"></div>
+              <div class="field"><label>CVV</label><input placeholder="•••" dir="ltr"></div>
+            </div>
+          </div>
+          <div class="brands-row">
+            <span class="brand-chip">مدى</span>
+            <span class="brand-chip">VISA</span>
+            <span class="brand-chip">Mastercard</span>
+            <span class="brand-chip">Apple Pay</span>
+            <span class="brand-chip">3D Secure</span>
+          </div>
+        </div>
+
+        <div class="captcha">
+          <span class="captcha-check">✓</span>
+          <span>Cloudflare Turnstile · تحقّق آلي</span>
+        </div>
+
+        <button class="pay-cta">
+          <span>🔒 ادفع الحين</span>
+          <span class="amount">14,338 ر.س</span>
+        </button>
+
+        <p class="pay-notice">
+          بضغطك "ادفع" فأنت توافق على شروط الاستخدام وسياسة التنفيذ.<br>
+          <strong>وعد التنفيذ: تفعيل + صفحة + مقال + فهرسة خلال ٣٠ يوم — أو نمدّد اشتراكك مجاناً.</strong>
+        </p>
+      </div>
+
+      <div class="checkout-summary-side">
+        <div class="summary-plan">
+          <div class="summary-plan-name">الزخم</div>
+          <div class="summary-plan-desc">يوصلك العميل الجاهز قبل غيرك</div>
+          <ul class="summary-features">
+            <li>٨ مقالات شهرياً + ٢ فيديو</li>
+            <li>تقييم ذكي للزوار</li>
+            <li>١٢ تنبيه تليجرام</li>
+            <li>إيميلات آلية للزوّار</li>
+          </ul>
+        </div>
+
+        <div class="savings-strip">
+          <span>🎁</span>
+          <span>٦ شهور هدية = توفير 33٪</span>
+        </div>
+
+        <div class="price-lines">
+          <div class="price-line"><span class="label">الاشتراك السنوي</span><span>12,468 ر.س</span></div>
+          <div class="price-line"><span class="label">الضريبة (١٥٪)</span><span>1,870 ر.س</span></div>
+          <div class="price-line total"><span>الإجمالي</span><span>14,338 ر.س</span></div>
+        </div>
+
+        <div class="guarantee-box">
+          🛡 <strong>وعدنا لك خلال ٣٠ يوم</strong><br>
+          تفعيل ٤٨س · صفحة تجارية · مقال منشور · فهرسة جوجل.<br>
+          <span style="opacity:.8; font-size:12px;">لو أخفقنا في أي بند — نمدّد اشتراكك مجاناً حتى ننجز.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Annotations toggle -->
+<button class="toggle-annotations" onclick="document.getElementById('annPanel').classList.toggle('open')">📝 الملاحظات</button>
+
+<!-- Annotations panel -->
+<aside class="annotations-panel" id="annPanel">
+  <h4>🎯 التغييرات المفتاحية</h4>
+  <div class="ann-item">
+    <span class="ann-label">١</span>
+    <strong>Trust Row جديد</strong> بعد Hero: عملاء + مدن + Google rating + ZATCA + WhatsApp.
+  </div>
+  <div class="ann-item">
+    <span class="ann-label">٢</span>
+    <strong>Guarantee Badge بارز</strong> في Hero + Bar أخضر بعد Pricing.
+  </div>
+  <div class="ann-item">
+    <span class="ann-label">٣</span>
+    <strong>لهجة سعودية موحّدة</strong> عبر كل الصفحة (وش/هذي/نجيبلك).
+  </div>
+  <div class="ann-item">
+    <span class="ann-label">٤</span>
+    <strong>Announcement عدّاد</strong> "متبقّي ٣٧ مقعد" ديناميكي.
+  </div>
+  <div class="ann-item">
+    <span class="ann-label">٥</span>
+    <strong>٣ باقات فقط</strong> (بدل ٤) — تركيز أعلى.
+  </div>
+  <div class="ann-item">
+    <span class="ann-label">٦</span>
+    <strong>Hook بصري:</strong> "٦ شهور مجاناً · وفّر ٣٣٪".
+  </div>
+  <div class="ann-item">
+    <span class="ann-label">٧</span>
+    <strong>Checkout Modal بدل صفحة منفصلة</strong> — نموذج + دفع في نفس الصفحة. لا انتقال لـ /signup.
+  </div>
+  <div class="ann-item">
+    <span class="ann-label">٨</span>
+    <strong>N-Genius Hosted Session</strong> داخل الـ Modal.
+  </div>
+  <div class="ann-item">
+    <span class="ann-label">٩</span>
+    <strong>Footer معزّز</strong> بـ CR + VAT + عنوان.
+  </div>
+  <div class="ann-item">
+    <span class="ann-label">١٠</span>
+    <strong>هيدر موحّد</strong> عبر كل الصفحات (Nav واحد فقط).
+  </div>
+</aside>
+
+<script>
+  document.querySelectorAll('.compare-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      document.querySelectorAll('.compare-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelector('.view[data-view="' + view + '"]').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  function openCheckout(plan) {
+    document.getElementById('checkoutModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeCheckout() {
+    document.getElementById('checkoutModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('checkoutModal').addEventListener('click', (e) => {
+    if (e.target.id === 'checkoutModal') closeCheckout();
+  });
+</script>
+
+</body>
+</html>

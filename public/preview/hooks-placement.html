@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JBRSEO · قبل وبعد</title>
+<style>
+  :root{--bg:#f5f5f4;--panel:#fff;--ink:#0a0a0a;--mute:#737373;--brand:#059669;--brand-2:#10b981;--red:#dc2626;--line:#e7e5e4;--yellow:#fef3c7;--yellow-b:#f59e0b}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Segoe UI',Tahoma,system-ui,sans-serif;line-height:1.6}
+  .wrap{max-width:1400px;margin:0 auto;padding:20px}
+  h1.page{margin:0 0 6px;font-size:24px}
+  p.sub{margin:0 0 24px;color:var(--mute);font-size:14px}
+
+  /* Section comparison block */
+  .cmp{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:24px;overflow:hidden}
+  .cmp > header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:#fafaf9;border-bottom:1px solid var(--line)}
+  .cmp > header h2{margin:0;font-size:16px}
+  .cmp > header .badge{font-size:11px;background:#e0f2fe;color:#0369a1;padding:3px 8px;border-radius:6px;font-weight:600}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:0}
+  .col{padding:20px;position:relative;min-height:120px}
+  .col.before{background:#fafaf9;border-inline-end:2px dashed var(--line)}
+  .col.after{background:linear-gradient(180deg,#f0fdf4 0%,#fff 100%)}
+  .col .tag{position:absolute;top:10px;inset-inline-end:14px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:.5px}
+  .col.before .tag{background:#f5f5f4;color:#78716c}
+  .col.after .tag{background:var(--brand);color:#fff}
+  @media (max-width:900px){.cols{grid-template-columns:1fr}.col.before{border-inline-end:none;border-bottom:2px dashed var(--line)}}
+
+  /* Mini-mockup elements — simulate the actual landing look */
+  .m-hero{text-align:center;padding:6px 0}
+  .m-proof{display:inline-block;font-size:10px;color:var(--mute);background:#fff;border:1px solid var(--line);padding:3px 10px;border-radius:99px;margin-bottom:10px;font-family:monospace}
+  .m-h1{font-size:22px;font-weight:600;line-height:1.15;letter-spacing:-.5px;margin:0 0 6px}
+  .m-h1 .hi{background:#dcfce7;padding:0 4px;color:var(--brand)}
+  .m-sub{font-size:12px;color:var(--mute);margin:0 auto 10px;max-width:280px}
+  .m-cta{display:inline-block;background:#0a0a0a;color:#fff;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:500}
+  .m-trust{display:flex;justify-content:center;gap:12px;margin-top:8px;font-size:10px;color:var(--mute);flex-wrap:wrap}
+  .m-trust span::before{content:"✓";color:var(--brand);margin-inline-end:3px}
+
+  /* Grid stubs for outcomes/features/etc */
+  .stub-grid{display:grid;gap:8px}
+  .stub-grid.c3{grid-template-columns:repeat(3,1fr)}
+  .stub-grid.c4{grid-template-columns:repeat(4,1fr)}
+  .stub-grid.c2{grid-template-columns:repeat(2,1fr)}
+  .stub{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:11px}
+  .stub .n{font-family:monospace;font-size:10px;color:var(--mute);margin-bottom:4px}
+  .stub .t{font-weight:600;font-size:12px;margin-bottom:3px}
+  .stub .d{font-size:10.5px;color:var(--mute);line-height:1.5}
+  .stub.new{border-color:var(--brand);background:#f0fdf4;box-shadow:0 0 0 3px rgba(5,150,105,.08)}
+  .stub.new .t::before{content:"✨ جديد · ";color:var(--brand);font-size:10px;font-weight:700}
+
+  /* Section title inside mockup */
+  .m-secttl{text-align:center;margin-bottom:10px}
+  .m-secttl h3{margin:0 0 3px;font-size:16px;font-weight:600}
+  .m-secttl p{margin:0;font-size:11px;color:var(--mute)}
+
+  /* Callout — what changed */
+  .changed{margin-top:14px;padding:10px 12px;background:#fffbeb;border-inline-start:3px solid var(--yellow-b);border-radius:6px;font-size:12px;color:#78350f}
+  .changed b{color:#451a03}
+  .changed ul{margin:4px 0 0;padding-inline-start:18px}
+  .changed li{margin-bottom:2px}
+
+  /* Pricing card mini */
+  .plan{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:11px}
+  .plan.hi{background:#0a0a0a;color:#fff;border-color:#0a0a0a}
+  .plan .pname{font-weight:600;font-size:12px;margin-bottom:4px}
+  .plan .pprice{font-family:monospace;font-size:20px;font-weight:600;margin:6px 0}
+  .plan .ptag{font-size:10px;color:var(--mute);margin-bottom:6px;min-height:26px}
+  .plan.hi .ptag{color:#a3a3a3}
+  .plan .pcta{background:var(--brand);color:#fff;padding:5px 8px;border-radius:6px;text-align:center;font-size:10px;font-weight:600;margin:6px 0}
+  .plan.hi .pcta{background:var(--brand-2)}
+  .plan ul{margin:6px 0 0;padding-inline-start:0;list-style:none;font-size:10px;color:var(--mute)}
+  .plan.hi ul{color:#d4d4d4}
+  .plan ul li{margin-bottom:2px}
+  .plan ul li::before{content:"✓";color:var(--brand);margin-inline-end:4px;font-weight:700}
+  .plan ul li.new::before{content:"🔥";color:var(--brand-2)}
+  .plan ul li.new{color:var(--brand);font-weight:600;background:#dcfce7;padding:2px 5px;border-radius:4px;margin-inline-start:-4px}
+  .plan.hi ul li.new{background:rgba(16,185,129,.2);color:#6ee7b7}
+
+  /* Legend */
+  .legend{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;font-size:12px}
+  .legend .k{background:#fff;border:1px solid var(--line);padding:6px 10px;border-radius:8px}
+  .legend .k b{color:var(--brand)}
+
+  /* Alert bar mock (Telegram) */
+  .tg-alert{background:#0088cc;color:#fff;padding:8px 10px;border-radius:8px;font-size:11px;display:flex;align-items:center;gap:6px}
+  .tg-alert::before{content:"📱";font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="page">🎨 JBRSEO — قبل / بعد لكل قسم</h1>
+  <p class="sub">اليسار = القسم الآن على الموقع &nbsp;·&nbsp; اليمين = بعد إضافة الهوكات &nbsp;·&nbsp; الأصفر تحت كل قسم = إيش تغيّر بالضبط.</p>
+
+  <div class="legend">
+    <span class="k">🔵 <b>BEFORE</b> — يمثّل الحالة الحالية على /sa</span>
+    <span class="k">🟢 <b>AFTER</b> — يمثّل الحالة بعد التعديل</span>
+    <span class="k">✨ الأخضر = بطاقة جديدة أضيفت</span>
+  </div>
+
+  <!-- ============ 1. HERO ============ -->
+  <div class="cmp">
+    <header>
+      <h2>Section 1 · Hero (أول ما يشوف الزائر الصفحة)</h2>
+      <span class="badge">app/[country]/(marketingShell)/page.tsx → LandingSection: hero</span>
+    </header>
+    <div class="cols">
+      <div class="col before">
+        <span class="tag">BEFORE</span>
+        <div class="m-hero">
+          <span class="m-proof">سيو بالاشتراك الشهري · السعودية ومصر</span>
+          <div class="m-h1">ابنِ حضورك على جوجل<br><span class="hi">بدون إعلانات · بدون فريق داخلي</span></div>
+          <p class="m-sub">فريقنا يكتب محتوى سيو وينشره على موقعك. أنت توافق بضغطة — وجوجل يجيب لك العملاء كل يوم.</p>
+          <span class="m-cta">ابدأ الآن</span>
+          <div class="m-trust"><span>بدون بطاقة</span><span>إلغاء بأي وقت</span><span>دعم عربي ١٠٠٪</span></div>
+        </div>
+      </div>
+      <div class="col after">
+        <span class="tag">AFTER</span>
+        <div class="m-hero">
+          <span class="m-proof">🔥 ٤٠+ نشاط سعودي يستخدمنا الآن</span>
+          <div class="m-h1">ابنِ حضورك على جوجل<br><span class="hi">بدون إعلانات · بدون فريق داخلي</span></div>
+          <p class="m-sub">اشتراك واحد يشمل: <b>محتوى SEO + موقع كامل + نظام تقييم الزوّار HOT/WARM + تنبيهات تليجرام فورية.</b></p>
+          <span class="m-cta">ابدأ الآن</span>
+          <div class="m-trust"><span>بدون بطاقة</span><span>إلغاء بأي وقت</span><span>دعم عربي ١٠٠٪</span><span style="color:var(--brand);font-weight:600">🇸🇦 مدفوع مسبقاً بمدى + STC Pay</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 20px 16px">
+      <div class="changed">
+        <b>إيش تغيّر:</b>
+        <ul>
+          <li>الـ proof-badge أعلى الـh1: بدل عبارة عامة → عدد ديناميكي من قاعدة البيانات (<code>{clientCount}</code>+ نشاط)</li>
+          <li>الـ subline: بدل شرح عام → <b>القيم الأربع الحقيقية</b> اللي يحصلها العميل (محتوى + موقع + Leads + Telegram)</li>
+          <li>سطر ثقة رابع: طريقة الدفع المحلية (H1 Leads + H8 Mini-site)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 2. HOW IT WORKS ============ -->
+  <div class="cmp">
+    <header>
+      <h2>Section 2 · How It Works (٣ خطوات)</h2>
+      <span class="badge">LandingSection: howItWorks.steps[]</span>
+    </header>
+    <div class="cols">
+      <div class="col before">
+        <span class="tag">BEFORE</span>
+        <div class="stub-grid c3">
+          <div class="stub"><div class="n">٠١</div><div class="t">اختر باقتك</div><div class="d">من ١ إلى ١٢ مقال شهرياً — كتابة ونشر وتحسين.</div></div>
+          <div class="stub"><div class="n">٠٢</div><div class="t">استمارة سريعة</div><div class="d">نتعرّف على نشاطك في ١٠ دقائق — بعدها ما تشيل هم.</div></div>
+          <div class="stub"><div class="n">٠٣</div><div class="t">استلم شهرياً</div><div class="d">محتوى جاهز على مدونتك — تراجع وتوافق بضغطة.</div></div>
+        </div>
+      </div>
+      <div class="col after">
+        <span class="tag">AFTER</span>
+        <div class="stub-grid c3">
+          <div class="stub"><div class="n">٠١</div><div class="t">اختر باقتك</div><div class="d">من ١ إلى ١٢ مقال شهرياً — كتابة ونشر وتحسين.</div></div>
+          <div class="stub"><div class="n">٠٢</div><div class="t">استمارة سريعة</div><div class="d">نتعرّف على نشاطك في ١٠ دقائق — بعدها ما تشيل هم.</div></div>
+          <div class="stub new"><div class="n">٠٣</div><div class="t">فحص من ٢٨ معياراً</div><div class="d">كل مقال يمرّ عبر ٢٨ فحصاً تلقائياً (سيو · روابط · صور · Schema) قبل ما يوصلك.</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 20px 16px">
+      <div class="changed">
+        <b>إيش تغيّر:</b> الخطوة ٣ تركّز على <b>الجودة المضمونة</b> (H6 · ٢٨ فحصاً) بدل عبارة عامة. يزرع ثقة قبل ما يوصل الزائر للأسعار.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 3. WHY NOW / OUTCOMES ============ -->
+  <div class="cmp">
+    <header>
+      <h2>Section 3 · Why Now (كل شهر تأخير له ثمن)</h2>
+      <span class="badge">LandingSection: whyNow.costs[]</span>
+    </header>
+    <div class="cols">
+      <div class="col before">
+        <span class="tag">BEFORE</span>
+        <div class="stub-grid c3">
+          <div class="stub"><div class="n">الشهر ١</div><div class="t">منافسك يسبقك</div><div class="d">Backlinks تكبر وسلطة نطاقه ترتفع.</div></div>
+          <div class="stub"><div class="n">الشهر ٣</div><div class="t">فقدان العملاء</div><div class="d">زائرون كانوا لك ← يذهبون له.</div></div>
+          <div class="stub"><div class="n">الشهر ٦</div><div class="t">تكلفة اللحاق</div><div class="d">تحتاج ضعف الجهد لتصل لمكانه.</div></div>
+        </div>
+      </div>
+      <div class="col after">
+        <span class="tag">AFTER</span>
+        <div style="text-align:center;font-size:13px;font-weight:600;margin-bottom:8px;color:var(--brand)">💡 مقترح: تغيير كامل — من "تخويف" إلى "نتائج مباشرة"</div>
+        <div class="stub-grid c2">
+          <div class="stub new"><div class="n">🔥 H1</div><div class="t">زائر بسكور ٠-١٠٠</div><div class="d">شارة HOT/WARM/COLD تلقائياً — تعرف المستعدّ للشراء قبل ما يتصل بك.</div></div>
+          <div class="stub new"><div class="n">📊 H2</div><div class="t">GA4 مباشر</div><div class="d">من داخل موقعك الآن، من وين، وأي مقال — بدون فتح جوجل تحليلات.</div></div>
+          <div class="stub new"><div class="n">💚 H3</div><div class="t">Site Health A+</div><div class="d">فحص يومي: SSL · DNS · سرعة · Core Web Vitals — درجة محفوظة.</div></div>
+          <div class="stub new"><div class="n">⭐ H7</div><div class="t">نجوم في جوجل</div><div class="d">AggregateRating (Schema.org) — نجوم مقيّمة تحت اسمك في نتائج البحث.</div></div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 20px 16px">
+      <div class="changed">
+        <b>إيش تغيّر:</b> بدل "تكلفة التأخير" (خطاب سلبي عام) → <b>٤ نتائج ملموسة</b> يحصلها العميل من مدونتي فعلياً (H1 + H2 + H3 + H7). القسم يتحوّل من تخويف إلى إثبات قيمة.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 4. FEATURES ROW (in landing) ============ -->
+  <div class="cmp">
+    <header>
+      <h2>Section 4 · Features → Outcomes (٣ صفوف mockup)</h2>
+      <span class="badge">داخل الكود مباشرة (لا يأتي من DB) — Landing.tsx</span>
+    </header>
+    <div class="cols">
+      <div class="col before">
+        <span class="tag">BEFORE</span>
+        <div class="stub-grid c3">
+          <div class="stub"><div class="n">٠١ الكتابة</div><div class="t">مقالات SEO جاهزة</div><div class="d">كاتب متخصص يكتب لك — بدون ما تكتب حرف.</div></div>
+          <div class="stub"><div class="n">٠٢ الاعتماد</div><div class="t">وافق بنقرة</div><div class="d">كل مقال يدخل قائمتك — اعتمد أو ارفض.</div></div>
+          <div class="stub"><div class="n">٠٣ المتابعة</div><div class="t">ترتيبك في جوجل</div><div class="d">لوحة مباشرة من Search Console.</div></div>
+        </div>
+      </div>
+      <div class="col after">
+        <span class="tag">AFTER</span>
+        <div class="stub-grid c2" style="grid-template-columns:repeat(4,1fr);gap:6px">
+          <div class="stub"><div class="n">٠١</div><div class="t">الكتابة</div><div class="d">كاتب متخصص + ٢٨ فحصاً.</div></div>
+          <div class="stub"><div class="n">٠٢</div><div class="t">الاعتماد</div><div class="d">وافق بنقرة قبل النشر.</div></div>
+          <div class="stub"><div class="n">٠٣</div><div class="t">المتابعة</div><div class="d">GSC + GA4 داخل لوحتك.</div></div>
+          <div class="stub new"><div class="n">٠٤</div><div class="t">التحويل</div><div class="d">Leads بسكور HOT + إشعار تليجرام لحظة الدخول.</div></div>
+        </div>
+        <div style="margin-top:12px">
+          <div class="tg-alert">🔥 زائر HOT · سكور 87 · من "أفضل عيادات جدة" — الآن</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 20px 16px">
+      <div class="changed">
+        <b>إيش تغيّر:</b> إضافة <b>صف رابع "التحويل"</b> يجمع H1 + H4 (Leads scoring + Telegram) — تحت الصف mockup مباشر لواجهة تليجرام يوري القيمة اللحظية.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 5. PRICING ============ -->
+  <div class="cmp">
+    <header>
+      <h2>Section 5 · Pricing (باقات تنمو معك)</h2>
+      <span class="badge">Prisma Plan[] · لكل باقة highlights[]</span>
+    </header>
+    <div class="cols">
+      <div class="col before">
+        <span class="tag">BEFORE</span>
+        <div class="stub-grid c3">
+          <div class="plan"><div class="pname">حضور</div><div class="ptag">للبداية السريعة</div><div class="pprice">200</div><div class="pcta">ابدأ الحين</div><ul><li>مقال واحد شهرياً</li><li>نشر تلقائي</li><li>لوحة تحكم</li></ul></div>
+          <div class="plan hi"><div class="pname">النمو 🔥</div><div class="ptag">الأكثر اختياراً</div><div class="pprice">1039</div><div class="pcta">ابدأ بالنمو</div><ul><li>٦ مقالات شهرياً</li><li>نشر تلقائي</li><li>Search Console</li><li>دعم واتساب</li></ul></div>
+          <div class="plan"><div class="pname">القيادة</div><div class="ptag">للتوسّع</div><div class="pprice">2200</div><div class="pcta">ابدأ الحين</div><ul><li>١٢ مقالاً شهرياً</li><li>محتوى مخصص</li><li>دعم مباشر</li></ul></div>
+        </div>
+      </div>
+      <div class="col after">
+        <span class="tag">AFTER</span>
+        <div class="stub-grid c3">
+          <div class="plan"><div class="pname">حضور</div><div class="ptag">للبداية السريعة</div><div class="pprice">200</div><div class="pcta">ابدأ الحين</div><ul><li>مقال واحد شهرياً</li><li class="new">موقع مصغّر</li><li class="new">Site Health A+</li></ul></div>
+          <div class="plan hi"><div class="pname">النمو 🔥</div><div class="ptag">الأكثر اختياراً</div><div class="pprice">1039</div><div class="pcta">ابدأ بالنمو</div><ul><li>٦ مقالات شهرياً</li><li class="new">CRM + Leads scoring</li><li class="new">تنبيهات تليجرام</li><li class="new">GA4 داخل اللوحة</li></ul></div>
+          <div class="plan"><div class="pname">القيادة</div><div class="ptag">للتوسّع</div><div class="pprice">2200</div><div class="pcta">ابدأ الحين</div><ul><li>١٢ مقالاً شهرياً</li><li class="new">شبكة توزيع</li><li class="new">YMYL للقطاعات الحساسة</li></ul></div>
+        </div>
+        <div style="margin-top:12px;background:#fff;border:2px dashed var(--brand);border-radius:8px;padding:10px;text-align:center;font-size:11px">
+          <b style="color:var(--brand)">🎁 valueBundle جديد تحت الأسعار:</b> "قيمة الاشتراك تعادل ٤٠٠٠+ ر.س شهرياً — محتوى + موقع + CRM + Analytics"
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 20px 16px">
+      <div class="changed">
+        <b>إيش تغيّر:</b>
+        <ul>
+          <li>كل باقة تكسب ميّزات جديدة (H1 · H5 · H6 · H8 · H10 · H9) — كل ميزة "جديدة" عليها شعلة 🔥</li>
+          <li>تحت الأسعار: <b>valueBundle</b> جديد يحسب القيمة السوقية للاشتراك (~٤٠٠٠ ر.س) — يبرّر السعر بصرياً</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 6. TRUST BAR / FOOTER ============ -->
+  <div class="cmp">
+    <header>
+      <h2>Section 6 · Trust Bar (شعارات العملاء)</h2>
+      <span class="badge">TrustSection.tsx — يجيب logos من modontyDb مباشرة</span>
+    </header>
+    <div class="cols">
+      <div class="col before">
+        <span class="tag">BEFORE</span>
+        <div style="text-align:center;font-size:11px;color:var(--mute);margin-bottom:8px">يستخدمنا الآن</div>
+        <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+          <div style="width:60px;height:32px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mute)">شعار</div>
+          <div style="width:60px;height:32px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mute)">شعار</div>
+          <div style="width:60px;height:32px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mute)">شعار</div>
+          <div style="width:60px;height:32px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mute)">شعار</div>
+          <div style="width:60px;height:32px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mute)">شعار</div>
+        </div>
+      </div>
+      <div class="col after">
+        <span class="tag">AFTER</span>
+        <div style="text-align:center;font-size:11px;color:var(--mute);margin-bottom:8px">يستخدمنا الآن</div>
+        <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+          <div style="width:60px;height:32px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mute)">شعار</div>
+          <div style="width:60px;height:32px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mute)">شعار</div>
+          <div style="width:60px;height:32px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mute)">شعار</div>
+          <div style="width:60px;height:32px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mute)">شعار</div>
+          <div style="width:60px;height:32px;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--mute)">شعار</div>
+        </div>
+        <div style="margin-top:14px;background:#fff;border:2px dashed var(--brand);border-radius:8px;padding:10px;text-align:center">
+          <div style="font-size:11px;color:var(--brand);font-weight:700;margin-bottom:4px">✨ H10 — شريط جديد تحت الشعارات</div>
+          <div style="font-size:11px;color:var(--ink)">"محتواك ينشر تلقائياً على <b>مدونات نشطة داخل شبكتنا</b> — Backlinks طبيعية + تعرّض أوسع"</div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:0 20px 16px">
+      <div class="changed">
+        <b>إيش تغيّر:</b> شريط جديد أسفل شعارات العملاء يقدّم <b>H10 (شبكة التوزيع)</b> — قيمة مخفية في مدونتي ما كانت مذكورة أبداً في JBRSEO.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SUMMARY ============ -->
+  <div class="cmp" style="border:2px solid var(--brand)">
+    <header style="background:#f0fdf4">
+      <h2 style="color:var(--brand)">📋 خلاصة التنفيذ (ترتيب مقترح)</h2>
+      <span class="badge">١٠ خطوات صغيرة، كل خطوة سيكشن واحد</span>
+    </header>
+    <div style="padding:20px">
+      <table style="width:100%;font-size:12.5px;border-collapse:collapse">
+        <thead>
+          <tr style="background:#fafaf9">
+            <th style="text-align:right;padding:8px 10px;border-bottom:1px solid var(--line);width:40px">#</th>
+            <th style="text-align:right;padding:8px 10px;border-bottom:1px solid var(--line)">السيكشن</th>
+            <th style="text-align:right;padding:8px 10px;border-bottom:1px solid var(--line)">الهوكات</th>
+            <th style="text-align:right;padding:8px 10px;border-bottom:1px solid var(--line);width:110px">النوع</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:8px 10px;border-bottom:1px solid var(--line)">1</td><td style="padding:8px 10px;border-bottom:1px solid var(--line)"><b>howItWorks · Step 03</b></td><td style="padding:8px 10px;border-bottom:1px solid var(--line)">H6 · ٢٨ فحصاً</td><td style="padding:8px 10px;border-bottom:1px solid var(--line);color:var(--brand)">DB · سريع</td></tr>
+          <tr><td style="padding:8px 10px;border-bottom:1px solid var(--line)">2</td><td style="padding:8px 10px;border-bottom:1px solid var(--line)"><b>whyNow.costs → outcomes</b></td><td style="padding:8px 10px;border-bottom:1px solid var(--line)">H1 · H2 · H3 · H7</td><td style="padding:8px 10px;border-bottom:1px solid var(--line);color:var(--brand)">DB · تحويل</td></tr>
+          <tr><td style="padding:8px 10px;border-bottom:1px solid var(--line)">3</td><td style="padding:8px 10px;border-bottom:1px solid var(--line)"><b>hero.proof + hero.sub</b></td><td style="padding:8px 10px;border-bottom:1px solid var(--line)">H8 · H1</td><td style="padding:8px 10px;border-bottom:1px solid var(--line);color:var(--brand)">DB · سريع</td></tr>
+          <tr><td style="padding:8px 10px;border-bottom:1px solid var(--line)">4</td><td style="padding:8px 10px;border-bottom:1px solid var(--line)"><b>Features → صف رابع "التحويل"</b></td><td style="padding:8px 10px;border-bottom:1px solid var(--line)">H1 · H4</td><td style="padding:8px 10px;border-bottom:1px solid var(--line);color:#f97316">Code · متوسط</td></tr>
+          <tr><td style="padding:8px 10px;border-bottom:1px solid var(--line)">5</td><td style="padding:8px 10px;border-bottom:1px solid var(--line)"><b>Plan.highlights</b> (٣ باقات)</td><td style="padding:8px 10px;border-bottom:1px solid var(--line)">H1 · H5 · H6 · H8 · H9 · H10</td><td style="padding:8px 10px;border-bottom:1px solid var(--line);color:var(--brand)">DB · سريع</td></tr>
+          <tr><td style="padding:8px 10px;border-bottom:1px solid var(--line)">6</td><td style="padding:8px 10px;border-bottom:1px solid var(--line)"><b>pricing.valueBundle</b> (سيكشن جديد)</td><td style="padding:8px 10px;border-bottom:1px solid var(--line)">H5 · H8</td><td style="padding:8px 10px;border-bottom:1px solid var(--line);color:#f97316">DB + Code</td></tr>
+          <tr><td style="padding:8px 10px;border-bottom:1px solid var(--line)">7</td><td style="padding:8px 10px;border-bottom:1px solid var(--line)"><b>Trust Bar · تحت الشعارات</b></td><td style="padding:8px 10px;border-bottom:1px solid var(--line)">H10 · شبكة توزيع</td><td style="padding:8px 10px;border-bottom:1px solid var(--line);color:#f97316">Code · متوسط</td></tr>
+        </tbody>
+      </table>
+      <p style="margin:16px 0 0;font-size:13px;color:var(--mute)">نبدأ بالخطوة رقم <b style="color:var(--brand)">١</b> (howItWorks · Step 03) — أفتح الـ DB، أعرض القيمة الحالية BEFORE، أقترح النص الجديد AFTER، تعتمد → أنفّذ.</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

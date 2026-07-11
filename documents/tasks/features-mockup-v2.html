@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>/features الجديدة — Mockup v2 (بـ screenshots حقيقية)</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:#0a0a0a;color:#fff;font-family:"Segoe UI","Tahoma","Noto Sans Arabic",sans-serif;line-height:1.7}
+  a{color:#4ade80;text-decoration:none}
+  img{max-width:100%;display:block;border-radius:12px}
+  .container{max-width:1180px;margin:0 auto;padding:0 20px}
+
+  .review-marker{background:#059669;color:#fff;font-size:10.5px;font-weight:800;padding:4px 10px;border-radius:6px;display:inline-block;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase}
+  .real-badge{background:#4ade80;color:#0a0a0a;font-size:10.5px;font-weight:900;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:8px;letter-spacing:.5px}
+  .missing-badge{background:#fbbf24;color:#0a0a0a;font-size:10.5px;font-weight:900;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:8px;letter-spacing:.5px}
+
+  /* ── HERO ── */
+  .hero{padding:70px 0 50px;text-align:center;background:radial-gradient(ellipse at top,rgba(4,120,87,.2),transparent 60%);border-bottom:1px solid rgba(255,255,255,.06)}
+  .hero h1{font-size:44px;font-weight:900;line-height:1.15;margin-bottom:14px;letter-spacing:-1px}
+  .hero h1 .accent{color:#4ade80}
+  .hero .subtitle{font-size:17px;color:rgba(255,255,255,.7);max-width:640px;margin:0 auto 28px}
+  .stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:900px;margin:0 auto}
+  .stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:18px 22px;min-width:170px;flex:1}
+  .stat b{display:block;font-size:26px;font-weight:900;color:#4ade80;margin-bottom:2px}
+  .stat span{font-size:12.5px;color:rgba(255,255,255,.65);font-weight:600}
+
+  /* ── SECTIONS ── */
+  .section{padding:70px 0;border-top:1px solid rgba(255,255,255,.06)}
+  .section .eyebrow{color:#4ade80;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;font-family:"IBM Plex Mono",monospace}
+  .section h2{font-size:34px;font-weight:900;line-height:1.2;margin-bottom:10px;letter-spacing:-.5px}
+  .section .lead{font-size:16px;color:rgba(255,255,255,.7);max-width:640px;margin-bottom:28px}
+
+  /* ── SCREENSHOT FRAME ── */
+  .screenshot-frame{background:linear-gradient(135deg,rgba(74,222,128,.05),rgba(59,130,246,.05));border:1px solid rgba(74,222,128,.2);border-radius:16px;padding:18px;margin:20px 0}
+  .screenshot-frame .caption{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+  .screenshot-frame .caption h4{font-size:14px;font-weight:800;color:#4ade80}
+  .screenshot-frame .caption a{font-size:12px;color:rgba(255,255,255,.6)}
+  .screenshot-frame img{border:1px solid rgba(255,255,255,.08);border-radius:8px}
+
+  /* ── PLACEHOLDER (needs login) ── */
+  .placeholder-frame{background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(251,146,60,.08));border:2px dashed rgba(251,191,36,.4);border-radius:16px;padding:60px 30px;text-align:center;margin:20px 0}
+  .placeholder-frame h4{font-size:18px;font-weight:900;margin-bottom:8px;color:#fbbf24}
+  .placeholder-frame p{font-size:14px;color:rgba(255,255,255,.7);max-width:520px;margin:0 auto 14px}
+  .placeholder-frame .action-list{display:inline-block;text-align:right;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px 20px;font-size:13.5px;color:rgba(255,255,255,.85);max-width:540px}
+  .placeholder-frame .action-list ul{padding-inline-start:20px}
+  .placeholder-frame .action-list li{margin-bottom:4px}
+
+  /* ── GROUP CARDS ── */
+  .groups{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+  @media(max-width:900px){.groups{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:600px){.groups{grid-template-columns:1fr}}
+  .group-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px}
+  .group-card .icon{font-size:24px;margin-bottom:8px}
+  .group-card h3{font-size:15px;font-weight:800;margin-bottom:6px}
+  .group-card p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.65}
+  .group-card ul{margin-top:8px;padding-inline-start:14px}
+  .group-card li{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:2px}
+
+  /* ── SPLIT LAYOUT ── */
+  .split{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:start;margin-top:20px}
+  @media(max-width:900px){.split{grid-template-columns:1fr}}
+  .split-features{display:grid;grid-template-columns:1fr;gap:10px}
+
+  /* ── YMYL ── */
+  .ymyl-hero{background:linear-gradient(135deg,#f8fafc,#e2e8f0);color:#0f172a;padding:30px;border-radius:16px;margin-top:20px}
+  .ymyl-hero h3{color:#065f46;font-size:22px;margin-bottom:6px}
+  .ymyl-hero p{color:#334155;font-size:14.5px;line-height:1.7}
+  .sectors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+  @media(max-width:700px){.sectors{grid-template-columns:1fr}}
+  .sector-card{background:#fff;color:#0f172a;border-radius:12px;padding:18px;text-align:center;border:1px solid #e2e8f0}
+  .sector-card .icon{font-size:32px;margin-bottom:6px}
+  .sector-card h4{font-size:15px;font-weight:900;margin-bottom:4px;color:#065f46}
+  .sector-card p{font-size:12.5px;color:#334155}
+
+  /* ── PRICING ── */
+  .pricing{overflow-x:auto;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;margin-top:20px}
+  .pricing table{width:100%;border-collapse:collapse;font-size:13px}
+  .pricing th,.pricing td{padding:12px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,.06)}
+  .pricing th{background:rgba(255,255,255,.03);font-weight:800;color:#4ade80}
+  .pricing th.rec{background:rgba(74,222,128,.15);position:relative}
+  .pricing th.rec::before{content:"🔥 الأكثر شيوعاً";position:absolute;top:-11px;right:50%;transform:translateX(50%);background:#059669;color:#fff;font-size:10px;font-weight:900;padding:3px 8px;border-radius:6px;white-space:nowrap}
+  .pricing td.plan-name{font-weight:800;color:#fff}
+  .pricing .price{color:#4ade80;font-weight:900;font-size:17px}
+
+  /* ── COMPARE ── */
+  .compare-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
+  @media(max-width:800px){.compare-cards{grid-template-columns:1fr}}
+  .compare-card{border-radius:16px;padding:24px;border:1px solid rgba(255,255,255,.1)}
+  .compare-card.bad{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.25)}
+  .compare-card.good{background:rgba(4,120,87,.12);border-color:rgba(74,222,128,.35)}
+  .compare-card h3{font-size:16px;font-weight:900;margin-bottom:14px}
+  .compare-card ul{list-style:none;padding:0}
+  .compare-card li{font-size:13.5px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+  .compare-card.bad li::before{content:"✗ ";color:#f87171;font-weight:900}
+  .compare-card.good li::before{content:"✓ ";color:#4ade80;font-weight:900}
+
+  /* ── FINAL CTA ── */
+  .final-cta{background:linear-gradient(135deg,#064e3b,#047857);border-radius:20px;padding:60px 30px;text-align:center;margin:40px 0 20px}
+  .final-cta h2{font-size:30px;font-weight:900;margin-bottom:10px}
+  .final-cta p{font-size:15px;color:rgba(255,255,255,.85);margin-bottom:24px;max-width:520px;margin-inline:auto}
+  .final-cta .btn-primary{display:inline-block;background:#fff;color:#064e3b;font-weight:900;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none}
+  .final-cta .btn-secondary{display:inline-block;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);font-weight:600;font-size:14px;padding:14px 24px;border-radius:10px;margin-inline-start:8px;text-decoration:none}
+
+  /* ── TELEGRAM ── */
+  .telegram-groups{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
+  @media(max-width:900px){.telegram-groups{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:500px){.telegram-groups{grid-template-columns:1fr}}
+  .telegram-card{background:rgba(37,99,235,.08);border:1px solid rgba(59,130,246,.25);border-radius:12px;padding:14px;text-align:center}
+  .telegram-card .tg-icon{font-size:22px;margin-bottom:6px}
+  .telegram-card h4{font-size:13px;font-weight:800;margin-bottom:4px}
+  .telegram-card p{font-size:11.5px;color:rgba(255,255,255,.6)}
+
+  /* ── FOOTER ── */
+  .doc-footer{background:#000;padding:24px 20px;text-align:center;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:rgba(255,255,255,.5)}
+</style>
+</head>
+<body>
+
+<!-- =============== HERO =============== -->
+<section class="hero">
+  <div class="container">
+    <span class="review-marker">HERO</span>
+    <h1>اشتراك واحد <span class="accent">—</span> منظومة كاملة</h1>
+    <p class="subtitle">لوحة تحكّم · صفحة عميل احترافية · مقالات تبيع · حماية YMYL · تنبيهات تيليجرام. كل شي في مدونتي.</p>
+    <div class="stats">
+      <div class="stat"><b>٤</b><span>باقات</span></div>
+      <div class="stat"><b>٢٩</b><span>ميزة رئيسية</span></div>
+      <div class="stat"><b>٢٣</b><span>تنبيه فوري</span></div>
+      <div class="stat"><b>٤</b><span>قطاعات YMYL</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== SECTION 1: CONSOLE (needs login) =============== -->
+<section class="section">
+  <div class="container">
+    <span class="review-marker">SECTION 1 · لوحة التحكم</span>
+    <div class="eyebrow">01 · CONSOLE</div>
+    <h2>لوحة تحكّمك — كل شي في عينك</h2>
+    <p class="lead">تفتح لوحتك، تلقى شغلك مباشر: أرقامك من جوجل، محتواك الجاي، عملاءك، فوترتك.</p>
+
+    <div class="screenshot-frame">
+      <div class="caption">
+        <div>
+          <span class="real-badge">✓ SCREENSHOT حقيقي</span>
+          <h4>لوحة تحكّم سمايل تاون — ٥ مقالات · ١٦٦ مشاهدة · ٤١ ظهور (+٨٪) · تحويلات ١</h4>
+        </div>
+        <span style="font-size:11px;color:rgba(255,255,255,.5)">صورة من لوحتك الفعلية</span>
+      </div>
+      <img src="../../public/features/console-dashboard.png" alt="لوحة تحكم مدونتي - عيادات سمايل تاون">
+    </div>
+
+    <div class="groups">
+      <div class="group-card"><div class="icon">📊</div><h3>نظرة عامة سريعة</h3><p>مقال منشور · مشاهدات · مشتركين جدد — كل شي في السطر الأول.</p><ul><li>هذا الشهر: ٥ مقال · ١٦٦ مشاهدة</li><li>الإحصائيات (٤١ ظهور +٨٪)</li><li>معدل الارتداد (٧.٩٪)</li></ul></div>
+      <div class="group-card"><div class="icon">⚠️</div><h3>يحتاج انتباهك</h3><p>يلفت انتباهك للأمور اللي منتظرة قرارك — بلا فوت.</p><ul><li>المقالات (موافقات)</li><li>التعليقات (مراجعة)</li><li>الدعم (رسائل)</li></ul></div>
+      <div class="group-card"><div class="icon">📈</div><h3>الأداء الأسبوعي</h3><p>٤ مؤشرات موثّقة قدامك مباشرة.</p><ul><li>الإحصائيات (Impressions)</li><li>درجة التفاعل (٣٣/١٠٠)</li><li>التحويلات (١، ٠.٦٪)</li><li>نسبة الارتداد</li></ul></div>
+      <div class="group-card"><div class="icon">✍️</div><h3>محتواك (Sidebar)</h3><p>كل حاجة تخص محتوى صفحتك — منظّمة.</p><ul><li>بيانات نشاطك (+YMYL)</li><li>معلومات نشاطك</li><li>محتوى صفحتك</li><li>معرض الصور</li><li>أسئلة صفحتك</li><li>الصور والملفات</li><li>المقالات</li></ul></div>
+      <div class="group-card"><div class="icon">👥</div><h3>عملاءك (Sidebar)</h3><p>كل تفاعل عميل في مكان واحد.</p><ul><li>مشتركو النشرة (١)</li><li>العملاء المحتملون (Leads)</li><li>الحجوزات</li><li>الأسئلة الشائعة (+٩)</li><li>آراء حول نشاطك</li><li>تقييمات نشاطك</li></ul></div>
+      <div class="group-card"><div class="icon">🛡️</div><h3>الموثوقية والصحة (Sidebar)</h3><p>مدى جاهزية موقعك.</p><ul><li>صحة موقعك</li><li>الحملات (قريباً 🚀)</li><li>YMYL badge على بيانات نشاطك</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== SECTION 2: PUBLIC PAGE — REAL SCREENSHOT =============== -->
+<section class="section">
+  <div class="container">
+    <span class="review-marker">SECTION 2 · صفحة العميل</span>
+    <div class="eyebrow">02 · YOUR PAGE</div>
+    <h2>صفحتك العامة — بديل موقعك الإلكتروني</h2>
+    <p class="lead">ما عندك موقع؟ ما مشكلة. مدونتي تعطيك صفحة كاملة تشوفها عملاءك: هويّتك، خدماتك، حجزك، تقييماتك.</p>
+
+    <div class="screenshot-frame">
+      <div class="caption">
+        <div>
+          <span class="real-badge">✓ SCREENSHOT حقيقي</span>
+          <h4>عيادات سمايل تاون — أعلى أثر رقمي على مدونتي (١٠,٦٨٤ من جوجل)</h4>
+        </div>
+        <a href="https://www.modonty.com/clients/عيادات-سمايل-تاون-لطب-الفم-و-الأسنان" target="_blank">شوف الصفحة الحقيقية ←</a>
+      </div>
+      <img src="../../public/features/client-page.png" alt="صفحة عميل حقيقية على مدونتي - عيادات سمايل تاون">
+    </div>
+
+    <div class="split">
+      <div>
+        <div class="split-features">
+          <div class="group-card"><div class="icon">📌</div><h3>هوية كاملة + شارة موثّق</h3><p>لوگو · اسم · تخصص · موقع (الجيزة، شارع الملك فيصل) · شارة "موثّق ✓" · سنة التأسيس (2022).</p></div>
+          <div class="group-card"><div class="icon">🎨</div><h3>Hero banner برندي</h3><p>صورة رئيسية احترافية بتصميم يعبّر عن العميل — "نرسم ابتسامتك بثقة".</p></div>
+          <div class="group-card"><div class="icon">📞</div><h3>أزرار CTA بارزة</h3><p>احجز الآن (أزرق) · متابعة · مشاركة · واتساب عائم (green icon).</p></div>
+          <div class="group-card"><div class="icon">📊</div><h3>الأثر الرقمي من Google</h3><p>كارت "١٠,٦٨٤ الأثر الرقمي" مع شعار G — دليل مصداقية فوري.</p></div>
+          <div class="group-card"><div class="icon">🗂️</div><h3>٩ أقسام غنية</h3><p>نظرة عامة · آراء العملاء · المقالات · عن الشركة · FAQ · الموقع والتواصل · ساعات العمل · الموثوقية · النشرة البريدية.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="screenshot-frame" style="margin:0">
+          <div class="caption">
+            <span class="real-badge">✓ FULL PAGE</span>
+            <span style="font-size:11px;color:rgba(255,255,255,.5)">صفحة كاملة scrolled</span>
+          </div>
+          <img src="../../public/features/client-page-full.png" alt="صفحة عميل حقيقية - كاملة">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== SECTION 3: ARTICLE — REAL SCREENSHOT =============== -->
+<section class="section">
+  <div class="container">
+    <span class="review-marker">SECTION 3 · المقالات</span>
+    <div class="eyebrow">03 · ARTICLES</div>
+    <h2>مقالاتك — محتوى يبيع فعلاً</h2>
+    <p class="lead">مقال احترافي مع صور high-res، إحصائيات قراءة، أزرار تفاعل، وشارة العميل الموثّقة — كل شي مصمّم يخلي القارئ ينحوّل لعميل.</p>
+
+    <div class="screenshot-frame">
+      <div class="caption">
+        <div>
+          <span class="real-badge">✓ SCREENSHOT حقيقي</span>
+          <h4>مقال حقيقي: "ابتسامة هوليود قبل وبعد" (سمايل تاون)</h4>
+        </div>
+        <a href="https://www.modonty.com/articles/ابتسامة-هوليود-قبل-وبعد" target="_blank">شوف المقال الحقيقي ←</a>
+      </div>
+      <img src="../../public/features/article.png" alt="مقال حقيقي على مدونتي">
+    </div>
+
+    <div class="groups">
+      <div class="group-card"><div class="icon">📝</div><h3>Header احترافي</h3><p>عنوان بارز · وصف SEO · تاريخ النشر · اسم منصة النشر (Modonty).</p></div>
+      <div class="group-card"><div class="icon">📈</div><h3>إحصائيات كاملة</h3><p>عدد الكلمات (1189) · وقت القراءة (6 دقائق) · المشاهدات (3) · التعليقات (4).</p></div>
+      <div class="group-card"><div class="icon">🖼️</div><h3>صورة رئيسية + معرض</h3><p>Hero image high-quality (before/after) · معرض صور داخلية · Open Graph لِلمشاركة.</p></div>
+      <div class="group-card"><div class="icon">🎯</div><h3>Sidebar تفاعل</h3><p>اشترك مجاناً · مشاركة · تعليق · حفظ · إعجاب — كل الأزرار في متناول القارئ.</p></div>
+      <div class="group-card"><div class="icon">🏥</div><h3>شارة العميل الموثّقة</h3><p>Sidebar يعرض بطاقة العميل (سمايل تاون) مع صورة، تخصص، وموقع — رابط مباشر لصفحته.</p></div>
+      <div class="group-card"><div class="icon">🚀</div><h3>SEO + AEO كامل</h3><p>JSON-LD · Meta tags · Structured Data · فحص جودة 28 نقطة · طلب فهرسة Google.</p></div>
+    </div>
+
+    <div class="screenshot-frame">
+      <div class="caption">
+        <div><span class="real-badge">✓ FULL ARTICLE</span> <h4 style="display:inline">Article scrolled — كل الأقسام</h4></div>
+      </div>
+      <img src="../../public/features/article-full.png" alt="مقال حقيقي كامل">
+    </div>
+  </div>
+</section>
+
+<!-- =============== SECTION 4: TRUST/YMYL =============== -->
+<section class="section">
+  <div class="container">
+    <span class="review-marker">SECTION 4 · YMYL</span>
+    <div class="eyebrow">04 · TRUST</div>
+    <h2>مصداقيتك محميّة</h2>
+    <p class="lead">القطاعات الحساسة (طبية · مالية · قانونية) تحتاج معايير أعلى. إحنا نطبّقها — عشان جوجل يثق فيك، وعميلك يشتري منك.</p>
+
+    <div class="ymyl-hero">
+      <h3>YMYL — المحتوى الحساس (Your Money or Your Life)</h3>
+      <p>أي محتوى يمس <strong>صحة</strong> أو <strong>مال</strong> أو <strong>حقوق</strong> العميل — جوجل يطبّق عليه معايير أعلى (E-E-A-T). إحنا نحمي مصداقيتك.</p>
+      <div class="sectors">
+        <div class="sector-card"><div class="icon">⚕️</div><h4>القطاع الطبي</h4><p>عيادات · مستشفيات · أطباء — توثيق كامل + التزام أخلاقيات.</p></div>
+        <div class="sector-card"><div class="icon">⚖️</div><h4>القطاع القانوني</h4><p>محامون · مكاتب قانونية — توثيق التخصص + المرجعية.</p></div>
+        <div class="sector-card"><div class="icon">💰</div><h4>القطاع المالي</h4><p>استشارات مالية · محاسبة · تأمين — معايير SAMA/ZATCA.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== SECTION 5: TELEGRAM =============== -->
+<section class="section">
+  <div class="container">
+    <span class="review-marker">SECTION 5 · تنبيهات تيليجرام</span>
+    <div class="eyebrow">05 · ALERTS</div>
+    <h2>٢٣ تنبيه فوري على تيليجرام</h2>
+    <p class="lead">لا تفوت شي. أي حدث مهم — يوصلك على تيليجرام في ثوان.</p>
+
+    <div class="telegram-groups">
+      <div class="telegram-card"><div class="tg-icon">📈</div><h4>SEO</h4><p>ترتيب · impressions · clicks · errors</p></div>
+      <div class="telegram-card"><div class="tg-icon">📝</div><h4>المحتوى</h4><p>مقال جاهز · نشر · تحديث</p></div>
+      <div class="telegram-card"><div class="tg-icon">👥</div><h4>العملاء</h4><p>Lead جديد · حجز · تقييم</p></div>
+      <div class="telegram-card"><div class="tg-icon">💳</div><h4>الفوترة</h4><p>فاتورة · تجديد · ترقية</p></div>
+      <div class="telegram-card"><div class="tg-icon">🛡️</div><h4>الأمان</h4><p>دخول · تغيير · موقع مكسور</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============== SECTION 6: PRICING + COMPARE + CTA =============== -->
+<section class="section">
+  <div class="container">
+    <span class="review-marker">SECTION 6 · Pricing + Compare + CTA</span>
+    <div class="eyebrow">06 · CHOOSE</div>
+    <h2>اختر ما يناسب نموّك</h2>
+    <p class="lead">٤ باقات لمراحل نمو مختلفة. ابدأ من ١١٠ ريال شهرياً. الاشتراك السنوي = ٦ شهور هدية.</p>
+
+    <div class="pricing">
+      <table>
+        <thead>
+          <tr>
+            <th>الميزة</th>
+            <th>الحضور</th>
+            <th class="rec">النمو</th>
+            <th>الأعمال</th>
+            <th>الشركات</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>السعر الشهري</td><td><span class="price">١١٠ ر.س</span></td><td class="rec"><span class="price">٢٤٠ ر.س</span></td><td><span class="price">٤٥٠ ر.س</span></td><td><span class="price">مخصص</span></td></tr>
+          <tr><td>عدد المقالات/شهر</td><td>٤</td><td class="rec">٨</td><td>١٢</td><td>مخصص</td></tr>
+          <tr><td>نشر على منصة مدونتي</td><td>✓</td><td class="rec">✓</td><td>✓</td><td>✓</td></tr>
+          <tr><td>سوشال ميديا مدونتي</td><td>—</td><td class="rec">✓</td><td>✓</td><td>✓</td></tr>
+          <tr><td>نشر على موقعك</td><td>—</td><td class="rec">—</td><td>✓</td><td>✓</td></tr>
+          <tr><td>Google Search Console (view)</td><td>—</td><td class="rec">—</td><td>✓</td><td>✓</td></tr>
+          <tr><td>مدير حساب مخصص</td><td>—</td><td class="rec">—</td><td>—</td><td>✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="font-size:22px;font-weight:900;margin:44px 0 8px;text-align:center">إيش الفرق فعلاً؟</h3>
+    <p style="text-align:center;color:rgba(255,255,255,.65);font-size:14.5px;margin-bottom:20px">قارن بين توظيف فريق داخلي vs اشتراك مدونتي.</p>
+    <div class="compare-cards">
+      <div class="compare-card bad">
+        <h3>❌ توظّف فريق محتوى داخلي</h3>
+        <ul>
+          <li>راتب كاتب: ٦-١٠ آلاف ريال/شهر</li>
+          <li>راتب مصمم: ٥-٨ آلاف ريال/شهر</li>
+          <li>راتب متخصص SEO: ٨-١٥ ألف/شهر</li>
+          <li>تجهيزات · تدريب · إدارة</li>
+          <li>مسؤولية العمل · الإجازات</li>
+          <li>= ٢٠-٣٥ ألف ريال/شهر</li>
+        </ul>
+      </div>
+      <div class="compare-card good">
+        <h3>✅ اشتراك واحد — نظام كامل</h3>
+        <ul>
+          <li>يبدأ من ١١٠ ريال/شهر</li>
+          <li>فريق كامل جاهز</li>
+          <li>لوحة تحكم شفافة ٢٤/٧</li>
+          <li>تنبيهات فورية · دعم مباشر</li>
+          <li>بلا مسؤوليات موظفين</li>
+          <li>= توفير ٩٥٪+ من التكلفة</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="final-cta">
+      <h2>جاهز ترى ترتيبك يتحرّك؟</h2>
+      <p>ابدأ من ١١٠ ريال شهرياً — أو تكلّم معنا عن باقة مخصصة.</p>
+      <a href="#" class="btn-primary">دعنا نبني حضورك ←</a>
+      <a href="#" class="btn-secondary">تكلّم معنا على واتساب</a>
+    </div>
+  </div>
+</section>
+
+<div class="doc-footer">
+  📸 <strong>كل الـ Screenshots حقيقية:</strong> Console حقيقي (سمايل تاون) · صفحة عميل (١٠,٦٨٤ أثر رقمي) · مقال "ابتسامة هوليود قبل وبعد" (1189 كلمة)<br>
+  📁 <strong>الصور محفوظة في:</strong> <code>public/features/</code> — جاهزة للـ Landing.tsx مباشرة
+</div>
+
+</body>
+</html>
