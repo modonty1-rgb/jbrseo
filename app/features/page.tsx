@@ -165,8 +165,10 @@ export default async function FeaturesPage() {
   const signupHref = `/${countrySlug}/signup`;
   const currency = country === "EG" ? "ج.م" : "ر.س";
 
-  // Plans for pricing table (from DB)
+  // Plans for pricing table (from DB) — plans is already filtered to `visible: true`.
   const displayPlans = plans.slice(0, 4);
+  const visibleCount = plans.length; // used for hero stats + pricing lead — reflects reality, not schema max
+  const arNum = (n: number) => n.toLocaleString("ar-EG");
   const recommendedIndex = displayPlans.findIndex((p) => Boolean(p.featuredBadge)) ;
   const recIdx = recommendedIndex >= 0 ? recommendedIndex : 1;
 
@@ -194,7 +196,7 @@ export default async function FeaturesPage() {
               لوحة تحكّم · صفحة عميل احترافية · مقالات تبيع · حماية YMYL · تنبيهات تيليجرام. كل شي في مدونتي.
             </p>
             <div className="fx-stats">
-              <div className="fx-stat"><b>٤</b><span>باقات</span></div>
+              <div className="fx-stat"><b>{arNum(visibleCount)}</b><span>باقات</span></div>
               <div className="fx-stat"><b>٢٩</b><span>ميزة رئيسية</span></div>
               <div className="fx-stat"><b>٢٣</b><span>تنبيه فوري</span></div>
               <div className="fx-stat"><b>٤</b><span>قطاعات YMYL</span></div>
@@ -205,8 +207,8 @@ export default async function FeaturesPage() {
         {/* ─── SECTION 1: CONSOLE ─── */}
         <section className="fx-sec">
           <div className="fx-container">
-            <div className="fx-eyebrow">01 · CONSOLE</div>
-            <h2>لوحة تحكّمك — كل شي في عينك</h2>
+            <div className="fx-eyebrow">٠١ · لوحة التحكم</div>
+            <h2>لوحة تحكّمك — كل شي أمام عينك</h2>
             <p className="fx-lead">
               تفتح لوحتك، تلقى شغلك مباشر: أرقامك من جوجل، محتواك الجاي، عملاءك، فوترتك.
             </p>
@@ -293,7 +295,7 @@ export default async function FeaturesPage() {
         {/* ─── SECTION 2: PUBLIC PAGE ─── */}
         <section className="fx-sec">
           <div className="fx-container">
-            <div className="fx-eyebrow">02 · YOUR PAGE</div>
+            <div className="fx-eyebrow">٠٢ · صفحتك</div>
             <h2>صفحتك العامة — بديل موقعك الإلكتروني</h2>
             <p className="fx-lead">
               ما عندك موقع؟ ما مشكلة. مدونتي تعطيك صفحة كاملة تشوفها عملاءك: هويّتك، خدماتك، حجزك، تقييماتك.
@@ -350,7 +352,7 @@ export default async function FeaturesPage() {
         {/* ─── SECTION 3: ARTICLES ─── */}
         <section className="fx-sec">
           <div className="fx-container">
-            <div className="fx-eyebrow">03 · ARTICLES</div>
+            <div className="fx-eyebrow">٠٣ · المقالات</div>
             <h2>مقالاتك — محتوى يبيع فعلاً</h2>
             <p className="fx-lead">
               مقال احترافي مع صور high-res، إحصائيات قراءة، أزرار تفاعل، وشارة العميل الموثّقة — كل شي مصمّم يخلي القارئ ينحوّل لعميل.
@@ -407,7 +409,7 @@ export default async function FeaturesPage() {
         {/* ─── SECTION 4: YMYL ─── */}
         <section className="fx-sec">
           <div className="fx-container">
-            <div className="fx-eyebrow">04 · TRUST</div>
+            <div className="fx-eyebrow">٠٤ · الثقة</div>
             <h2>مصداقيتك محميّة</h2>
             <p className="fx-lead">
               القطاعات الحساسة (طبية · مالية · قانونية) تحتاج معايير أعلى. إحنا نطبّقها — عشان جوجل يثق فيك، وعميلك يشتري منك.
@@ -442,7 +444,7 @@ export default async function FeaturesPage() {
         {/* ─── SECTION 5: TELEGRAM ─── */}
         <section className="fx-sec">
           <div className="fx-container">
-            <div className="fx-eyebrow">05 · ALERTS</div>
+            <div className="fx-eyebrow">٠٥ · التنبيهات</div>
             <h2>٢٣ تنبيه فوري على تيليجرام</h2>
             <p className="fx-lead">
               لا تفوت شي. أي حدث مهم — يوصلك على تيليجرام في ثوان.
@@ -461,10 +463,10 @@ export default async function FeaturesPage() {
         {/* ─── SECTION 6: PRICING + COMPARE + CTA ─── */}
         <section className="fx-sec">
           <div className="fx-container">
-            <div className="fx-eyebrow">06 · CHOOSE</div>
+            <div className="fx-eyebrow">٠٦ · اختر</div>
             <h2>اختر ما يناسب نموّك</h2>
             <p className="fx-lead">
-              ٤ باقات لمراحل نمو مختلفة. الاشتراك السنوي = ٦ شهور هدية.
+              {arNum(visibleCount)} باقات لمراحل نمو مختلفة. الاشتراك السنوي = ٦ شهور هدية.
             </p>
 
             {displayPlans.length > 0 ? (
