@@ -9,7 +9,11 @@
 import { createSign } from "node:crypto";
 import { unstable_cache } from "next/cache";
 
-const PROPERTY_ID = process.env.GA4_PROPERTY_ID;
+// Reads MODONTY's GA4 property (for Impact Bar + per-client case studies on the
+// public site). Distinct from GA4_PROPERTY_ID which lib/analytics.ts uses to read
+// JBRSEO's OWN property for the admin dashboard. Falls back to GA4_PROPERTY_ID
+// only for local dev convenience — production must set both.
+const PROPERTY_ID = process.env.MODONTY_GA4_PROPERTY_ID ?? process.env.GA4_PROPERTY_ID;
 const CLIENT_EMAIL = process.env.GA4_CLIENT_EMAIL;
 const SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
 
