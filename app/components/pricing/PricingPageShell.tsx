@@ -69,7 +69,7 @@ export function PricingPageShell({
           </div>
 
           <p className="mb-6 text-[11px] text-muted-foreground">
-            بدون بطاقة ائتمان · رفع الباقة بضغطة زر · إلغاء بأي وقت
+            بدون بطاقة ائتمان · رفع الباقة بضغطة زر · ٦ شهور هدية على السنوي
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <a
