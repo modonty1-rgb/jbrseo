@@ -5,11 +5,10 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import type { Prisma } from "@prisma/client";
 import { upsertLandingSection } from "@/lib/landing-sections";
 import { isAdmin } from "@/app/actions/auth";
+import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 
 const CONTENT_KEYS = [
   "hero",
-  "whyNow",
-  "howItWorks",
   "socialProof",
   "faq",
   "finalCta",
@@ -34,21 +33,6 @@ function revalidateLanding() {
   revalidateTag("landing", "default");
   revalidatePath("/");
   revalidatePath("/pricing");
-}
-
-/** Accepts `example.com` or `https://example.com`; rejects non-http(s) schemes. */
-function normalizeHttpUrl(raw: string): string | null {
-  const t = raw.trim();
-  if (!t) return null;
-  const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(t);
-  const candidate = hasScheme ? t : `https://${t}`;
-  try {
-    const u = new URL(candidate);
-    if (u.protocol !== "http:" && u.protocol !== "https:") return null;
-    return u.href;
-  } catch {
-    return null;
-  }
 }
 
 export async function updateSection(formData: FormData) {
@@ -110,30 +94,7 @@ export async function updateHeroSection(formData: FormData) {
     .map((l) => l.trim())
     .filter(Boolean);
 
-  const ctaLabel = ((formData.get("ctaLabel") as string | null) ?? "").trim() || "ابدأ مجاناً — بدون بطاقة";
-
-  // Trust bar clients (merged inline with hero — single source of truth in LandingSection.hero)
-  const rawClientsJson = (formData.get("trustClientsJson") as string | null) ?? "[]";
-  let trustBarClients: { name: string; logoUrl: string; href?: string }[] = [];
-  try {
-    const parsed: unknown = JSON.parse(rawClientsJson);
-    if (Array.isArray(parsed)) {
-      trustBarClients = parsed
-        .filter((c): c is Record<string, unknown> => typeof c === "object" && c !== null)
-        .filter((c) => typeof c.name === "string" && !!(c.name as string).trim())
-        .map((c) => {
-          const logoUrl = typeof c.logoUrl === "string" ? normalizeHttpUrl(c.logoUrl) ?? "" : "";
-          const href = typeof c.href === "string" ? normalizeHttpUrl(c.href) : null;
-          return {
-            name: (c.name as string).trim(),
-            logoUrl,
-            ...(href ? { href } : {}),
-          };
-        });
-    }
-  } catch {
-    trustBarClients = [];
-  }
+  const ctaLabel = ((formData.get("ctaLabel") as string | null) ?? "").trim() || DEFAULT_CTA_LABEL;
 
   const hero = {
     proof,
@@ -141,86 +102,10 @@ export async function updateHeroSection(formData: FormData) {
     h1Line2,
     sub,
     trust: trustLines,
-    trustBarClients,
   };
 
   await upsertLandingSection("hero", hero);
   await upsertLandingSection("ctaLabel", { ctaLabel });
-
-  revalidateLanding();
-
-  redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
-}
-
-export async function updateWhyNowSection(formData: FormData) {
-  if (!(await isAdmin())) return;
-
-  const section = (formData.get("section") as string | null)?.trim() ?? "";
-  const redirectTo =
-    (formData.get("redirect") as string | null)?.trim() ??
-    `/admin/content/whyNow`;
-
-  if (section !== "whyNow") {
-    return redirect(redirectTo);
-  }
-
-  const costsCount = parseInt(
-    ((formData.get("costsCount") as string | null) ?? "0").trim(),
-    10,
-  );
-
-  const title1 = ((formData.get("title1") as string | null) ?? "").trim();
-  const subtitle = ((formData.get("subtitle") as string | null) ?? "").trim();
-
-  const costs = [];
-  const maxCosts = Number.isFinite(costsCount) ? costsCount : 0;
-  for (let i = 0; i < maxCosts; i++) {
-    const month = ((formData.get(`costs_${i}_month`) as string | null) ?? "").trim();
-    const label = ((formData.get(`costs_${i}_label`) as string | null) ?? "").trim();
-    const desc = ((formData.get(`costs_${i}_desc`) as string | null) ?? "").trim();
-    const icon = ((formData.get(`costs_${i}_icon`) as string | null) ?? "").trim();
-    if (!month && !label && !desc && !icon) continue;
-    costs.push({ month, label, desc, icon });
-  }
-
-  const whyNow = { title1, subtitle, costs };
-
-  await upsertLandingSection("whyNow", whyNow);
-
-  revalidateLanding();
-
-  redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
-}
-
-export async function updateHowItWorksSection(formData: FormData) {
-  if (!(await isAdmin())) return;
-
-  const section = (formData.get("section") as string | null)?.trim() ?? "";
-  const redirectTo =
-    (formData.get("redirect") as string | null)?.trim() ??
-    `/admin/content/howItWorks`;
-
-  if (section !== "howItWorks") {
-    return redirect(redirectTo);
-  }
-
-  const stepsCountRaw = ((formData.get("stepsCount") as string | null) ?? "0").trim();
-  const stepsCountParsed = parseInt(stepsCountRaw || "0", 10);
-  const stepsCount = Number.isFinite(stepsCountParsed) ? stepsCountParsed : 0;
-
-  const steps = [];
-  const maxSteps = stepsCount > 0 && Number.isFinite(stepsCount) ? stepsCount : 0;
-  for (let i = 0; i < maxSteps; i++) {
-    const stepTitle = ((formData.get(`steps_${i}_title`) as string | null) ?? "").trim();
-    const line = ((formData.get(`steps_${i}_line`) as string | null) ?? "").trim();
-
-    if (!stepTitle && !line) continue;
-    steps.push({ num: `0${steps.length + 1}`, title: stepTitle, line });
-  }
-
-  const howItWorks = { steps };
-
-  await upsertLandingSection("howItWorks", howItWorks);
 
   revalidateLanding();
 
@@ -312,7 +197,6 @@ export async function updateFaqSection(formData: FormData) {
   const faqsCount = Number.isFinite(faqsCountParsed) ? faqsCountParsed : 0;
 
   const title = ((formData.get("title") as string | null) ?? "").trim();
-  const ctaLabel = ((formData.get("ctaLabel") as string | null) ?? "").trim();
 
   const faqs = [];
   const maxFaqs = faqsCount > 0 && Number.isFinite(faqsCount) ? faqsCount : 0;
@@ -325,7 +209,9 @@ export async function updateFaqSection(formData: FormData) {
     faqs.push({ q, a, tag });
   }
 
-  const faqSection = { title, faqs, ctaLabel };
+  // No FAQ-specific ctaLabel — the primary CTA (managed in Hero form) is the
+  // single source of truth used everywhere.
+  const faqSection = { title, faqs };
 
   await upsertLandingSection("faq", faqSection);
 

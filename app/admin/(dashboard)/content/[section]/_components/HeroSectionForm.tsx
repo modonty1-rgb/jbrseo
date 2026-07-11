@@ -10,13 +10,6 @@ import { autoResize } from "@/lib/autoResize";
 import { ConfirmSaveDialog } from "../../../_components/ConfirmSaveDialog";
 import { UnsavedChangesBar } from "../../../_components/UnsavedChangesBar";
 import { TrustLinesEditor } from "./TrustLinesEditor";
-import {
-  TrustBarClientsEditor,
-  clientsToRows,
-  emptyClientRow,
-  rowsToClients,
-  type TrustBarClientRow,
-} from "./TrustBarClientsEditor";
 
 const HERO_FORM_ID = "hero-section-form";
 
@@ -33,13 +26,9 @@ const ROW_2 = "grid gap-4 md:grid-cols-2";
 
 export function HeroSectionForm({ hero, country, ctaLabel }: HeroSectionFormProps): ReactElement {
   const trustText = (hero.trust ?? []).join("\n");
-  const initialClients = hero.trustBarClients ?? [];
 
   const [isPending, startTransition] = useTransition();
   const [ctaVal, setCtaVal] = useState(ctaLabel);
-  const [trustBarRows, setTrustBarRows] = useState<TrustBarClientRow[]>(() =>
-    initialClients.length > 0 ? clientsToRows(initialClients) : [emptyClientRow()],
-  );
 
   useEffect(() => {
     const form = document.getElementById(HERO_FORM_ID);
@@ -55,7 +44,6 @@ export function HeroSectionForm({ hero, country, ctaLabel }: HeroSectionFormProp
     const form = document.getElementById(HERO_FORM_ID);
     if (!(form instanceof HTMLFormElement)) return;
     const fd = new FormData(form);
-    fd.set("trustClientsJson", JSON.stringify(rowsToClients(trustBarRows)));
     startTransition(() => void updateHeroSection(fd));
   }
 
@@ -116,31 +104,11 @@ export function HeroSectionForm({ hero, country, ctaLabel }: HeroSectionFormProp
           <TrustLinesEditor defaultValue={trustText} />
         </div>
 
-        {/* ── شريط العملاء (نفس الـ section في DB) ── */}
-        <div className="mt-8 space-y-4 rounded-lg border border-border bg-muted/20 p-4">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="text-base" aria-hidden>🏢</span>
-              <h3 className="text-sm font-bold text-foreground">شريط العملاء</h3>
-              <span className="text-xs text-muted-foreground">({trustBarRows.length} عميل)</span>
-            </div>
-            <button
-              type="button"
-              onClick={() => setTrustBarRows((prev) => [...prev, emptyClientRow()])}
-              className="rounded-md border border-border bg-background px-3 py-1.5 text-xs font-semibold text-primary hover:bg-muted/40"
-            >
-              + إضافة عميل
-            </button>
-          </div>
-
-          <TrustBarClientsEditor rows={trustBarRows} onRowsChange={setTrustBarRows} />
-        </div>
-
         <ConfirmSaveDialog
           onConfirm={handleSave}
           pending={isPending}
           triggerLabel="حفظ"
-          description="سيتم حفظ التغييرات على الهيرو + شريط العملاء."
+          description="سيتم حفظ التغييرات على قسم الهيرو."
         />
       </form>
       <UnsavedChangesBar formId={HERO_FORM_ID} />

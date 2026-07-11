@@ -5,9 +5,8 @@ import type { StaticLanding } from "@/app/content/landing/types";
 import { getNavLinks, getFooterLinks, LEGAL_LINKS } from "@/lib/site-links";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { updateSection } from "@/app/actions/content-sections";
+import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 import { HeroSectionForm } from "./_components/HeroSectionForm";
-import { WhyNowSectionForm } from "./_components/WhyNowSectionForm";
-import { HowItWorksSectionForm } from "./_components/HowItWorksSectionForm";
 import { SocialProofSectionForm } from "./_components/SocialProofSectionForm";
 import { FaqSectionForm } from "./_components/FaqSectionForm";
 import { FinalCtaSectionForm } from "./_components/FinalCtaSectionForm";
@@ -21,8 +20,6 @@ import { AdminFormFeedback } from "../../_components/AdminFormFeedback";
 
 const CONTENT_KEYS = [
   "hero",
-  "whyNow",
-  "howItWorks",
   "socialProof",
   "faq",
   "finalCta",
@@ -39,8 +36,6 @@ type ContentKey = (typeof CONTENT_KEYS)[number];
 
 const SECTION_LABELS: Record<ContentKey, string> = {
   hero: "قسم الهيرو",
-  whyNow: "قسم لماذا الآن",
-  howItWorks: "قسم كيف يعمل",
   socialProof: "قسم الشهادات",
   faq: "قسم الأسئلة الشائعة",
   finalCta: "قسم الدعوة النهائية",
@@ -86,9 +81,6 @@ function humanLabel(key: string, section?: string): string {
     title1: "العنوان ١",
     title2: "العنوان ٢",
     subtitle: "العنوان الفرعي",
-    costs: "التكاليف",
-    month: "الشهر",
-    desc: "الوصف",
     value: "القيمة",
     severity: "الدرجة",
     reasons: "الأسباب",
@@ -98,11 +90,7 @@ function humanLabel(key: string, section?: string): string {
     ctaBtn: "زر الدعوة",
     ctaHighlight: "تمييز الدعوة",
     daysTarget: "الهدف بالأيام",
-    steps: "الخطوات",
-    line: "السطر",
     tag: "الوسم",
-    guarantee: "الضمان",
-    outcomes: "النتائج",
     metric: "المقياس",
     token: "النوع",
     badgeText: "نص الشارة",
@@ -271,7 +259,7 @@ export default async function AdminContentSectionPage({
 
   // DB is the single source of truth. Missing section → empty object, admin fills it.
   let sectionData: unknown;
-  let heroCtaLabel = "ابدأ مجاناً — بدون بطاقة";
+  let heroCtaLabel = DEFAULT_CTA_LABEL;
 
   if (isLinksSection) {
     sectionData = {
@@ -327,13 +315,6 @@ export default async function AdminContentSectionPage({
               ctaLabel={heroCtaLabel}
             />
           )}
-          {!isLinksSection && section === "whyNow" && (
-            <WhyNowSectionForm
-              key={country}
-              section={sectionData as StaticLanding["whyNow"]}
-              country={country}
-            />
-          )}
           {!isLinksSection && section === "socialProof" && (
             <SocialProofSectionForm
               key={country}
@@ -383,8 +364,6 @@ export default async function AdminContentSectionPage({
           )}
           {!isLinksSection &&
             section !== "hero" &&
-            section !== "whyNow" &&
-            section !== "howItWorks" &&
             section !== "socialProof" &&
             section !== "faq" &&
             section !== "finalCta" &&
@@ -414,13 +393,6 @@ export default async function AdminContentSectionPage({
                 Save section
               </Button>
             </form>
-          )}
-          {!isLinksSection && section === "howItWorks" && (
-            <HowItWorksSectionForm
-              key={country}
-              section={sectionData as StaticLanding["howItWorks"]}
-              country={country}
-            />
           )}
         </div>
       </div>

@@ -55,26 +55,16 @@ export function FaqSectionForm({ section, country }: FaqSectionFormProps): React
         />
         <input type="hidden" name="faqsCount" value={faqsCount} />
 
-        {/* Header row: title + ctaLabel paired */}
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className={FIELD}>
-            <label className={LABEL} htmlFor={`${FAQ_FORM_ID}-title`}>العنوان الرئيسي</label>
-            <Input
-              id={`${FAQ_FORM_ID}-title`}
-              name="title"
-              defaultValue={section.title}
-              className={INPUT}
-            />
-          </div>
-          <div className={FIELD}>
-            <label className={LABEL} htmlFor={`${FAQ_FORM_ID}-cta`}>نص زر الدعوة</label>
-            <Input
-              id={`${FAQ_FORM_ID}-cta`}
-              name="ctaLabel"
-              defaultValue={section.ctaLabel}
-              className={INPUT}
-            />
-          </div>
+        {/* Section title — the FAQ CTA button uses the site-wide primary CTA
+            managed on the Hero form (one CTA, one place). */}
+        <div className={FIELD}>
+          <label className={LABEL} htmlFor={`${FAQ_FORM_ID}-title`}>العنوان الرئيسي</label>
+          <Input
+            id={`${FAQ_FORM_ID}-title`}
+            name="title"
+            defaultValue={section.title}
+            className={INPUT}
+          />
         </div>
 
         {/* FAQ list — each row: question + tag side by side, answer below */}

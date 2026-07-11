@@ -8,8 +8,6 @@ export const ADMIN_NAV = [
   { href: "/admin", label: "لوحة التحكم" },
   { href: "/admin/subscribers", label: "المشتركون" },
   { href: "/admin/content/hero", label: "الهيرو + شريط العملاء" },
-  { href: "/admin/content/whyNow", label: "لماذا الآن" },
-  { href: "/admin/content/howItWorks", label: "كيف نشتغل" },
   { href: "/admin/content/socialProof", label: "آراء العملاء" },
   { href: "/admin/content/faq", label: "الأسئلة الشائعة" },
   { href: "/admin/content/finalCta", label: "الدعوة النهائية" },
@@ -39,8 +37,6 @@ export const MARKETING_TOP_NAV: { href: string; label: string; icon: string; dis
 /** ✨ الرئيسية — كل شيء يظهر للزائر على /sa و /eg (مرتب من الأعلى للأسفل في الصفحة) */
 export const SECTIONS_NAV_ITEMS: { href: string; label: string; icon: string }[] = [
   { href: "/admin/content/hero",         label: "الهيرو + شريط العملاء", icon: "✨" },
-  { href: "/admin/content/whyNow",       label: "لماذا الآن",            icon: "📢" },
-  { href: "/admin/content/howItWorks",   label: "كيف نشتغل",             icon: "⚡" },
   { href: "/admin/content/socialProof",  label: "آراء العملاء",          icon: "⭐" },
   { href: "/admin/content/faq",          label: "الأسئلة الشائعة",       icon: "❓" },
   { href: "/admin/content/finalCta",     label: "الدعوة النهائية",       icon: "🚀" },
