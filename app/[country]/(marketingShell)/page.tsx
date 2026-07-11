@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { AnnouncementBar } from "@/app/components/landing/AnnouncementBar";
-import { Footer } from "@/app/components/landing/Footer";
 import { LandingJsonLd } from "@/app/components/landing/LandingJsonLd";
-import { Navbar } from "@/app/components/landing/Navbar";
 import { Landing } from "@/app/components/landing/Landing";
-import { StickyMobileCTA } from "@/app/components/landing/StickyMobileCTA";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
-import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { getLandingContent } from "@/lib/getLandingContent";
 import { getAllPlans } from "@/app/actions/pricing";
 import { getMeta } from "@/app/actions/pricing-meta";
+import { getModontyTrustBundle } from "@/app/actions/modonty-client-logos";
+import { getModontyImpactStats, getCaseStudiesStats } from "@/lib/analytics/ga4";
+import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
@@ -26,7 +24,7 @@ import {
 } from "@/lib/seo-meta";
 
 const HOME_SA_DESCRIPTION_FALLBACK =
-  "مدونتي — منصة المحتوى العربي. مقالات تتصدر جوجل، صفحة شركتك في الشبكة، وقاعدة Leads مصنّفة — بدون كتابة حرف واحد. ابدأ مجاناً بدون بطاقة ائتمان.";
+  "اشتراك محتوى سيو شهري للسوق السعودي والعربي — نكتب وننشر ونحسّن للبحث والذكاء الاصطناعي. من 110 ريال شهرياً.";
 
 export async function generateMetadata({
   params,
@@ -39,8 +37,16 @@ export async function generateMetadata({
     return { title: "JBRSEO" };
   }
   const countryCode = getCountryCodeFromSlug(slug as "sa" | "eg");
-  const content = await getLandingContent(countryCode);
-  const { seo: s } = content;
+  const [content, trustBundle] = await Promise.all([
+    getLandingContent(countryCode),
+    getModontyTrustBundle(),
+  ]);
+  // Live-interpolate {clientCount} in the SEO description so the count grows
+  // automatically as Modonty gains clients — no admin edit needed.
+  const s = {
+    ...content.seo,
+    description: (content.seo.description ?? "").replace(/\{clientCount\}/g, String(trustBundle.total)),
+  };
   const siteBase = resolveSiteOriginFromSeoCanonical(s.canonical, DEFAULT_PUBLIC_SITE_ORIGIN);
   const fallbackCanonical = `${siteBase}/${slug}`;
   const canonical = resolveCanonicalForMetadata(s.canonical, fallbackCanonical);
@@ -94,67 +100,51 @@ export default async function CountryHome({
   const sp = await searchParams;
   const annual = isAnnualFromBillingParam(sp?.billing);
 
-  const [content, staticLanding, plans, meta, socialLinksRaw, footerRaw] = await Promise.all([
+  const [content, staticLanding, plans, meta, trustBundle, modontyImpact, caseStats] = await Promise.all([
     getLandingContent(countryCode),
     getStaticLandingWithOverrides(),
     getAllPlans(countryCode),
     getMeta(countryCode),
-    getLandingSectionOverride("socialLinks"),
-    getLandingSectionOverride("footer"),
+    getModontyTrustBundle(),
+    getModontyImpactStats(),
+    getCaseStudiesStats(),
   ]);
-  const socialLinks = (socialLinksRaw ?? {}) as {
-    facebook?: string;
-    instagram?: string;
-    linkedin?: string;
-    twitterX?: string;
-    youtube?: string;
-    tiktok?: string;
+  const socialLinks = content.siteSettings?.socialLinks ?? {};
+
+  // Interpolate {clientCount} across hero copy so any admin-edited string
+  // referencing the count auto-updates as Modonty gains clients.
+  const interpolatedStaticLanding = {
+    ...staticLanding,
+    hero: {
+      ...staticLanding.hero,
+      proof: (staticLanding.hero.proof ?? "").replace(/\{clientCount\}/g, String(trustBundle.total)),
+    },
   };
-  const footerData = (footerRaw ?? {}) as { tagline?: string; desc?: string };
 
   const whatsappLink = getWhatsAppLink(countryCode, content.siteSettings?.whatsappNumber);
   const signupHref = `/${countrySlug}/signup`;
-  const basePath = `/${countrySlug}`;
-  const pricingHref = `${basePath}#pricing`;
-  const ctaLabel = content.siteSettings?.ctaLabel?.trim() || "ابدأ مجاناً — بدون بطاقة";
+  const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
 
   return (
     <>
-      <AnnouncementBar message={meta?.announcement ?? "أسعار التأسيس — أول ١٥٠ شركة."} />
-      <Navbar
-        country={countryCode}
-        content={content}
-        basePath={basePath}
-        pricingHref={pricingHref}
-      />
       <Landing
         countrySlug={countrySlug}
-        staticLanding={staticLanding}
+        staticLanding={interpolatedStaticLanding}
         plans={plans}
         announcement={meta?.announcement ?? ""}
         whatsappLink={whatsappLink}
         signupHref={signupHref}
         initialBilling={annual ? "annual" : "monthly"}
         ctaLabel={ctaLabel}
-      />
-      <Footer
-        country={countryCode}
-        basePath={basePath}
-        whatsappNumber={content.siteSettings?.whatsappNumber}
-        socialLinks={socialLinks}
-        footerTagline={footerData.tagline}
-        footerDesc={footerData.desc}
+        trustBundle={trustBundle}
+        modontyImpact={modontyImpact}
+        caseStats={caseStats}
       />
       <LandingJsonLd
         countrySlug={countrySlug}
         siteOrigin={DEFAULT_PUBLIC_SITE_ORIGIN}
         faqs={staticLanding.faq?.faqs ?? []}
         socialLinks={socialLinks}
-      />
-      <StickyMobileCTA
-        signupHref={signupHref}
-        whatsappLink={whatsappLink}
-        ctaLabel={ctaLabel}
       />
     </>
   );

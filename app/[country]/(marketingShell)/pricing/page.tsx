@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
-import { LandingHeader } from "@/app/components/layout/header/LandingHeader";
 import { FloatingContact } from "@/app/components/shared/FloatingContact";
 import { PricingPageShell } from "@/app/components/pricing/PricingPageShell";
 import { PricingPageJsonLd } from "@/app/components/shared/PricingPageJsonLd";
@@ -20,9 +19,9 @@ import {
 import { getWhatsAppLink } from "@/lib/site-links";
 
 const SA_PRICING_TITLE_ABSOLUTE =
-  "أسعار خدمة السيو العربي — اختر خطتك وابدأ | مدونتي";
+  "أسعار خدمات سيو في السعودية · اشتراك شهري من 110 ريال | JBRSEO";
 const SA_PRICING_DESCRIPTION =
-  "اكتشف خطط أسعار مدونتي لخدمة السيو بالعربي. مقالات تتصدر جوجل، صفحة نشاطك في محركات البحث، وعملاء جدد كل شهر — اختر خطتك وابدأ مجاناً.";
+  "خطط اشتراك سيو شهري للشركات والمتاجر السعودية والعربية — نكتب وننشر ونحسّن للبحث و ChatGPT. اختر خطتك وابدأ.";
 
 const PRICING_PAGE_FALLBACK = {
   title: "الأسعار — JBRSEO",
@@ -117,15 +116,6 @@ export default async function CountryPricingPage({
 
   return (
     <>
-      <LandingHeader
-        content={content}
-        staticLanding={landing}
-        country={countryCode}
-        basePath={`/${countrySlug}`}
-        pricingHref={`/${countrySlug}/signup${previewQuery}`}
-        navPrimaryCtaLabel={content.siteSettings?.ctaLabel?.trim() || "ابدأ مجاناً — بدون بطاقة"}
-        whatsappNumber={content.siteSettings?.whatsappNumber}
-      />
       <PricingPageJsonLd
         countrySlug={countrySlug}
         countryCode={countryCode}
