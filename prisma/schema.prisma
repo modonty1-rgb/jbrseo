@@ -98,3 +98,68 @@ model PriceSectionMeta {
 
   updatedAt       DateTime @updatedAt
 }
+
+// ─────────────────────────────────────────────────────────────────
+// READ-ONLY MIRROR of Modonty's Client + Media collections.
+// jbrseo shares the same MongoDB cluster/database as Modonty. This
+// file declares a MINIMAL subset of the shape so we can query real
+// paying-client logos for the "من ائتمنّا" trust section.
+//
+// RULES:
+//   1. NEVER write to these tables from jbrseo. All queries here are
+//      read-only (`findMany` + `select`). Any mutation belongs in
+//      the Modonty app.
+//   2. When Modonty changes the field names below, this schema must
+//      be updated in lockstep — otherwise queries silently return
+//      wrong data. See MODONTY/dataLayer/prisma/schema/schema.prisma.
+//   3. The `@@map` is required — Prisma otherwise looks for
+//      `Client`/`Media` collections which don't exist (Modonty maps
+//      them to lowercase `clients`/`media`).
+// ─────────────────────────────────────────────────────────────────
+
+enum ModontySubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+  PENDING
+}
+
+enum ModontyPaymentStatus {
+  PAID
+  PENDING
+  OVERDUE
+}
+
+model ModontyClient {
+  id                 String                   @id @default(auto()) @map("_id") @db.ObjectId
+  name               String
+  slug               String                   @unique
+  url                String?
+  logoMediaId        String?                  @db.ObjectId
+  logoMedia          ModontyMedia?            @relation("ModontyClientLogo", fields: [logoMediaId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  industryId         String?                  @db.ObjectId
+  industry           ModontyIndustry?         @relation("ModontyClientIndustry", fields: [industryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subscriptionStatus ModontySubscriptionStatus @default(PENDING)
+  paymentStatus      ModontyPaymentStatus     @default(PENDING)
+  isFeatured         Boolean                  @default(false)
+
+  @@map("clients")
+}
+
+model ModontyMedia {
+  id      String          @id @default(auto()) @map("_id") @db.ObjectId
+  url     String
+  altText String?
+  clients ModontyClient[] @relation("ModontyClientLogo")
+
+  @@map("media")
+}
+
+model ModontyIndustry {
+  id      String          @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  slug    String          @unique
+  clients ModontyClient[] @relation("ModontyClientIndustry")
+
+  @@map("industries")
+}
