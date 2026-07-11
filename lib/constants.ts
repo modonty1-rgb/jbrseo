@@ -3,9 +3,14 @@ export const PRICING_CTA_LINK = "/signup";
 export const SITE_LOGO_URL =
   "https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto/v1771973886/jbrser_svg_ikxmnn.svg";
 
-/** Modonty wordmark — same asset as footer `https://modonty.com` link. */
+/**
+ * Modonty wordmark — proper rectangular asset (M + "odonty" text).
+ * We strip transparent padding via `e_trim` and cap the served width at 400px
+ * (any container up to that width renders at native aspect ratio, no forced-square collapse).
+ * Long-term fix: upload a dark-mode variant so the CSS `invert(1)` hack can be dropped.
+ */
 export const MODONTY_LOGO_URL =
-  "https://res.cloudinary.com/dfegnpgwx/image/upload/v1769683590/modontyLogo_ftf4yf.png";
+  "https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,e_trim,w_400,c_fit/v1768724643/final-05_ukjgff.png";
 
 /**
  * Default Open Graph / Twitter image when CMS `seo.ogImage` is empty.

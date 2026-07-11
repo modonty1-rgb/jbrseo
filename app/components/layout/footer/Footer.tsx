@@ -1,5 +1,4 @@
 import Link from "@/app/components/link";
-import { version } from "@/package.json";
 import type { LandingContent } from "@/lib/landing-content.types";
 import type { StaticLanding } from "@/app/content/landing/types";
 import { SocialFacebookOutline } from "@/app/components/icons/facebook";
@@ -14,8 +13,13 @@ import { getFooterLinks, getWhatsAppLink, LEGAL_LINKS } from "@/lib/site-links";
 import { WhatsAppTrackLink } from "@/app/components/shared/WhatsAppTrackLink";
 import Image from "next/image";
 import { HeaderLogo } from "@/app/components/layout/HeaderLogo";
+import { MODONTY_LOGO_URL } from "@/lib/constants";
+
 const COPYRIGHT = "© جميع الحقوق محفوظة — JBRSEO";
 const WA_LABEL = "تواصل على واتساب";
+// MODONTY_LOGO_URL is imported below from `@/lib/constants` — was shadowed by a local
+// constant here that hard-coded `w_144,c_fit`, capping the served image at 144px wide
+// and forcing a square-collapse inside any rectangular container. Single source of truth.
 
 const WhatsAppIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -29,6 +33,9 @@ type FooterProps = {
   country: SupportedCountry;
   basePath?: string;
 };
+
+const HEADING_CLS =
+  "mb-4 text-[10px] font-black uppercase tracking-widest text-white/55";
 
 export function Footer({ content, staticLanding, country, basePath }: FooterProps) {
   const footer = staticLanding.footer;
@@ -50,92 +57,65 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
   return (
     <footer
       role="contentinfo"
-      className="relative overflow-hidden border-t border-border bg-muted text-foreground"
+      className="relative overflow-hidden border-t border-white/10 bg-neutral-900 text-white"
       style={{ fontFamily: "'Tajawal', sans-serif" }}
     >
+      {/* Subtle dot pattern — evenly spaced tiny dots at 5% opacity for a gentle premium texture. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[.06]"
+        className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage:
-            "linear-gradient(to left, transparent, color-mix(in oklch, var(--foreground) 12%, transparent), transparent), linear-gradient(color-mix(in oklch, var(--foreground) 10%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in oklch, var(--foreground) 10%, transparent) 1px, transparent 1px)",
-          backgroundSize: "100% 1px, 48px 48px, 48px 48px",
-          backgroundRepeat: "no-repeat, repeat, repeat",
+            "radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+          backgroundPosition: "0 0",
         }}
       />
+      {/* Soft ambient glow at top — hairline of the brand accent, fades quickly. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -bottom-20 left-1/2 h-[200px] w-[600px] -translate-x-1/2 rounded-full bg-foreground/5 blur-[80px]"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-success/40 to-transparent"
+      />
+      {/* Gentle bottom fade — smoothes the footer's lower edge without a hard shape. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-black/40"
       />
       <div className="relative z-10 mx-auto max-w-[1100px] px-5 pt-14 pb-24 sm:px-8 lg:px-10">
 
-        {/* ── TOP GRID ── */}
-        <div className="grid grid-cols-1 gap-8 pb-10 border-b border-border sm:grid-cols-2 lg:grid-cols-3 lg:gap-12">
+        {/* ── TOP GRID: 4 cols on lg (Brand · Explore · Contact · Follow) ── */}
+        <div className="grid grid-cols-1 gap-10 pb-10 border-b border-white/10 sm:grid-cols-2 lg:grid-cols-4">
 
-          {/* BRAND COL */}
+          {/* COL 1 — BRAND */}
           <div>
-            <div className="mb-1">
+            <div className="mb-4">
               <HeaderLogo logoHref={homeHref} />
             </div>
-
-            <div className="mb-3 flex max-w-[min(100%,22rem)] items-start gap-1.5">
+            <div className="mb-3 flex items-start gap-1.5">
               <span
                 aria-hidden
-                className="mt-1.5 inline-block h-[1.5px] w-4 shrink-0 rounded-full bg-success sm:mt-2"
+                className="mt-1.5 inline-block h-[1.5px] w-4 shrink-0 rounded-full bg-success"
               />
-              <p className="text-balance text-sm font-bold tracking-wider text-success">{footer.tagline}</p>
+              <p className="text-balance text-sm font-bold tracking-wider text-success">
+                {footer.tagline}
+              </p>
             </div>
-
-            <p className="mb-5 max-w-[240px] text-sm leading-[1.75] text-foreground/80">
+            <p className="max-w-[260px] text-sm leading-[1.75] text-white/75">
               {footer.desc}
             </p>
-
-            <WhatsAppTrackLink
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-success bg-success px-4 py-2.5 text-sm font-bold text-success-foreground transition-all duration-200 hover:bg-success/90 hover:border-success/90"
-            >
-              <WhatsAppIcon />
-              {WA_LABEL}
-            </WhatsAppTrackLink>
-
-            <a
-              href="mailto:support@jbrseo.com"
-              className="mt-3 block text-sm text-foreground/80 transition-colors hover:text-foreground"
-            >
-              support@jbrseo.com
-            </a>
-
-            <Link
-              href="https://modonty.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-5 inline-flex items-center gap-2  transition-opacity hover:opacity-80"
-              aria-label="مدعوم بـ مدونتي"
-            >
-              <span className="text-xs text-muted-foreground">مدعوم بـ</span>
-              <Image
-                src="https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,fl_immutable_cache,w_144,c_fit/v1768724643/final-05_ukjgff.png"
-                alt="شعار مدونتي — منصة المحتوى العربي"
-                width={140}
-                height={44}
-                className="h-20 w-auto object-contain"
-              />
-            </Link>
           </div>
 
-          {/* NAV COL */}
+          {/* COL 2 — EXPLORE */}
           <div>
-            <p className="mb-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-              روابط سريعة
+            <p className={HEADING_CLS} style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+              استكشف
             </p>
             <ul className="flex flex-col gap-2.5">
               {footerLinks.map((l, i) => (
                 <li key={i}>
                   <Link
                     href={l.href}
-                    className="group flex items-center gap-1.5 text-sm font-semibold text-muted-foreground transition-colors duration-200 hover:text-foreground before:content-[''] before:inline-block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-transparent before:transition-colors group-hover:before:bg-success"
+                    className="group flex items-center gap-1.5 text-sm font-semibold text-white/70 transition-colors duration-200 hover:text-white before:content-[''] before:inline-block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-transparent before:transition-colors group-hover:before:bg-success"
                   >
                     {l.label}
                   </Link>
@@ -144,67 +124,122 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
             </ul>
           </div>
 
-          {/* SOCIALS COL */}
-          {socialLinks.length > 0 && (
+          {/* COL 3 — CONTACT */}
           <div>
-            <p className="mb-4 text-sm font-black uppercase tracking-widest text-muted-foreground">
-                تابعنا
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {socialLinks.map(({ href, label, Icon }) => (
-                  <Link
-                    key={label}
-                    href={href as string}
-                    aria-label={label}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-[38px] w-[38px] items-center justify-center rounded-[10px] border border-border/80 bg-background/70 text-foreground/75 transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:bg-foreground/10 hover:text-foreground dark:bg-foreground/5 dark:text-muted-foreground"
-                  >
-                    <Icon className="h-[15px] w-[15px]" />
-                  </Link>
-                ))}
-              </div>
+            <p className={HEADING_CLS} style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+              تواصل
+            </p>
+            <div className="flex flex-col gap-3 items-start">
+              <WhatsAppTrackLink
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border border-success bg-success px-4 py-2.5 text-sm font-bold text-success-foreground transition-all duration-200 hover:bg-success/90"
+              >
+                <WhatsAppIcon />
+                {WA_LABEL}
+              </WhatsAppTrackLink>
+              <a
+                href="mailto:support@jbrseo.com"
+                className="text-sm text-white/75 transition-colors hover:text-white inline-flex items-center gap-2"
+                style={{ direction: "ltr", fontFamily: "'IBM Plex Mono', monospace" }}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                support@jbrseo.com
+              </a>
             </div>
-          )}
+          </div>
+
+          {/* COL 4 — FOLLOW + POWERED BY */}
+          <div>
+            {socialLinks.length > 0 && (
+              <>
+                <p className={HEADING_CLS} style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+                  تابعنا
+                </p>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {socialLinks.map(({ href, label, Icon }) => (
+                    <Link
+                      key={label}
+                      href={href as string}
+                      aria-label={label}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-[38px] w-[38px] items-center justify-center rounded-[10px] border border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
+                    >
+                      <Icon className="h-[15px] w-[15px]" />
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
+            {/* Powered by Modonty — compact, tasteful */}
+            <div className={socialLinks.length > 0 ? "pt-5 border-t border-white/10" : ""}>
+              <Link
+                href="https://modonty.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="خدمة مقدّمة من منصة مدونتي"
+                className="inline-flex items-center gap-2 transition-opacity hover:opacity-80"
+              >
+                <span className="text-[12px] text-white/70" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+                  مدعوم بمنصة
+                </span>
+                <Image
+                  src={MODONTY_LOGO_URL}
+                  alt="شعار مدونتي"
+                  width={140}
+                  height={44}
+                  unoptimized
+                  className="object-contain"
+                  style={{ height: 44, width: 140 }}
+                />
+              </Link>
+            </div>
+          </div>
         </div>
 
-        {/* ── BOTTOM ROW ── */}
-        <div className="flex flex-col items-center justify-between gap-3 pt-6 sm:flex-row">
-          <div className="flex flex-col items-center gap-1 sm:items-start">
-            <p className="text-sm text-foreground/75">{COPYRIGHT}</p>
-            {country === "SA" && (
-              <div className="flex items-center gap-3">
-                <Image
-                  src="/logos/mc-saudi.svg"
-                  alt="وزارة التجارة — المملكة العربية السعودية"
-                  width={300}
-                  height={104}
-                  className="h-5 w-auto opacity-40 grayscale dark:opacity-60 dark:grayscale-0 dark:invert"
-                  unoptimized
-                />
-                <span className="h-3 w-px bg-border/50" aria-hidden />
-                <Image
-                  src="/logos/business-sa.svg"
-                  alt="المركز السعودي للتنافسية والأعمال"
-                  width={300}
-                  height={58}
-                  className="h-5 w-auto opacity-40 grayscale dark:opacity-60 dark:grayscale-0 dark:invert"
-                  unoptimized
-                />
-                <span className="h-3 w-px bg-border/50" aria-hidden />
-                <p className="text-xs text-muted-foreground/75">
-                  سجل تجاري: ٧٠٤٠٦٠٢٠٩١
-                </p>
-              </div>
-            )}
+        {/* ── TRUST STRIP (SA only): CR + gov logos, centered ── */}
+        {country === "SA" && (
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 py-6 border-b border-white/10">
+            <Image
+              src="/logos/mc-saudi.svg"
+              alt="وزارة التجارة — المملكة العربية السعودية"
+              width={70}
+              height={24}
+              className="opacity-90"
+              style={{ height: 24, width: "auto", objectFit: "contain" }}
+              unoptimized
+            />
+            <span className="h-3 w-px bg-white/20" aria-hidden />
+            <Image
+              src="/logos/business-sa.svg"
+              alt="المركز السعودي للتنافسية والأعمال"
+              width={124}
+              height={24}
+              className="opacity-90"
+              style={{ height: 24, width: "auto", objectFit: "contain" }}
+              unoptimized
+            />
+            <span className="h-3 w-px bg-white/20" aria-hidden />
+            <p className="text-xs text-white/70" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+              سجل تجاري ٧٠٤٠٦٠٢٠٩١
+            </p>
           </div>
-          <span className="text-xs text-muted-foreground/40 font-mono">v{version}</span>
-          <nav className="flex gap-5">
+        )}
+
+        {/* ── BOTTOM ROW: copyright + legal only ── */}
+        <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pt-6">
+          <p className="text-sm text-white/70">{COPYRIGHT}</p>
+          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2">
             {LEGAL_LINKS.map((l, i) => (
               <Link
                 key={i}
                 href={l.href}
-                className="text-sm text-foreground/75 transition-colors duration-200 hover:text-foreground"
+                className="text-sm text-white/70 transition-colors duration-200 hover:text-white"
               >
                 {l.label}
               </Link>
@@ -216,4 +251,3 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
     </footer>
   );
 }
-
