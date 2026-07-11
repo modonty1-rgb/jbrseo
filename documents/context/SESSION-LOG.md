@@ -4,6 +4,121 @@
 
 ---
 
+## Session: 2026-07-11 — Landing pricing redesign + /features rewrite + PDPL /privacy /terms + GA4 property split + prod dedupe + push
+
+### 🎯 Where I stopped
+- **Last task in progress:** all planned code work pushed. Waiting on Vercel deploy of `57b75d7` (~2-3 min post-push) + Khalid to open `/features` on prod and confirm dynamic count (٣ باقات) + Arabic section eyebrows render correctly.
+- **Next concrete action when resuming:** Khalid returns → say "شيك شيك /features" → I open prod via Playwright, screenshot the hero stats + section eyebrows + pricing lead, confirm ٣ باقات (not ٤) and pure-Arabic labels (لوحة التحكم, صفحتك…). Then Khalid reveals "الأهم مهمة" he's been holding back.
+
+### ✅ Done this session
+
+**A) /features page + shared features catalog:**
+- Full rewrite of `app/features/page.tsx` with persona + hero-metric + differentiators pattern.
+- Built shared features catalog as single source of truth (features data used by /features AND landing pricing cards).
+- Hero stats: dynamic plan count `visibleCount = plans.length` + Arabic-Indic digits via `arNum` helper.
+- All 6 section eyebrows Arabicised: `01 CONSOLE`→`٠١ · لوحة التحكم`, `02 YOUR PAGE`→`٠٢ · صفحتك`, `03 ARTICLES`→`٠٣ · المقالات`, `04 TRUST`→`٠٤ · الثقة`, `05 ALERTS`→`٠٥ · التنبيهات`, `06 CHOOSE`→`٠٦ · اختر`.
+- Fixed idiom "كل شي في عينك" → "كل شي أمام عينك".
+- Pricing lead changed from hardcoded `٤ باقات` to `{arNum(visibleCount)}` — reflects reality after حضور hidden.
+
+**B) Landing pricing cards redesign:**
+- Persona + hero-metric + differentiators pattern applied to all cards.
+- Sync with /features catalog (no drift risk).
+
+**C) /about + /team redesign:**
+- Added previously-hidden mission section.
+- Team page structured layout.
+
+**D) PDPL /privacy + /terms rewrite:**
+- 12-section structured pages, PDPL-compliant (Saudi Personal Data Protection Law).
+- Killed prior conflicting refund/cancellation claims.
+
+**E) Footer polish:**
+- Modonty logo: fixed compressed Cloudinary URL (imported from `lib/constants.ts`, uses `e_trim,w_400,c_fit`).
+- Saudi gov logos: removed `filter: invert` + `grayscale` — SVGs had `fill:#fff` and were rendering black-on-black.
+- Removed awkward blob decoration.
+
+**F) False claims sweep (contradicted /terms):**
+- `PricingPageShell.tsx:72` — "إلغاء بأي وقت" → "٦ شهور هدية على السنوي" (commit `64facb7`).
+- Hero trust "ضمان استرجاع" → "٦ شهور هدية على السنوي" via `scripts/fix-false-claims.mjs`.
+- Added Modonty CTA to FAQ Q17 (subscription clarification — JBRSEO is payment gateway only, not subscription target).
+
+**G) Prod DB dedupe (MongoDB never enforced Prisma `@unique`):**
+- `scripts/dedupe-landing-sections.mjs` — 32 rows → 18 rows (14 stale duplicates removed, kept newest `updatedAt` per section).
+- Confirmed as prod-safe with dry-run first.
+
+**H) Dev→Prod content sync:**
+- `scripts/sync-faq-DEV-to-PROD.mjs` — prod FAQ 10→18 items.
+- Also synced: featuresComparison · about · privacy · terms.
+
+**I) 🚨 CRITICAL FIX — case study showed 0 patients on prod (should be 31):**
+- Root cause: Vercel `GA4_PROPERTY_ID` was `529892585` (JBRSEO's own analytics) — Impact Bar + case studies read it expecting Modonty's `538167732`.
+- BUT: `lib/analytics.ts` (admin dashboard for JBRSEO's own /country stats) ALSO reads `GA4_PROPERTY_ID` and needs it to stay `529892585`.
+- Solution (commit `5e4bbae`): introduced separate `MODONTY_GA4_PROPERTY_ID` env var. `lib/analytics/ga4.ts` reads it with fallback to `GA4_PROPERTY_ID` for local dev.
+- Set on Vercel: `MODONTY_GA4_PROPERTY_ID=538167732`, kept `GA4_PROPERTY_ID=529892585`.
+- Verified live: prod case study now shows 31 حجز, 86,354 total impressions.
+
+**J) Looker Studio update (Khalid did it himself):**
+- Updated `SINCE=2025-01-01` in Looker so report window matches Impact Bar's window.
+- Report deemed "ready" by Khalid — kept as-is (won't simplify for non-technical readers).
+
+**K) Commits pushed (main):**
+- `57b75d7` fix: /features hero + section eyebrows — dynamic plan count + Arabic labels
+- `5e4bbae` fix: separate MODONTY_GA4_PROPERTY_ID from JBRSEO's own GA4_PROPERTY_ID
+- `64facb7` fix: remove "إلغاء بأي وقت" from /sa/pricing — contradicts /terms
+- `c42837e` chore: research data — autocomplete-sa + PAA + FAQ + finalCta
+- `d6c5264` docs: session logs + mockups + trust/logo assets
+
+**L) TSC state:** not run this session (small edits chain, deferred to next strategic checkpoint).
+**M) Build state:** Vercel builds passing (5e4bbae + 57b75d7 both deployed READY).
+**N) Live test state:** partial — verified case study/Impact Bar showing real numbers post GA4 fix. `/features` deploy of 57b75d7 not yet visually verified (Khalid will confirm).
+
+### 📝 Decisions taken (with reasoning)
+- **Separate MODONTY_GA4_PROPERTY_ID env var** → Why: JBRSEO admin analytics + public Modonty analytics were sharing one env var but need different property IDs. → Alternative rejected: hardcoding either value (breaks the other surface).
+- **Dynamic plan count via `plans.length`** → Why: `حضور` is hidden but hardcoded ٤ was counting it. → Alternative rejected: hardcoded ٣ (breaks the moment we hide/show another plan).
+- **Arabic section eyebrows on /features** → Why: pure Arabic prose rule (Tier 1) — user's stated preference for zero Latin script in Arabic UI. → Alternative rejected: Latin abbrevs (breaks RTL flow).
+- **Keep Looker report as-is (not simplify)** → Khalid's call: "خليه زي ما هو" — technical readers are the audience anyway.
+- **Bundle multiple topic commits (not one giant commit)** → Why: rollback granularity. Split by logical topic (GA4 fix / features / false claim removal / research data / docs).
+
+### 🚧 Pending / blocked
+
+- **Waiting on Vercel:** deploy of `57b75d7` (features Arabic labels) — should be READY by now (~5+ min elapsed).
+- **Post-deploy verification:** Khalid to confirm `/features` shows ٣ باقات + Arabic eyebrows. If numbers stay ٤, deploy hasn't landed yet — hard refresh + wait 2 min.
+- **"الأهم مهمة"** — Khalid has been mentioning "the important task" repeatedly all session but hasn't revealed it. Blocker: needs his input.
+- **Refactor (userSettings:refactor skill):** ARGUMENTS mentioned "study entire JBRSEO repo first, confirm no dead code, then refactor to route-colocation structure". NOT started this session — awaiting Khalid's explicit "نفّذ".
+- **Delete stub files** (deferred): `landing/Footer.tsx`, `landing/Navbar.tsx`, `landing/AnnouncementBar.tsx`, `landing/StickyMobileCTA.tsx`.
+- **Delete shim** (deferred): `scripts/research/features-comparison-data.mjs`.
+- **Admin form for featuresComparison** (deferred technical debt): currently edited via scripts, no UI.
+
+### 📂 Files touched (this session)
+
+- `app/features/page.tsx` — full rewrite + hero stats dynamic + Arabic eyebrows + idiom fix.
+- `app/components/pricing/PricingPageShell.tsx:72` — "إلغاء بأي وقت" → "٦ شهور هدية على السنوي".
+- `lib/analytics/ga4.ts` — read `MODONTY_GA4_PROPERTY_ID` with fallback.
+- `lib/constants.ts` — Modonty Cloudinary URL updated (e_trim + w_400 + c_fit).
+- Footer component — imported MODONTY_LOGO_URL from constants, removed invert/grayscale on Saudi gov SVGs, removed blob decoration.
+- `/about`, `/team`, `/privacy`, `/terms` pages — redesigned/rewritten.
+- `scripts/dedupe-landing-sections.mjs` — prod dedupe script (created).
+- `scripts/fix-false-claims.mjs` — hero trust + FAQ Q17 fix.
+- `scripts/sync-faq-DEV-to-PROD.mjs` — prod FAQ sync (10→18).
+- Various research data files under `scripts/research/`.
+- `documents/context/SESSION-LOG.md` — this file.
+
+### 🔁 Git / deploy state
+
+- **Branch:** `main`
+- **Uncommitted changes:** `.claude/settings.local.json` only (auto-accumulated allowlist — do NOT commit without secret grep first).
+- **Last commit:** `57b75d7` — fix: /features hero + section eyebrows — dynamic plan count + Arabic labels
+- **Pushed:** ✅ yes (main → origin/main).
+- **Vercel:** `57b75d7` deploying; `5e4bbae` verified READY (prod case study showing 31/86354).
+
+### 🚀 How to resume in 30 seconds
+
+1. `git status` — should show ONLY `.claude/settings.local.json` modified. If anything else, ask Khalid before touching.
+2. Open prod `/sa/features` in Playwright (only when Khalid says "شيك شيك") — verify hero shows ٣ باقات + Arabic section eyebrows (٠١ · لوحة التحكم, etc.), and pricing lead "٣ باقات لمراحل نمو مختلفة".
+3. Wait for Khalid to reveal "الأهم مهمة" — most likely candidates: (a) start the route-colocation refactor from the ARGUMENTS in the refactor skill, or (b) admin form for featuresComparison, or (c) something payment-integration related (see `documents/context/payment-integration-plan.md`).
+
+---
+
 ## Session: 2026-07-10 18:00 — GA4 dynamic proof + Saudi Identity + Guarantee + Case Studies (Khalid decisions 1-4)
 
 ### 🎯 Where I stopped

@@ -24,10 +24,9 @@ const INITIAL_VISIBLE = 4;
 type Props = {
   bundle: ModontyTrustBundle;
   ctaLabel: string;
-  signupHref: string;
 };
 
-export function TrustSection({ bundle, ctaLabel, signupHref }: Props): ReactElement {
+export function TrustSection({ bundle, ctaLabel }: Props): ReactElement {
   const [activeKey, setActiveKey] = useState<string>(ALL_KEY);
   const [expanded, setExpanded] = useState(false);
 
@@ -185,7 +184,7 @@ export function TrustSection({ bundle, ctaLabel, signupHref }: Props): ReactElem
               the exact hero phrasing so it feels frictionless when repeated. */}
           <div className="mt-14 md:mt-16 flex justify-center">
             <a
-              href={signupHref}
+              href="#pricing"
               className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-7 md:px-8 py-3 md:py-3.5 text-sm md:text-base font-bold shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/35 hover:-translate-y-0.5 transition-all duration-300 motion-reduce:transform-none motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2"
             >
               <span>{ctaLabel}</span>

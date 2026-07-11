@@ -32,7 +32,6 @@ function assertSection(section: string): asserts section is ContentKey {
 function revalidateLanding() {
   revalidateTag("landing", "default");
   revalidatePath("/");
-  revalidatePath("/pricing");
 }
 
 export async function updateSection(formData: FormData) {
@@ -66,7 +65,6 @@ export async function updateSection(formData: FormData) {
 
   revalidateTag("landing", "default");
   revalidatePath("/");
-  revalidatePath("/pricing");
   revalidatePath("/privacy");
   revalidatePath("/terms");
 
@@ -173,7 +171,6 @@ export async function updateSocialProofSection(formData: FormData) {
 
   revalidateTag("landing", "default");
   revalidatePath("/");
-  revalidatePath("/pricing");
   revalidatePath("/admin/content/socialProof");
 
   redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
@@ -353,7 +350,7 @@ export async function updateAboutSection(formData: FormData) {
       title: ctaTitle,
       body: ctaBody,
       primaryLabel: ctaPrimaryLabel,
-      primaryHref: ctaPrimaryHref || "/signup",
+      primaryHref: ctaPrimaryHref || "/checkout",
       secondaryLabel: ctaSecondaryLabel,
       secondaryHref: ctaSecondaryHref || "/#pricing",
     },

@@ -1,12 +1,12 @@
 import { displayMainTotalFromMoYr } from "@/lib/pricing-plan-amounts";
 
-function appendQuery(signupHrefBase: string, query: string): string {
-  const sep = signupHrefBase.includes("?") ? "&" : "?";
-  return `${signupHrefBase}${sep}${query}`;
+function appendQuery(base: string, query: string): string {
+  const sep = base.includes("?") ? "&" : "?";
+  return `${base}${sep}${query}`;
 }
 
-export function buildSignupHrefWithPlan(
-  signupHrefBase: string,
+export function buildCheckoutHrefWithPlan(
+  checkoutHrefBase: string,
   planIndex: number,
   annual: boolean,
   mo: number,
@@ -14,13 +14,13 @@ export function buildSignupHrefWithPlan(
 ): string {
   const total = displayMainTotalFromMoYr(mo, yr, annual);
   return appendQuery(
-    signupHrefBase,
+    checkoutHrefBase,
     `plan=${planIndex}&billing=${annual ? "annual" : "monthly"}&total=${total}`
   );
 }
 
-export function buildSignupHrefWithPlanId(
-  signupHrefBase: string,
+export function buildCheckoutHrefWithPlanId(
+  checkoutHrefBase: string,
   planId: string,
   annual: boolean,
   mo: number,
@@ -28,7 +28,7 @@ export function buildSignupHrefWithPlanId(
 ): string {
   const total = displayMainTotalFromMoYr(mo, yr, annual);
   return appendQuery(
-    signupHrefBase,
+    checkoutHrefBase,
     `plan=${encodeURIComponent(planId)}&billing=${annual ? "annual" : "monthly"}&total=${total}`
   );
 }

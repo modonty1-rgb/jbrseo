@@ -1,0 +1,1248 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>رحلة الدفع — JBRSEO Mockup v2</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --card: #141414;
+    --card-2: #1a1a1a;
+    --border: #262626;
+    --border-strong: #333;
+    --fg: #f5f5f5;
+    --muted: #a3a3a3;
+    --muted-2: #737373;
+    --accent: #f5c518;
+    --success: #22c55e;
+    --success-bg: rgba(34,197,94,0.1);
+    --success-border: rgba(34,197,94,0.35);
+    --destructive: #ef4444;
+    --destructive-bg: rgba(239,68,68,0.1);
+    --destructive-border: rgba(239,68,68,0.35);
+    --info: #3b82f6;
+    --info-bg: rgba(59,130,246,0.1);
+    --info-border: rgba(59,130,246,0.35);
+    --warning: #f59e0b;
+    --warning-bg: rgba(245,158,11,0.1);
+    --mono: 'IBM Plex Mono','SF Mono','Consolas','Menlo',monospace;
+    --sans: 'Segoe UI','Tahoma','system-ui','sans-serif';
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* Header */
+  header.doc {
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+  header.doc h1 {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0 0 8px;
+    letter-spacing: -0.5px;
+  }
+  header.doc .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0;
+  }
+  header.doc .meta {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+  }
+  .badge-approved { background: var(--success-bg); border-color: var(--success-border); color: var(--success); }
+  .badge-open     { background: var(--warning-bg); border-color: rgba(245,158,11,0.35); color: var(--warning); }
+  .badge-info     { background: var(--info-bg); border-color: var(--info-border); color: var(--info); }
+  .badge-danger   { background: var(--destructive-bg); border-color: var(--destructive-border); color: var(--destructive); }
+
+  /* Sections */
+  section.step {
+    margin-bottom: 56px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  section.step > .step-head {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+  section.step > .step-head h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--card-2);
+    border: 1px solid var(--border-strong);
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+  }
+  section.step > .step-body { padding: 24px; }
+
+  /* Flow diagram */
+  .flow {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin: 24px 0 8px;
+  }
+  .flow-item {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 10px;
+    text-align: center;
+    font-size: 12px;
+    position: relative;
+  }
+  .flow-item .fnum {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted-2);
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+  .flow-item .flabel {
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: 4px;
+  }
+  .flow-item .fsub {
+    color: var(--muted);
+    font-size: 11px;
+    font-family: var(--mono);
+    direction: ltr;
+  }
+  .flow-item.focus {
+    background: linear-gradient(180deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04));
+    border-color: var(--success-border);
+  }
+  .flow-item.focus .flabel { color: var(--success); }
+  @media (max-width: 720px) {
+    .flow { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Comparison table */
+  .compare {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13.5px;
+  }
+  .compare th, .compare td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    vertical-align: top;
+  }
+  .compare th {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--muted-2);
+    letter-spacing: 1px;
+    font-weight: 600;
+    background: var(--card-2);
+  }
+  .compare td.before { color: var(--muted); text-decoration: line-through; text-decoration-color: rgba(239,68,68,0.6); }
+  .compare td.after  { color: var(--fg); font-weight: 500; }
+  .arrow { color: var(--accent); font-family: var(--mono); }
+  .code { font-family: var(--mono); font-size: 12px; background: var(--card-2); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); direction: ltr; display: inline-block; }
+
+  /* Screen mockups */
+  .screens-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+  }
+  .screens-tabs button {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 14px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: var(--sans);
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .screens-tabs button.active {
+    background: var(--card);
+    color: var(--fg);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .screens-tabs button:hover:not(.active) { color: var(--fg); }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* Browser chrome */
+  .browser {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border-strong);
+    background: var(--card-2);
+    margin-bottom: 8px;
+    box-shadow: 0 24px 60px -20px rgba(0,0,0,0.6);
+  }
+  .browser-bar {
+    background: var(--card);
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--border);
+    direction: ltr;
+  }
+  .browser-dots { display: flex; gap: 6px; }
+  .browser-dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--border-strong); }
+  .browser-url {
+    flex: 1;
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .browser-url .lock { color: var(--success); margin-inline-end: 6px; }
+  .browser-content { padding: 24px; direction: rtl; background: var(--bg); min-height: 500px; }
+
+  /* Checkout mockup — 2 column */
+  .checkout {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 24px;
+  }
+  @media (max-width: 820px) { .checkout { grid-template-columns: 1fr; } }
+
+  .summary-card, .form-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .summary-card h3, .form-card h3 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin: 0 0 16px;
+    font-family: var(--mono);
+  }
+  .plan-name {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--fg);
+    margin: 0 0 4px;
+  }
+  .plan-tagline {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 0 0 16px;
+  }
+  .price-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 16px;
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    color: var(--muted);
+  }
+  .price-row.total {
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    color: var(--fg);
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .price-row.total .val { color: var(--success); }
+  .price-num { direction: ltr; }
+
+  .trust-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .trust-list li {
+    font-size: 12.5px;
+    color: var(--muted);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .trust-list li::before {
+    content: "✓";
+    color: var(--success);
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+
+  /* Form */
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: 6px;
+  }
+  .input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    padding: 11px 14px;
+    border-radius: 10px;
+    font-family: var(--sans);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .input:focus { border-color: var(--success); box-shadow: 0 0 0 3px rgba(34,197,94,0.15); }
+  .input::placeholder { color: var(--muted-2); }
+  .input.phone-wrap { display: flex; align-items: stretch; gap: 0; padding: 0; overflow: hidden; }
+  .input.phone-wrap input { flex: 1; border: 0; padding: 11px 14px; background: transparent; color: var(--fg); font-family: var(--sans); font-size: 14px; outline: none; }
+  .input.phone-wrap .cc {
+    padding: 11px 12px;
+    background: var(--card-2);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12.5px;
+    border-inline-start: 1px solid var(--border);
+    direction: ltr;
+  }
+
+  /* iframe placeholder */
+  .iframe-panel {
+    background: linear-gradient(180deg, rgba(59,130,246,0.05), rgba(59,130,246,0.02));
+    border: 1px dashed var(--info-border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 16px 0;
+    position: relative;
+  }
+  .iframe-panel .iframe-tag {
+    position: absolute;
+    top: -10px;
+    inset-inline-start: 16px;
+    background: var(--bg);
+    padding: 0 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--info);
+    letter-spacing: 1px;
+  }
+  .iframe-fields {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .iframe-fields .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .iframe-field {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted-2);
+    direction: ltr;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .iframe-field .lbl { color: var(--muted-2); font-size: 10px; }
+  .iframe-field .val { color: var(--muted); }
+
+  /* Cards logos row */
+  .cards-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+  }
+  .card-logo {
+    padding: 4px 10px;
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+  }
+
+  /* Turnstile */
+  .turnstile {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--muted);
+    margin: 12px 0;
+  }
+  .turnstile .box {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border-strong);
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .turnstile .cf {
+    margin-inline-start: auto;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted-2);
+  }
+
+  /* Terms checkbox */
+  .terms {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 12px 0;
+    line-height: 1.6;
+  }
+  .terms input { margin-top: 4px; accent-color: var(--success); }
+  .terms a { color: var(--fg); text-decoration: underline; }
+
+  /* Big pay button */
+  .pay-btn {
+    width: 100%;
+    background: var(--fg);
+    color: var(--bg);
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: 0;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .pay-btn .amt { font-family: var(--mono); direction: ltr; }
+
+  .secondary-help {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted-2);
+    margin-top: 10px;
+  }
+  .secondary-help a { color: var(--muted); text-decoration: underline; }
+
+  /* Status pages (success / failed / processing) */
+  .status-page {
+    text-align: center;
+    padding: 40px 20px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .status-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    margin-bottom: 20px;
+  }
+  .status-icon.success { background: var(--success-bg); border: 2px solid var(--success-border); color: var(--success); }
+  .status-icon.fail    { background: var(--destructive-bg); border: 2px solid var(--destructive-border); color: var(--destructive); }
+  .status-icon.pending { background: var(--info-bg); border: 2px solid var(--info-border); color: var(--info); }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+  .status-icon.pending { animation: pulse 1.5s infinite; }
+  .status-title { font-size: 26px; font-weight: 800; margin: 0 0 8px; }
+  .status-sub { color: var(--muted); font-size: 14px; margin: 0 0 24px; }
+
+  .invoice-block {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: right;
+    margin: 20px 0;
+  }
+  .invoice-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+  }
+  .invoice-row .lbl { color: var(--muted); }
+  .invoice-row .val { color: var(--fg); font-family: var(--mono); direction: ltr; }
+  .invoice-row.tot { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 12px; font-weight: 700; }
+  .invoice-row.tot .val { color: var(--success); }
+
+  .cta-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--success);
+    color: var(--bg);
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 15px;
+    margin: 8px;
+  }
+  .cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--fg);
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 14px;
+    border: 1px solid var(--border-strong);
+    margin: 8px;
+  }
+  .email-notice {
+    background: var(--info-bg);
+    border: 1px solid var(--info-border);
+    color: var(--info);
+    padding: 14px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin: 16px 0;
+    text-align: right;
+  }
+
+  /* Refund guarantee badge — beneath pay button */
+  .refund-badge {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--success-bg);
+    border: 1px solid var(--success-border);
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--success);
+    text-align: center;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .refund-badge .icon { font-size: 14px; }
+
+  /* Decisions section */
+  .decisions {
+    display: grid;
+    gap: 12px;
+  }
+  .decision {
+    background: var(--card-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .decision.approved { border-color: var(--success-border); background: var(--success-bg); }
+  .decision.open { border-color: rgba(245,158,11,0.3); background: var(--warning-bg); }
+  .decision .d-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted-2);
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+  .decision .d-body { flex: 1; }
+  .decision .d-title { font-weight: 700; margin-bottom: 4px; font-size: 14px; }
+  .decision .d-note { font-size: 12.5px; color: var(--muted); }
+
+  /* Fidelity spec */
+  table.fidelity {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+  }
+  table.fidelity th, table.fidelity td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    vertical-align: top;
+  }
+  table.fidelity th {
+    background: var(--card-2);
+    color: var(--muted-2);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+  table.fidelity code {
+    font-family: var(--mono);
+    font-size: 12px;
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+    direction: ltr;
+    display: inline-block;
+  }
+
+  /* Callout */
+  .callout {
+    background: var(--warning-bg);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin: 16px 0;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .callout strong { color: var(--warning); }
+
+  /* Footer note */
+  footer.doc {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--muted-2);
+    font-size: 12px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="doc">
+  <h1>رحلة الدفع — Mockup v2</h1>
+  <p class="subtitle">من ضغطة CTA على الصفحة الرئيسية لحد فتح <code class="code">console.modonty.com</code></p>
+  <div class="meta">
+    <span class="badge badge-info">JBRSEO · السعودية فقط</span>
+    <span class="badge badge-approved">١٠ قرارات معمارية مقفولة</span>
+    <span class="badge badge-approved">٥ قرارات UX مُقرّة (2026-07-11)</span>
+    <span class="badge badge-info">Hosted Session · N-Genius</span>
+  </div>
+</header>
+
+<!-- ============================================= -->
+<!-- 1. FLOW OVERVIEW                              -->
+<!-- ============================================= -->
+<section class="step">
+  <div class="step-head">
+    <h2><span class="step-num">0</span> نظرة كلية على الرحلة</h2>
+    <span class="badge badge-approved">معتمد</span>
+  </div>
+  <div class="step-body">
+    <p style="margin:0 0 8px;color:var(--muted);font-size:13.5px;">
+      المستخدم يبدأ من الصفحة الرئيسية، يختار باقة، يدفع، ينتقل إلى حسابه في مدونتي. مراحل الاحتكاك الحقيقية = ٤ و ٥ (بؤرة التصميم).
+    </p>
+    <div class="flow">
+      <div class="flow-item">
+        <div class="fnum">01</div>
+        <div class="flabel">اكتشاف</div>
+        <div class="fsub">/sa</div>
+      </div>
+      <div class="flow-item">
+        <div class="fnum">02</div>
+        <div class="flabel">اختيار باقة</div>
+        <div class="fsub">#pricing</div>
+      </div>
+      <div class="flow-item focus">
+        <div class="fnum">03 · بؤرة</div>
+        <div class="flabel">الدفع</div>
+        <div class="fsub">/checkout</div>
+      </div>
+      <div class="flow-item focus">
+        <div class="fnum">04 · بؤرة</div>
+        <div class="flabel">التفعيل</div>
+        <div class="fsub">إيميل ترحيبي</div>
+      </div>
+      <div class="flow-item">
+        <div class="fnum">05</div>
+        <div class="flabel">التشغيل</div>
+        <div class="fsub">console.modonty.com</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- 2. LANDING CTA CHANGES                        -->
+<!-- ============================================= -->
+<section class="step">
+  <div class="step-head">
+    <h2><span class="step-num">1</span> تعديلات CTAs على الـ Landing</h2>
+    <span class="badge badge-approved">معتمد</span>
+  </div>
+  <div class="step-body">
+    <p style="margin:0 0 16px;color:var(--muted);font-size:13.5px;">
+      المشكلة الحالية: زر الهيرو والفوتر يودّون <code class="code">/signup</code> بدون باقة → المستخدم يقع على أول باقة تلقائياً (خلل).
+      الحل: يودّون على <code class="code">#pricing</code> عشان يختار بوعي. النصّ لازم يتغيّر أيضاً.
+    </p>
+    <table class="compare">
+      <thead>
+        <tr>
+          <th style="width:22%;">موقع الزر</th>
+          <th>الحالي (يُحذف)</th>
+          <th>المقترح (يُطبَّق)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>هيرو Landing</strong></td>
+          <td class="before"><code class="code">/sa/signup</code> · "ابدأ الآن"</td>
+          <td class="after"><span class="arrow">→</span> <code class="code">#pricing</code> · <strong>"اختر باقتك"</strong></td>
+        </tr>
+        <tr>
+          <td><strong>فوتر Landing</strong></td>
+          <td class="before"><code class="code">/sa/signup</code> · "ابدأ الآن"</td>
+          <td class="after"><span class="arrow">→</span> <code class="code">#pricing</code> · <strong>"اختر باقتك"</strong></td>
+        </tr>
+        <tr>
+          <td><strong>وسط الصفحة (إن وُجد)</strong></td>
+          <td class="before"><code class="code">/sa/signup</code></td>
+          <td class="after"><span class="arrow">→</span> <code class="code">#pricing</code> · <strong>"اختر باقتك"</strong></td>
+        </tr>
+        <tr>
+          <td><strong>كارت باقة (كل واحد)</strong></td>
+          <td class="before"><code class="code">/sa/signup?plan=X</code></td>
+          <td class="after"><span class="arrow">→</span> <code class="code">/sa/checkout?plan=X&billing=Y</code> · "ابدأ مع {اسم}"</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <strong>ملاحظة:</strong> لو دخل عبر إعلان بـ <code class="code">?plan=growth</code> — الهيرو يودّي مباشرة على <code class="code">/checkout?plan=growth</code>. تحسين لاحق.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- 3. CHECKOUT SCREENS                           -->
+<!-- ============================================= -->
+<section class="step">
+  <div class="step-head">
+    <h2><span class="step-num">2</span> صفحات الدفع — ٤ حالات</h2>
+    <span class="badge badge-open">مطلوب إقرار</span>
+  </div>
+  <div class="step-body">
+    <div class="screens-tabs">
+      <button class="tab-btn active" data-target="s-checkout">١ · صفحة الدفع</button>
+      <button class="tab-btn" data-target="s-processing">٢ · معالجة</button>
+      <button class="tab-btn" data-target="s-success">٣ · نجاح</button>
+      <button class="tab-btn" data-target="s-failed">٤ · فشل</button>
+    </div>
+
+    <!-- SCREEN 1: /checkout -->
+    <div class="screen active" id="s-checkout">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="browser-dots"><span></span><span></span><span></span></div>
+          <div class="browser-url"><span class="lock">🔒</span>jbrseo.com/sa/checkout?plan=growth&billing=annual</div>
+        </div>
+        <div class="browser-content">
+          <div class="checkout">
+
+            <!-- Summary card -->
+            <div class="summary-card">
+              <h3>باقتك المختارة</h3>
+              <p class="plan-name">الزخم</p>
+              <p class="plan-tagline">للنشاطات النامية اللي تحتاج ظهور مستقر ومحتوى مستمر</p>
+
+              <div class="price-block">
+                <div class="price-row total" style="border-top:0;padding-top:0;margin-top:0;">
+                  <span>الإجمالي</span>
+                  <span class="val price-num">1,725 ر.س</span>
+                </div>
+                <div class="price-row" style="margin-top:6px;font-size:11.5px;padding:0;">
+                  <span style="color:var(--muted-2);">السعر شامل ضريبة القيمة المضافة ١٥٪</span>
+                </div>
+              </div>
+
+              <ul class="trust-list">
+                <li>عقد مرن — إلغاء متى شئت</li>
+                <li>ملكية المحتوى ١٠٠٪ لك</li>
+                <li>دعم عربي حقيقي في توقيتك</li>
+              </ul>
+            </div>
+
+            <!-- Form + payment -->
+            <div class="form-card">
+              <h3>بياناتك والدفع</h3>
+
+              <div class="field">
+                <label>الاسم</label>
+                <input class="input" placeholder="محمد العمري">
+              </div>
+              <div class="field">
+                <label>البريد الإلكتروني</label>
+                <input class="input" placeholder="you@company.com">
+              </div>
+              <div class="field">
+                <label>رقم الجوال</label>
+                <div class="input phone-wrap">
+                  <input placeholder="5XXXXXXXX">
+                  <span class="cc">+966</span>
+                </div>
+              </div>
+
+              <div class="iframe-panel">
+                <span class="iframe-tag">N-GENIUS HOSTED SESSION · iframe</span>
+                <div class="iframe-fields">
+                  <div class="iframe-field">
+                    <span class="lbl">CARD NUMBER</span>
+                    <span class="val">•••• •••• •••• 4242</span>
+                  </div>
+                  <div class="row-2">
+                    <div class="iframe-field">
+                      <span class="lbl">EXPIRY</span>
+                      <span class="val">MM / YY</span>
+                    </div>
+                    <div class="iframe-field">
+                      <span class="lbl">CVV</span>
+                      <span class="val">•••</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="cards-row">
+                  <span class="card-logo">MADA</span>
+                  <span class="card-logo">VISA</span>
+                  <span class="card-logo">MASTERCARD</span>
+                  <span class="card-logo">APPLE PAY</span>
+                </div>
+              </div>
+
+              <div class="turnstile">
+                <div class="box"></div>
+                <span>أنا لست روبوت</span>
+                <span class="cf">Cloudflare · Turnstile</span>
+              </div>
+
+              <label class="terms">
+                <input type="checkbox">
+                <span>
+                  أوافق على <a href="#">الشروط والأحكام</a> و<a href="/billing-policy">سياسة الاسترداد ١٤ يوم</a>.
+                </span>
+              </label>
+
+              <button class="pay-btn">
+                <span>ادفع الآن</span>
+                <span class="amt">· 1,725 ر.س</span>
+              </button>
+
+              <div class="refund-badge">
+                <span class="icon">🛡️</span>
+                <span>استرداد ١٤ يوم مضمون — إذا لم نلتزم بإعداد حسابك</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 2: /processing -->
+    <div class="screen" id="s-processing">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="browser-dots"><span></span><span></span><span></span></div>
+          <div class="browser-url"><span class="lock">🔒</span>jbrseo.com/sa/checkout/processing?order=INV-2026-042</div>
+        </div>
+        <div class="browser-content">
+          <div class="status-page">
+            <div class="status-icon pending">⟳</div>
+            <h2 class="status-title">لحظات — نجهّز حسابك</h2>
+            <p class="status-sub">تم استلام الدفع بنجاح، الآن ننشئ حسابك في مدونتي ونرسل إيميل الترحيب.</p>
+            <div class="invoice-block">
+              <div class="invoice-row"><span class="lbl">رقم الطلب</span><span class="val">INV-2026-042</span></div>
+              <div class="invoice-row"><span class="lbl">الحالة</span><span class="val" style="color:var(--info);">قيد التفعيل</span></div>
+            </div>
+            <p style="color:var(--muted-2);font-size:12px;margin:0;">
+              لا تُغلق هذه الصفحة — نُحوّلك تلقائياً خلال ثوانٍ.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 3: /success -->
+    <div class="screen" id="s-success">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="browser-dots"><span></span><span></span><span></span></div>
+          <div class="browser-url"><span class="lock">🔒</span>jbrseo.com/sa/checkout/success?order=INV-2026-042</div>
+        </div>
+        <div class="browser-content">
+          <div class="status-page">
+            <div class="status-icon success">✓</div>
+            <h2 class="status-title">تم الدفع بنجاح</h2>
+            <p class="status-sub">تم إرسال بريد إلكتروني إلى بريدك يحتوي بيانات الدخول إلى حسابك في مدونتي.</p>
+
+            <div class="invoice-block">
+              <div class="invoice-row"><span class="lbl">رقم الفاتورة</span><span class="val">INV-2026-042</span></div>
+              <div class="invoice-row"><span class="lbl">الباقة</span><span class="val">الزخم · سنوي</span></div>
+              <div class="invoice-row tot"><span class="lbl">الإجمالي المدفوع</span><span class="val">1,725 ر.س</span></div>
+              <div class="invoice-row" style="font-size:11.5px;padding-top:2px;"><span class="lbl" style="color:var(--muted-2);">شامل الضريبة ١٥٪</span><span></span></div>
+            </div>
+
+            <a href="#" class="cta-primary">افتح حسابك في مدونتي ↗</a>
+
+            <div class="email-notice">
+              📧 راجع صندوق بريدك من <code class="code">modonty@modonty.com</code> — فيه رابط الدخول وبيانات حسابك.
+              إذا لم تجده، افحص مجلد "الرسائل غير المرغوبة".
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCREEN 4: /failed -->
+    <div class="screen" id="s-failed">
+      <div class="browser">
+        <div class="browser-bar">
+          <div class="browser-dots"><span></span><span></span><span></span></div>
+          <div class="browser-url"><span class="lock">🔒</span>jbrseo.com/sa/checkout/failed?order=INV-2026-042&reason=card_declined</div>
+        </div>
+        <div class="browser-content">
+          <div class="status-page">
+            <div class="status-icon fail">✗</div>
+            <h2 class="status-title">الدفع لم يكتمل</h2>
+            <p class="status-sub">لم يُسحب أي مبلغ من بطاقتك. يمكنك المحاولة مرة ثانية أو التواصل معنا.</p>
+
+            <div class="invoice-block">
+              <div class="invoice-row"><span class="lbl">السبب</span><span class="val" style="color:var(--destructive);">البطاقة مرفوضة من البنك</span></div>
+              <div class="invoice-row"><span class="lbl">اقتراحنا</span><span class="val" style="direction:rtl;">جرّب بطاقة أخرى أو تواصل مع بنكك</span></div>
+              <div class="invoice-row"><span class="lbl">رقم المحاولة</span><span class="val">TXN-88214</span></div>
+            </div>
+
+            <a href="#" class="cta-primary" style="background:var(--fg);color:var(--bg);">أعد المحاولة</a>
+            <a href="#" class="cta-secondary">تواصل واتساب</a>
+
+            <p style="color:var(--muted-2);font-size:12px;margin:20px 0 0;">
+              بياناتك محفوظة — لا داعي لإعادة إدخالها.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- 4. OPEN UX DECISIONS                          -->
+<!-- ============================================= -->
+<section class="step">
+  <div class="step-head">
+    <h2><span class="step-num">3</span> قرارات UX (مُقرّة — 2026-07-11)</h2>
+    <span class="badge badge-approved">٥ مُقرّة</span>
+  </div>
+  <div class="step-body">
+    <p style="margin:0 0 16px;color:var(--muted);font-size:13px;">
+      كل قرار من التالي أقرّه خالد اليوم. الـ mockup أعلاه محدَّث ليعكسها بالكامل.
+    </p>
+    <div class="decisions">
+
+      <div class="decision approved">
+        <span class="d-num">Q1 ✓</span>
+        <div class="d-body">
+          <div class="d-title">شكل صفحة الدفع — تكيّف مع الجهاز</div>
+          <div class="d-note">
+            <strong>مُقرّ:</strong> على <strong>desktop</strong> = عمودين (الملخص يمين + النموذج يسار).
+            على <strong>mobile</strong> = عمود واحد (الملخص أعلى، ثم النموذج). الملخص يبقى مرئي دائماً.
+          </div>
+        </div>
+      </div>
+
+      <div class="decision approved">
+        <span class="d-num">Q2 ✓</span>
+        <div class="d-body">
+          <div class="d-title">الضريبة — لا تفصيل، السعر شاملها</div>
+          <div class="d-note">
+            <strong>مُقرّ:</strong> لا نعرض تجزئة (سعر + ضريبة + إجمالي). نعرض <strong>المبلغ الإجمالي فقط</strong>،
+            وتحته سطر صغير: <em>"السعر شامل ضريبة القيمة المضافة ١٥٪"</em>. صفر تشتيت في صفحة فيها دفع.
+          </div>
+        </div>
+      </div>
+
+      <div class="decision approved">
+        <span class="d-num">Q3 ✓</span>
+        <div class="d-body">
+          <div class="d-title">صفحة النجاح — لا كلمة سر على الشاشة</div>
+          <div class="d-note">
+            <strong>مُقرّ:</strong> لا تُعرض كلمة السر أبداً في الصفحة.
+            الرسالة: <em>"تم إرسال بريد إلكتروني إلى بريدك يحتوي بيانات الدخول إلى حسابك في مدونتي."</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="decision approved">
+        <span class="d-num">Q4 ✓</span>
+        <div class="d-body">
+          <div class="d-title">استرداد ١٤ يوم مضمون — مربوط بالالتزام لا بنتيجة SEO</div>
+          <div class="d-note">
+            <strong>مُقرّ (تحديث ذكي من خالد):</strong> بدل حذف السياسة أو جعلها قاسية،
+            نعتمد <strong>ضمان استرداد ١٤ يوم</strong> إذا لم نلتزم بإعداد الحساب،
+            <strong>ولا يشمل</strong> عدم ظهور الموقع في Google (السيو يحتاج ٣-٦ أشهر).
+            <br /><br />
+            <strong>الـ Checkbox:</strong> <em>"أوافق على الشروط والأحكام وسياسة الاسترداد ١٤ يوم."</em>
+            <br />
+            <strong>Badge أسفل زر الدفع:</strong> <em>"🛡️ استرداد ١٤ يوم مضمون — إذا لم نلتزم بإعداد حسابك"</em>
+            <br />
+            <strong>صفحة تفصيلية:</strong> <code class="code">/billing-policy</code> (تُنشأ لاحقاً).
+            <br /><br />
+            المكسب: التزام قانوني بالمادة ٥ من نظام التجارة الإلكترونية السعودي · دفاع قوي ضد chargebacks · +٨-٢٧٪ زيادة تحويل حسب Baymard 2024 · لا يخوّف العميل.
+          </div>
+        </div>
+      </div>
+
+      <div class="decision approved">
+        <span class="d-num">Q5 ✓</span>
+        <div class="d-body">
+          <div class="d-title">زر واتساب في صفحة الدفع — يُلغى تماماً</div>
+          <div class="d-note">
+            <strong>مُقرّ:</strong> ⛔ لا يوجد أي زر أو رابط واتساب في صفحة <code class="code">/checkout</code>. صفحة الدفع = تركيز مطلق على إتمام العملية.
+            واتساب يبقى في <code class="code">/checkout/failed</code> فقط (لأن هناك احتاج فعلي للمساعدة).
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="callout">
+      <strong>مبدأ حاكم:</strong> صفحة الدفع = <strong>صفر تشتيت</strong>. كل عنصر لا يخدم إتمام الدفع = يُحذف. الاستشارات، الأسئلة، دعوات التواصل — كلها قبل الدفع (في Landing/Pricing) أو بعد الفشل، لا أثناء الدفع.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- 5. FIDELITY SPEC                              -->
+<!-- ============================================= -->
+<section class="step">
+  <div class="step-head">
+    <h2><span class="step-num">4</span> مواصفات المطابقة (Mockup ↔ Code)</h2>
+    <span class="badge badge-info">تعاقد التطبيق</span>
+  </div>
+  <div class="step-body">
+    <p style="margin:0 0 16px;color:var(--muted);font-size:13px;">
+      لما تصادق، هذا الـ mockup يكون <strong>مرجع إلزامي</strong>. الكود يطابقه ١٠٠٪ باستخدام الـ tokens والـ components التالية:
+    </p>
+    <table class="fidelity">
+      <thead>
+        <tr>
+          <th>عنصر</th>
+          <th>Component</th>
+          <th>Tokens</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Summary card</td>
+          <td><code>Card</code> (shadcn)</td>
+          <td><code>bg-card border-border rounded-2xl</code></td>
+        </tr>
+        <tr>
+          <td>Input fields</td>
+          <td><code>Input</code> (shadcn)</td>
+          <td><code>focus:border-success h-12</code></td>
+        </tr>
+        <tr>
+          <td>N-Genius iframe</td>
+          <td><code>&lt;iframe&gt;</code> + Hosted Session SDK</td>
+          <td>border-dashed + info tone</td>
+        </tr>
+        <tr>
+          <td>Turnstile</td>
+          <td>Cloudflare widget</td>
+          <td>site-key من env</td>
+        </tr>
+        <tr>
+          <td>Terms checkbox</td>
+          <td><code>Checkbox</code> (shadcn)</td>
+          <td>"أوافق على الشروط والأحكام وسياسة الاسترداد ١٤ يوم"</td>
+        </tr>
+        <tr>
+          <td>Refund badge</td>
+          <td>Div مصمم أسفل زر الدفع</td>
+          <td>🛡️ + "استرداد ١٤ يوم مضمون — إذا لم نلتزم بإعداد حسابك"</td>
+        </tr>
+        <tr>
+          <td>Price display</td>
+          <td>مبلغ إجمالي واحد</td>
+          <td>سطر تحته: "السعر شامل ضريبة القيمة المضافة ١٥٪"</td>
+        </tr>
+        <tr>
+          <td>WhatsApp link</td>
+          <td>❌ غير موجود في <code>/checkout</code></td>
+          <td>موجود فقط في <code>/checkout/failed</code></td>
+        </tr>
+        <tr>
+          <td>Responsive breakpoint</td>
+          <td>Tailwind <code>md:</code></td>
+          <td>Desktop = عمودين · Mobile = عمود واحد (الملخص أعلى)</td>
+        </tr>
+        <tr>
+          <td>Pay button</td>
+          <td><code>Button</code> size=lg</td>
+          <td><code>bg-foreground h-14 rounded-xl</code></td>
+        </tr>
+        <tr>
+          <td>Success/Fail pages</td>
+          <td>Server component (order مُتحقّق منه في DB)</td>
+          <td>بدون <code>sessionStorage</code></td>
+        </tr>
+        <tr>
+          <td>Prices (Arabic-Indic digits)</td>
+          <td><code>toLocaleString("ar-EG")</code></td>
+          <td>IBM Plex Mono للأرقام</td>
+        </tr>
+        <tr>
+          <td>Landing CTA hero/footer</td>
+          <td>anchor <code>href="#pricing"</code> بدلاً من Link</td>
+          <td>نص <strong>"اختر باقتك"</strong></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============================================= -->
+<!-- 6. WHAT WE DELETE                             -->
+<!-- ============================================= -->
+<section class="step">
+  <div class="step-head">
+    <h2><span class="step-num">5</span> ما يُحذف من الكود الحالي</h2>
+    <span class="badge badge-danger">تنظيف</span>
+  </div>
+  <div class="step-body">
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>الملف</th>
+          <th>ما يحصل</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code class="code">app/[country]/signup/page.tsx</code></td>
+          <td class="before">يتحوّل إلى redirect ← <code class="code">/[country]/checkout</code> (للتوافق مع الروابط القديمة)</td>
+        </tr>
+        <tr>
+          <td><code class="code">app/[country]/signup/thank-you/page.tsx</code></td>
+          <td class="before">يُحذف بالكامل (IBAN يدوي انتهى)</td>
+        </tr>
+        <tr>
+          <td><code class="code">SignupForm.tsx</code> — <code class="code">businessType</code> textarea</td>
+          <td class="before">يُحذف — احتكاك بلا داعي</td>
+        </tr>
+        <tr>
+          <td>شارة "خطوة ١ · خطوة ٢: اختر خطتك"</td>
+          <td class="before">تُحذف — الخطوة ٢ وهمية</td>
+        </tr>
+        <tr>
+          <td><code class="code">sessionStorage.jbrseo_signup_submitted</code></td>
+          <td class="before">يُستبدل بـ order ID مُتحقّق منه من DB</td>
+        </tr>
+        <tr>
+          <td>Landing hero/footer CTAs</td>
+          <td class="before">من <code class="code">signupHref</code> إلى <code class="code">#pricing</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer class="doc">
+  Mockup v2 · JBRSEO Payment Journey · 2026-07-11
+  <br />
+  الملف: <code class="code">documents/tasks/payment-journey-mockup-v2.html</code>
+</footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var target = btn.getAttribute('data-target');
+      document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+      document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+      btn.classList.add('active');
+      var t = document.getElementById(target);
+      if (t) t.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

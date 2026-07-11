@@ -1,4 +1,3 @@
-import Link from "@/app/components/link";
 import NextLink from "next/link";
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { LandingContent, SupportedCountry } from "@/lib/landing-content.types";
@@ -71,7 +70,7 @@ export function LandingHeader({
   staticLanding,
   country,
   basePath = "",
-  pricingHref = "/signup",
+  pricingHref = "/#pricing",
   navPrimaryCtaLabel,
   navLinks: navLinksProp,
   whatsappNumber,
@@ -103,12 +102,12 @@ export function LandingHeader({
               {formatPhone(whatsappNumber)}
             </a>
             <ThemeToggle />
-            <Link
+            <a
               href={pricingHref}
-              className="inline-flex max-w-[min(100%,11rem)] items-center justify-center truncate rounded-full bg-accent px-3 py-1.5 text-center text-[11px] font-black leading-tight text-accent-foreground shadow-[0_4px_16px_color-mix(in_oklch,var(--accent)_40%,transparent)] transition-all duration-200 hover:bg-accent/90 hover:scale-[1.03] sm:max-w-none sm:px-5 sm:py-2 sm:text-sm"
+              className="inline-flex max-w-[min(100%,11rem)] items-center justify-center truncate rounded-full bg-accent px-3 py-1.5 text-center text-[11px] font-black leading-tight text-accent-foreground shadow-[0_4px_16px_color-mix(in_oklch,var(--accent)_40%,transparent)] transition-all duration-200 hover:bg-accent/90 hover:scale-[1.03] sm:max-w-none sm:px-5 sm:py-2 sm:text-sm no-underline"
             >
               {primaryCtaLabel}
-            </Link>
+            </a>
           </div>
         </div>
         <MobileNavRow navLinks={navLinks} />

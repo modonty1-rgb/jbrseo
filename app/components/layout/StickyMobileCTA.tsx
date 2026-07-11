@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import NextLink from "next/link";
 
 type Props = {
-  signupHref: string;
+  pricingHref: string;
   whatsappLink: string;
   ctaLabel: string;
 };
 
-export function StickyMobileCTA({ signupHref, whatsappLink, ctaLabel }: Props) {
+export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -67,7 +67,7 @@ export function StickyMobileCTA({ signupHref, whatsappLink, ctaLabel }: Props) {
           </svg>
         </a>
         <NextLink
-          href={signupHref}
+          href={pricingHref}
           className="flex-1 inline-flex items-center justify-center bg-foreground text-background px-[18px] rounded-[13px] text-[15px] font-semibold no-underline shadow-[0_12px_26px_-14px_color-mix(in oklch, var(--foreground) 50%, transparent)] min-h-[52px]"
         >
           {ctaLabel}

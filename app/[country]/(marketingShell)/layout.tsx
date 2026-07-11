@@ -36,7 +36,6 @@ export default async function MarketingShellLayout({
 
   const basePath = `/${countrySlug}`;
   const pricingHref = `${basePath}#pricing`;
-  const signupHref = `${basePath}/signup`;
   const whatsappLink = getWhatsAppLink(countryCode, content.siteSettings?.whatsappNumber);
   const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
 
@@ -59,7 +58,7 @@ export default async function MarketingShellLayout({
         basePath={basePath}
       />
       <StickyMobileCTA
-        signupHref={signupHref}
+        pricingHref={pricingHref}
         whatsappLink={whatsappLink}
         ctaLabel={ctaLabel}
       />

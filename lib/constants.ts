@@ -1,4 +1,4 @@
-export const PRICING_CTA_LINK = "/signup";
+export const PRICING_CTA_LINK = "/checkout";
 
 export const SITE_LOGO_URL =
   "https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto/v1771973886/jbrser_svg_ikxmnn.svg";

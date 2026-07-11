@@ -37,7 +37,7 @@ export function proxy(request: NextRequest) {
   }
 
   if (
-    request.nextUrl.pathname.includes("/signup") &&
+    request.nextUrl.pathname.includes("/checkout") &&
     !["GET", "POST", "HEAD"].includes(request.method)
   ) {
     return new NextResponse(null, {

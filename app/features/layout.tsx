@@ -28,7 +28,6 @@ export default async function FeaturesLayout({ children }: { children: ReactNode
 
   const basePath = `/${countrySlug}`;
   const pricingHref = `${basePath}#pricing`;
-  const signupHref = `${basePath}/signup`;
   const whatsappLink = getWhatsAppLink(country, content.siteSettings?.whatsappNumber);
   const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
 
@@ -51,7 +50,7 @@ export default async function FeaturesLayout({ children }: { children: ReactNode
         basePath={basePath}
       />
       <StickyMobileCTA
-        signupHref={signupHref}
+        pricingHref={pricingHref}
         whatsappLink={whatsappLink}
         ctaLabel={ctaLabel}
       />

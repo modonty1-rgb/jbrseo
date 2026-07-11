@@ -17,7 +17,6 @@ import { META_DESCRIPTION_MAX_CHARS } from "@/lib/seo-meta";
 function revalidateLanding() {
   revalidateTag("landing", "default");
   revalidatePath("/");
-  revalidatePath("/pricing");
 }
 
 export async function getGlobalSiteSettings(): Promise<GlobalSiteSettings | null> {

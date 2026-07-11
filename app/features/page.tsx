@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { headers } from "next/headers";
 import { getAllPlans } from "@/app/actions/pricing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
@@ -162,7 +161,7 @@ export default async function FeaturesPage() {
   const whatsappLink = getWhatsAppLink(country, content.siteSettings?.whatsappNumber);
   const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
   const countrySlug = country === "EG" ? "eg" : "sa";
-  const signupHref = `/${countrySlug}/signup`;
+  const pricingHref = `/${countrySlug}#pricing`;
   const currency = country === "EG" ? "ج.م" : "ر.س";
 
   // Plans for pricing table (from DB) — plans is already filtered to `visible: true`.
@@ -566,7 +565,7 @@ export default async function FeaturesPage() {
             <div className="fx-final">
               <h2>جاهز ترى ترتيبك يتحرّك؟</h2>
               <p>اشترك سنوياً واكسب ٦ أشهر مجاناً — أو تكلّم معنا عن باقة مخصصة.</p>
-              <Link href={signupHref} className="fx-btn-p">{ctaLabel} ←</Link>
+              <a href={pricingHref} className="fx-btn-p">{ctaLabel} ←</a>
               <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="fx-btn-s">تكلّم معنا على واتساب</a>
             </div>
           </div>

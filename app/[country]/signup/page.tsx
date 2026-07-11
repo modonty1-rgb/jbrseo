@@ -1,80 +1,24 @@
-import { Suspense } from "react";
-import type { Metadata } from "next";
-import { PRICING_CTA_LINK } from "@/lib/constants";
-import { getAllPlans } from "@/app/actions/pricing";
-import {
-  getCountryCodeFromSlug,
-  isSupportedCountrySlug,
-} from "@/lib/country-config";
-import type { PricingPlan } from "@/lib/landing-content.types";
-import { SignupForm } from "./_components/SignupForm";
+import { permanentRedirect } from "next/navigation";
+import { isSupportedCountrySlug } from "@/lib/country-config";
 
-function formatPrice(value: number, country: "SA" | "EG"): string {
-  if (value === 0) return "مجاناً";
-  return country === "SA" ? `${value} ر.س` : `${value} ج.م`;
-}
-
-export async function generateMetadata({
+// /signup is retired. Preserve any ?plan= / ?billing= / ?total= from old links
+// (ads, emails, external referrals) and forward them to /checkout.
+export default async function LegacySignupRedirect({
   params,
+  searchParams,
 }: {
   params: Promise<{ country: string }>;
-}): Promise<Metadata> {
-  const { country: raw } = await params;
-  const slug = raw?.toLowerCase();
-  if (!isSupportedCountrySlug(slug)) {
-    return { title: { absolute: "التسجيل — مدونتي | JBRSEO" } };
-  }
-  return {
-    title: { absolute: "التسجيل — مدونتي | JBRSEO" },
-    description: "أكمل بياناتك واختر خطتك للبدء مع JBRSEO.",
-    robots: { index: false, follow: false },
-  };
-}
-
-export default async function CountrySignupPage({
-  params,
-}: {
-  params: Promise<{ country: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { country: raw } = await params;
   const slug = raw?.toLowerCase();
-  if (!isSupportedCountrySlug(slug)) {
-    return null;
+  if (!isSupportedCountrySlug(slug)) permanentRedirect("/");
+  const search = await searchParams;
+  const qs = new URLSearchParams();
+  for (const [key, value] of Object.entries(search)) {
+    if (typeof value === "string") qs.set(key, value);
+    else if (Array.isArray(value) && value[0]) qs.set(key, value[0]);
   }
-  const countrySlug = slug as "sa" | "eg";
-  const countryCode = getCountryCodeFromSlug(countrySlug);
-  const dbPlans = await getAllPlans(countryCode);
-  const visibleDbPlans = [...dbPlans]
-    .filter((p) => p.visible)
-    .sort((a, b) => a.displayOrder - b.displayOrder);
-
-  const serverPlans: PricingPlan[] = visibleDbPlans.map((p) => ({
-    name: p.name,
-    forWho: p.tagline,
-    cta: p.ctaText || "ابدأ الحين",
-    ctaLink: PRICING_CTA_LINK,
-    ...(p.priceMonthly > 0 || p.priceYearly > 0
-      ? {
-          price: formatPrice(p.priceMonthly, countryCode),
-          annualPrice: p.priceYearly > 0 ? formatPrice(p.priceYearly * 12, countryCode) : undefined,
-        }
-      : {}),
-    ...(p.badge ? { badge: p.badge } : {}),
-    ...(p.featuredBadge ? { highlight: true as const } : {}),
-    features: p.highlights ?? [],
-  }));
-  const planPrices = visibleDbPlans.map((p) => ({ mo: p.priceMonthly, yr: p.priceYearly }));
-  const planIds = visibleDbPlans.map((p) => p.slug);
-
-  return (
-    <Suspense>
-      <SignupForm
-        serverPlans={serverPlans}
-        planPrices={planPrices}
-        planIds={planIds}
-        country={countryCode}
-        countrySlug={countrySlug}
-      />
-    </Suspense>
-  );
+  const suffix = qs.toString() ? `?${qs.toString()}` : "";
+  permanentRedirect(`/${slug}/checkout${suffix}`);
 }

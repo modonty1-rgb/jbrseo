@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "@/app/components/link";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { DEFAULT_PUBLIC_SITE_ORIGIN } from "@/lib/seo-meta";
 import { Users, Crown, ArrowLeft } from "lucide-react";
@@ -95,13 +94,13 @@ export default async function TeamPage() {
         <p className="mx-auto max-w-xl text-sm sm:text-[15px] text-muted-foreground leading-relaxed mb-6">
           {totalCount} شخص متخصّص جاهزون يشتغلون على نشاطك من أول يوم اشتراك — بلا انتظار.
         </p>
-        <Link
-          href="/sa/signup"
+        <a
+          href="/sa#pricing"
           className="inline-flex items-center gap-2 rounded-xl bg-success px-6 py-3 text-sm font-bold text-success-foreground hover:opacity-90 transition"
         >
-          <span>ابدأ معنا الآن</span>
+          <span>اختر باقتك</span>
           <ArrowLeft className="w-4 h-4" />
-        </Link>
+        </a>
       </section>
     </div>
   );

@@ -1,5 +1,5 @@
-import type { Plan as DbPlan, PriceSectionMeta as DbMeta } from "@prisma/client";
-import type { Plan, PricingContent, PricingUI, TrustItem } from "@/app/content/landing/price-section-types";
+import type { PriceSectionMeta as DbMeta } from "@prisma/client";
+import type { Plan, PricingUI } from "@/app/content/landing/price-section-types";
 
 export type DbPlanForCard = {
   slug: string;
@@ -106,56 +106,3 @@ export function currencyFor(country: "SA" | "EG"): string {
   return country === "SA" ? "ر.س" : "ج.م";
 }
 
-/**
- * Build the full `PricingContent` shape that `PricingPageShell` (and any other
- * visitor pricing component) expects, from DB rows only — no static fallback.
- *
- * This is the single source of truth that replaces the legacy
- * `LandingSection.pricing` JSON blob.
- */
-export function buildPricingContentFromDb(
-  dbPlans: DbPlan[],
-  meta: DbMeta | null,
-): PricingContent {
-  const visiblePlans = [...dbPlans]
-    .filter((p) => p.visible)
-    .sort((a, b) => a.displayOrder - b.displayOrder);
-
-  const PLANS: Plan[] = visiblePlans.map((p) =>
-    dbPlanToVisitorPlan({
-      slug: p.slug,
-      name: p.name,
-      hook: p.hook,
-      tagline: p.tagline,
-      priceMonthly: p.priceMonthly,
-      priceYearly: p.priceYearly,
-      articlesLabel: p.articlesLabel,
-      ctaText: p.ctaText,
-      highlights: p.highlights,
-      badge: p.badge,
-      featuredBadge: p.featuredBadge,
-    }),
-  );
-
-  const TRUST_ITEMS: TrustItem[] = Array.isArray(meta?.trustItems)
-    ? (meta!.trustItems as Array<{ icon?: string; label?: string }>)
-        .map((t) => ({ icon: t.icon ?? "", label: t.label ?? "" }))
-        .filter((t) => t.icon || t.label)
-    : [];
-
-  const UI = dbMetaToPricingUi(meta);
-
-  return {
-    ANNOUNCEMENT: meta?.announcement ?? "",
-    PLANS,
-    TRUST_ITEMS,
-    BOTTOM_CTA: {
-      headline: meta?.ctaHeadline ?? "",
-      subheadline: meta?.ctaSubheadline ?? "",
-      primaryBtn: "",
-      secondaryBtn: "",
-      footnote: "",
-    },
-    UI,
-  };
-}

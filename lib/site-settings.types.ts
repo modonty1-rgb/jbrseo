@@ -4,7 +4,7 @@
  * this constant is the fallback used everywhere the DB is empty or unreachable.
  * If you change the wording, change it here — nowhere else.
  */
-export const DEFAULT_CTA_LABEL = "دعنا نبني حضورك";
+export const DEFAULT_CTA_LABEL = "اختر باقتك";
 
 export type SiteSettingsSeo = {
   title: string;

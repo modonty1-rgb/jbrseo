@@ -122,7 +122,6 @@ export default async function CountryHome({
   };
 
   const whatsappLink = getWhatsAppLink(countryCode, content.siteSettings?.whatsappNumber);
-  const signupHref = `/${countrySlug}/signup`;
   const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
 
   return (
@@ -133,7 +132,6 @@ export default async function CountryHome({
         plans={plans}
         announcement={meta?.announcement ?? ""}
         whatsappLink={whatsappLink}
-        signupHref={signupHref}
         initialBilling={annual ? "annual" : "monthly"}
         ctaLabel={ctaLabel}
         trustBundle={trustBundle}

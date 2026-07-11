@@ -21,7 +21,6 @@ type Props = {
   plans: DBPlan[];
   announcement: string;
   whatsappLink: string;
-  signupHref: string;
   initialBilling: Billing;
   ctaLabel: string;
   trustBundle: ModontyTrustBundle;
@@ -523,7 +522,8 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
 }
 
 export function Landing(props: Props) {
-  const { countrySlug, staticLanding, plans, announcement, whatsappLink, signupHref, initialBilling, ctaLabel, trustBundle, modontyImpact, caseStats } = props;
+  const { countrySlug, staticLanding, plans, announcement, whatsappLink, initialBilling, ctaLabel, trustBundle, modontyImpact, caseStats } = props;
+  const checkoutHref = `/${countrySlug}/checkout`;
 
   const country = countrySlug === "eg" ? "EG" : "SA";
   const currency = country === "EG" ? "ج.م" : "ر.س";
@@ -619,9 +619,9 @@ export function Landing(props: Props) {
           {staticLanding.hero?.sub ?? "فريقنا يكتب محتوى سيو وينشره على موقعك. أنت توافق بضغطة — وجوجل يجيب لك العملاء كل يوم."}
         </p>
         <div className="flex gap-[18px] justify-center items-center mt-8 flex-wrap">
-          <Link href={signupHref} className="bg-foreground text-background px-7 py-[15px] rounded-xl text-base font-medium no-underline">
+          <a href="#pricing" className="bg-foreground text-background px-7 py-[15px] rounded-xl text-base font-medium no-underline">
             {ctaLabel}
-          </Link>
+          </a>
           <a
             href={whatsappLink}
             target="_blank"
@@ -943,7 +943,7 @@ export function Landing(props: Props) {
 
       {/* ─── TRUST SECTION — live from Modonty's real paying clients ─── */}
       {trustBundle.logos.length > 0 && (
-        <TrustSection bundle={trustBundle} ctaLabel={ctaLabel} signupHref={signupHref} />
+        <TrustSection bundle={trustBundle} ctaLabel={ctaLabel} />
       )}
 
       {/* ─── MATH — compact side-by-side comparison for non-technical visitor ─── */}
@@ -1372,25 +1372,10 @@ export function Landing(props: Props) {
       </m.section>
 
       {/* ─── PRICING (DB Plan model) ─── */}
-      <section id="pricing" className="max-w-[1080px] mx-auto px-7 py-20">
-        <div className="text-center mb-[34px]">
-          <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px]">باقات تنمو معك</h2>
-          <p className="text-[15px] text-muted-foreground mt-3">
-            ابدأ بالباقة الأنسب — ترقّى متى ما احتجت، بدون التزام.
-          </p>
-          <div className="mt-3">
-            <a
-              href={whatsappLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-success transition-colors border-b border-b-transparent hover:border-b-success/40 pb-0.5"
-            >
-              <span>عندك سؤال قبل الاشتراك؟</span>
-              <span className="font-semibold text-success">نتكلم على واتساب</span>
-              <span>←</span>
-            </a>
-          </div>
-          <div className="prev-pricing-toggle inline-flex bg-muted rounded-[11px] p-1 mt-6 text-sm font-medium">
+      <section id="pricing" className="max-w-[1080px] mx-auto px-7 pt-10 pb-20 scroll-mt-16">
+        <div className="text-center mb-5">
+          <h2 className="prev-h2 text-[32px] font-semibold tracking-[-1px]">باقات تنمو معك</h2>
+          <div className="prev-pricing-toggle inline-flex bg-muted rounded-[11px] p-1 mt-5 text-sm font-medium">
             <button
               onClick={() => setBilling("monthly")}
               className={cn(
@@ -1429,6 +1414,8 @@ export function Landing(props: Props) {
             if (!content) return null;
             const PersonaIcon = content.personaIcon;
             const isConsultation = !!content.ctaAsConsultation;
+            // Payment is Saudi-only — Egypt visitors go to WhatsApp for pricing plans.
+            const isExternalCta = isConsultation || countrySlug === "eg";
 
             return (
               <m.div
@@ -1494,15 +1481,15 @@ export function Landing(props: Props) {
                   {billing === "annual" && p.priceYearly > 0 ? `يصير ${formatNum(effectiveMonthly)} ${currency}/شهر · ٦ شهور هدية` : " "}
                 </div>
                 <Link
-                  href={isConsultation ? whatsappLink : `${signupHref}?plan=${p.slug}`}
-                  target={isConsultation ? "_blank" : undefined}
-                  rel={isConsultation ? "noopener noreferrer" : undefined}
+                  href={isExternalCta ? whatsappLink : `${checkoutHref}?plan=${p.slug}&billing=${billing}`}
+                  target={isExternalCta ? "_blank" : undefined}
+                  rel={isExternalCta ? "noopener noreferrer" : undefined}
                   className={cn(
                     "flex items-center justify-center gap-2 p-[13px] rounded-[11px] text-[14px] no-underline mt-[18px] mb-[22px] border font-bold",
                     featured ? "bg-success text-success-foreground border-transparent" : "bg-background text-foreground border-border",
                   )}
                 >
-                  <span>{isConsultation ? "احجز جلسة استشارة" : (p.ctaText || `ابدأ بـ${p.name}`)}</span>
+                  <span>{isConsultation ? "احجز جلسة استشارة" : countrySlug === "eg" ? "تواصل عبر واتساب" : (p.ctaText || `ابدأ بـ${p.name}`)}</span>
                   <ArrowLeft className="w-4 h-4" />
                 </Link>
                 {/* Bullets label */}
@@ -1545,6 +1532,20 @@ export function Landing(props: Props) {
             );
           })}
         </m.div>
+
+        {/* Escape valve — placed AFTER cards per Baymard 2024 (post-scan fallback for hesitant B2B buyers). */}
+        <div className="mt-10 text-center">
+          <a
+            href={whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-[13px] text-muted-foreground hover:text-success transition-colors border-b border-b-transparent hover:border-b-success/40 pb-0.5"
+          >
+            <span>لسه متردد؟</span>
+            <span className="font-semibold text-success">تكلّم معنا على واتساب</span>
+            <span>←</span>
+          </a>
+        </div>
       </section>
 
       {/* ─── SOCIAL PROOF VOICES (DB) ─── */}
@@ -1920,9 +1921,9 @@ export function Landing(props: Props) {
             {finalCtaData?.subtitle ?? "انضم لأوائل الشركات اللي اختارت المحتوى طريقاً للنمو — لا الإعلانات."}
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
-            <Link href={signupHref} className="bg-background text-foreground px-[30px] py-4 rounded-[13px] text-base font-semibold no-underline">
+            <a href="#pricing" className="bg-background text-foreground px-[30px] py-4 rounded-[13px] text-base font-semibold no-underline">
               {ctaLabel}
-            </Link>
+            </a>
             <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="bg-background/10 text-background px-[26px] py-4 rounded-[13px] text-base font-medium no-underline border border-background/15">
               {finalCtaData?.wa ?? "كلّمنا على واتساب"}
             </a>

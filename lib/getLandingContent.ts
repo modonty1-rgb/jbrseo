@@ -110,7 +110,7 @@ async function getStaticFallback(): Promise<LandingContent> {
     import("@/app/content/landing"),
     import("@/app/content/landing-images"),
   ]);
-  const plansWithLink = landing.pricingTeaser.plans.map((p) => ({ ...p, ctaLink: "/signup" }));
+  const plansWithLink = landing.pricingTeaser.plans.map((p) => ({ ...p, ctaLink: PRICING_CTA_LINK }));
   return {
     landing: {
       ...landing,
