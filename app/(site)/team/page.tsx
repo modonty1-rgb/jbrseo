@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
+import Image from "next/image";
 import Link from "@/app/components/link";
-import { StaffAvatar } from "@/app/(site)/_components/StaffAvatar";
-import { Card } from "@/app/components/ui/card";
+import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { DEFAULT_PUBLIC_SITE_ORIGIN } from "@/lib/seo-meta";
+import { Users, Crown, ArrowLeft } from "lucide-react";
 
 const siteUrl = DEFAULT_PUBLIC_SITE_ORIGIN;
 const teamTitle = "فريق JBRSEO | الأشخاص وراء المنصة";
 const teamDescription =
-  "تعرّف على الفريق الذي يقف وراء منصة JBRSEO، خبرات في المتاجر الإلكترونية، SEO والمحتوى، يعملون معاً لبناء نمو مستدام لمشروعك.";
+  "تعرّف على الفريق الذي يقف وراء منصة JBRSEO، خبرات في المتاجر الإلكترونية، السيو والمحتوى، يعملون معاً لبناء نمو مستدام لمشروعك.";
 
 export const metadata: Metadata = {
   title: teamTitle,
@@ -20,86 +20,153 @@ export const metadata: Metadata = {
 
 export default async function TeamPage() {
   const staticLanding = await getStaticLandingWithOverrides();
-  const { coreTeam, executionTeam } = staticLanding.team;
+  const { coreTeam = [], executionTeam = [] } = staticLanding.team ?? {};
+  const totalCount = coreTeam.length + executionTeam.length;
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-10 px-4 py-10 sm:px-6 lg:px-0 lg:py-14">
-      <section className="space-y-3 text-center">
-        <p className="text-xs font-semibold tracking-widest text-primary/70">فريق JBRSEO</p>
-        <h1 className="text-2xl font-bold leading-relaxed text-foreground sm:text-3xl">
-          الأشخاص الذين يعملون معك في كواليس النمو بالمحتوى والـ SEO
+    <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
+      {/* HERO */}
+      <section className="text-center mb-16">
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-success/12 px-4 py-1.5 text-xs font-bold text-success mb-4">
+          <Users className="w-3.5 h-3.5" />
+          <span>{totalCount} شخص يعمل عليك</span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight tracking-tight text-foreground mb-4">
+          الأشخاص الذين يعملون معك في كواليس النمو
         </h1>
-        <p className="mx-auto max-w-2xl text-sm leading-relaxed text-muted-foreground">
+        <p className="mx-auto max-w-2xl text-sm sm:text-base leading-relaxed text-muted-foreground">
           لما تشترك في JBRSEO، هؤلاء هم الأشخاص الذين يشتغلون على نشاطك — كل واحد متخصص في دوره، وكلهم يشتغلون معاً عشانك.
         </p>
       </section>
 
-      <section className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-3">
-          {coreTeam.map((member, i) => (
-            <Card
-              key={`core-${i}-${member.name}`}
-              className="flex flex-col overflow-hidden rounded-2xl border-border/60 bg-card/40 p-0 text-sm shadow-sm"
-            >
-              <div className="aspect-square w-full shrink-0">
-                <StaffAvatar
-                  avatarUrl={member.avatarUrl}
-                  avatarColor={member.avatarColor}
-                  name={member.name}
-                  size="full"
-                />
-              </div>
-              <div className="flex flex-col items-start p-4">
-                <p className="text-xs font-semibold text-foreground">{member.name}</p>
-                <p className="text-[11px] text-muted-foreground">{member.role}</p>
-                <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
-                  {member.bio}
-                </p>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </section>
+      {/* CORE TEAM */}
+      {coreTeam.length > 0 && (
+        <section className="mb-16">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-11 h-11 rounded-xl bg-success/12 text-success flex items-center justify-center">
+              <Crown className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+                القيادة
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                المؤسسون + المدير التنفيذي
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 max-w-3xl mx-auto">
+            {coreTeam.map((member, i) => (
+              <MemberCardLarge key={`core-${i}-${member.name}`} member={member} />
+            ))}
+          </div>
+        </section>
+      )}
 
-      <section className="space-y-4">
-        <div className="grid gap-4 sm:grid-cols-3">
-          {executionTeam.map((member, i) => (
-            <Card
-              key={`exec-${i}-${member.name}`}
-              className="flex flex-col overflow-hidden rounded-2xl border-border/60 bg-card/40 p-0 text-sm shadow-sm"
-            >
-              <div className="aspect-square w-full shrink-0">
-                <StaffAvatar
-                  avatarUrl={member.avatarUrl}
-                  avatarColor={member.avatarColor}
-                  name={member.name}
-                  size="full"
-                />
-              </div>
-              <div className="flex flex-col items-start p-4">
-                <p className="text-xs font-semibold text-foreground">{member.name}</p>
-                <p className="text-[11px] text-muted-foreground">{member.role}</p>
-                <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
-                  {member.bio}
-                </p>
-              </div>
-            </Card>
-          ))}
-        </div>
-      </section>
+      {/* EXECUTION TEAM */}
+      {executionTeam.length > 0 && (
+        <section className="mb-16">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-11 h-11 rounded-xl bg-success/12 text-success flex items-center justify-center">
+              <Users className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+                فريق التنفيذ
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                محتوى · تصميم · SEO · تطوير · ميديا — كل تخصّص وله شخص متفرّغ
+              </p>
+            </div>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {executionTeam.map((member, i) => (
+              <MemberCardSmall key={`exec-${i}-${member.name}`} member={member} />
+            ))}
+          </div>
+        </section>
+      )}
 
-      <div className="mt-16 flex flex-col items-center gap-4 text-center">
-        <p className="text-muted-foreground text-sm">
+      {/* CTA */}
+      <section className="text-center rounded-2xl border-2 border-success/30 bg-gradient-to-b from-success/10 to-transparent px-6 py-10 sm:px-8">
+        <h2 className="text-xl sm:text-2xl font-extrabold text-foreground mb-3">
           مستعد تبدأ مع فريق يشتغل معك؟
+        </h2>
+        <p className="mx-auto max-w-xl text-sm sm:text-[15px] text-muted-foreground leading-relaxed mb-6">
+          {totalCount} شخص متخصّص جاهزون يشتغلون على نشاطك من أول يوم اشتراك — بلا انتظار.
         </p>
         <Link
           href="/sa/signup"
-          className="rounded-xl bg-primary px-8 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+          className="inline-flex items-center gap-2 rounded-xl bg-success px-6 py-3 text-sm font-bold text-success-foreground hover:opacity-90 transition"
         >
-          ابدأ معنا الآن
+          <span>ابدأ معنا الآن</span>
+          <ArrowLeft className="w-4 h-4" />
         </Link>
-      </div>
+      </section>
     </div>
   );
 }
 
+type Member = {
+  name: string;
+  role: string;
+  bio: string;
+  avatarUrl?: string;
+  avatarColor?: string;
+};
+
+function MemberCardLarge({ member }: { member: Member }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-6 flex flex-col items-center text-center">
+      <MemberAvatar member={member} size={128} sizeClass="w-32 h-32" ringClass="ring-2 ring-success/25" />
+      <div className="text-sm font-bold text-foreground mt-4">{member.name}</div>
+      <div className="text-xs text-success font-semibold mt-1">{member.role}</div>
+      <p className="text-[12.5px] text-muted-foreground mt-3 leading-relaxed">
+        {member.bio}
+      </p>
+    </div>
+  );
+}
+
+function MemberCardSmall({ member }: { member: Member }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5 flex flex-col items-center text-center">
+      <MemberAvatar member={member} size={80} sizeClass="w-20 h-20" ringClass="ring-1 ring-border" />
+      <div className="text-[13px] font-bold text-foreground mt-3 leading-tight">{member.name}</div>
+      <div className="text-[11px] text-success font-semibold mt-1">{member.role}</div>
+      <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed line-clamp-3">
+        {member.bio}
+      </p>
+    </div>
+  );
+}
+
+function MemberAvatar({
+  member,
+  size,
+  sizeClass,
+  ringClass,
+}: {
+  member: Member;
+  size: number;
+  sizeClass: string;
+  ringClass: string;
+}) {
+  return (
+    <div className={`relative ${sizeClass} rounded-full overflow-hidden bg-gradient-to-br from-neutral-800 to-neutral-900 ${ringClass}`}>
+      {member.avatarUrl ? (
+        <Image
+          src={member.avatarUrl}
+          alt={member.name}
+          fill
+          className="object-cover object-top"
+          sizes={`${size}px`}
+        />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-2xl font-black">
+          {member.name?.charAt(0)}
+        </div>
+      )}
+    </div>
+  );
+}

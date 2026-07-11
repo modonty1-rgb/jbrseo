@@ -33,6 +33,20 @@ export type FooterLink = { label: string; href: string };
 export type LegalSection = {
   title: string;
   updatedAt?: string;
+  /** Legacy flat body (Markdown). Still rendered when sections is absent. */
+  body: string;
+  /** Optional short intro shown above the sections list. */
+  intro?: string;
+  /** Structured sections — preferred over `body`. Each renders as its own card with an icon. */
+  sections?: LegalSectionBlock[];
+};
+
+export type LegalSectionBlock = {
+  id: string;
+  /** Kebab-case name of a Lucide icon (mapped in the renderer). */
+  icon: string;
+  title: string;
+  /** Markdown body — supports paragraphs, bullet lists, and sub-headings. */
   body: string;
 };
 
@@ -75,12 +89,6 @@ export type TeamPageMember = {
   avatarUrl?: string;
 };
 
-export type TrustBarClient = {
-  name: string;
-  logoUrl: string;
-  href?: string;
-};
-
 export type HeroBrandTag = {
   ariaLabel: string;
   prefix: string;
@@ -98,21 +106,6 @@ export type StaticLanding = {
     brandTag?: HeroBrandTag;
     trust: string[];
     guaranteeBadge?: string;
-    trustBarClients?: TrustBarClient[];
-  };
-  whyNow: {
-    sectionImage?: string;
-    title1: string;
-    subtitle: string;
-    costs: { month: string; label: string; desc: string; icon: string }[];
-  };
-  howItWorks: {
-    sectionImage?: string;
-    eyebrow?: string;
-    title?: string;
-    subtitle?: string;
-    steps: { num: string; title: string; line: string; icon?: string; tag?: string }[];
-    guarantee?: string;
   };
   socialProof: {
     sectionImage?: string;
@@ -125,7 +118,6 @@ export type StaticLanding = {
     sectionImage?: string;
     title: string;
     faqs: FaqItem[];
-    ctaLabel: string;
   };
   finalCta: {
     sectionImage?: string;
@@ -157,6 +149,13 @@ export type StaticLanding = {
       eyebrow?: string;
       title: string;
       subtitle: string;
+    };
+    /** Optional mission strip shown right under the hero. */
+    mission?: {
+      title?: string;
+      body: string;
+      taglineOne?: string;
+      taglineTwo?: string;
     };
     storyBlocks: AboutStoryBlock[];
     values: AboutValue[];
