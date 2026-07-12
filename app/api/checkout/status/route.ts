@@ -57,12 +57,17 @@ export async function GET(request: Request) {
     });
   }
 
+  const debug = url.searchParams.get("debug") === "1";
+  let pollErr: string | null = null;
+  let pollState: string | null = null;
+
   // Still pending but we have an N-Genius orderReference — ask N-Genius directly.
   if (subscriber.paymentRef) {
     try {
       const trueOrder = await findNGeniusOrder(subscriber.paymentRef);
       const payment = primaryPayment(trueOrder);
       const state = payment?.state;
+      pollState = state ?? "no-state";
 
       if (isPaymentSucceeded(state)) {
         const paidAt = new Date();
@@ -99,9 +104,9 @@ export async function GET(request: Request) {
         });
       }
       // Otherwise still in-flight (STARTED / AUTHORISED-pending-capture) — fall through.
-    } catch {
-      // N-Genius unreachable this tick — keep returning pending; the next
-      // poll will retry. Do not surface the error to the client.
+    } catch (err) {
+      pollErr = err instanceof Error ? err.message : String(err);
+      console.error("[checkout/status] N-Genius poll failed:", pollErr);
     }
   }
 
@@ -110,5 +115,6 @@ export async function GET(request: Request) {
     status: "pending",
     failReason: null,
     paidAt: null,
+    ...(debug ? { _debug: { pollErr, pollState, paymentRef: subscriber.paymentRef } } : {}),
   });
 }

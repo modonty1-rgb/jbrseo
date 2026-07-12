@@ -20,13 +20,24 @@ export async function findNGeniusOrder(orderRef: string): Promise<NGeniusOrderRe
   const token = await getNGeniusAccessToken();
   const url = `${API_BASE}/transactions/outlets/${OUTLET_ID}/orders/${encodeURIComponent(orderRef)}`;
 
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: PAYMENT_JSON,
-    },
-    cache: "no-store",
-  });
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 6_000);
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: PAYMENT_JSON,
+      },
+      cache: "no-store",
+      signal: ctrl.signal,
+    });
+  } catch (err) {
+    clearTimeout(timer);
+    const reason = err instanceof Error ? err.name + ": " + err.message : String(err);
+    throw new Error(`N-Genius findOrder network error: ${reason}`);
+  }
+  clearTimeout(timer);
 
   if (!res.ok) {
     const detail = await res.text().catch(() => "<no body>");

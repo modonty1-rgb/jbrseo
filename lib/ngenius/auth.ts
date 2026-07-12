@@ -18,16 +18,27 @@ async function fetchNewToken(): Promise<string> {
   const apiKey = process.env.NGENIUS_API_KEY;
   if (!apiKey) throw new Error("NGENIUS_API_KEY is not set");
 
-  const res = await fetch(TOKEN_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/vnd.ni-identity.v1+json",
-      Accept: "application/vnd.ni-identity.v1+json",
-      Authorization: `Basic ${apiKey}`,
-    },
-    body: JSON.stringify({ grant_type: "client_credentials", realm: "ni" }),
-    cache: "no-store",
-  });
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 6_000);
+  let res: Response;
+  try {
+    res = await fetch(TOKEN_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/vnd.ni-identity.v1+json",
+        Accept: "application/vnd.ni-identity.v1+json",
+        Authorization: `Basic ${apiKey}`,
+      },
+      body: JSON.stringify({ grant_type: "client_credentials", realm: "ni" }),
+      cache: "no-store",
+      signal: ctrl.signal,
+    });
+  } catch (err) {
+    clearTimeout(timer);
+    const reason = err instanceof Error ? err.name + ": " + err.message : String(err);
+    throw new Error(`N-Genius auth network error (url=${TOKEN_URL}): ${reason}`);
+  }
+  clearTimeout(timer);
 
   if (!res.ok) {
     const detail = await res.text().catch(() => "<no body>");
