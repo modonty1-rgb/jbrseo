@@ -11,6 +11,11 @@ const prisma = new PrismaClient();
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+export const runtime = "nodejs";
+// N-Genius sandbox is hosted in KSA. Default Vercel region iad1 (US East)
+// times out on 6s fetches — fra1 (Frankfurt) has ~100ms RTT to KSA. bom1
+// (Mumbai) is an alternate if fra1 is congested.
+export const preferredRegion = ["fra1", "bom1"];
 
 /**
  * Client-facing polling endpoint used by /checkout/processing.

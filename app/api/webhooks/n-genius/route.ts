@@ -4,6 +4,9 @@ import { findNGeniusOrder, primaryPayment, isPaymentSucceeded, isPaymentFailed }
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
+// N-Genius calls this webhook + we call them back for verification. Keep
+// the round-trip close to KSA.
+export const preferredRegion = ["fra1", "bom1"];
 
 const prisma = new PrismaClient();
 

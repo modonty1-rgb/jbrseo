@@ -13,6 +13,8 @@ import type { CreateOrderPayload } from "@/lib/ngenius/types";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
+// N-Genius is hosted in KSA; keep close to reduce checkout latency.
+export const preferredRegion = ["fra1", "bom1"];
 
 const prisma = new PrismaClient();
 
