@@ -14,21 +14,73 @@ model SiteSettings {
   updatedAt       DateTime @default(now())
 }
 
+// ─────────────────────────────────────────────────────────────────
+// Subscriber — represents ANY attempt to check out (paid, failed, pending, abandoned).
+// Stage 3 additions: paymentStatus lifecycle + compound unique (email, plan, billing)
+// so a single user can have multiple attempts across plans/cycles without collision.
+// Old fields (planName · planIndex · isAnnual) kept for backward compat with existing
+// 15 rows; deprecated in favor of new (plan · billing) canonical slug pair.
+// ─────────────────────────────────────────────────────────────────
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+  abandoned
+  refunded
+}
+
 model Subscriber {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   contactName  String?
-  email        String   @unique
+  email        String
   phone        String
   businessName String?
   businessType String?
+
+  // Deprecated (Stage-1 lead-capture era) — kept for backward compat only
   planName     String
   planIndex    Int?
-  country      String
   isAnnual     Boolean  @default(false)
-  createdAt    DateTime @default(now())
 
+  // Canonical Stage-3 checkout fields
+  plan          String        @default("")            // slug: starter | growth | scale
+  billing       String        @default("")            // "monthly" | "annual"
+  paymentStatus PaymentStatus @default(pending)
+  paymentRef    String?                               // N-Genius transaction reference
+  paidAt        DateTime?
+  failReason    String?
+
+  country      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  @@unique([email, plan, billing])                     // Idempotency layer 1 (Decision #2)
   @@index([country])
   @@index([createdAt])
+  @@index([paymentStatus])
+  @@index([email])
+}
+
+// ─────────────────────────────────────────────────────────────────
+// WebhookEvent — Idempotency layer 3 (Decision #2).
+// Deduplicates N-Genius webhook deliveries. If we ever see the same
+// providerEventId twice, we skip processing.
+// ─────────────────────────────────────────────────────────────────
+
+model WebhookEvent {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  provider        String                          // "n-genius"
+  providerEventId String    @unique               // dedup key
+  eventType       String                          // "captured" | "failed" | "refunded"
+  payload         Json                            // raw webhook body
+  signature       String                          // for later verification/audit
+  processed       Boolean   @default(false)
+  receivedAt      DateTime  @default(now())
+  processedAt     DateTime?
+
+  @@index([provider, eventType])
+  @@index([processed])
 }
 
 model LandingSection {

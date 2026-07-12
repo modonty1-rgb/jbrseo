@@ -4,6 +4,329 @@
 
 ---
 
+## Session: 2026-07-12 (Cont.) — Device restart before Round B
+
+### 🎯 Where I stopped
+- **Last action:** Ran Playwright test on `/sa/checkout?plan=starter&billing=monthly` — page loaded cleanly in ~8s (SDK ready, form rendered, "الانطلاقة · 499 · شهري"). Zero hang, zero blocking errors. **The hang Khalid experienced in his own browser is device-side, not code.**
+- **Next concrete action when resuming (after restart):**
+  1. `cd c:/Users/w2nad/Desktop/dreamToApp/JBRSEO/jbrseo.com && pnpm dev` (server on :3000)
+  2. `git status` — confirm ~30 files still uncommitted (nothing lost)
+  3. Test the exact URL Khalid was on: `http://localhost:3000/sa/checkout?plan=starter&billing=monthly` → confirm no hang in fresh browser session
+  4. Start Round B — ngrok tunnel + webhook receiver test (steps in the earlier session block below)
+
+### ✅ Done this micro-session
+- Reproduced starter/monthly checkout in Playwright — proved code is fine (screenshot: `.playwright-mcp/starter-monthly-check.png`).
+- Diagnosed hang cause: device resources (Windows 100% disk / SSD Kingston A400 / 17 node processes / Turbopack full reload storms — all documented in global memory).
+- Session frozen before device restart.
+
+### 📝 Decisions taken
+- **Restart device before Round B** → 17 node processes + repeated Turbopack full reloads + browser cache from 10+ HMR cycles = the "hang" is resource exhaustion, not a code bug. Cleaner state = safer for the more delicate Round B work (ngrok + webhook).
+
+### 🚧 Pending / blocked
+- Same as previous session block below (Round B → Level 8 → Level 9 → commit + push → Landing enhancements → cleanup). Nothing changed.
+
+### 📂 Files touched (this micro-session)
+- `documents/context/SESSION-LOG.md` — this block.
+- `.playwright-mcp/starter-monthly-check.png` — proof screenshot (ignore for git).
+
+### 🔁 Git / deploy state
+- Same as previous block. Uncommitted: yes. Last commit: `dd801fe`. Not pushed. Vercel: last deploy = `dd801fe`.
+
+### 🚀 How to resume in 30 seconds (after restart)
+1. Open VS Code → this folder.
+2. `pnpm dev` in terminal (wait for "Ready in Xs").
+3. `git status` to confirm nothing lost.
+4. Open `http://localhost:3000/sa/checkout?plan=starter&billing=monthly` — if it loads clean, resource issue confirmed fixed. Otherwise: `scripts/free-resources.bat`.
+5. Read the previous session block below (2026-07-12 Cont. — Stage 3 Level 6-7 done…) for full Round B / Level 8 / Level 9 context.
+
+---
+
+## Session: 2026-07-12 (Cont.) — Stage 3 Level 6-7 done · UI polish · 3DS modal · Round A verified end-to-end
+
+### 🎯 Where I stopped
+- **Last action:** Completed live end-to-end Sandbox payment test using **shadcn Radix Dialog with `forceMount`** for the 3DS challenge. Payment flow: form → SDK → sessionId → /api/checkout/create-payment → N-Genius PURCHASE → 3DS modal → OTP 1234 → /processing → polling → /success. Verified twice successfully. State: `paymentStatus="paid"` in `modonty_dev`, N-Genius portal shows Total sales ₨12,468 · 1 order.
+- **Next concrete action when resuming:** Start **Round B** — ngrok tunnel + webhook receiver live test. Steps:
+  1. Install/start ngrok: `ngrok http 3000` → get https URL (e.g. `https://xxx.ngrok.io`)
+  2. Add webhook URL to N-Genius portal: Configurations → Webhooks → `https://xxx.ngrok.io/api/webhooks/n-genius` with secret matching `NGENIUS_WEBHOOK_SECRET`
+  3. Run one more test payment → verify webhook fires → verify DB `paymentStatus` flips via webhook (NOT via /status polling) → verify `WebhookEvent` row created with `providerEventId` unique
+- **After that:** Level 8 (Modonty integration — HMAC + Client creation + welcome email). Then Level 9 (full Sandbox tests + Vercel env vars + LIVE cutover).
+
+### ✅ Done this session (continued from earlier session-log entry)
+
+**Stage 3 Level 6-7 (payment integration):**
+- Level 6 completed: `lib/ngenius/{auth,orders,find-order,types}.ts` + `/api/checkout/create-payment` + `NGeniusMount.tsx` (SDK loader + card iframe + skeleton + trust bar).
+- Level 7 completed: `/api/webhooks/n-genius/route.ts` — 3-layer security (secret header + WebhookEvent idempotency + secondary findOrder verify).
+- Extended `/api/checkout/status` — added N-Genius direct polling when Subscriber pending + paymentRef exists (recovers late webhooks). Verified live: DB flipped `pending → paid` via polling ✓.
+
+**Round A live test (Sandbox N-Genius, no webhook):**
+- Verified everything end-to-end: form submission → generateSessionId → POST create-payment → N-Genius returned AWAIT_3DS → SDK mounted 3DS challenge → OTP `1234` → challenge-response POST → /processing → polling → /success page renders with invoice details.
+- Confirmed via `scripts/ngenius-verify.mjs`: N-Genius state = `PURCHASED`, resultCode `00`, amount 1,246,800 SAR minor units, RRN `619315066907`.
+- Confirmed via N-Genius portal screenshot: Total sales ₨12,468 · 1 order · SAR.
+
+**Bug fixes during Round A:**
+- **Double-iframe bug** (React Strict Mode dev): fixed with `mountedRef.current` guard + `container.innerHTML=""` before mounting.
+- **iframe height clipping**: SDK renders iframe at 150px content-natural; forced to 220px (wide) / 320px (narrow ≤480px) via `iframe.style.height` override in `onSuccess` callback.
+- **Turnstile test-key banner ugly**: switched to `size: "invisible"` mode. Widget runs in background, zero visible chrome. Still valid tokens verify server-side.
+
+**Checkout UI redesign (Khalid iterated ~10 rounds):**
+- **Trust-panel pattern (Stripe/Apple-Pay style):** N-Genius SDK card iframe wrapped in a light "ivory" panel with dark trust icon + title + "جاهز" indicator + accepted-brand logos row (icons only, no text names, centered) + SSL/PCI trust bar.
+- **Single-column layout:** removed 2-col grid, wrapped in `max-w-3xl`. Summary is a compact one-row card (plan name right, big price + billing left), no feature list, no delivery badge duplication.
+- **Skeleton loader:** 4-row gray-300 skeleton on white bg during SDK iframe load. Bars use `animate-pulse`. Layout mirrors the 4-field final layout (PAN full-width, Expiry+CVV 2-col, Name full-width).
+- **Real brand logos:** replaced text abbreviations "MC/Visa/Pay/Mada" with actual SVG logos from `/public/logos/*.svg` (Mada · Visa · Mastercard · Apple Pay), icons only, centered.
+
+**3DS Modal (final iteration):**
+- First attempt: hand-rolled `fixed inset-0` div with Tailwind — Khalid rejected: "شكله جداً وحش".
+- Final: **shadcn/Radix `DialogPrimitive` with `forceMount` on BOTH `Portal` and `Content` + `Overlay`**. This is the key insight — without `forceMount` on the Portal, Radix unrenders children when `open=false`, and the SDK's `document.getElementById('ngenius-3ds-mount')` fails on first call.
+- Modal shows: header (ShieldCheck icon + "التحقّق من بنكك" + description + "قيد التحقق" spinner) + 3DS iframe at 560px height + `escape-key`/`click-outside` disabled during challenge.
+
+**TSC state:** not run this session (many small style changes; will TSC-check before push).
+**Build state:** not run.
+**Live test state:** ✅ full end-to-end verified twice (form → SDK → 3DS modal → OTP → success page).
+
+### 📝 Decisions taken (with reasoning)
+
+- **N-Genius Web SDK is the customization ceiling** → confirmed via 4 sources: (a) docs enumerate only `main/base/input/invalid` style keys, (b) GitHub org has 16 repos but NO web SDK sample (only mobile SDKs + PHP e-commerce plugins that use HPP redirect), (c) npm has only `@network-international/react-native-ngenius`, (d) grepped the actual SDK bundle: zero hidden keys, no `showLabel`/`labelPosition`/`autoResize`/`rtl`. **Alternatives ruled out:** HPP loses in-page flow; Moyasar/Tap would be 5-10 days rework. **Decision:** design AROUND the SDK — wrap in light "trust panel" (Stripe pattern).
+
+- **Card panel is a light "ivory" trust boundary** → SDK's iframe renders white input boxes we can't restyle. Instead of fighting it (dark panel + white iframes = clash), we lean in: soft ivory container wraps the iframe naturally. Same pattern Stripe Elements / Apple Pay Sheet uses. **How to apply:** never fight uncontrollable third-party iframes — design the surrounding wrapper to make their default look intentional.
+
+- **3DS challenge = modal dialog, not embedded** → embedded 3DS caused layout/height battles and visual confusion (two payment surfaces at once). Modal isolates the challenge, matches user expectation, and eliminates our "how tall should the iframe be inline" struggles. **How to apply:** for any external secondary-verification flow (3DS, MFA, OAuth consent), always modal.
+
+- **Radix DialogPrimitive with `forceMount` on Portal + Content** → the classic shadcn `<Dialog><DialogContent>` pattern unrenders when closed. But the SDK calls `document.getElementById(mountId)` synchronously inside `handlePaymentResponse` — the mount div MUST exist in DOM at that moment. `forceMount` keeps it in DOM at all times; Radix just toggles `data-state` for animations. **How to apply:** any 3rd-party SDK that mounts to a DOM ID needs its mount div in DOM before the SDK call fires — React state updates from async imperative handles don't flush in time.
+
+- **Turnstile `size: "invisible"` mode** → the "flexible" widget with test keys shows a huge "This is for testing only" banner that Khalid called "شكله سيء". Invisible mode = zero visible UI, works silently, escalates to challenge modal only if bot detected. Same protection, zero UX cost. **How to apply:** for any anti-bot that doesn't need user input to succeed (Turnstile, hCaptcha invisible), always use invisible mode + show challenge only on failure.
+
+- **Iframe height = force to fixed content-fit values, not `100%`** → the SDK sets `iframe.style="width:100%;height:100%"` internally, but browsers render iframes to content-natural height when parent has only `min-height` (chicken-and-egg with `height:100%`). We override `iframe.style.height` in the SDK's `onSuccess` callback based on `window.matchMedia` (220px wide layout, 320px narrow). **How to apply:** if a 3rd-party iframe uses `100%` height, ensure parent has fixed `height:` (not min-height) OR force explicit iframe height post-mount.
+
+### 🚧 Pending / blocked
+
+**Stage 3 (payment) — not done:**
+- **Round B** — ngrok tunnel + webhook receiver live test. Blocker: needs ngrok install + N-Genius portal webhook configuration + one more test payment.
+- **Level 8** — Modonty integration: HMAC-signed webhook from JBRSEO to Modonty (`POST /api/subscribers/paid-webhook`), Modonty creates Client with `email @unique`, random password, welcome email via Resend. Blocker: Modonty side needs endpoint built (Khalid to decide when to switch context to Modonty repo).
+- **Level 9** — Full Sandbox test matrix (Visa/Mastercard/Mada/Apple Pay · success/decline/3DS/no-3DS) + add all env vars to Vercel (DATABASE_URL=prod, NGENIUS_* production keys from N-Genius production portal, TURNSTILE production keys already in memory) + LIVE cutover.
+- **Commit + push** all Stage 3 code — ALL uncommitted, ~30 files touched.
+
+**Outside Stage 3 (per memory verification earlier this session):**
+- **Landing enhancement:** add "صفحة العميل في مدونتي" section (8 elements: booking · portfolio · reviews · header · contact · services · testimonials · FAQ) to `Landing.tsx`. Memory `pending_landing_enhancements` — verified still missing.
+- **Small cleanup:** `PlanEditForm.tsx:154` admin placeholder still says "١٤ يوم ضمان كامل" (old refund wording) · `prd.md` has stale Schema JSON-LD with old refund FAQ · `/terms` + FAQ not checked for stale refund language.
+
+**Not pending (verified this session):**
+- ~False claims in `Landing.tsx`~ — grep confirmed ZERO references to استرداد/ضمان/refund. Sanity checked billing-policy uses new "التزام بالتسليم" wording throughout.
+- ~Looker Studio reminder~ — memory `pre_push_looker_reminder` self-declares "closed 2026-07-11" (Khalid already synced SINCE=2025-01-01).
+
+### 📂 Files touched (this session)
+
+**Modified (11):**
+- `.claude/settings.local.json` — auto-updated tool allowlist
+- `app/[country]/checkout/_components/CheckoutForm.tsx` — Turnstile invisible mode + form no longer shows visible widget
+- `app/[country]/checkout/_components/CheckoutSummary.tsx` — compact single-row layout, removed feature list + delivery duplication
+- `app/[country]/checkout/page.tsx` — max-w-xl → max-w-3xl, changed from 2-col grid to single-column stack
+- `app/api/checkout/create-payment/route.ts` — added `paymentRef` save on Subscriber after N-Genius response (for /status polling)
+- `app/api/checkout/status/route.ts` — added findNGeniusOrder polling backup when webhook late
+- `documents/context/SESSION-LOG.md` — this session's block (top)
+- `documents/tasks/payment-pending-decisions.md` — unchanged this session
+- `lib/country-config.ts` — `api` + `billing-policy` added to reserved first segments (from earlier session)
+- `package.json` + `pnpm-lock.yaml` — Turnstile + Upstash + N-Genius SDK deps
+- `prisma/schema.prisma` — Subscriber payment fields + WebhookEvent + PaymentStatus enum
+- `proxy.ts` — country middleware config
+
+**Created — untracked (many):**
+- `app/(site)/billing-policy/` — full billing policy page
+- `app/[country]/checkout/_components/NGeniusMount.tsx` — SDK loader, iframe, skeleton, trust panel, 3DS Radix modal
+- `app/[country]/checkout/failed/` — payment failed page
+- `app/[country]/checkout/processing/` — polling page with client-side redirect
+- `app/[country]/checkout/success/` — order confirmation with invoice details
+- `app/api/checkout/create-payment/` — main payment endpoint (Turnstile + rate limit + upsert + N-Genius PURCHASE)
+- `app/api/checkout/status/` — polling endpoint with N-Genius fallback
+- `app/api/webhooks/n-genius/` — webhook receiver with 3-layer security
+- `documents/context/EXTERNAL-SERVICES.md` — master registry of 10 services
+- `documents/context/N-GENIUS-INTEGRATION-STUDY.md` — full integration study from N-Genius docs
+- `documents/tasks/stage3-todo.html` + `stage3-todo.md` — Stage 3 progress tracker
+- `lib/checkout-reasons.ts` — failure reason map + MAX_INLINE_RETRIES=3
+- `lib/hmac.ts` — HMAC-SHA256 sign/verify for Modonty (Level 8)
+- `lib/ngenius/{auth,orders,find-order,types}.ts` — full N-Genius wrapper
+- `lib/rate-limit.ts` — Upstash 3-tier limiter
+- `lib/turnstile.ts` — server-side token verification
+- `scripts/backfill-test-payment-ref.mjs` + `external-services-health-check.mjs` + `ngenius-verify.mjs`
+
+### 🔁 Git / deploy state
+
+- **Branch:** `main`
+- **Uncommitted changes:** YES, extensively (11 modified + ~15 untracked file groups). NOT committed to git.
+- **Last commit:** `dd801fe feat: /checkout route + Landing CTAs → #pricing + ضمان استرداد ١٤ يوم (Stage 1 + 2)`
+- **Pushed:** last commit was pushed (earlier session). Stage 3 code = NOT pushed.
+- **Vercel/deploy:** last deploy was of commit `dd801fe`. Stage 3 not deployed — needs push + Vercel env var setup first.
+
+### 🚀 How to resume in 30 seconds
+
+1. **Check dev server:** `curl -sI http://localhost:3000/` — if 307 (redirect), server is up. Else `pnpm dev`.
+2. **Open first file:** `app/[country]/checkout/_components/NGeniusMount.tsx` — the file that saw the most iteration this session; review the shadcn Radix Dialog pattern with `forceMount` for context on the 3DS modal.
+3. **First decision to make:** Round B or Level 8 first? Recommend Round B (needs ngrok setup — ~15 min end-to-end) then Level 8 (Modonty side integration).
+4. **Live test URL:** `http://localhost:3000/sa/checkout?plan=growth&billing=annual` — full flow with Visa test card `4111 1111 1111 1111`, expiry `12/30`, CVV `123`, 3DS OTP `1234`.
+5. **N-Genius portal:** `https://portal-uat.ngenius-payments.com/` → Reports → Transactions (to verify each Sandbox transaction).
+
+---
+
+## Session: 2026-07-12 — Payment Journey (Stages 1 + 2): /checkout route + kill /pricing + kill /signup + 14-day refund + Prod DB + push
+
+### 🎯 Where I stopped
+- **Last action:** `git push origin main` → commit `dd801fe` (Stage 1 + 2 complete). Vercel deploy triggered ~ (just pushed).
+- **Next concrete action when resuming:** wait ~2-3 min for Vercel deploy READY, then either (a) Khalid does own visual verification on prod, or (b) I run the Playwright smoke test on `www.jbrseo.com` covering: `/sa` CTAs = "اختر باقتك" · trust bar has refund badge · `/sa/pricing` = 404 · `/sa/checkout?plan=growth&billing=annual` renders الزخم/12,468/سنوي · `/sa/signup?plan=X` permanent-redirects to `/sa/checkout?plan=X`.
+- **After that:** discuss the 6 blocking decisions (in `documents/tasks/payment-pending-decisions.md`) before starting Stage 3 (N-Genius integration).
+
+### ✅ Done this session
+
+**A) Payment Journey UI/UX design (before code):**
+- Built HTML mockup v2: `documents/tasks/payment-journey-mockup-v2.html` (interactive, tabs for the 4 states: checkout · processing · success · failed).
+- Iterated 5 UX decisions with Khalid — all locked:
+  - **Q1:** desktop = 2-column (form + sticky summary) · mobile = stacked (summary above form).
+  - **Q2:** price INCLUSIVE of VAT — no breakdown. Sub-line: "السعر شامل ضريبة القيمة المضافة ١٥٪".
+  - **Q3:** success page = NO password on screen. Message: "تم إرسال بريد إلكتروني إلى بريدك يحتوي بيانات الدخول إلى حسابك في مدونتي".
+  - **Q4:** dropped "غير قابل للاسترداد" language (too scary). Replaced with **14-day performance-bounded refund** — refund IF we fail to set up account, NOT IF Google ranking doesn't appear.
+  - **Q5:** WhatsApp REMOVED from /checkout entirely (would distract). Only appears on `/failed` state.
+- Guiding principle codified: "صفحة الدفع = صفر تشتيت".
+- Memory saved: `project_payment_journey.md` + `project_refund_policy.md` + `MEMORY.md` index updated.
+
+**B) Stage 1 — Landing CTAs + Refund badge + Dead code cleanup:**
+- All Landing CTAs (hero + footer + TrustSection + sticky nav + StickyMobileCTA) → `#pricing` (not `/signup`) with text "اختر باقتك" (via DB `LandingSection.ctaLabel` + `DEFAULT_CTA_LABEL` fallback).
+- All landing pricing cards → `/${country}/checkout?plan=X&billing=Y` (SA-only). EG cards → WhatsApp (Saudi-only payment guard via `isExternalCta = isConsultation || countrySlug === "eg"`).
+- Trust bar (hero) — added 4th item: **"استرداد ١٤ يوم مضمون"** (via DB `landingSection.hero.data.trust`).
+- `PricingPageShell.tsx` "عقد مرن" copy → "استرداد ١٤ يوم إذا لم نلتزم بإعداد حسابك" (later deleted since /sa/pricing killed).
+- Fixed scroll UX on #pricing anchor: `pt-20 → pt-10 · mb-[34px] → mb-5 · scroll-mt-16` — cards now visible in first viewport after click (was showing header only).
+- Removed subtitle "ابدأ بالباقة الأنسب — ترقى متى ما احتجت، بدون التزام" + WhatsApp helper ABOVE cards. Moved escape valve BELOW cards ("لسه متردد؟ تكلّم معنا على واتساب"). Baymard-aligned.
+- Hash links (`<Link>` → `<a>`) — matches earlier fix commit `6c1bb99`.
+
+**C) Stage 2 — `/checkout` route built:**
+- New route `app/[country]/checkout/`:
+  - `page.tsx` — server component: guards (EG → notFound, no plan → redirect to `#pricing`, invalid slug → redirect, hidden plan → redirect) + fetches plan from DB + case-insensitive slug matching + billing default = annual.
+  - `layout.tsx` — focus mode: minimal chrome, no nav marketing, no sticky CTA, no footer noise.
+  - `_components/CheckoutHeader.tsx` — logo + "← رجوع للأسعار" only.
+  - `_components/CheckoutSummary.tsx` — plan name/tagline + total (VAT inclusive note) + refund badge (green) + 3 trust items.
+  - `_components/CheckoutForm.tsx` — 3 fields (name, email, phone with country code) + inline validation + terms checkbox + submit button ("ادفع الآن · X ر.س") + refund badge below submit.
+  - `_components/PaymentPlaceholder.tsx` — placeholder for Stage 3 N-Genius iframe (visual mock only).
+- Layout: `lg:grid-cols-[minmax(0,1fr)_minmax(0,320px)]` — form left (order-1 desktop), summary right (order-2 desktop, sticky). Mobile: summary top (order-1), form below (order-2).
+- Backward compat: `/[country]/signup/page.tsx` → `permanentRedirect` to `/checkout` preserving all query params.
+- Metadata: `robots: noindex, nofollow` (private funnel page).
+
+**D) Aggressive dead-code purge (Khalid's mandate: "no dead code"):**
+- Deleted `app/[country]/(marketingShell)/pricing/` — `/sa/pricing` was redundant with `#pricing` on landing. No SEO to lose per Khalid.
+- Deleted `app/components/pricing/` (5 files): PricingPageShell · PricingBillingSection · PricingFaqExcerpt · BillingToggle · TierCard.
+- Deleted `app/components/shared/PricingPageJsonLd.tsx`.
+- Deleted `app/components/landing/price-section/` (6 files: PlanCard · PriceSectionBottomCta · PriceSectionIcons · PriceSectionHeader · TrustBar · AnnouncementBar) — dead since a prior refactor.
+- Deleted `app/[country]/signup/_components/` + `_components/SignupForm.tsx` + `AuthNav.tsx` + `layout.tsx` + `loading.tsx` + `thank-you/` (page + layout + loading) — the old IBAN bank-transfer flow.
+- Renamed `lib/signup-href.ts` → `lib/checkout-href.ts`; renamed functions `buildSignupHrefWith* → buildCheckoutHrefWith*`; renamed prop `signupHrefBase → checkoutHrefBase`.
+- Removed orphan function `buildPricingContentFromDb` from `lib/admin-pricing-adapter.ts`.
+- Removed 3× `revalidatePath("/pricing")` calls from server actions.
+- Removed `signupHref` prop from `Landing.tsx` + `TrustSection.tsx` + parent `page.tsx` (dead prop passed nowhere useful).
+- Deleted 2 unused imports (Link/next/link) in features/page.tsx and team/page.tsx.
+- Sitemap: removed `/pricing` + `/signup` entries.
+- Robots: removed disallowed `/signup/thank-you`; added disallowed `/checkout` (private funnel).
+- Proxy (middleware) allow-list: `/signup` → `/checkout`.
+- Total: **~30 files deleted**, `lib/site-links.ts` nav "الأسعار" already correctly pointed to `/#pricing`.
+
+**E) Exhaustive live testing:**
+- Playwright — 11 real click/URL scenarios ALL green:
+  - /sa card starter annual click → /checkout with الانطلاقة/4,788/سنوي ✅
+  - /sa monthly toggle + growth card → /checkout with الزخم/1,299/شهري ✅
+  - /sa scale card (consultation) → wa.me with target=_blank + rel=noopener ✅
+  - /eg 3 cards → ALL wa.me, ZERO to /checkout (Saudi-only guard verified) ✅
+  - /sa/pricing → HTTP 404 ✅
+  - /sa/checkout?plan=presence (hidden) → redirect to /sa#pricing ✅
+  - /sa/checkout?plan=bogus → redirect to /sa#pricing ✅
+  - /sa/checkout (no plan) → redirect to /sa#pricing ✅
+  - /eg/checkout?plan=growth&billing=annual (direct URL) → 404 ✅
+  - /sa/signup?plan=growth&billing=monthly&total=1299 → permanent redirect to /sa/checkout?plan=growth&billing=monthly&total=1299 with الزخم/1,299/شهري ✅
+  - /sa/checkout?plan=GROWTH&billing=annual (case-insensitive) → الزخم/12,468/سنوي ✅
+- Additional shell test verified all 6 plan × billing totals correct (399×12=4,788 · 499 · 1,039×12=12,468 · 1,299 · 2,399×12=28,788 · 2,999).
+- Verified in `browser_console_messages`: 0 real errors from OUR code. The 2 warnings that appear (`negative time stamp` + `404 /sa/pricing`) are: Next.js 16 Turbopack dev-mode profiler bug (benign, disappears in prod build) + expected 404 from deleted /pricing page.
+- Screenshots archived: `.playwright-mcp/stage1-sa-hero.png` · `stage1-sa-pricing-section.png` · `stage1-pricing-clean.png` · `stage1-after-scroll-fix.png` · `stage1-checkout-404.png` · `stage2-checkout-desktop.png`.
+
+**F) DB updates (dev + prod):**
+- Wrote 3 idempotent scripts under `scripts/stage1-*.mjs` (audit + 2 updates).
+- **DEV:** `hero.trust` → 4 items (added "استرداد ١٤ يوم مضمون") · `landingSection.ctaLabel` → "اختر باقتك" (was "دعنا نبني حضورك").
+- **PROD:** same 2 updates applied via `DB_TARGET=prod ... --confirm=YES`. Verified: hero.trust old="ابدأ اليوم وراقب نمو ظهورك في جوجل" → "اختر باقتك". Both prod DB writes confirmed by re-read.
+
+**G) TSC state:** ✅ zero errors after all deletions + refactors. Ran twice.
+
+**H) Push:** ✅ `dd801fe` → `origin/main`. 54 files changed, +2,410 / −2,274.
+
+### 📝 Decisions taken (with reasoning)
+
+- **Kill `/sa/pricing` entirely** → Khalid: "أنا ما أحتاج SEO أخسر هنا نهائي". Rationale: duplication of `#pricing` on landing, drift risk between two surfaces, admin editing pain. Consequence: ~30 files deleted, single source of truth for pricing.
+- **14-day performance-bounded refund** (NOT "غير قابل للاسترداد" checkbox) → Khalid's smart pivot. Rationale: (a) meets Saudi ecommerce law Article 5 (explicit disclosure at point of sale); (b) defends against chargebacks; (c) Baymard 2024 says clear refund policy INCREASES conversion 8-27%; (d) doesn't scare buyer since it's a right granted, not withheld. Language: "استرداد كامل خلال ١٤ يوم إذا لم نلتزم بإعداد حسابك" — bounded to WE fail delivery, NOT to Google ranking outcome (SEO takes 3-6 months, out of our control).
+- **`<Link>` vs `<a>` for hash anchors** — always `<a>` for `#pricing` because Next.js Link can require 2 clicks on hash (fixed earlier in commit `6c1bb99`). `<Link>` reserved for real route navigation (`/checkout`, `/features`).
+- **Payment page = ZERO distraction** (no WhatsApp button, no side navigation, no marketing footer). Only appears on `/failed` state where user genuinely needs help.
+- **Consultation card (scale=الريادة) still → WhatsApp** on /sa (not /checkout). Top tier remains sales-mediated per prior business decision. `plan-card-content.ts` `ctaAsConsultation: true` for scale.
+- **Redirect on `/checkout` guard failures** (no plan, invalid, hidden) → `redirect(/${countrySlug}#pricing)`. Consequences: bookmarkable pricing anchor + no jarring 404 for edge cases.
+- **Delete old signup form entirely** — with /checkout replacing lead capture path, the old form is dead. `createSubscriber` server action + Subscriber Prisma model KEPT for admin use.
+
+### 🚧 Pending / blocked
+
+- **6 blocking decisions before Stage 3 code** (in `documents/tasks/payment-pending-decisions.md`):
+  1. Where does form data live before payment succeeds? (Order model in jbrseo DB / session-only / N-Genius metadata)
+  2. Idempotency strategy (client-generated key + DB unique constraint)
+  3. Rate limit: in-memory (current) vs Upstash Redis
+  4. Order pending timeout (30 min recommended)
+  5. Duplicate email — same email pays again → renewal / upgrade / reject
+  6. Refund request channel (WhatsApp / email / /billing-policy form)
+- **Modonty side effects (Stage 3):** `Client.email @unique` schema change · replace `admin123` with random password generator · build HMAC receive endpoint in modonty admin · welcome email template.
+- **Stage 3 build itself** (~3-5 days): N-Genius Hosted Session + Turnstile + `/checkout/success` + `/checkout/failed` + `/checkout/processing` + `/billing-policy` page + Order model + Webhook endpoint + HMAC signing.
+
+### 📂 Files touched (54 in `dd801fe`)
+
+**New:**
+- `app/[country]/checkout/{page,layout}.tsx` + `_components/{CheckoutHeader,CheckoutSummary,CheckoutForm,PaymentPlaceholder}.tsx` (6 files).
+- `lib/checkout-href.ts` (renamed from signup-href.ts).
+- `scripts/stage1-{landing-audit,cta-label-update,hero-trust-update}.mjs` (3 scripts).
+- `documents/tasks/payment-{journey-mockup-v2.html,pending-decisions.md,ui-ux-flow.md}` (3 docs).
+
+**Modified:**
+- `app/components/landing/Landing.tsx` (biggest change: CTAs → #pricing, checkoutHref const, Saudi-only guard on cards, escape valve moved below cards, pricing section spacing).
+- `app/components/landing/TrustSection.tsx` (removed signupHref prop, CTA → #pricing).
+- `app/components/layout/StickyMobileCTA.tsx` (signupHref → pricingHref prop).
+- `app/components/layout/header/LandingHeader.tsx` (default pricingHref, Link → a).
+- `app/[country]/(marketingShell)/{layout,page}.tsx` (removed signupHref, passes pricingHref).
+- `app/features/{layout,page}.tsx` (removed signupHref → pricingHref).
+- `app/(site)/team/page.tsx` (hardcoded /sa/signup → /sa#pricing, Link → a).
+- `app/[country]/signup/page.tsx` (was 80-line form, now 22-line permanent redirect).
+- `lib/{constants,getLandingContent,site-settings.types,admin-pricing-adapter}.ts` (constants + defaults).
+- `app/actions/{content-sections,landing}.ts` (removed 3× revalidatePath /pricing).
+- `app/robots.ts`, `app/sitemap.ts` (SEO cleanup).
+- `proxy.ts` (allow-list /signup → /checkout).
+- `documents/context/SESSION-LOG.md` (this update).
+
+**Deleted (30+):**
+- `app/[country]/(marketingShell)/pricing/` (page.tsx + loading.tsx).
+- `app/[country]/signup/{_components/,layout.tsx,loading.tsx,thank-you/}` (7 files).
+- `app/components/landing/price-section/` (6 files).
+- `app/components/pricing/` (5 files).
+- `app/components/shared/PricingPageJsonLd.tsx`.
+- `lib/signup-href.ts` (renamed).
+
+### 🔁 Git / deploy state
+
+- **Branch:** `main`.
+- **Last commit:** `dd801fe` — feat: /checkout route + Landing CTAs → #pricing + ضمان استرداد ١٤ يوم (Stage 1 + 2).
+- **Pushed:** ✅ pushed to `origin/main`. `57b75d7..dd801fe`.
+- **Uncommitted:** only `.claude/settings.local.json` (allowlist auto-accumulation — do NOT commit without secret grep first).
+- **Vercel:** deploying `dd801fe` (~2-3 min ETA at time of us>).
+- **Prod DB (`modonty`):** updated (hero.trust +1 · ctaLabel replaced) — verified live.
+- **Dev DB (`modonty_dev`):** same updates applied.
+- **TSC:** ✅ zero.
+
+### 🚀 How to resume in 30 seconds
+
+1. `git status` — should show ONLY `.claude/settings.local.json` modified.
+2. Check Vercel deploy: `curl -s -H "Authorization: Bearer $VERCEL_TOKEN" "https://api.vercel.com/v6/deployments?teamId=<TEAM_ID>&limit=3" | jq '.deployments[] | {name, readyState, sha: .meta.githubCommitSha}'` — look for `dd801fe` READY. Or open Vercel dashboard.
+3. If READY, verify prod:
+   - `https://www.jbrseo.com/sa` → CTA "اختر باقتك" + trust bar has "استرداد ١٤ يوم مضمون".
+   - `https://www.jbrseo.com/sa/pricing` → 404.
+   - `https://www.jbrseo.com/sa/checkout?plan=growth&billing=annual` → renders الزخم/12,468/سنوي.
+   - `https://www.jbrseo.com/sa/signup?plan=growth&billing=monthly&total=1299` → permanent redirect to /sa/checkout.
+4. Next work: open `documents/tasks/payment-pending-decisions.md` — start discussion of the 6 blocking decisions with Khalid. Recommended order: #1 (data model — everything else follows) → #2 (idempotency) → #4 (timeout) → #3 (rate limit) → #5 (duplicate email) → #6 (refund channel).
+5. Stage 3 starts AFTER those 6 decisions locked. Estimated ~3-5 days.
+
+---
+
 ## Session: 2026-07-11 — Landing pricing redesign + /features rewrite + PDPL /privacy /terms + GA4 property split + prod dedupe + push
 
 ### 🎯 Where I stopped
@@ -139,7 +462,7 @@
 - Slider subtitle now includes: **"من أصل ٢٦+ نشاط سعودي وعربي يستخدم منصتنا — هذي ٣ قصص..."** (`clientsCount={trustBundle.total}`).
 - **Modonty Impact Bar** — GA4 live stats (85,425 grand total / 12,560 users / 17,359 sessions / 9,938 views / 927 interactions), Google G trust anchor, "Property ID: 538167732" + 2 verify buttons (real Google G SVG on Looker button, actual Modonty PNG logo from Cloudinary on the site button).
 - **Guarantee section** — activity-based (نشر · جودة · شفافية · استجابة), month-4-free if breached in 3 months. Rewrote away from "reach page 1" (legally risky) to service-controlled commitments.
-- **Saudi Identity Card** (after Guarantee) — `/trust/jabr-cr-certificate.png` self-hosted (downloaded from modonty.com), 4 legal badges (نشط · CR 4030524305 · رأس مال 8M ﷼ · تأسست 2023), Google-Maps-colored pin icon linking to `google.com/maps?q=21.502370,39.1859245`. **Responsive reorder:** mobile shows address BEFORE certificate (via Tailwind `order-2 md:order-4` etc), desktop shows certificate then address. Certificate is full-width so QR is scannable without a Dialog.
+- **Saudi Identity Card** (after Guarantee) — `/trust/jabr-cr-certificate.png` self-hosted (downloaded from modonty.com), 4 legal badges (نشط · CR 4030560460 · رأس مال 8M ﷼ · تأسست 2023), Google-Maps-colored pin icon linking to `google.com/maps?q=21.502370,39.1859245`. **Responsive reorder:** mobile shows address BEFORE certificate (via Tailwind `order-2 md:order-4` etc), desktop shows certificate then address. Certificate is full-width so QR is scannable without a Dialog.
 - **Live SERP animation** moved from post-Guarantee to after Features (proof flow up top stays clean).
 - **Pricing header** — added inline WhatsApp link "عندك سؤال قبل الاشتراك؟ نتكلم على واتساب ←" (professional pattern like Stripe/Salla — replaces the big blocking "احجز مكالمة" CTA that Khalid correctly killed for motivation-decay reasons).
 

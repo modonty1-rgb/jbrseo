@@ -1,6 +1,35 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Image from "next/image";
 import { headers } from "next/headers";
+import {
+  LayoutDashboard,
+  AlertTriangle,
+  TrendingUp,
+  FileText,
+  Users,
+  ShieldCheck,
+  BadgeCheck,
+  Palette,
+  Megaphone,
+  Grid3x3,
+  Search,
+  BarChart3,
+  Image as ImageIcon,
+  MessagesSquare,
+  Handshake,
+  Rocket,
+  Stethoscope,
+  Scale,
+  Wallet,
+  CreditCard,
+  Bell,
+  Flame,
+  CheckCircle2,
+  XCircle,
+  ArrowLeft,
+  type LucideIcon,
+} from "lucide-react";
 import { getAllPlans } from "@/app/actions/pricing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getLandingContent } from "@/lib/getLandingContent";
@@ -8,6 +37,7 @@ import { featuresCatalog } from "@/lib/features-catalog.mjs";
 import { getWhatsAppLink } from "@/lib/site-links";
 import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
 import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
+import { WhatsAppIcon } from "@/app/components/icons/WhatsAppIcon";
 
 const TITLE = "مزايا اشتراك مدونتي — منظومة كاملة | JBRSEO";
 const DESCRIPTION =
@@ -35,122 +65,6 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
-const STYLE_BLOCK = `
-.fx-page{background:#0a0a0a;color:#fff}
-.fx-page a{color:#4ade80;text-decoration:none}
-.fx-container{max-width:1180px;margin:0 auto;padding:0 20px}
-
-/* Hero */
-.fx-hero{padding:70px 0 50px;text-align:center;background:radial-gradient(ellipse at top,rgba(4,120,87,.2),transparent 60%);border-bottom:1px solid rgba(255,255,255,.06)}
-.fx-hero h1{font-size:44px;font-weight:900;line-height:1.15;margin-bottom:14px;letter-spacing:-1px}
-.fx-hero h1 .accent{color:#4ade80}
-.fx-hero-sub{font-size:17px;color:rgba(255,255,255,.7);max-width:640px;margin:0 auto 28px}
-.fx-stats{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:900px;margin:0 auto}
-.fx-stat{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:18px 22px;min-width:170px;flex:1}
-.fx-stat b{display:block;font-size:26px;font-weight:900;color:#4ade80;margin-bottom:2px}
-.fx-stat span{font-size:12.5px;color:rgba(255,255,255,.65);font-weight:600}
-
-/* Section */
-.fx-sec{padding:70px 0;border-top:1px solid rgba(255,255,255,.06)}
-.fx-eyebrow{color:#4ade80;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;font-family:'IBM Plex Mono',monospace}
-.fx-sec h2{font-size:34px;font-weight:900;line-height:1.2;margin-bottom:10px;letter-spacing:-.5px}
-.fx-lead{font-size:16px;color:rgba(255,255,255,.7);max-width:640px;margin-bottom:28px}
-
-/* Screenshot frame */
-.fx-shot{background:linear-gradient(135deg,rgba(74,222,128,.05),rgba(59,130,246,.05));border:1px solid rgba(74,222,128,.2);border-radius:16px;padding:18px;margin:20px 0}
-.fx-shot-cap{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
-.fx-shot-cap h4{font-size:14px;font-weight:800;color:#4ade80;margin-top:4px}
-.fx-shot-cap a{font-size:12px;color:rgba(255,255,255,.6)}
-.fx-shot-cap small{font-size:11px;color:rgba(255,255,255,.5)}
-.fx-badge-real{background:#4ade80;color:#0a0a0a;font-size:10.5px;font-weight:900;padding:3px 8px;border-radius:6px;display:inline-block;margin-bottom:6px;letter-spacing:.5px}
-.fx-shot img{border:1px solid rgba(255,255,255,.08);border-radius:8px;display:block;width:100%;height:auto}
-
-/* Group cards grid */
-.fx-groups{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
-.fx-gcard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:20px}
-.fx-gcard .icon{font-size:24px;margin-bottom:8px}
-.fx-gcard h3{font-size:15px;font-weight:800;margin-bottom:6px}
-.fx-gcard p{font-size:13px;color:rgba(255,255,255,.65);line-height:1.65}
-.fx-gcard ul{margin-top:8px;padding-inline-start:14px;list-style:disc}
-.fx-gcard li{font-size:12px;color:rgba(255,255,255,.55);margin-bottom:2px}
-
-/* Split layout */
-.fx-split{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:start;margin-top:20px}
-.fx-split-feats{display:grid;grid-template-columns:1fr;gap:10px}
-
-/* YMYL */
-.fx-ymyl{background:linear-gradient(135deg,#f8fafc,#e2e8f0);color:#0f172a;padding:30px;border-radius:16px;margin-top:20px}
-.fx-ymyl h3{color:#065f46;font-size:22px;margin-bottom:6px}
-.fx-ymyl p{color:#334155;font-size:14.5px;line-height:1.7}
-.fx-sectors{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
-.fx-scard{background:#fff;color:#0f172a;border-radius:12px;padding:18px;text-align:center;border:1px solid #e2e8f0}
-.fx-scard .icon{font-size:32px;margin-bottom:6px}
-.fx-scard h4{font-size:15px;font-weight:900;margin-bottom:4px;color:#065f46}
-.fx-scard p{font-size:12.5px;color:#334155}
-
-/* Pricing */
-.fx-pkg{overflow-x:auto;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;margin-top:20px}
-.fx-pkg table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
-.fx-pkg th,.fx-pkg td{padding:12px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,.06)}
-.fx-pkg th{background:rgba(255,255,255,.03);font-weight:800;color:#4ade80}
-.fx-pkg th.rec{background:rgba(74,222,128,.15)}
-.fx-pkg th .th-inner{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
-.fx-pkg tr.cat-row td{background:rgba(74,222,128,.06);color:#4ade80;font-weight:800;font-size:12px;padding:10px 12px;letter-spacing:.5px;text-align:right}
-.fx-pkg .rec-badge{background:linear-gradient(135deg,#059669,#047857);color:#fff;font-size:11px;font-weight:900;padding:4px 10px;border-radius:99px;box-shadow:0 6px 18px -6px rgba(74,222,128,.55);letter-spacing:.3px;white-space:nowrap}
-.fx-pkg td.plan-name{font-weight:800;color:#fff}
-.fx-pkg .price{color:#4ade80;font-weight:900;font-size:17px}
-
-/* Included in all */
-.fx-included{background:rgba(74,222,128,.05);border:1px solid rgba(74,222,128,.2);border-radius:14px;padding:20px;margin-top:20px}
-.fx-included-title{font-size:13px;font-weight:800;color:#4ade80;letter-spacing:.5px;margin-bottom:14px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase}
-.fx-included-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.fx-included-item{font-size:13px;color:rgba(255,255,255,.85);padding:6px 0;line-height:1.6}
-
-/* Compare */
-.fx-cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}
-.fx-cc{border-radius:16px;padding:24px;border:1px solid rgba(255,255,255,.1)}
-.fx-cc.bad{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.25)}
-.fx-cc.good{background:rgba(4,120,87,.12);border-color:rgba(74,222,128,.35)}
-.fx-cc h3{font-size:16px;font-weight:900;margin-bottom:14px}
-.fx-cc ul{list-style:none;padding:0}
-.fx-cc li{font-size:13.5px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.fx-cc.bad li::before{content:"✗ ";color:#f87171;font-weight:900}
-.fx-cc.good li::before{content:"✓ ";color:#4ade80;font-weight:900}
-
-/* Final CTA */
-.fx-final{background:linear-gradient(135deg,#064e3b,#047857);border-radius:20px;padding:60px 30px;text-align:center;margin:40px 0 20px}
-.fx-final h2{font-size:30px;font-weight:900;margin-bottom:10px}
-.fx-final p{font-size:15px;color:rgba(255,255,255,.85);margin-bottom:24px;max-width:520px;margin-inline:auto}
-.fx-final .fx-btn-p{display:inline-block;background:#fff;color:#064e3b;font-weight:900;font-size:15px;padding:14px 28px;border-radius:10px;text-decoration:none}
-.fx-final .fx-btn-s{display:inline-block;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);font-weight:600;font-size:14px;padding:14px 24px;border-radius:10px;margin-inline-start:8px;text-decoration:none}
-
-/* Telegram */
-.fx-tg{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:20px}
-.fx-tgc{background:rgba(37,99,235,.08);border:1px solid rgba(59,130,246,.25);border-radius:12px;padding:14px;text-align:center}
-.fx-tgc .ico{font-size:22px;margin-bottom:6px}
-.fx-tgc h4{font-size:13px;font-weight:800;margin-bottom:4px}
-.fx-tgc p{font-size:11.5px;color:rgba(255,255,255,.6)}
-
-/* Mobile */
-@media (max-width:900px){
-  .fx-groups{grid-template-columns:repeat(2,1fr)}
-  .fx-split{grid-template-columns:1fr;gap:20px}
-  .fx-tg{grid-template-columns:repeat(2,1fr)}
-  .fx-included-grid{grid-template-columns:1fr}
-}
-@media (max-width:600px){
-  .fx-hero h1{font-size:32px}
-  .fx-sec h2{font-size:26px}
-  .fx-hero{padding:50px 0 30px}
-  .fx-sec{padding:50px 0}
-  .fx-groups{grid-template-columns:1fr}
-  .fx-sectors{grid-template-columns:1fr}
-  .fx-cmp{grid-template-columns:1fr}
-  .fx-final{padding:40px 20px}
-  .fx-final h2{font-size:22px}
-}
-`;
-
 export default async function FeaturesPage() {
   const h = await headers();
   const country = getCountryFromHeaders(h);
@@ -164,16 +78,12 @@ export default async function FeaturesPage() {
   const pricingHref = `/${countrySlug}#pricing`;
   const currency = country === "EG" ? "ج.م" : "ر.س";
 
-  // Plans for pricing table (from DB) — plans is already filtered to `visible: true`.
   const displayPlans = plans.slice(0, 4);
-  const visibleCount = plans.length; // used for hero stats + pricing lead — reflects reality, not schema max
+  const visibleCount = plans.length;
   const arNum = (n: number) => n.toLocaleString("ar-EG");
-  const recommendedIndex = displayPlans.findIndex((p) => Boolean(p.featuredBadge)) ;
+  const recommendedIndex = displayPlans.findIndex((p) => Boolean(p.featuredBadge));
   const recIdx = recommendedIndex >= 0 ? recommendedIndex : 1;
 
-  // Comparison data — single source of truth: lib/features-catalog.mjs
-  //  - category row = section separator (no values)
-  //  - feature row = label + values array (one per plan, ordered by PLAN_SLUGS)
   const rows = featuresCatalog.rows as Array<{
     label?: string;
     values?: string[];
@@ -181,397 +91,436 @@ export default async function FeaturesPage() {
   }>;
 
   return (
-    <>
-      <style dangerouslySetInnerHTML={{ __html: STYLE_BLOCK }} />
-      <div className="fx-page">
-
-        {/* ─── HERO ─── */}
-        <section className="fx-hero">
-          <div className="fx-container">
-            <h1>
-              اشتراك واحد <span className="accent">—</span> منظومة كاملة
-            </h1>
-            <p className="fx-hero-sub">
-              لوحة تحكّم · صفحة عميل احترافية · مقالات تبيع · حماية YMYL · تنبيهات تيليجرام. كل شي في مدونتي.
-            </p>
-            <div className="fx-stats">
-              <div className="fx-stat"><b>{arNum(visibleCount)}</b><span>باقات</span></div>
-              <div className="fx-stat"><b>٢٩</b><span>ميزة رئيسية</span></div>
-              <div className="fx-stat"><b>٢٣</b><span>تنبيه فوري</span></div>
-              <div className="fx-stat"><b>٤</b><span>قطاعات YMYL</span></div>
-            </div>
+    <div className="bg-background text-foreground">
+      {/* HERO */}
+      <section className="relative overflow-hidden border-b border-border py-14 sm:py-20 text-center">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklch,var(--success)_18%,transparent),transparent_60%)]" />
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <h1 className="mb-4 text-3xl font-black leading-tight tracking-tight sm:text-4xl md:text-5xl">
+            اشتراك واحد <span className="text-success">—</span> منظومة كاملة
+          </h1>
+          <p className="mx-auto mb-8 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            لوحة تحكّم · صفحة عميل احترافية · مقالات تبيع · حماية YMYL · تنبيهات تيليجرام. كل شي في مدونتي.
+          </p>
+          <div className="mx-auto grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-4">
+            <HeroStat value={arNum(visibleCount)} label="باقات" />
+            <HeroStat value="٢٩" label="ميزة رئيسية" />
+            <HeroStat value="٢٣" label="تنبيه فوري" />
+            <HeroStat value="٤" label="قطاعات YMYL" />
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ─── SECTION 1: CONSOLE ─── */}
-        <section className="fx-sec">
-          <div className="fx-container">
-            <div className="fx-eyebrow">٠١ · لوحة التحكم</div>
-            <h2>لوحة تحكّمك — كل شي أمام عينك</h2>
-            <p className="fx-lead">
-              تفتح لوحتك، تلقى شغلك مباشر: أرقامك من جوجل، محتواك الجاي، عملاءك، فوترتك.
-            </p>
+      {/* SECTION 1 — CONSOLE */}
+      <FeatureSection eyebrow="٠١ · لوحة التحكم" title="لوحة تحكّمك — كل شي أمام عينك">
+        <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          تفتح لوحتك، تلقى شغلك مباشر: أرقامك من جوجل، محتواك الجاي، عملاءك، فوترتك.
+        </p>
+        <Screenshot
+          badge="من لوحتك"
+          caption="لوحة تحكّم سمايل تاون — ٥ مقالات · ١٦٦ مشاهدة · ٤١ ظهور (+٨٪) · تحويلات ١"
+          note="صورة من لوحة عميل فعلي"
+          src="/features/console-dashboard.png"
+          alt="لوحة تحكم مدونتي - سمايل تاون"
+        />
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <FeatureCard icon={LayoutDashboard} title="نظرة عامة سريعة" desc="مقال منشور · مشاهدات · مشتركين — كل شي في السطر الأول." bullets={["هذا الشهر: ٥ مقال · ١٦٦ مشاهدة", "الإحصائيات (٤١ ظهور +٨٪)", "معدل الارتداد (٧.٩٪)"]} />
+          <FeatureCard icon={AlertTriangle} title="يحتاج انتباهك" desc="يلفت انتباهك للأمور المنتظرة قرارك — بلا فوت." bullets={["المقالات (موافقات)", "التعليقات (مراجعة)", "الدعم (رسائل)"]} />
+          <FeatureCard icon={TrendingUp} title="الأداء الأسبوعي" desc="٤ مؤشرات موثّقة قدامك مباشرة." bullets={["الإحصائيات (Impressions)", "درجة التفاعل (٣٣/١٠٠)", "التحويلات (١، ٠.٦٪)", "نسبة الارتداد"]} />
+          <FeatureCard icon={FileText} title="محتواك" desc="كل حاجة تخص محتوى صفحتك — منظّمة." bullets={["بيانات نشاطك (+YMYL)", "معلومات · محتوى الصفحة", "معرض الصور · الملفات", "المقالات · أسئلة الصفحة"]} />
+          <FeatureCard icon={Users} title="عملاءك" desc="كل تفاعل عميل في مكان واحد." bullets={["مشتركو النشرة", "العملاء المحتملون (Leads)", "الحجوزات", "الأسئلة · الآراء · التقييمات"]} />
+          <FeatureCard icon={ShieldCheck} title="الموثوقية والصحة" desc="مدى جاهزية موقعك." bullets={["صحة موقعك", "الحملات (قريباً)", "YMYL badge"]} />
+        </div>
+      </FeatureSection>
 
-            <div className="fx-shot">
-              <div className="fx-shot-cap">
-                <div>
-                  <span className="fx-badge-real">✓ من لوحتك</span>
-                  <h4>لوحة تحكّم سمايل تاون — ٥ مقالات · ١٦٦ مشاهدة · ٤١ ظهور (+٨٪) · تحويلات ١</h4>
-                </div>
-                <small>صورة من لوحة عميل فعلي</small>
-              </div>
-              <Image src="/features/console-dashboard.png" alt="لوحة تحكم مدونتي - سمايل تاون" width={1920} height={950} priority={false} />
-            </div>
+      {/* SECTION 2 — PUBLIC PAGE */}
+      <FeatureSection eyebrow="٠٢ · صفحتك" title="صفحتك العامة — بديل موقعك الإلكتروني">
+        <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          ما عندك موقع؟ ما مشكلة. مدونتي تعطيك صفحة كاملة تشوفها عملاءك: هويّتك، خدماتك، حجزك، تقييماتك.
+        </p>
+        <Screenshot
+          badge="صفحة حقيقية"
+          caption="عيادات سمايل تاون — أعلى أثر رقمي على مدونتي (١٠,٦٨٤ من جوجل)"
+          externalHref="https://www.modonty.com/clients/عيادات-سمايل-تاون-لطب-الفم-و-الأسنان"
+          externalLabel="شوف الصفحة الحقيقية"
+          src="/features/client-page.png"
+          alt="صفحة عميل حقيقية - سمايل تاون"
+        />
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <FeatureCard icon={BadgeCheck} title="هوية كاملة + شارة موثّق" desc="لوگو · اسم · تخصص · موقع · شارة موثّق · سنة التأسيس." />
+          <FeatureCard icon={Palette} title="Hero banner برندي" desc="صورة رئيسية احترافية بتصميم يعبّر عن هويّتك." />
+          <FeatureCard icon={Megaphone} title="أزرار CTA بارزة" desc="احجز الآن · متابعة · مشاركة · واتساب عائم." />
+          <FeatureCard icon={BarChart3} title="الأثر الرقمي من Google" desc="كارت ١٠,٦٨٤ الأثر الرقمي مع شعار G — دليل مصداقية فوري." />
+          <FeatureCard icon={Grid3x3} title="٩ أقسام غنية" desc="نظرة عامة · آراء · مقالات · عن الشركة · FAQ · تواصل · ساعات · موثوقية · نشرة." />
+          <FeatureCard icon={Search} title="SEO/AEO مدمج" desc="JSON-LD · Sitemap · Open Graph · Structured Data — لِلظهور في جوجل و ChatGPT." />
+        </div>
+      </FeatureSection>
 
-            <div className="fx-groups">
-              <div className="fx-gcard">
-                <div className="icon">📊</div>
-                <h3>نظرة عامة سريعة</h3>
-                <p>مقال منشور · مشاهدات · مشتركين — كل شي في السطر الأول.</p>
-                <ul>
-                  <li>هذا الشهر: ٥ مقال · ١٦٦ مشاهدة</li>
-                  <li>الإحصائيات (٤١ ظهور +٨٪)</li>
-                  <li>معدل الارتداد (٧.٩٪)</li>
-                </ul>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">⚠️</div>
-                <h3>يحتاج انتباهك</h3>
-                <p>يلفت انتباهك للأمور المنتظرة قرارك — بلا فوت.</p>
-                <ul>
-                  <li>المقالات (موافقات)</li>
-                  <li>التعليقات (مراجعة)</li>
-                  <li>الدعم (رسائل)</li>
-                </ul>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">📈</div>
-                <h3>الأداء الأسبوعي</h3>
-                <p>٤ مؤشرات موثّقة قدامك مباشرة.</p>
-                <ul>
-                  <li>الإحصائيات (Impressions)</li>
-                  <li>درجة التفاعل (٣٣/١٠٠)</li>
-                  <li>التحويلات (١، ٠.٦٪)</li>
-                  <li>نسبة الارتداد</li>
-                </ul>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">✍️</div>
-                <h3>محتواك</h3>
-                <p>كل حاجة تخص محتوى صفحتك — منظّمة.</p>
-                <ul>
-                  <li>بيانات نشاطك (+YMYL)</li>
-                  <li>معلومات · محتوى الصفحة</li>
-                  <li>معرض الصور · الملفات</li>
-                  <li>المقالات · أسئلة الصفحة</li>
-                </ul>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">👥</div>
-                <h3>عملاءك</h3>
-                <p>كل تفاعل عميل في مكان واحد.</p>
-                <ul>
-                  <li>مشتركو النشرة</li>
-                  <li>العملاء المحتملون (Leads)</li>
-                  <li>الحجوزات</li>
-                  <li>الأسئلة · الآراء · التقييمات</li>
-                </ul>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">🛡️</div>
-                <h3>الموثوقية والصحة</h3>
-                <p>مدى جاهزية موقعك.</p>
-                <ul>
-                  <li>صحة موقعك</li>
-                  <li>الحملات (قريباً 🚀)</li>
-                  <li>YMYL badge</li>
-                </ul>
-              </div>
-            </div>
+      {/* SECTION 3 — ARTICLES */}
+      <FeatureSection eyebrow="٠٣ · المقالات" title="مقالاتك — محتوى يبيع فعلاً">
+        <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          مقال احترافي مع صور high-res، إحصائيات قراءة، أزرار تفاعل، وشارة العميل الموثّقة — كل شي مصمّم يخلي القارئ ينحوّل لعميل.
+        </p>
+        <Screenshot
+          badge="مقال حقيقي"
+          caption="ابتسامة هوليود قبل وبعد (سمايل تاون) — 1189 كلمة · 6 دقائق قراءة"
+          externalHref="https://www.modonty.com/articles/ابتسامة-هوليود-قبل-وبعد"
+          externalLabel="شوف المقال الحقيقي"
+          src="/features/article.png"
+          alt="مقال حقيقي على مدونتي"
+        />
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <FeatureCard icon={FileText} title="Header احترافي" desc="عنوان بارز · وصف SEO · تاريخ · اسم المنصة." />
+          <FeatureCard icon={TrendingUp} title="إحصائيات كاملة" desc="عدد الكلمات · وقت القراءة · مشاهدات · تعليقات." />
+          <FeatureCard icon={ImageIcon} title="صور + معرض" desc="Hero image high-quality · صور داخلية · Open Graph لِلمشاركة." />
+          <FeatureCard icon={MessagesSquare} title="Sidebar تفاعل" desc="اشترك · مشاركة · تعليق · حفظ · إعجاب." />
+          <FeatureCard icon={Handshake} title="شارة العميل الموثّقة" desc="بطاقة العميل مع صورة، تخصص، وموقع — رابط لِصفحته." />
+          <FeatureCard icon={Rocket} title="SEO + AEO كامل" desc="JSON-LD · Meta tags · ٢٨ فحص جودة · طلب فهرسة Google." />
+        </div>
+      </FeatureSection>
+
+      {/* SECTION 4 — YMYL */}
+      <FeatureSection eyebrow="٠٤ · الثقة" title="مصداقيتك محميّة">
+        <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          القطاعات الحساسة (طبية · مالية · قانونية) تحتاج معايير أعلى. إحنا نطبّقها — عشان جوجل يثق فيك، وعميلك يشتري منك.
+        </p>
+        <div className="rounded-2xl border border-success/30 bg-success/[0.04] p-6 sm:p-8">
+          <h3 className="mb-2 text-lg font-black text-success sm:text-xl">
+            YMYL — المحتوى الحساس (Your Money or Your Life)
+          </h3>
+          <p className="mb-6 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+            أي محتوى يمس <strong className="text-foreground">صحة</strong> أو <strong className="text-foreground">مال</strong> أو <strong className="text-foreground">حقوق</strong> العميل — جوجل يطبّق عليه معايير أعلى (E-E-A-T). إحنا نحمي مصداقيتك.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-3">
+            <SectorCard icon={Stethoscope} title="القطاع الطبي" desc="عيادات · مستشفيات · أطباء — توثيق كامل + التزام أخلاقيات." />
+            <SectorCard icon={Scale} title="القطاع القانوني" desc="محامون · مكاتب قانونية — توثيق التخصص + المرجعية." />
+            <SectorCard icon={Wallet} title="القطاع المالي" desc="استشارات مالية · محاسبة · تأمين — معايير SAMA/ZATCA." />
           </div>
-        </section>
+        </div>
+      </FeatureSection>
 
-        {/* ─── SECTION 2: PUBLIC PAGE ─── */}
-        <section className="fx-sec">
-          <div className="fx-container">
-            <div className="fx-eyebrow">٠٢ · صفحتك</div>
-            <h2>صفحتك العامة — بديل موقعك الإلكتروني</h2>
-            <p className="fx-lead">
-              ما عندك موقع؟ ما مشكلة. مدونتي تعطيك صفحة كاملة تشوفها عملاءك: هويّتك، خدماتك، حجزك، تقييماتك.
-            </p>
+      {/* SECTION 5 — TELEGRAM */}
+      <FeatureSection eyebrow="٠٥ · التنبيهات" title="٢٣ تنبيه فوري على تيليجرام">
+        <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          لا تفوت شي. أي حدث مهم — يوصلك على تيليجرام في ثوان.
+        </p>
+        <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <AlertCard icon={TrendingUp} title="SEO" desc="ترتيب · impressions · clicks · errors" />
+          <AlertCard icon={FileText} title="المحتوى" desc="مقال جاهز · نشر · تحديث" />
+          <AlertCard icon={Users} title="العملاء" desc="Lead جديد · حجز · تقييم" />
+          <AlertCard icon={CreditCard} title="الفوترة" desc="فاتورة · تجديد · ترقية" />
+          <AlertCard icon={Bell} title="الأمان" desc="دخول · تغيير · موقع مكسور" />
+        </div>
+      </FeatureSection>
 
-            <div className="fx-shot">
-              <div className="fx-shot-cap">
-                <div>
-                  <span className="fx-badge-real">✓ صفحة حقيقية</span>
-                  <h4>عيادات سمايل تاون — أعلى أثر رقمي على مدونتي (١٠,٦٨٤ من جوجل)</h4>
-                </div>
-                <a href="https://www.modonty.com/clients/عيادات-سمايل-تاون-لطب-الفم-و-الأسنان" target="_blank" rel="noopener noreferrer">
-                  شوف الصفحة الحقيقية ←
-                </a>
-              </div>
-              <Image src="/features/client-page.png" alt="صفحة عميل حقيقية - سمايل تاون" width={1920} height={950} />
-            </div>
+      {/* SECTION 6 — PRICING + COMPARE + FINAL CTA */}
+      <FeatureSection eyebrow="٠٦ · اختر" title="اختر ما يناسب نموّك">
+        <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          {arNum(visibleCount)} باقات لمراحل نمو مختلفة. الاشتراك السنوي = ٦ شهور هدية.
+        </p>
 
-            <div className="fx-groups">
-              <div className="fx-gcard">
-                <div className="icon">📌</div>
-                <h3>هوية كاملة + شارة موثّق</h3>
-                <p>لوگو · اسم · تخصص · موقع · شارة "موثّق ✓" · سنة التأسيس.</p>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">🎨</div>
-                <h3>Hero banner برندي</h3>
-                <p>صورة رئيسية احترافية بتصميم يعبّر عن هويّتك.</p>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">📞</div>
-                <h3>أزرار CTA بارزة</h3>
-                <p>احجز الآن · متابعة · مشاركة · واتساب عائم.</p>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">📊</div>
-                <h3>الأثر الرقمي من Google</h3>
-                <p>كارت "١٠,٦٨٤ الأثر الرقمي" مع شعار G — دليل مصداقية فوري.</p>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">🗂️</div>
-                <h3>٩ أقسام غنية</h3>
-                <p>نظرة عامة · آراء · مقالات · عن الشركة · FAQ · تواصل · ساعات · موثوقية · نشرة.</p>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">🔍</div>
-                <h3>SEO/AEO مدمج</h3>
-                <p>JSON-LD · Sitemap · Open Graph · Structured Data — لِلظهور في جوجل و ChatGPT.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── SECTION 3: ARTICLES ─── */}
-        <section className="fx-sec">
-          <div className="fx-container">
-            <div className="fx-eyebrow">٠٣ · المقالات</div>
-            <h2>مقالاتك — محتوى يبيع فعلاً</h2>
-            <p className="fx-lead">
-              مقال احترافي مع صور high-res، إحصائيات قراءة، أزرار تفاعل، وشارة العميل الموثّقة — كل شي مصمّم يخلي القارئ ينحوّل لعميل.
-            </p>
-
-            <div className="fx-shot">
-              <div className="fx-shot-cap">
-                <div>
-                  <span className="fx-badge-real">✓ مقال حقيقي</span>
-                  <h4>ابتسامة هوليود قبل وبعد (سمايل تاون) — 1189 كلمة · 6 دقائق قراءة</h4>
-                </div>
-                <a href="https://www.modonty.com/articles/ابتسامة-هوليود-قبل-وبعد" target="_blank" rel="noopener noreferrer">
-                  شوف المقال الحقيقي ←
-                </a>
-              </div>
-              <Image src="/features/article.png" alt="مقال حقيقي على مدونتي" width={1920} height={950} />
-            </div>
-
-            <div className="fx-groups">
-              <div className="fx-gcard">
-                <div className="icon">📝</div>
-                <h3>Header احترافي</h3>
-                <p>عنوان بارز · وصف SEO · تاريخ · اسم المنصة.</p>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">📈</div>
-                <h3>إحصائيات كاملة</h3>
-                <p>عدد الكلمات · وقت القراءة · مشاهدات · تعليقات.</p>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">🖼️</div>
-                <h3>صور + معرض</h3>
-                <p>Hero image high-quality · صور داخلية · Open Graph لِلمشاركة.</p>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">🎯</div>
-                <h3>Sidebar تفاعل</h3>
-                <p>اشترك · مشاركة · تعليق · حفظ · إعجاب.</p>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">🏥</div>
-                <h3>شارة العميل الموثّقة</h3>
-                <p>بطاقة العميل مع صورة، تخصص، وموقع — رابط لِصفحته.</p>
-              </div>
-              <div className="fx-gcard">
-                <div className="icon">🚀</div>
-                <h3>SEO + AEO كامل</h3>
-                <p>JSON-LD · Meta tags · ٢٨ فحص جودة · طلب فهرسة Google.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── SECTION 4: YMYL ─── */}
-        <section className="fx-sec">
-          <div className="fx-container">
-            <div className="fx-eyebrow">٠٤ · الثقة</div>
-            <h2>مصداقيتك محميّة</h2>
-            <p className="fx-lead">
-              القطاعات الحساسة (طبية · مالية · قانونية) تحتاج معايير أعلى. إحنا نطبّقها — عشان جوجل يثق فيك، وعميلك يشتري منك.
-            </p>
-
-            <div className="fx-ymyl">
-              <h3>YMYL — المحتوى الحساس (Your Money or Your Life)</h3>
-              <p>
-                أي محتوى يمس <strong>صحة</strong> أو <strong>مال</strong> أو <strong>حقوق</strong> العميل — جوجل يطبّق عليه معايير أعلى (E-E-A-T). إحنا نحمي مصداقيتك.
-              </p>
-              <div className="fx-sectors">
-                <div className="fx-scard">
-                  <div className="icon">⚕️</div>
-                  <h4>القطاع الطبي</h4>
-                  <p>عيادات · مستشفيات · أطباء — توثيق كامل + التزام أخلاقيات.</p>
-                </div>
-                <div className="fx-scard">
-                  <div className="icon">⚖️</div>
-                  <h4>القطاع القانوني</h4>
-                  <p>محامون · مكاتب قانونية — توثيق التخصص + المرجعية.</p>
-                </div>
-                <div className="fx-scard">
-                  <div className="icon">💰</div>
-                  <h4>القطاع المالي</h4>
-                  <p>استشارات مالية · محاسبة · تأمين — معايير SAMA/ZATCA.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── SECTION 5: TELEGRAM ─── */}
-        <section className="fx-sec">
-          <div className="fx-container">
-            <div className="fx-eyebrow">٠٥ · التنبيهات</div>
-            <h2>٢٣ تنبيه فوري على تيليجرام</h2>
-            <p className="fx-lead">
-              لا تفوت شي. أي حدث مهم — يوصلك على تيليجرام في ثوان.
-            </p>
-
-            <div className="fx-tg">
-              <div className="fx-tgc"><div className="ico">📈</div><h4>SEO</h4><p>ترتيب · impressions · clicks · errors</p></div>
-              <div className="fx-tgc"><div className="ico">📝</div><h4>المحتوى</h4><p>مقال جاهز · نشر · تحديث</p></div>
-              <div className="fx-tgc"><div className="ico">👥</div><h4>العملاء</h4><p>Lead جديد · حجز · تقييم</p></div>
-              <div className="fx-tgc"><div className="ico">💳</div><h4>الفوترة</h4><p>فاتورة · تجديد · ترقية</p></div>
-              <div className="fx-tgc"><div className="ico">🛡️</div><h4>الأمان</h4><p>دخول · تغيير · موقع مكسور</p></div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── SECTION 6: PRICING + COMPARE + CTA ─── */}
-        <section className="fx-sec">
-          <div className="fx-container">
-            <div className="fx-eyebrow">٠٦ · اختر</div>
-            <h2>اختر ما يناسب نموّك</h2>
-            <p className="fx-lead">
-              {arNum(visibleCount)} باقات لمراحل نمو مختلفة. الاشتراك السنوي = ٦ شهور هدية.
-            </p>
-
-            {displayPlans.length > 0 ? (
-              <div className="fx-pkg">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>الميزة</th>
-                      {displayPlans.map((p, i) => (
-                        <th key={p.id} className={i === recIdx ? "rec" : ""}>
-                          <div className="th-inner">
-                            {i === recIdx && <span className="rec-badge">🔥 الأكثر شيوعاً</span>}
-                            <span>{p.name}</span>
-                          </div>
-                        </th>
-                      ))}
+        {displayPlans.length > 0 ? (
+          <div className="overflow-x-auto rounded-2xl border border-border bg-card">
+            <table className="w-full min-w-[600px] border-collapse text-[13px]">
+              <thead>
+                <tr>
+                  <th className="border-b border-border bg-muted/40 p-3 text-start font-extrabold text-success">الميزة</th>
+                  {displayPlans.map((p, i) => (
+                    <th
+                      key={p.id}
+                      className={`border-b border-border p-3 text-center font-extrabold text-success ${i === recIdx ? "bg-success/12" : "bg-muted/40"}`}
+                    >
+                      <div className="inline-flex flex-wrap items-center justify-center gap-2">
+                        {i === recIdx && (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-success px-2.5 py-1 text-[11px] font-black text-success-foreground shadow-lg shadow-success/25">
+                            <Flame className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+                            الأكثر شيوعاً
+                          </span>
+                        )}
+                        <span>{p.name}</span>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border-b border-border p-3 text-start">السعر الشهري</td>
+                  {displayPlans.map((p, i) => (
+                    <td key={p.id} className={`border-b border-border p-3 text-center ${i === recIdx ? "bg-success/[0.06]" : ""}`}>
+                      <span className="font-black text-success text-[17px]">{p.priceMonthly} {currency}</span>
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="border-b border-border p-3 text-start">المقالات</td>
+                  {displayPlans.map((p, i) => (
+                    <td key={p.id} className={`border-b border-border p-3 text-center ${i === recIdx ? "bg-success/[0.06]" : ""}`}>
+                      {p.articlesLabel || "—"}
+                    </td>
+                  ))}
+                </tr>
+                {rows.map((row, ridx) =>
+                  row.category ? (
+                    <tr key={ridx}>
+                      <td colSpan={displayPlans.length + 1} className="bg-success/[0.06] p-2.5 text-start text-xs font-extrabold tracking-wide text-success">
+                        {row.category}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {/* Row 1: Monthly price (from Plan.priceMonthly) */}
-                    <tr>
-                      <td>السعر الشهري</td>
-                      {displayPlans.map((p, i) => (
-                        <td key={p.id} className={i === recIdx ? "rec" : ""}>
-                          <span className="price">{p.priceMonthly} {currency}</span>
-                        </td>
-                      ))}
+                  ) : (
+                    <tr key={ridx}>
+                      <td className="border-b border-border p-3 text-start">{row.label}</td>
+                      {displayPlans.map((p, i) => {
+                        const SLUG_ORDER = ["presence", "starter", "growth", "scale"];
+                        const dataIdx = SLUG_ORDER.indexOf(p.slug);
+                        return (
+                          <td key={p.id} className={`border-b border-border p-3 text-center ${i === recIdx ? "bg-success/[0.06]" : ""}`}>
+                            {row.values?.[dataIdx] ?? "—"}
+                          </td>
+                        );
+                      })}
                     </tr>
-                    {/* Row 2: Articles label (from Plan.articlesLabel) */}
-                    <tr>
-                      <td>المقالات</td>
-                      {displayPlans.map((p, i) => (
-                        <td key={p.id} className={i === recIdx ? "rec" : ""}>
-                          {p.articlesLabel || "—"}
-                        </td>
-                      ))}
-                    </tr>
-                    {/* Rows 3+: Comparison matrix (from LandingSection "featuresComparison") */}
-                    {rows.map((row, ridx) =>
-                      row.category ? (
-                        <tr key={ridx} className="cat-row">
-                          <td colSpan={displayPlans.length + 1}>{row.category}</td>
-                        </tr>
-                      ) : (
-                        <tr key={ridx}>
-                          <td>{row.label}</td>
-                          {displayPlans.map((p, i) => {
-                            const SLUG_ORDER = ["presence", "starter", "growth", "scale"];
-                            const dataIdx = SLUG_ORDER.indexOf(p.slug);
-                            return (
-                              <td key={p.id} className={i === recIdx ? "rec" : ""}>
-                                {row.values?.[dataIdx] ?? "—"}
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      )
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p style={{color:"rgba(255,255,255,.6)",padding:"20px",textAlign:"center"}}>
-                لا توجد باقات متاحة حالياً — تواصل معنا للتفاصيل.
-              </p>
-            )}
-
-            <h3 style={{fontSize:"22px",fontWeight:900,margin:"44px 0 8px",textAlign:"center"}}>إيش الفرق فعلاً؟</h3>
-            <p style={{textAlign:"center",color:"rgba(255,255,255,.65)",fontSize:"14.5px",marginBottom:"20px"}}>
-              قارن بين توظيف فريق داخلي vs اشتراك مدونتي.
-            </p>
-            <div className="fx-cmp">
-              <div className="fx-cc bad">
-                <h3>❌ توظّف فريق محتوى داخلي</h3>
-                <ul>
-                  <li>راتب كاتب: ٦-١٠ آلاف ريال/شهر</li>
-                  <li>راتب مصمم: ٥-٨ آلاف ريال/شهر</li>
-                  <li>راتب متخصص SEO: ٨-١٥ ألف/شهر</li>
-                  <li>تجهيزات · تدريب · إدارة</li>
-                  <li>مسؤولية العمل · الإجازات</li>
-                  <li>= ٢٠-٣٥ ألف ريال/شهر</li>
-                </ul>
-              </div>
-              <div className="fx-cc good">
-                <h3>✅ اشتراك واحد — نظام كامل</h3>
-                <ul>
-                  <li>اشتراك سنوي: ٦ أشهر مجاناً</li>
-                  <li>فريق كامل جاهز</li>
-                  <li>لوحة تحكم شفافة ٢٤/٧</li>
-                  <li>تنبيهات فورية · دعم مباشر</li>
-                  <li>بلا مسؤوليات موظفين</li>
-                  <li>= توفير ٩٥٪+ من التكلفة</li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="fx-final">
-              <h2>جاهز ترى ترتيبك يتحرّك؟</h2>
-              <p>اشترك سنوياً واكسب ٦ أشهر مجاناً — أو تكلّم معنا عن باقة مخصصة.</p>
-              <a href={pricingHref} className="fx-btn-p">{ctaLabel} ←</a>
-              <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="fx-btn-s">تكلّم معنا على واتساب</a>
-            </div>
+                  )
+                )}
+              </tbody>
+            </table>
           </div>
-        </section>
+        ) : (
+          <p className="rounded-2xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
+            لا توجد باقات متاحة حالياً — تواصل معنا للتفاصيل.
+          </p>
+        )}
 
+        <p className="mt-2 text-xs text-muted-foreground/80">
+          الأسعار المعروضة شاملة ضريبة القيمة المضافة ١٥٪
+        </p>
+
+        <h3 className="mt-11 mb-2 text-center text-xl font-black sm:text-2xl">إيش الفرق فعلاً؟</h3>
+        <p className="mb-5 text-center text-sm text-muted-foreground">
+          قارن بين توظيف فريق داخلي vs اشتراك مدونتي.
+        </p>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <CompareCard tone="bad" title="توظّف فريق محتوى داخلي" bullets={["راتب كاتب: ٦-١٠ آلاف ريال/شهر", "راتب مصمم: ٥-٨ آلاف ريال/شهر", "راتب متخصص SEO: ٨-١٥ ألف/شهر", "تجهيزات · تدريب · إدارة", "مسؤولية العمل · الإجازات", "= ٢٠-٣٥ ألف ريال/شهر"]} />
+          <CompareCard tone="good" title="اشتراك واحد — نظام كامل" bullets={["اشتراك سنوي: ٦ أشهر مجاناً", "فريق كامل جاهز", "لوحة تحكم شفافة ٢٤/٧", "تنبيهات فورية · دعم مباشر", "بلا مسؤوليات موظفين", "= توفير ٩٥٪+ من التكلفة"]} />
+        </div>
+
+        <div className="mt-10 rounded-3xl bg-gradient-to-br from-success/25 to-success/70 p-8 text-center sm:p-14">
+          <h2 className="mb-3 text-2xl font-black text-white sm:text-3xl">جاهز ترى ترتيبك يتحرّك؟</h2>
+          <p className="mx-auto mb-6 max-w-xl text-sm text-white/85 sm:text-[15px]">
+            اشترك سنوياً واكسب ٦ أشهر مجاناً — أو تكلّم معنا عن باقة مخصصة.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <a
+              href={pricingHref}
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-background px-7 text-sm font-black text-success shadow-lg no-underline transition-colors hover:bg-background/90"
+            >
+              <span>{ctaLabel}</span>
+              <ArrowLeft className="h-4 w-4" strokeWidth={2.5} aria-hidden />
+            </a>
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/40 bg-transparent px-6 text-sm font-semibold text-white no-underline transition-colors hover:bg-white/10"
+            >
+              <WhatsAppIcon className="h-4 w-4" />
+              <span>تكلّم معنا على واتساب</span>
+            </a>
+          </div>
+        </div>
+      </FeatureSection>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────
+// Local presentational primitives — keep the page body scannable.
+// ─────────────────────────────────────────────────────────────────
+
+function HeroStat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card px-5 py-4">
+      <div className="mb-0.5 text-2xl font-black text-success sm:text-[26px]">{value}</div>
+      <div className="text-xs font-semibold text-muted-foreground">{label}</div>
+    </div>
+  );
+}
+
+function FeatureSection({
+  eyebrow,
+  title,
+  children,
+}: {
+  eyebrow: string;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="border-t border-border py-14 sm:py-20">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-2 font-mono text-xs font-extrabold uppercase tracking-[2px] text-success">
+          {eyebrow}
+        </div>
+        <h2 className="mb-3 text-2xl font-black leading-tight tracking-tight sm:text-3xl md:text-[34px]">
+          {title}
+        </h2>
+        {children}
       </div>
-    </>
+    </section>
+  );
+}
+
+function Screenshot({
+  badge,
+  caption,
+  note,
+  externalHref,
+  externalLabel,
+  src,
+  alt,
+}: {
+  badge: string;
+  caption: string;
+  note?: string;
+  externalHref?: string;
+  externalLabel?: string;
+  src: string;
+  alt: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-success/20 bg-gradient-to-br from-success/[0.04] to-info/[0.04] p-4 sm:p-5">
+      <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <span className="mb-1.5 inline-flex items-center gap-1 rounded-md bg-success px-2 py-0.5 text-[11px] font-black uppercase tracking-wide text-success-foreground">
+            <CheckCircle2 className="h-3 w-3" strokeWidth={2.5} aria-hidden />
+            {badge}
+          </span>
+          <h4 className="text-sm font-black text-success">{caption}</h4>
+        </div>
+        {externalHref ? (
+          <a
+            href={externalHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-11 items-center text-xs text-muted-foreground hover:text-foreground no-underline"
+          >
+            {externalLabel} ←
+          </a>
+        ) : note ? (
+          <small className="text-[11px] text-muted-foreground">{note}</small>
+        ) : null}
+      </div>
+      <Image
+        src={src}
+        alt={alt}
+        width={1920}
+        height={950}
+        className="block h-auto w-full rounded-lg border border-border"
+      />
+    </div>
+  );
+}
+
+function FeatureCard({
+  icon: Icon,
+  title,
+  desc,
+  bullets,
+}: {
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+  bullets?: string[];
+}) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-success/12 text-success">
+        <Icon className="h-5 w-5" strokeWidth={2} aria-hidden />
+      </div>
+      <h3 className="mb-1.5 text-[15px] font-extrabold text-foreground">{title}</h3>
+      <p className="text-[13px] leading-relaxed text-muted-foreground">{desc}</p>
+      {bullets && bullets.length > 0 && (
+        <ul className="mt-2 list-disc space-y-0.5 ps-5 text-xs text-muted-foreground/85">
+          {bullets.map((b) => (
+            <li key={b}>{b}</li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+function SectorCard({
+  icon: Icon,
+  title,
+  desc,
+}: {
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <div className="rounded-xl border border-success/20 bg-background/60 p-4 text-center">
+      <div className="mx-auto mb-2 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-success/12 text-success">
+        <Icon className="h-5 w-5" strokeWidth={2} aria-hidden />
+      </div>
+      <h4 className="mb-1 text-sm font-black text-success">{title}</h4>
+      <p className="text-xs leading-relaxed text-muted-foreground">{desc}</p>
+    </div>
+  );
+}
+
+function AlertCard({
+  icon: Icon,
+  title,
+  desc,
+}: {
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+}) {
+  return (
+    <div className="rounded-xl border border-info/25 bg-info/[0.06] p-4 text-center">
+      <div className="mx-auto mb-2 inline-flex h-9 w-9 items-center justify-center rounded-lg bg-info/15 text-info">
+        <Icon className="h-4 w-4" strokeWidth={2} aria-hidden />
+      </div>
+      <h4 className="mb-1 text-[13px] font-extrabold text-foreground">{title}</h4>
+      <p className="text-[11px] leading-relaxed text-muted-foreground">{desc}</p>
+    </div>
+  );
+}
+
+function CompareCard({
+  tone,
+  title,
+  bullets,
+}: {
+  tone: "bad" | "good";
+  title: string;
+  bullets: string[];
+}) {
+  const isBad = tone === "bad";
+  const containerCls = isBad
+    ? "border-destructive/25 bg-destructive/[0.05]"
+    : "border-success/35 bg-success/10";
+  const iconCls = isBad ? "text-destructive" : "text-success";
+  const Icon = isBad ? XCircle : CheckCircle2;
+  return (
+    <div className={`rounded-2xl border p-6 ${containerCls}`}>
+      <h3 className="mb-4 flex items-center gap-2 text-base font-black">
+        <Icon className={`h-5 w-5 shrink-0 ${iconCls}`} strokeWidth={2.5} aria-hidden />
+        <span>{title}</span>
+      </h3>
+      <ul className="space-y-1.5">
+        {bullets.map((b) => (
+          <li key={b} className="flex items-start gap-2 border-b border-border/60 py-1.5 text-[13px] last:border-b-0">
+            <span className={`mt-0.5 font-black ${iconCls}`} aria-hidden>
+              {isBad ? "✗" : "✓"}
+            </span>
+            <span>{b}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

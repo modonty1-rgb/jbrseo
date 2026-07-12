@@ -1,0 +1,1343 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stage 3 TODO — رحلة الدفع الكاملة | JBRSEO</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --card: #141414;
+    --card-2: #1a1a1a;
+    --border: #262626;
+    --border-strong: #333;
+    --fg: #f5f5f5;
+    --muted: #a3a3a3;
+    --muted-2: #737373;
+    --accent: #f5c518;
+    --success: #22c55e;
+    --success-bg: rgba(34,197,94,0.12);
+    --success-border: rgba(34,197,94,0.35);
+    --warning: #f59e0b;
+    --warning-bg: rgba(245,158,11,0.12);
+    --warning-border: rgba(245,158,11,0.35);
+    --orange: #f97316;
+    --orange-bg: rgba(249,115,22,0.12);
+    --orange-border: rgba(249,115,22,0.35);
+    --destructive: #ef4444;
+    --destructive-bg: rgba(239,68,68,0.12);
+    --destructive-border: rgba(239,68,68,0.35);
+    --info: #3b82f6;
+    --info-bg: rgba(59,130,246,0.12);
+    --info-border: rgba(59,130,246,0.35);
+    --mono: 'IBM Plex Mono','SF Mono','Consolas','Menlo',monospace;
+    --sans: 'Segoe UI','Tahoma','system-ui','sans-serif';
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--sans);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* Sticky top progress */
+  header.top {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+  }
+  header.top .top-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  header.top h1 {
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--fg);
+    flex-shrink: 0;
+  }
+  header.top .progress-inline {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  header.top .progress-inline .track {
+    flex: 1;
+    height: 6px;
+    background: var(--card);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  header.top .progress-inline .fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success) 0%, var(--info) 100%);
+    transition: width 0.4s ease;
+    border-radius: 999px;
+  }
+  header.top .progress-inline .pct {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--success);
+    min-width: 50px;
+    text-align: end;
+    direction: ltr;
+  }
+  header.top .controls {
+    display: flex;
+    gap: 8px;
+  }
+  header.top button {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    cursor: pointer;
+    font-family: var(--sans);
+    transition: all 0.15s ease;
+  }
+  header.top button:hover { color: var(--fg); border-color: var(--border-strong); }
+
+  /* Hero */
+  .hero {
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero h1 {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 0 0 6px;
+    letter-spacing: -0.5px;
+  }
+  .hero .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 16px;
+  }
+  .hero .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border: 1px solid;
+  }
+  .badge-success   { background: var(--success-bg);     border-color: var(--success-border);     color: var(--success); }
+  .badge-warning   { background: var(--warning-bg);     border-color: var(--warning-border);     color: var(--warning); }
+  .badge-orange    { background: var(--orange-bg);      border-color: var(--orange-border);      color: var(--orange); }
+  .badge-danger    { background: var(--destructive-bg); border-color: var(--destructive-border); color: var(--destructive); }
+  .badge-info      { background: var(--info-bg);        border-color: var(--info-border);        color: var(--info); }
+
+  /* Levels grid overview */
+  .levels-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 24px 0 40px;
+  }
+  @media (max-width: 720px) { .levels-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .levels-grid { grid-template-columns: 1fr; } }
+  .level-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    text-align: right;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .level-card:hover {
+    background: var(--card-2);
+    border-color: var(--border-strong);
+    transform: translateY(-1px);
+  }
+  .level-card .lvl-num {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--muted-2);
+    letter-spacing: 1.2px;
+    margin-bottom: 4px;
+  }
+  .level-card .lvl-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--fg);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .level-card .lvl-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    direction: ltr;
+  }
+  .level-card .lvl-progress .track {
+    flex: 1;
+    height: 4px;
+    background: var(--bg);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .level-card .lvl-progress .fill {
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 999px;
+  }
+  .level-card[data-color="green"]   .lvl-num { color: var(--success); }
+  .level-card[data-color="yellow"]  .lvl-num { color: var(--warning); }
+  .level-card[data-color="orange"]  .lvl-num { color: var(--orange); }
+  .level-card[data-color="red"]     .lvl-num { color: var(--destructive); }
+  .level-card[data-color="green"]   .fill    { background: var(--success); }
+  .level-card[data-color="yellow"]  .fill    { background: var(--warning); }
+  .level-card[data-color="orange"]  .fill    { background: var(--orange); }
+  .level-card[data-color="red"]     .fill    { background: var(--destructive); }
+
+  /* Level sections */
+  section.level {
+    margin-bottom: 40px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  section.level > .head {
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--card-2);
+    cursor: pointer;
+    user-select: none;
+  }
+  section.level > .head:hover { background: color-mix(in oklch, var(--card-2), var(--fg) 3%); }
+  section.level > .head .lvl-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  section.level > .head h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+  }
+  section.level > .head .lvl-count {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted-2);
+    direction: ltr;
+  }
+  section.level > .body { padding: 6px 12px 18px; }
+  section.level.collapsed > .body { display: none; }
+  section.level > .head .chevron {
+    transition: transform 0.2s ease;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  section.level.collapsed > .head .chevron { transform: rotate(-90deg); }
+
+  /* Tasks */
+  .task {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 4px;
+    transition: background 0.12s ease;
+    border: 1px solid transparent;
+  }
+  .task:hover { background: var(--card-2); }
+  .task.done { opacity: 0.55; }
+  .task.done .task-title { text-decoration: line-through; text-decoration-color: var(--success); }
+
+  .task input[type="checkbox"] {
+    margin-top: 3px;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--success);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .task-body { flex: 1; min-width: 0; }
+  .task-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--fg);
+    margin-bottom: 4px;
+    line-height: 1.55;
+    cursor: pointer;
+  }
+  .task-desc {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-top: 6px;
+  }
+  .task-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+    align-items: center;
+  }
+  .task-meta .time {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    direction: ltr;
+  }
+  .task-meta .file {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    background: var(--bg);
+    color: var(--muted);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    direction: ltr;
+  }
+  .task-meta .warn {
+    color: var(--warning);
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .task-code {
+    display: block;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--muted);
+    direction: ltr;
+    white-space: pre-wrap;
+    line-height: 1.5;
+  }
+
+  /* Summary table */
+  table.summary {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 13px;
+    margin: 20px 0 40px;
+  }
+  table.summary th, table.summary td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+    vertical-align: middle;
+  }
+  table.summary th {
+    background: var(--card-2);
+    color: var(--muted-2);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+  table.summary tr:last-child td { border-bottom: 0; }
+  table.summary .total-row {
+    background: var(--success-bg);
+    font-weight: 700;
+  }
+  table.summary td.time {
+    font-family: var(--mono);
+    color: var(--accent);
+    direction: ltr;
+  }
+
+  /* Checkpoints */
+  .checkpoints {
+    background: var(--warning-bg);
+    border: 1px solid var(--warning-border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin: 32px 0;
+  }
+  .checkpoints h3 {
+    margin: 0 0 12px;
+    color: var(--warning);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .checkpoints ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .checkpoints li {
+    padding: 6px 0;
+    color: var(--fg);
+    font-size: 13px;
+    line-height: 1.6;
+    display: flex;
+    align-items: start;
+    gap: 8px;
+  }
+  .checkpoints li::before {
+    content: "•";
+    color: var(--warning);
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .checkpoints li strong { color: var(--warning); }
+
+  /* Footer refs */
+  footer.doc {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    color: var(--muted-2);
+    font-size: 12px;
+  }
+  footer.doc h4 { color: var(--muted); margin: 0 0 8px; font-size: 12px; }
+  footer.doc a {
+    color: var(--info);
+    text-decoration: none;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    direction: ltr;
+    display: inline-block;
+  }
+  footer.doc a:hover { text-decoration: underline; }
+  footer.doc .ref { padding: 4px 0; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <h1>Stage 3 · TODO</h1>
+    <div class="progress-inline">
+      <div class="track"><div class="fill" id="topFill" style="width: 0%"></div></div>
+      <div class="pct"><span id="topDone">0</span>/<span id="topTotal">39</span></div>
+    </div>
+    <div class="controls">
+      <button onclick="collapseAll()">طيّ الكل</button>
+      <button onclick="expandAll()">فتح الكل</button>
+      <button onclick="resetProgress()">تصفير</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<div class="hero">
+  <h1>المرحلة ٣ — تفعيل الدفع الحقيقي</h1>
+  <p class="subtitle">المرجع الرسمي بيني وبين Khalid · مرتّبة من الأسهل → الأصعب · نضغط على checkbox لتحديد الإنجاز (يُحفظ محلياً في المتصفح)</p>
+  <div class="meta">
+    <span class="badge badge-info">آخر تحديث: 2026-07-12 · Levels 2+3+4+5 done (14/39) ✅</span>
+    <span class="badge badge-success">٦/٦ قرارات مقفولة</span>
+    <span class="badge badge-warning">٩ مستويات · ٣٩ مهمة</span>
+    <span class="badge badge-info">٣-٥ أيام + انتظار مفاتيح N-Genius LIVE</span>
+  </div>
+</div>
+
+<!-- Levels overview grid -->
+<div class="levels-grid">
+  <a href="#level-1" class="level-card" data-color="green">
+    <div class="lvl-num">🟢 LEVEL 01</div>
+    <div class="lvl-title">إعدادية (Khalid) — حسابات + env</div>
+    <div class="lvl-progress"><div class="track"><div class="fill" id="fill-1"></div></div><span id="prog-1">0/5</span></div>
+  </a>
+  <a href="#level-2" class="level-card" data-color="green">
+    <div class="lvl-num">🟢 LEVEL 02</div>
+    <div class="lvl-title">نصوص UI — تحديث "استرداد → التزام تسليم"</div>
+    <div class="lvl-progress"><div class="track"><div class="fill" id="fill-2"></div></div><span id="prog-2">0/4</span></div>
+  </a>
+  <a href="#level-3" class="level-card" data-color="green">
+    <div class="lvl-num">🟢 LEVEL 03</div>
+    <div class="lvl-title">صفحات جديدة (billing-policy, success, failed, processing)</div>
+    <div class="lvl-progress"><div class="track"><div class="fill" id="fill-3"></div></div><span id="prog-3">0/4</span></div>
+  </a>
+  <a href="#level-4" class="level-card" data-color="yellow">
+    <div class="lvl-num">🟡 LEVEL 04</div>
+    <div class="lvl-title">Prisma Schema updates</div>
+    <div class="lvl-progress"><div class="track"><div class="fill" id="fill-4"></div></div><span id="prog-4">0/4</span></div>
+  </a>
+  <a href="#level-5" class="level-card" data-color="yellow">
+    <div class="lvl-num">🟡 LEVEL 05</div>
+    <div class="lvl-title">Upstash + Turnstile SDKs</div>
+    <div class="lvl-progress"><div class="track"><div class="fill" id="fill-5"></div></div><span id="prog-5">0/2</span></div>
+  </a>
+  <a href="#level-6" class="level-card" data-color="orange">
+    <div class="lvl-num">🟠 LEVEL 06</div>
+    <div class="lvl-title">N-Genius Integration — اللب التقني</div>
+    <div class="lvl-progress"><div class="track"><div class="fill" id="fill-6"></div></div><span id="prog-6">0/5</span></div>
+  </a>
+  <a href="#level-7" class="level-card" data-color="orange">
+    <div class="lvl-num">🟠 LEVEL 07</div>
+    <div class="lvl-title">Webhook + Polling Backup + HMAC</div>
+    <div class="lvl-progress"><div class="track"><div class="fill" id="fill-7"></div></div><span id="prog-7">0/3</span></div>
+  </a>
+  <a href="#level-8" class="level-card" data-color="red">
+    <div class="lvl-num">🔴 LEVEL 08</div>
+    <div class="lvl-title">Modonty Integration (الأصعب)</div>
+    <div class="lvl-progress"><div class="track"><div class="fill" id="fill-8"></div></div><span id="prog-8">0/6</span></div>
+  </a>
+  <a href="#level-9" class="level-card" data-color="red">
+    <div class="lvl-num">🔴 LEVEL 09</div>
+    <div class="lvl-title">Testing + Go-Live</div>
+    <div class="lvl-progress"><div class="track"><div class="fill" id="fill-9"></div></div><span id="prog-9">0/6</span></div>
+  </a>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEVEL 1 — Setup                                 -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="level" id="level-1">
+  <div class="head" onclick="toggleLevel(this)">
+    <div class="lvl-label">
+      <span class="badge badge-success">🟢 LEVEL 01</span>
+      <h2>إعدادية (Khalid)</h2>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="lvl-count"><span class="done-count">0</span>/5</span>
+      <span class="chevron">▼</span>
+    </div>
+  </div>
+  <div class="body">
+
+    <div class="task">
+      <input type="checkbox" id="t1-1" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t1-1">Cloudflare Turnstile — إنشاء حساب + الحصول على المفاتيح</label>
+        <div class="task-desc">إنشاء site جديد في Cloudflare Turnstile → نسخ SITE_KEY (public) + SECRET_KEY (private).</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٥ دقائق</span>
+          <span class="file">cloudflare.com/turnstile</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t1-2" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t1-2">Upstash Redis — إنشاء حساب + database</label>
+        <div class="task-desc">إنشاء حساب على Upstash → إنشاء Redis database في region <code>me-south-1</code> (البحرين، أقرب) → نسخ URL + Token.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٥ دقائق</span>
+          <span class="file">console.upstash.com</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t1-3" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t1-3">N-Genius LIVE keys — إتمام Readiness Checklist</label>
+        <div class="task-desc">إتمام Readiness Checklist في بورتال N-Genius + الحصول على: LIVE Portal login · Developer Portal · LIVE API Key · LIVE Outlet Reference.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١-٣ أيام (يعتمد عليهم)</span>
+          <span class="warn">⚠️ Sandbox يشتغل الآن — نبني ونختبر بدون LIVE</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t1-4" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t1-4">N-Genius Risk Rules — تفعيل في البورتال</label>
+        <div class="task-desc">GCC Region Restriction: On · Country BIN Blacklist: إضافة الدول عالية المخاطر · قرار Corporate Cards من Khalid.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١٠ دقائق</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t1-5" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t1-5">Env vars في Vercel — لكل project (Production + Preview + Development)</label>
+        <div class="task-desc">إضافة كل المفاتيح المطلوبة لبيئات Vercel الثلاث.</div>
+        <code class="task-code">TURNSTILE_SITE_KEY
+TURNSTILE_SECRET_KEY
+UPSTASH_REDIS_REST_URL
+UPSTASH_REDIS_REST_TOKEN
+NGENIUS_API_KEY                (Sandbox أول)
+NGENIUS_OUTLET_ID              (Sandbox)
+NGENIUS_API_BASE_URL           (Sandbox أو LIVE)
+NGENIUS_WEBHOOK_SECRET         (يُنشأ عند ضبط webhook)
+MODONTY_WEBHOOK_URL
+MODONTY_HMAC_SECRET            (يُنشأ ويُشارك بين jbrseo + modonty)</code>
+        <div class="task-meta">
+          <span class="time">⏱️ ١٠ دقائق</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEVEL 2 — Text updates                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="level" id="level-2">
+  <div class="head" onclick="toggleLevel(this)">
+    <div class="lvl-label">
+      <span class="badge badge-success">🟢 LEVEL 02</span>
+      <h2>تحديث نصوص UI</h2>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="lvl-count"><span class="done-count">0</span>/4</span>
+      <span class="chevron">▼</span>
+    </div>
+  </div>
+  <div class="body">
+
+    <div class="task">
+      <input type="checkbox" id="t2-1" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t2-1">DB: Landing hero.trust (dev + prod) ✅</label>
+        <div class="task-desc">تحديث السطر الرابع من "استرداد ١٤ يوم مضمون" إلى "⏱️ التزام بالتسليم ٧٢ ساعة" في كلا الـ DBs.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٥ دقائق</span>
+          <span class="file">scripts/stage3-hero-trust-swap-refund-to-commitment.mjs</span>
+          <span class="badge badge-success">✓ 2026-07-12 · dev + prod</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t2-2" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t2-2">CheckoutSummary.tsx — Refund Badge ✅</label>
+        <div class="task-desc">تحديث نص "استرداد ١٤ يوم مضمون · إذا لم نلتزم..." إلى "التزام بالتسليم ٧٢ ساعة — نُنشئ حسابك أو نمدّد اشتراكك مجاناً".</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٥ دقائق</span>
+          <span class="file">app/[country]/checkout/_components/CheckoutSummary.tsx</span>
+          <span class="badge badge-success">✓ 2026-07-12</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t2-3" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t2-3">CheckoutForm.tsx — Badge أسفل زر الدفع + Terms link ✅</label>
+        <div class="task-desc">Badge: "⏱️ التزام بالتسليم — نُنشئ حسابك خلال ٧٢ ساعة أو نمدّد اشتراكك مجاناً" · Terms link: "سياسة الفوترة" (بدل "سياسة الاسترداد ١٤ يوم").</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٥ دقائق</span>
+          <span class="file">app/[country]/checkout/_components/CheckoutForm.tsx</span>
+          <span class="badge badge-success">✓ 2026-07-12</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t2-4" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t2-4">Landing.tsx — البحث + تحديث أي ذكر لـ "استرداد" ✅</label>
+        <div class="task-desc">grep على "استرداد" أو "١٤ يوم" في Landing + كل الكود + الـ DB. النتيجة: صفر matches. الأماكن الوحيدة اللي تبقّت (admin placeholders + analytics dropdown) غير مرتبطة بسياسة الاسترداد.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١٠ دقائق</span>
+          <span class="file">✅ Landing.tsx + all tsx/ts + DB scan</span>
+          <span class="badge badge-success">✓ 2026-07-12 · clean</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEVEL 3 — New pages                             -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="level" id="level-3">
+  <div class="head" onclick="toggleLevel(this)">
+    <div class="lvl-label">
+      <span class="badge badge-success">🟢 LEVEL 03</span>
+      <h2>صفحات جديدة</h2>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="lvl-count"><span class="done-count">0</span>/4</span>
+      <span class="chevron">▼</span>
+    </div>
+  </div>
+  <div class="body">
+
+    <div class="task">
+      <input type="checkbox" id="t3-1" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t3-1">صفحة /billing-policy ✅</label>
+        <div class="task-desc">تم إنشاء الصفحة كاملة + إضافة billing-policy إلى RESERVED_FIRST_SEGMENTS في country-config. تحقق حي: hero + ٤ أقسام + زر واتساب مع deep-link و pre-fill (email/invoice/reason) + link لـ /terms + صفر ذكر لـ "استرداد ١٤ يوم".</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٣٠ دقيقة</span>
+          <span class="file">app/(site)/billing-policy/page.tsx</span>
+          <span class="file">lib/country-config.ts</span>
+          <span class="badge badge-success">✓ 2026-07-12 · live verified</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t3-2" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t3-2">صفحة /checkout/success ✅</label>
+        <div class="task-desc">Server component يستدعي Prisma Subscriber بالـ order ID · smart routing حسب paymentStatus (pending→processing · failed→failed · paid→success · anything else→#pricing) · يعرض رقم الفاتورة + الباقة + الإجمالي + CTA لـ console.modonty.com + email notice + range reminder (٧٢ س → ١٤ يوم) + سياسة الفوترة link. متحقّق بـ Subscriber تجريبي بحالة paid.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٤٥ دقيقة</span>
+          <span class="file">app/[country]/checkout/success/page.tsx</span>
+          <span class="badge badge-success">✓ 2026-07-12 · live verified</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t3-3" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t3-3">صفحة /checkout/failed ✅</label>
+        <div class="task-desc">Server component يستدعي Subscriber بالـ order · REASON_MAP يحوّل ٨ رموز فشل شائعة إلى نصوص عربية طبيعية (card_declined · insufficient_funds · card_expired · authentication_failed · invalid_card · network_error · cancelled_by_user · timeout) · Retry يرجع لـ /checkout بنفس plan+billing · WhatsApp escape valve (قرار #٥) · Safety: paid → redirect لـ success · missing → #pricing.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٣٠ دقيقة</span>
+          <span class="file">app/[country]/checkout/failed/page.tsx</span>
+          <span class="badge badge-success">✓ 2026-07-12 · live verified (card_declined)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t3-4" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t3-4">صفحة /checkout/processing ✅</label>
+        <div class="task-desc">Server component يعمل short-circuit لو الحالة محسومة (paid/failed/abandoned) · Client component يـ poll /api/checkout/status كل ٢ ثواني لـ ٦٠ ثانية · auto-redirect لـ success/failed عند تغيّر الحالة · timeout UI مع رابط console.modonty.com. أُضيف "api" إلى RESERVED_FIRST_SEGMENTS في country-config عشان middleware ما يعيد توجيه /api/*.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٣٠ دقيقة</span>
+          <span class="file">app/[country]/checkout/processing/page.tsx</span>
+          <span class="file">app/[country]/checkout/processing/ProcessingClient.tsx</span>
+          <span class="file">app/api/checkout/status/route.ts</span>
+          <span class="badge badge-success">✓ 2026-07-12 · polling → redirect verified</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEVEL 4 — Schema                                -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="level" id="level-4">
+  <div class="head" onclick="toggleLevel(this)">
+    <div class="lvl-label">
+      <span class="badge badge-warning">🟡 LEVEL 04</span>
+      <h2>Prisma Schema Updates</h2>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="lvl-count"><span class="done-count">0</span>/4</span>
+      <span class="chevron">▼</span>
+    </div>
+  </div>
+  <div class="body">
+
+    <div class="task">
+      <input type="checkbox" id="t4-1" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t4-1">Subscriber — إضافة حقول الدفع ✅</label>
+        <div class="task-desc">حقول جديدة + enum + unique constraint.</div>
+        <code class="task-code">paymentStatus PaymentStatus @default(pending)
+paymentRef    String?       // N-Genius transaction ID
+paidAt        DateTime?
+failReason    String?
+
+enum PaymentStatus { pending paid failed abandoned refunded }
+
+@@unique([email, plan, billing])</code>
+        <div class="task-meta">
+          <span class="time">⏱️ ١٥ دقيقة</span>
+          <span class="warn">⚠️ اقفل كل dev servers قبل prisma generate</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t4-2" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t4-2">WebhookEvent — جدول جديد ✅</label>
+        <div class="task-desc">لمنع معالجة نفس الحدث مرتين (idempotency layer 3).</div>
+        <code class="task-code">model WebhookEvent {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  provider          String   // "n-genius"
+  providerEventId   String   @unique
+  eventType         String   // "captured" · "failed" · "refunded"
+  payload           Json
+  signature         String
+  processed         Boolean  @default(false)
+  receivedAt        DateTime @default(now())
+  processedAt       DateTime?
+}</code>
+        <div class="task-meta">
+          <span class="time">⏱️ ١٠ دقائق</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t4-3" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t4-3">pnpm prisma:generate ✅</label>
+        <div class="task-desc">بعد قفل dev servers (taskkill //F //IM node.exe على Windows).</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٣٠ ثانية</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t4-4" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t4-4">prisma db push — Dev DB مطبّق ✅ (Prod ينتظر Stage 3 Push)</label>
+        <div class="task-desc">Dev DB (modonty_dev) طبّق: إنشاء `WebhookEvent` collection + indexes. `Subscriber` كسب الحقول الجديدة تلقائياً (MongoDB flexible schema). Prod DB يُدفع مع بقية Stage 3 code.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ دقيقة</span>
+          <span class="badge badge-success">✓ 2026-07-12 · dev only</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEVEL 5 — Integrations                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="level" id="level-5">
+  <div class="head" onclick="toggleLevel(this)">
+    <div class="lvl-label">
+      <span class="badge badge-warning">🟡 LEVEL 05</span>
+      <h2>Upstash + Turnstile SDKs</h2>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="lvl-count"><span class="done-count">0</span>/2</span>
+      <span class="chevron">▼</span>
+    </div>
+  </div>
+  <div class="body">
+
+    <div class="task">
+      <input type="checkbox" id="t5-1" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t5-1">Upstash Redis Rate Limit ✅</label>
+        <div class="task-desc">SDK مثبّت + lib/rate-limit.ts مع ٣ limiters (landing 30/د · checkout 5/١٠د · order 3/د) + proxy.ts async + skip للـ static assets. Live verified: طلب #31 من نفس IP رجع 429.</div>
+        <code class="task-code">pnpm add @upstash/ratelimit @upstash/redis</code>
+        <div class="task-meta">
+          <span class="time">⏱️ ٤٥ دقيقة</span>
+          <span class="file">lib/rate-limit.ts</span>
+          <span class="file">proxy.ts</span>
+          <span class="badge badge-success">✓ 2026-07-12 · 30→429 verified</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t5-2" onchange="toggleTask(this)" checked>
+      <div class="task-body">
+        <label class="task-title" for="t5-2">Cloudflare Turnstile Widget ✅</label>
+        <div class="task-desc">SDK مثبّت (@marsidev/react-turnstile) + widget في CheckoutForm بين payment-placeholder والـ terms + fallback polling على cf-turnstile-response (يحلّ إشكال onSuccess مع test keys) + lib/turnstile.ts لـ server-side verify. Pay button disabled حتى يوجد token. Dev = test keys (always-pass). Prod = real keys (تُضاف في Vercel).</div>
+        <code class="task-code">pnpm add @marsidev/react-turnstile</code>
+        <div class="task-meta">
+          <span class="time">⏱️ ٣٠ دقيقة</span>
+          <span class="file">CheckoutForm.tsx</span>
+          <span class="file">lib/turnstile.ts</span>
+          <span class="badge badge-success">✓ 2026-07-12 · widget + verify ready</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEVEL 6 — N-Genius Core                         -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="level" id="level-6">
+  <div class="head" onclick="toggleLevel(this)">
+    <div class="lvl-label">
+      <span class="badge badge-orange">🟠 LEVEL 06</span>
+      <h2>N-Genius Integration — اللب التقني</h2>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="lvl-count"><span class="done-count">0</span>/5</span>
+      <span class="chevron">▼</span>
+    </div>
+  </div>
+  <div class="body">
+
+    <div class="task">
+      <input type="checkbox" id="t6-1" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t6-1">lib/ngenius/auth.ts — access-token</label>
+        <div class="task-desc">POST إلى /identity/auth/access-token + caching للـ token في memory (صلاحيته ~١ ساعة).</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٣٠ دقيقة</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t6-2" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t6-2">lib/ngenius/orders.ts — إنشاء طلب دفع</label>
+        <div class="task-desc">POST إلى /transactions/outlets/{OUTLET_ID}/orders · Body: amount + currency + merchantOrderReference (idempotency) + merchantDefinedData (subscriberId, plan) · Return: session data للـ iframe.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١ ساعة</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t6-3" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t6-3">lib/ngenius/find-order.ts — استعلام حالة</label>
+        <div class="task-desc">GET إلى /transactions/outlets/{OUTLET_ID}/orders/{ref} · يُستخدم للـ polling + lazy check للـ pending الطويلة (قرار #٤).</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٢٠ دقيقة</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t6-4" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t6-4">API route: /api/checkout/create-order</label>
+        <div class="task-desc">POST endpoint يستقبل form data من CheckoutForm. الخطوات: Turnstile verify → Rate limit → Zod validate → Modonty active-client lookup → Upsert Subscriber (pending) → Create N-Genius order → Return session data.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١.٥ ساعة</span>
+          <span class="file">app/api/checkout/create-order/route.ts</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t6-5" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t6-5">N-Genius Hosted Session SDK integration</label>
+        <div class="task-desc">استبدال PaymentPlaceholder بـ iframe حقيقي. Client-side: تحميل SDK · تمرير session data · معالجة callbacks. عند النجاح → redirect لـ /checkout/processing?order=X. عند الفشل → redirect لـ /checkout/failed.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٢ ساعة</span>
+          <span class="file">CheckoutForm.tsx (replace PaymentPlaceholder)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEVEL 7 — Webhook + Polling                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="level" id="level-7">
+  <div class="head" onclick="toggleLevel(this)">
+    <div class="lvl-label">
+      <span class="badge badge-orange">🟠 LEVEL 07</span>
+      <h2>Webhook + Polling Backup + HMAC</h2>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="lvl-count"><span class="done-count">0</span>/3</span>
+      <span class="chevron">▼</span>
+    </div>
+  </div>
+  <div class="body">
+
+    <div class="task">
+      <input type="checkbox" id="t7-1" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t7-1">/api/webhooks/n-genius — استقبال + تحقق + معالجة</label>
+        <div class="task-desc">قراءة header signature → التحقق → البحث عن providerEventId في WebhookEvent (لو موجود = تجاهل) → حفظ الحدث → تحديث Subscriber.paymentStatus → لو paid → استدعاء Modonty webhook → return 200.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١.٥ ساعة</span>
+          <span class="file">app/api/webhooks/n-genius/route.ts</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t7-2" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t7-2">Polling backup في /checkout/processing</label>
+        <div class="task-desc">عند وصول المستخدم لـ processing → استدعاء /api/checkout/status?order=X → يستدعي N-Genius findorder لو Subscriber pending → يحدّث DB لو captured → يرجع status للـ client → client يحوّل لـ success/failed. يحل مشكلة webhooks اللي ما تعيد المحاولة.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١.٥ ساعة</span>
+          <span class="file">app/api/checkout/status/route.ts</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t7-3" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t7-3">lib/hmac.ts — signing utility</label>
+        <div class="task-desc">signPayload(payload, secret) using SHA-256 · verifySignature(payload, signature, secret). يُستخدم للتواصل مع Modonty + التحقق من N-Genius webhooks.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٣٠ دقيقة</span>
+          <span class="file">lib/hmac.ts</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEVEL 8 — Modonty                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="level" id="level-8">
+  <div class="head" onclick="toggleLevel(this)">
+    <div class="lvl-label">
+      <span class="badge badge-danger">🔴 LEVEL 08</span>
+      <h2>Modonty Integration (الأصعب)</h2>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="lvl-count"><span class="done-count">0</span>/6</span>
+      <span class="chevron">▼</span>
+    </div>
+  </div>
+  <div class="body">
+
+    <p style="color:var(--muted);font-size:13px;padding:8px 14px 0;">هذي المهام في مشروع Modonty (مو jbrseo). كل مهمة تحتاج dev server منفصل.</p>
+
+    <div class="task">
+      <input type="checkbox" id="t8-1" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t8-1">Client.email @unique في Prisma schema</label>
+        <div class="task-desc">Migration + فحص لو فيه إيميلات مكررة قبل التطبيق.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٣٠ دقيقة</span>
+          <span class="warn">⚠️ في مشروع Modonty — dev server منفصل</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t8-2" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t8-2">استبدال admin123 بمولّد كلمات سر عشوائية</label>
+        <div class="task-desc">pnpm add nanoid (لو مو موجود) · Helper: generateRandomPassword() — ١٦ حرف alphanumeric · كل مكان يُستخدم فيه admin123 يُستبدل.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٤٥ دقيقة</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t8-3" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t8-3">/api/admin/checkout-webhook — endpoint استقبال HMAC</label>
+        <div class="task-desc">POST من jbrseo عند نجاح الدفع · يتحقق من HMAC · يستخرج (email, name, phone, plan, billing, subscriberId, invoiceNumber) · ينشئ Client مع كلمة سر عشوائية · Invoice + Counter (ترقيم) · يرسل welcome email عبر Resend · يعيد 200 مع Client ID.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ٢ ساعة</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t8-4" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t8-4">/api/clients/lookup — endpoint للفحص</label>
+        <div class="task-desc">GET مع ?email=X · Auth: HMAC signature · يعيد { active: boolean, subscription: { plan, expiresAt } | null }. يُستخدم من jbrseo /checkout قبل قبول submit (قرار #٥).</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١ ساعة</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t8-5" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t8-5">قالب Welcome Email في Resend</label>
+        <div class="task-desc">HTML بالعربي RTL · يحتوي: اسم العميل + بيانات الدخول (email + password) + رابط console.modonty.com + رقم الفاتورة + التزام التسليم ٧٢ ساعة · إرسال من modonty@modonty.com.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١ ساعة</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t8-6" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t8-6">زر "استرداد/تمديد" في Modonty admin</label>
+        <div class="task-desc">في صفحة تفاصيل Client · يستدعي N-Genius refund/void API (للاسترداد النقدي بأمر Khalid فقط، أو تمديد subscription للحالات العادية) · يحدّث Client status + يرسل إيميل تأكيد.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١.٥ ساعة</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- LEVEL 9 — Testing + Go-Live                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="level" id="level-9">
+  <div class="head" onclick="toggleLevel(this)">
+    <div class="lvl-label">
+      <span class="badge badge-danger">🔴 LEVEL 09</span>
+      <h2>Testing + Go-Live</h2>
+    </div>
+    <div style="display:flex;gap:12px;align-items:center;">
+      <span class="lvl-count"><span class="done-count">0</span>/6</span>
+      <span class="chevron">▼</span>
+    </div>
+  </div>
+  <div class="body">
+
+    <div class="task">
+      <input type="checkbox" id="t9-1" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t9-1">اختبار كامل في Sandbox</label>
+        <div class="task-desc">test cards من N-Genius (Mada · Visa · STCPay · Apple Pay) · سيناريوهات: نجاح · فشل · timeout · duplicate · refund · التحقق من Subscriber updates + Modonty Client creation + welcome email.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ يوم كامل</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t9-2" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t9-2">Playwright E2E test suite</label>
+        <div class="task-desc">/checkout → submit → mock N-Genius → verify success page + Modonty client + email sent. Rate limit test · Turnstile test · duplicate email test · refund flow.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ نصف يوم</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t9-3" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t9-3">Security audit</label>
+        <div class="task-desc">HMAC verification tight · Env vars في Vercel (ليس في code) · Rate limits معقولة · CSP headers محدّثة في next.config.ts · Turnstile في كل submit.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ساعتان</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t9-4" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t9-4">N-Genius Readiness Checklist رسمي</label>
+        <div class="task-desc">إتمام كل بنود N-Genius قبل الطلب من LIVE keys · إرسال إيميل لـ ecom-integration-ksa@network.global · انتظار الموافقة.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ١-٣ أيام (يعتمد عليهم)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t9-5" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t9-5">Cutover إلى LIVE 🚨</label>
+        <div class="task-desc">استبدال Sandbox keys بـ LIVE في Vercel · إعداد webhook URL في N-Genius LIVE portal · اختبار حقيقي بمبلغ صغير (Khalid يشتري بنفسه ١ ريال).</div>
+        <div class="task-meta">
+          <span class="time">⏱️ ساعة</span>
+          <span class="warn">⚠️ إذن Khalid صريح قبل التنفيذ</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="task">
+      <input type="checkbox" id="t9-6" onchange="toggleTask(this)">
+      <div class="task-body">
+        <label class="task-title" for="t9-6">مراقبة أول ٤٨ ساعة</label>
+        <div class="task-desc">عدد ناجح/فاشل · تحقّق يومي من Modonty client creation · تحقّق من الإيميلات الواصلة · جاهزية للتدخّل السريع.</div>
+        <div class="task-meta">
+          <span class="time">⏱️ يومان (خفيف)</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Summary table -->
+<h2 style="font-size:16px;margin:32px 0 12px;color:var(--fg);">📊 ملخّص الوقت التقديري</h2>
+<table class="summary">
+  <thead>
+    <tr>
+      <th>المستوى</th>
+      <th style="text-align:center;">المهام</th>
+      <th style="text-align:end;">الوقت التقديري</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>🟢 ١ — إعدادية (Khalid)</td><td style="text-align:center;">5</td><td class="time">30 د + انتظار 1-3 أيام</td></tr>
+    <tr><td>🟢 ٢ — نصوص</td><td style="text-align:center;">4</td><td class="time">25 د</td></tr>
+    <tr><td>🟢 ٣ — صفحات جديدة</td><td style="text-align:center;">4</td><td class="time">2.5 س</td></tr>
+    <tr><td>🟡 ٤ — Schema</td><td style="text-align:center;">4</td><td class="time">30 د</td></tr>
+    <tr><td>🟡 ٥ — Integrations (SDKs)</td><td style="text-align:center;">2</td><td class="time">1.25 س</td></tr>
+    <tr><td>🟠 ٦ — N-Genius</td><td style="text-align:center;">5</td><td class="time">5.5 س</td></tr>
+    <tr><td>🟠 ٧ — Webhook + Polling</td><td style="text-align:center;">3</td><td class="time">3.5 س</td></tr>
+    <tr><td>🔴 ٨ — Modonty</td><td style="text-align:center;">6</td><td class="time">6.75 س</td></tr>
+    <tr><td>🔴 ٩ — Testing + Go-Live</td><td style="text-align:center;">6</td><td class="time">2-3 أيام</td></tr>
+    <tr class="total-row"><td>الإجمالي</td><td style="text-align:center;">39</td><td class="time">3-5 أيام عمل + انتظار N-Genius</td></tr>
+  </tbody>
+</table>
+
+<!-- Checkpoints -->
+<div class="checkpoints">
+  <h3>🚦 نقاط توقّف للمراجعة مع Khalid</h3>
+  <ul>
+    <li>بعد <strong>المستوى ٤</strong> (Schema locked) — راجعنا الحقول قبل ما نبني API عليها</li>
+    <li>بعد <strong>المستوى ٦</strong> (N-Genius يشتغل في sandbox) — عرض demo قبل الانتقال للـ webhook</li>
+    <li>بعد <strong>المستوى ٧</strong> (Webhook + Polling) — sanity check للأمان</li>
+    <li>بعد <strong>المستوى ٨</strong> (Modonty done) — E2E test كامل قبل go-live</li>
+    <li>🚨 <strong>قبل cutover إلى LIVE</strong> — إذن Khalid صريح</li>
+  </ul>
+</div>
+
+<footer class="doc">
+  <h4>📎 مرفقات مرتبطة</h4>
+  <div class="ref">📋 تفاصيل القرارات الست: <a href="./payment-pending-decisions.md">documents/tasks/payment-pending-decisions.md</a></div>
+  <div class="ref">🎨 Mockup تصميم رحلة الدفع: <a href="./payment-journey-mockup-v2.html">documents/tasks/payment-journey-mockup-v2.html</a></div>
+  <div class="ref">📐 خطة N-Genius التقنية: <a href="../context/payment-integration-plan.md">documents/context/payment-integration-plan.md</a></div>
+  <div class="ref">🔍 مراجعة الكود قبل الدفع: <a href="../context/code-review-payment-readiness.md">documents/context/code-review-payment-readiness.md</a></div>
+  <div class="ref">🗂️ TODO markdown مطابق: <a href="./stage3-todo.md">documents/tasks/stage3-todo.md</a></div>
+  <div style="margin-top:20px;text-align:center;color:var(--muted-2);font-size:11px;">
+    Stage 3 TODO · JBRSEO Payment Journey · 2026-07-12
+  </div>
+</footer>
+
+</div>
+
+<script>
+  const STORAGE_KEY = 'jbrseo-stage3-todo';
+
+  // Level metadata
+  const LEVELS = {
+    1: 5, 2: 4, 3: 4, 4: 4, 5: 2, 6: 5, 7: 3, 8: 6, 9: 6
+  };
+
+  function loadState() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch { return {}; }
+  }
+
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function toggleTask(input) {
+    const state = loadState();
+    state[input.id] = input.checked;
+    saveState(state);
+    input.closest('.task').classList.toggle('done', input.checked);
+    updateProgress();
+  }
+
+  function updateProgress() {
+    let totalDone = 0;
+    let totalAll = 0;
+
+    for (const [lvl, count] of Object.entries(LEVELS)) {
+      let done = 0;
+      for (let i = 1; i <= count; i++) {
+        const cb = document.getElementById(`t${lvl}-${i}`);
+        if (cb && cb.checked) done++;
+      }
+      totalDone += done;
+      totalAll += count;
+
+      // Update level card fill
+      const fill = document.getElementById(`fill-${lvl}`);
+      const prog = document.getElementById(`prog-${lvl}`);
+      if (fill) fill.style.width = `${(done / count) * 100}%`;
+      if (prog) prog.textContent = `${done}/${count}`;
+
+      // Update section counter
+      const section = document.getElementById(`level-${lvl}`);
+      if (section) {
+        const counter = section.querySelector('.done-count');
+        if (counter) counter.textContent = done;
+      }
+    }
+
+    // Update sticky top progress
+    document.getElementById('topDone').textContent = totalDone;
+    document.getElementById('topFill').style.width = `${(totalDone / totalAll) * 100}%`;
+  }
+
+  function toggleLevel(head) {
+    head.closest('.level').classList.toggle('collapsed');
+  }
+
+  function collapseAll() {
+    document.querySelectorAll('section.level').forEach(s => s.classList.add('collapsed'));
+  }
+
+  function expandAll() {
+    document.querySelectorAll('section.level').forEach(s => s.classList.remove('collapsed'));
+  }
+
+  function resetProgress() {
+    if (!confirm('هل تريد تصفير كل الـ progress؟ لا يمكن التراجع.')) return;
+    localStorage.removeItem(STORAGE_KEY);
+    document.querySelectorAll('.task input[type="checkbox"]').forEach(cb => {
+      cb.checked = false;
+      cb.closest('.task').classList.remove('done');
+    });
+    updateProgress();
+  }
+
+  // Restore state on load
+  window.addEventListener('DOMContentLoaded', () => {
+    const state = loadState();
+    for (const [id, checked] of Object.entries(state)) {
+      const cb = document.getElementById(id);
+      if (cb) {
+        cb.checked = checked;
+        cb.closest('.task').classList.toggle('done', checked);
+      }
+    }
+    updateProgress();
+  });
+</script>
+
+</body>
+</html>

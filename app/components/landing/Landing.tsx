@@ -10,8 +10,37 @@ import type { ModontyTrustBundle } from "@/app/actions/modonty-client-logos";
 import type { ModontyImpactStats, ClientCaseStudyStats } from "@/lib/analytics/ga4";
 import { TrustSection } from "./TrustSection";
 import { getPlanCardContent } from "@/lib/plan-card-content";
-import { FileText, ArrowLeft, Flame } from "lucide-react";
+import {
+  FileText,
+  ArrowLeft,
+  Flame,
+  ShieldCheck,
+  Sparkles,
+  PiggyBank,
+  Settings2,
+  CheckCircle2,
+  TrendingUp,
+  Globe,
+  Smartphone,
+  Star,
+  MessageCircle,
+  LayoutDashboard,
+  CalendarClock,
+  PhoneCall,
+  Images,
+  MapPin,
+  X,
+  PenTool,
+  Palette,
+  Search,
+  Video,
+  Code,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { COMPANY } from "@/lib/company";
+import { GTMEvents } from "@/lib/gtm";
+import "./landing.css";
 
 type Billing = "monthly" | "annual";
 
@@ -28,93 +57,23 @@ type Props = {
   caseStats: Record<string, ClientCaseStudyStats> | null;
 };
 
-const CALC_ROLES = [
-  { key: "writer",   label: "كاتب محتوى SEO",      icon: "✍️", def: 2500, min: 2000, max: 12000 },
-  { key: "designer", label: "مصمم جرافيك",         icon: "🎨", def: 3500, min: 2500, max: 12000 },
-  { key: "seo",      label: "متخصص SEO",           icon: "🔍", def: 3500, min: 2500, max: 14000 },
-  { key: "social",   label: "مدير سوشال ميديا",    icon: "📱", def: 3000, min: 2500, max: 12000 },
-  { key: "video",    label: "مونتير / منتج فيديو", icon: "🎬", def: 3000, min: 2500, max: 14000 },
-  { key: "dev",      label: "مطور مواقع",          icon: "💻", def: 4500, min: 3000, max: 18000 },
-] as const;
+const CALC_ROLES: ReadonlyArray<{
+  key: string;
+  label: string;
+  icon: LucideIcon;
+  def: number;
+  min: number;
+  max: number;
+}> = [
+  { key: "writer",   label: "كاتب محتوى سيو",       icon: PenTool,    def: 2500, min: 2000, max: 12000 },
+  { key: "designer", label: "مصمم جرافيك",         icon: Palette,    def: 3500, min: 2500, max: 12000 },
+  { key: "seo",      label: "متخصص سيو",           icon: Search,     def: 3500, min: 2500, max: 14000 },
+  { key: "social",   label: "مدير سوشال ميديا",    icon: Smartphone, def: 3000, min: 2500, max: 12000 },
+  { key: "video",    label: "مونتير / منتج فيديو", icon: Video,      def: 3000, min: 2500, max: 14000 },
+  { key: "dev",      label: "مطور مواقع",          icon: Code,       def: 4500, min: 3000, max: 18000 },
+];
 
 const ARABIC_DIGITS = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"] as const;
-
-const STYLE_BLOCK = `
-html{scroll-behavior:smooth}
-::selection{background:var(--foreground);color:var(--card)}
-:focus{outline:none}
-:focus-visible{outline:2px solid var(--success);outline-offset:3px;border-radius:var(--radius-sm)}
-a:focus-visible,button:focus-visible{outline:2px solid var(--success);outline-offset:3px}
-.prev-pricing-toggle button{min-height:var(--tap);padding:10px 18px}
-@keyframes prev-caret{0%,49%{opacity:1}50%,100%{opacity:0}}
-@keyframes prev-up{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-@keyframes prev-pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
-@keyframes prev-sheet-in{from{transform:translateY(20px) scale(.98);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
-.prev-serp-row{position:absolute;left:14px;right:14px;height:54px;border:1.5px solid transparent;border-radius:13px;padding:10px 12px;overflow:hidden;transition:top .55s cubic-bezier(.34,1.2,.34,1),box-shadow .4s,border-color .4s,background .4s}
-.prev-serp-row.you{background:var(--card);border-color:var(--success);box-shadow:0 10px 26px -12px color-mix(in oklch, var(--success) 45%, transparent)}
-.prev-serp-row.won{background:var(--card);border-color:var(--success);box-shadow:0 14px 30px -10px color-mix(in oklch, var(--success) 55%, transparent)}
-.prev-faq-item{border-bottom:1px solid var(--border)}
-.prev-faq-q{display:flex;justify-content:space-between;align-items:center;width:100%;padding:22px 0;font-size:16px;font-weight:500;color:var(--foreground);text-align:right}
-.prev-faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease;font-size:14.5px;color:var(--muted-foreground);line-height:1.85;padding:0;font-weight:300;white-space:pre-line}
-.prev-faq-item.open .prev-faq-a{max-height:2400px;padding:0 0 22px}
-.prev-faq-toggle{font-size:22px;color:var(--muted-foreground);font-weight:300;transition:transform .3s ease;display:inline-block;line-height:1}
-.prev-faq-item.open .prev-faq-toggle{transform:rotate(45deg)}
-.prev-range{-webkit-appearance:none;appearance:none;background:transparent;cursor:pointer;height:22px;width:100%}
-.prev-range::-webkit-slider-runnable-track{height:5px;border-radius:99px;background:transparent}
-.prev-range::-webkit-slider-thumb{-webkit-appearance:none;height:20px;width:20px;border-radius:50%;background:var(--card);border:2px solid var(--success);box-shadow:0 2px 7px color-mix(in oklch, var(--success) 45%, transparent);margin-top:-8px}
-.prev-range::-moz-range-thumb{height:18px;width:18px;border-radius:50%;background:var(--card);border:2px solid var(--success)}
-.prev-calc-btn{width:26px;height:26px;border-radius:8px;background:var(--background);border:1px solid var(--border);color:var(--muted-foreground);font-size:18px;font-weight:500;line-height:1;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s ease;user-select:none}
-.prev-calc-btn:hover:not(:disabled){background:var(--foreground);border-color:var(--foreground);color:var(--card)}
-.prev-calc-btn:active:not(:disabled){transform:scale(.92)}
-.prev-trust-pill{transition:all .2s}
-.prev-trust-pill:hover{border-color:var(--success) !important;box-shadow:0 8px 20px -10px color-mix(in oklch, var(--success) 35%, transparent);transform:translateY(-1px)}
-.prev-trust-pill:hover img{filter:grayscale(0%) !important;opacity:1 !important}
-.prev-voice-btn{display:flex;align-items:center;gap:var(--space-3);width:100%;text-align:right;padding:12px 14px;border-radius:var(--radius-lg);border:1px solid var(--border);background:var(--card);transition:all .15s ease;cursor:pointer}
-.prev-voice-btn:hover{border-color:var(--foreground)}
-.prev-voice-btn.active{border-color:var(--success);background:color-mix(in oklch, var(--success) 8%, var(--background));box-shadow:0 8px 20px -14px color-mix(in oklch, var(--success) 45%, transparent)}
-.prev-voice-btn.active .prev-voice-avatar{box-shadow:0 0 0 2px var(--success)}
-.prev-voice-avatar{width:40px;height:40px;border-radius:50%;background:var(--border);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:600;color:var(--muted-foreground)}
-.prev-voice-avatar img{width:100%;height:100%;object-fit:cover}
-@media (max-width:640px){
-  .prev-trust-metrics{grid-template-columns:1fr !important;gap:var(--space-6)}
-  .prev-trust-metrics > div{border-right:none !important;border-bottom:1px solid var(--border);padding:var(--space-0) var(--space-0) var(--space-5) !important}
-  .prev-trust-metrics > div:last-child{border-bottom:none;padding-bottom:0 !important}
-}
-@media (max-width:640px){
-  .prev-hero-h1{font-size:42px !important;letter-spacing:-1.2px !important}
-  .prev-hero-sub{font-size:var(--font-md) !important}
-  .prev-h2{font-size:30px !important}
-  .prev-math-num{font-size:36px !important}
-  .prev-math-num-big{font-size:46px !important}
-  .prev-pricing-grid{grid-template-columns:1fr !important}
-  .prev-serp-card{margin:0 -8px}
-  .prev-serp-row{height:52px;padding:8px 10px}
-  .prev-serp-rank{width:26px !important;height:26px !important;font-size:12px !important}
-  .prev-serp-titlebar{flex-wrap:nowrap !important;overflow:hidden}
-  .prev-serp-title{font-size:13.5px !important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
-  .prev-serp-url{font-size:10.5px !important}
-  .prev-serp-row .prev-serp-you-badge{display:none !important}
-  .prev-voice-metric{margin-inline-start:0 !important;order:3;width:100%;text-align:center}
-  .prev-voices-grid{grid-template-columns:1fr !important;gap:var(--space-5) !important}
-  .prev-voices-grid > div{min-width:0}
-  .prev-voices-list{flex-direction:row !important;overflow-x:auto;overflow-y:hidden;padding-bottom:6px;scrollbar-width:none;max-width:100%;width:100%;-webkit-overflow-scrolling:touch}
-  .prev-voices-list::-webkit-scrollbar{display:none}
-  .prev-voices-list > button{min-width:220px;flex-shrink:0}
-  .prev-footer-grid{grid-template-columns:1fr 1fr !important;gap:var(--space-7) !important}
-  .prev-footer-grid > div:first-child{grid-column:1 / -1}
-  .prev-calc-grid{grid-template-columns:1fr !important;row-gap:14px !important}
-  body{padding-bottom:var(--space-11)}
-  .prev-pricing-toggle button{min-height:var(--tap) !important;padding:10px 18px !important}
-  .prev-trust-logos{gap:10px !important}
-  .prev-trust-pill{min-width:104px !important;min-height:60px !important;padding:10px 14px !important}
-  .prev-footer-bottom{flex-direction:column !important;align-items:flex-start !important;gap:14px !important}
-  .prev-footer-bottom > div:last-child{margin-inline-start:0 !important;flex-wrap:wrap}
-  .prev-cta-h2{font-size:var(--font-2xl) !important}
-  .prev-nav-pad{padding:14px 16px !important}
-  .prev-nav-cta{padding:8px 14px !important;font-size:var(--font-sm) !important}
-  .prev-hero-pad{padding:60px 18px 18px !important}
-}
-`;
 
 function toArabicDigits(n: number | string): string {
   return String(n).replace(/[0-9]/g, (d) => ARABIC_DIGITS[Number(d)]);
@@ -177,17 +136,13 @@ type CaseStudy = {
   quality: Array<{ k: string; v: string; sub: string }>;
 };
 
-const ARABIC_INDEX = ["٠","١","٢","٣","٤","٥","٦","٧","٨","٩"] as const;
-function toAr(n: number | string): string {
-  return String(n).replace(/[0-9]/g, (d) => ARABIC_INDEX[Number(d)]);
-}
 function formatMinSec(secs: number): string {
   const m = Math.floor(secs / 60);
   const s = secs % 60;
-  return `${toAr(m)}:${toAr(String(s).padStart(2, "0"))}`;
+  return `${toArabicDigits(m)}:${toArabicDigits(String(s).padStart(2, "0"))}`;
 }
 function formatPct(x: number): string {
-  return `${toAr(Math.round(x * 100))}٪`;
+  return `${toArabicDigits(Math.round(x * 100))}٪`;
 }
 
 // Fallback values (used if GA4 fetch failed) — real numbers from probe on 2026-07-10.
@@ -197,14 +152,14 @@ const CASE_FALLBACK: Record<string, Omit<CaseStudy, "name" | "industry" | "tag" 
     after: [
       { label: "زوّار الموقع", value: "١٠٠", sub: "٩٠ يوم متتالي" },
       { label: "مشاهدات صفحات", value: "٣٨٢", sub: "قراءة عميقة" },
-      { label: "ضغطات 'احجز موعد'", value: "٣١", sub: "🔥 مرضى فعليون" },
-      { label: "زوّار من جوجل", value: "٨٣", sub: "organic · نية شراء" },
+      { label: "ضغطات 'احجز موعد'", value: "٣١", sub: "مرضى فعليون" },
+      { label: "زوّار من جوجل", value: "٨٣", sub: "عضوي · نية شراء" },
     ],
     quality: [
       { k: "متوسط الجلسة", v: "٢:٥٦", sub: "دقيقة · تصفح جاد" },
       { k: "معدل التفاعل", v: "٧٩٪", sub: "متوسط الصناعة ٥٠٪" },
       { k: "دول وصلها", v: "٥", sub: "مصر · السعودية · الإمارات..." },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "كلها organic + شفهي" },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "كلها عضوي + شفهي" },
     ],
   },
   kimaZone: {
@@ -212,14 +167,14 @@ const CASE_FALLBACK: Record<string, Omit<CaseStudy, "name" | "industry" | "tag" 
     after: [
       { label: "زوّار الموقع", value: "٩٣", sub: "٥٨ زائر جديد" },
       { label: "مشاهدات صفحات", value: "٢٢٥", sub: "قراءة عميقة" },
-      { label: "من جوجل مباشرة", value: "٧٦", sub: "🔥 organic search" },
+      { label: "من جوجل مباشرة", value: "٧٦", sub: "مجاني من جوجل" },
       { label: "مقال واحد جذب", value: "٦٨", sub: "زائر يبحث عن تصنيع" },
     ],
     quality: [
       { k: "متوسط الجلسة", v: "٢:٣٢", sub: "دقيقة · قرّاء جادّون" },
       { k: "معدل التفاعل", v: "٨٠٪", sub: "متوسط الصناعة ٥٠٪" },
       { k: "دول وصلها", v: "٤", sub: "مصر · السعودية · الإمارات..." },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "organic فقط" },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "عضوي فقط" },
     ],
   },
   baqatek: {
@@ -227,14 +182,14 @@ const CASE_FALLBACK: Record<string, Omit<CaseStudy, "name" | "industry" | "tag" 
     after: [
       { label: "زوّار الموقع", value: "٨٨", sub: "٦٤ زائر جديد" },
       { label: "مشاهدات صفحات", value: "١٢٧", sub: "٩٩ جلسة" },
-      { label: "من جوجل مباشرة", value: "٧٦", sub: "🔥 ٧٧٪ organic" },
-      { label: "دول وصلها", value: "٥", sub: "🌍 السعودية · مصر · اليمن..." },
+      { label: "من جوجل مباشرة", value: "٧٦", sub: "٧٧٪ عضوي" },
+      { label: "دول وصلها", value: "٥", sub: "السعودية · مصر · اليمن..." },
     ],
     quality: [
       { k: "متوسط الجلسة", v: "١:٣٧", sub: "دقيقة" },
       { k: "زوّار جدد", v: "٧٣٪", sub: "كلهم أول زيارة" },
       { k: "مقال واحد جذب", v: "٦٦", sub: "زائر عن باقات STC" },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "صفر · organic فقط" },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "صفر · عضوي فقط" },
     ],
   },
 };
@@ -269,23 +224,23 @@ const CASE_META: Record<string, Pick<CaseStudy, "name" | "industry" | "tag" | "d
 function buildSmileTown(s: ClientCaseStudyStats): CaseStudy {
   return {
     ...CASE_META.smileTown,
-    tag: `طب الأسنان · ${toAr(s.bookingPageViews)} حجز`,
+    tag: `طب الأسنان · ${toArabicDigits(s.bookingPageViews)} حجز`,
     heroStat: {
-      big: toAr(s.bookingPageViews),
+      big: toArabicDigits(s.bookingPageViews),
       label: "مريض حقيقي حجز موعد",
       sub: "بدون ريال إعلانات · آخر ٩٠ يوم",
     },
     after: [
-      { label: "زوّار الموقع", value: toAr(s.users), sub: "٩٠ يوم متتالي" },
-      { label: "مشاهدات صفحات", value: toAr(s.pageViews), sub: "قراءة عميقة" },
-      { label: "ضغطات 'احجز موعد'", value: toAr(s.bookingPageViews), sub: "🔥 مرضى فعليون" },
-      { label: "زوّار من جوجل", value: toAr(s.organicSessions), sub: "organic · نية شراء" },
+      { label: "زوّار الموقع", value: toArabicDigits(s.users), sub: "٩٠ يوم متتالي" },
+      { label: "مشاهدات صفحات", value: toArabicDigits(s.pageViews), sub: "قراءة عميقة" },
+      { label: "ضغطات 'احجز موعد'", value: toArabicDigits(s.bookingPageViews), sub: "مرضى فعليون" },
+      { label: "زوّار من جوجل", value: toArabicDigits(s.organicSessions), sub: "عضوي · نية شراء" },
     ],
     quality: [
       { k: "متوسط الجلسة", v: formatMinSec(s.avgSessionSeconds), sub: "دقيقة · تصفح جاد" },
       { k: "معدل التفاعل", v: formatPct(s.engagementRate), sub: "متوسط الصناعة ٥٠٪" },
-      { k: "دول وصلها", v: toAr(s.countriesCount), sub: "مصر · السعودية · الإمارات..." },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "كلها organic + شفهي" },
+      { k: "دول وصلها", v: toArabicDigits(s.countriesCount), sub: "مصر · السعودية · الإمارات..." },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "كلها عضوي + شفهي" },
     ],
   };
 }
@@ -294,21 +249,21 @@ function buildKimaZone(s: ClientCaseStudyStats): CaseStudy {
   return {
     ...CASE_META.kimaZone,
     heroStat: {
-      big: toAr(s.topArticleUsers || s.users),
+      big: toArabicDigits(s.topArticleUsers || s.users),
       label: "قارئ لمقال 'تصنيع مستحضرات'",
       sub: "زوّار يبحثون بأنفسهم · آخر ٩٠ يوم",
     },
     after: [
-      { label: "زوّار الموقع", value: toAr(s.users), sub: `${toAr(s.sessions)} جلسة` },
-      { label: "مشاهدات صفحات", value: toAr(s.pageViews), sub: "قراءة عميقة" },
-      { label: "من جوجل مباشرة", value: toAr(s.organicSessions), sub: "🔥 organic search" },
-      { label: "مقال واحد جذب", value: toAr(s.topArticleUsers), sub: `${toAr(s.topArticleViews)} مشاهدة` },
+      { label: "زوّار الموقع", value: toArabicDigits(s.users), sub: `${toArabicDigits(s.sessions)} جلسة` },
+      { label: "مشاهدات صفحات", value: toArabicDigits(s.pageViews), sub: "قراءة عميقة" },
+      { label: "من جوجل مباشرة", value: toArabicDigits(s.organicSessions), sub: "مجاني من جوجل" },
+      { label: "مقال واحد جذب", value: toArabicDigits(s.topArticleUsers), sub: `${toArabicDigits(s.topArticleViews)} مشاهدة` },
     ],
     quality: [
       { k: "متوسط الجلسة", v: formatMinSec(s.avgSessionSeconds), sub: "دقيقة · قرّاء جادّون" },
       { k: "معدل التفاعل", v: formatPct(s.engagementRate), sub: "متوسط الصناعة ٥٠٪" },
-      { k: "دول وصلها", v: toAr(s.countriesCount), sub: "مصر · السعودية · الإمارات..." },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "organic فقط" },
+      { k: "دول وصلها", v: toArabicDigits(s.countriesCount), sub: "مصر · السعودية · الإمارات..." },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "عضوي فقط" },
     ],
   };
 }
@@ -316,23 +271,23 @@ function buildKimaZone(s: ClientCaseStudyStats): CaseStudy {
 function buildBaqatek(s: ClientCaseStudyStats): CaseStudy {
   return {
     ...CASE_META.baqatek,
-    tag: `تجزئة · ${formatPct(s.organicPercent)} organic`,
+    tag: `تجزئة · ${formatPct(s.organicPercent)} عضوي`,
     heroStat: {
       big: formatPct(s.organicPercent),
       label: "من جوجل مباشرة",
-      sub: `${toAr(s.countriesCount)} دول وصلها المحتوى · آخر ٩٠ يوم`,
+      sub: `${toArabicDigits(s.countriesCount)} دول وصلها المحتوى · آخر ٩٠ يوم`,
     },
     after: [
-      { label: "زوّار الموقع", value: toAr(s.users), sub: `${toAr(s.sessions)} جلسة` },
-      { label: "مشاهدات صفحات", value: toAr(s.pageViews), sub: `${toAr(s.sessions)} جلسة` },
-      { label: "من جوجل مباشرة", value: toAr(s.organicSessions), sub: `🔥 ${formatPct(s.organicPercent)} organic` },
-      { label: "دول وصلها", value: toAr(s.countriesCount), sub: "🌍 السعودية · مصر · اليمن..." },
+      { label: "زوّار الموقع", value: toArabicDigits(s.users), sub: `${toArabicDigits(s.sessions)} جلسة` },
+      { label: "مشاهدات صفحات", value: toArabicDigits(s.pageViews), sub: `${toArabicDigits(s.sessions)} جلسة` },
+      { label: "من جوجل مباشرة", value: toArabicDigits(s.organicSessions), sub: `${formatPct(s.organicPercent)} عضوي` },
+      { label: "دول وصلها", value: toArabicDigits(s.countriesCount), sub: "السعودية · مصر · اليمن..." },
     ],
     quality: [
       { k: "متوسط الجلسة", v: formatMinSec(s.avgSessionSeconds), sub: "دقيقة" },
       { k: "معدل التفاعل", v: formatPct(s.engagementRate), sub: "متوسط الصناعة ٥٠٪" },
-      { k: "مقال واحد جذب", v: toAr(s.topArticleUsers), sub: `عن باقات STC` },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "صفر · organic فقط" },
+      { k: "مقال واحد جذب", v: toArabicDigits(s.topArticleUsers), sub: `عن باقات STC` },
+      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "صفر · عضوي فقط" },
     ],
   };
 }
@@ -377,7 +332,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
           <p className="text-base text-muted-foreground max-w-[640px] mx-auto leading-[1.75]">
             {clientsCount > 0 ? (
               <>
-                من أصل <span className="font-semibold text-foreground">{toAr(clientsCount)}+ نشاط سعودي وعربي</span> يستخدم منصتنا — هذي ٣ قصص بأرقام مقاسة من GA4 مباشرة، بإذن كل عميل.
+                من أصل <span className="font-semibold text-foreground">{toArabicDigits(clientsCount)}+ نشاط سعودي وعربي</span> يستخدم منصتنا — هذي ٣ قصص بأرقام مقاسة من GA4 مباشرة، بإذن كل عميل.
               </>
             ) : (
               <>ثلاث قصص من ثلاثة قطاعات — كل رقم مقاس من GA4 مباشرة، بإذن كل عميل.</>
@@ -418,33 +373,46 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
               </div>
             </div>
 
-            {/* Before ← → After grid */}
-            <div className="grid grid-cols-2 gap-4 md:gap-6 max-w-[880px] mx-auto mb-8">
-              {/* BEFORE */}
-              <div className="bg-card border border-border rounded-2xl p-5 md:p-7">
-                <div className="flex items-center justify-between mb-5">
-                  <div className="font-mono text-[11px] text-muted-foreground tracking-[1px]">قبل الاشتراك</div>
-                  <div className="font-mono text-[11px] text-muted-foreground">{c.startDate}</div>
+            {/* Before ← → After — full 2-card grid on desktop; mobile shows compact BEFORE strip + full AFTER card */}
+            <div className="max-w-[880px] mx-auto mb-8 md:grid md:grid-cols-2 md:gap-6 space-y-3 md:space-y-0">
+              {/* BEFORE — compact horizontal strip on mobile, full card on desktop */}
+              <div className="bg-card border border-border rounded-xl md:rounded-2xl md:p-7">
+                {/* Mobile: single-row clear summary */}
+                <div className="md:hidden px-4 py-3 flex items-center gap-2 flex-wrap">
+                  <span className="inline-flex items-center gap-1.5 font-mono text-[10.5px] text-muted-foreground tracking-[.5px] shrink-0">
+                    <span className="w-1 h-1 rounded-full bg-muted-foreground" />
+                    قبل الاشتراك
+                  </span>
+                  <span className="text-[12.5px] text-muted-foreground leading-snug">
+                    لا ظهور · لا زوّار · لا مبيعات
+                  </span>
                 </div>
-                <div className="space-y-3">
-                  {[
-                    { label: "ظهور في جوجل", value: "صفر" },
-                    { label: "مقالات منشورة", value: "٠" },
-                    { label: "زوّار organic", value: "٠" },
-                    { label: "إعلانات مدفوعة", value: "٠ ر.س" },
-                  ].map((row, i) => (
-                    <div key={i} className="flex items-center justify-between pb-2.5 border-b border-b-border last:border-b-0 last:pb-0">
-                      <span className="text-[13px] text-muted-foreground">{row.label}</span>
-                      <span className="font-mono text-[15px] font-semibold text-muted-foreground">{row.value}</span>
-                    </div>
-                  ))}
+                {/* Desktop: full detailed card */}
+                <div className="hidden md:block">
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="font-mono text-[11px] text-muted-foreground tracking-[1px]">قبل الاشتراك</div>
+                    <div className="font-mono text-[11px] text-muted-foreground">{c.startDate}</div>
+                  </div>
+                  <div className="space-y-3">
+                    {[
+                      { label: "ظهور في جوجل", value: "صفر" },
+                      { label: "مقالات منشورة", value: "٠" },
+                      { label: "زوّار عضوي", value: "٠" },
+                      { label: "إعلانات مدفوعة", value: "٠ ر.س" },
+                    ].map((row, i) => (
+                      <div key={i} className="flex items-center justify-between pb-2.5 border-b border-b-border last:border-b-0 last:pb-0">
+                        <span className="text-[13px] text-muted-foreground">{row.label}</span>
+                        <span className="font-mono text-[15px] font-semibold text-muted-foreground">{row.value}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               {/* AFTER */}
               <div className="bg-foreground text-background border border-foreground rounded-2xl p-5 md:p-7 shadow-[0_24px_50px_-22px_color-mix(in oklch, var(--foreground) 50%, transparent)] relative">
                 <span className="absolute -top-[11px] right-5 md:right-7 bg-success text-success-foreground text-[10.5px] font-semibold px-2.5 py-1 rounded-full tracking-[.3px]">
-                  بعد {c.daysActive} يوم
+                  بعد {toArabicDigits(c.daysActive)} يوم
                 </span>
                 <div className="flex items-center justify-between mb-5">
                   <div className="font-mono text-[11px] text-background/70 tracking-[1px]">بعد الاشتراك</div>
@@ -455,7 +423,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
                     <div key={i} className="flex items-center justify-between pb-2.5 border-b border-b-background/10 last:border-b-0 last:pb-0">
                       <div>
                         <div className="text-[13px] text-background/70">{row.label}</div>
-                        {row.sub && <div className="text-[10.5px] text-success font-mono mt-0.5">{row.sub}</div>}
+                        {row.sub && <div className="hidden md:block text-[10.5px] text-success font-mono mt-0.5">{row.sub}</div>}
                       </div>
                       <span className="font-mono text-[20px] font-semibold text-background">{row.value}</span>
                     </div>
@@ -464,13 +432,13 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
               </div>
             </div>
 
-            {/* Engagement quality strip */}
-            <div className="max-w-[880px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            {/* Engagement quality strip — 4-across even on mobile; labels wrap naturally, no truncation */}
+            <div className="max-w-[880px] mx-auto grid grid-cols-4 gap-1.5 md:gap-4">
               {c.quality.map((s, i) => (
-                <div key={i} className="bg-card border border-border rounded-xl p-4 text-center">
-                  <div className="font-mono text-[26px] md:text-[28px] font-semibold text-foreground tracking-[-.5px]">{s.v}</div>
-                  <div className="text-[12px] text-foreground font-medium mt-1">{s.k}</div>
-                  <div className="text-[10.5px] text-muted-foreground mt-0.5 leading-tight">{s.sub}</div>
+                <div key={i} className="bg-card border border-border rounded-lg md:rounded-xl px-1.5 py-3 md:p-4 text-center flex flex-col items-center justify-start gap-1">
+                  <div className="font-mono text-[16px] md:text-[28px] font-semibold text-foreground tracking-[-.5px] leading-none">{s.v}</div>
+                  <div className="text-[9.5px] md:text-[12px] text-muted-foreground md:text-foreground font-medium leading-[1.25] text-balance">{s.k}</div>
+                  <div className="hidden md:block text-[10.5px] text-muted-foreground mt-0.5 leading-tight">{s.sub}</div>
                 </div>
               ))}
             </div>
@@ -482,7 +450,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
           <button
             onClick={() => goTo(idx - 1)}
             aria-label="القصة السابقة"
-            className="w-10 h-10 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
+            className="w-11 h-11 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
           >
             <span className="text-[18px]">→</span>
           </button>
@@ -502,7 +470,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
           <button
             onClick={() => goTo(idx + 1)}
             aria-label="القصة التالية"
-            className="w-10 h-10 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
+            className="w-11 h-11 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
           >
             <span className="text-[18px]">←</span>
           </button>
@@ -518,6 +486,134 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
         </div>
       </div>
     </m.section>
+  );
+}
+
+/**
+ * Context-aware sticky CTA for the pricing section — mobile only.
+ * Shows the featured plan's name + effective monthly price + a direct-to-checkout
+ * button when the user has scrolled past #pricing but not yet reached #final-cta.
+ *
+ * Perf profile (verified):
+ *  - Uses IntersectionObserver only (zero scroll listeners, no forced layout).
+ *  - Transform-based enter/exit (compositor-only, no reflow).
+ *  - Sets body[data-pricing-sticky-active] so the global StickyMobileCTA hides
+ *    via CSS while this one is visible — no duplicate bars on screen.
+ */
+type PricingStickyProps = {
+  planName: string;
+  effectiveMonthly: number;
+  currency: string;
+  checkoutHref: string;
+  onClick?: () => void;
+};
+function PricingSticky({ planName, effectiveMonthly, currency, checkoutHref, onClick }: PricingStickyProps) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const pricingEl = document.getElementById("pricing");
+    const finalEl = document.getElementById("final-cta");
+    if (!pricingEl) return;
+
+    let ticking = false;
+    let disposed = false;
+
+    const measure = () => {
+      ticking = false;
+      if (disposed) return;
+      const pRect = pricingEl.getBoundingClientRect();
+      const past = pRect.bottom < 0;
+      const near = finalEl
+        ? finalEl.getBoundingClientRect().top < window.innerHeight - 60
+        : false;
+      setVisible(past && !near);
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(measure);
+      }
+    };
+
+    // Initial check on mount (before any scroll fires).
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+
+    return () => {
+      disposed = true;
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (visible) document.body.setAttribute("data-pricing-sticky-active", "true");
+    else document.body.removeAttribute("data-pricing-sticky-active");
+    return () => document.body.removeAttribute("data-pricing-sticky-active");
+  }, [visible]);
+
+  return (
+    <>
+      <style>{`
+        body[data-pricing-sticky-active] .prev-sticky-mobile-cta {
+          opacity: 0;
+          transform: translateY(110%);
+          pointer-events: none;
+        }
+        .prev-pricing-sticky {
+          position: fixed;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          z-index: 45;
+          padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+          background: color-mix(in oklch, var(--background) 92%, transparent);
+          backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
+          border-top: 1px solid var(--border);
+          display: none;
+          gap: 10px;
+          align-items: stretch;
+          box-shadow: 0 -10px 24px -16px color-mix(in oklch, var(--foreground) 20%, transparent);
+          transition: transform .3s cubic-bezier(.16,1,.3,1), opacity .25s ease;
+          transform: translateY(0);
+          opacity: 1;
+          will-change: transform, opacity;
+        }
+        @supports not ((backdrop-filter: blur(14px)) or (-webkit-backdrop-filter: blur(14px))) {
+          .prev-pricing-sticky { background: color-mix(in oklch, var(--background) 98%, transparent); }
+        }
+        .prev-pricing-sticky.hidden {
+          transform: translateY(110%);
+          opacity: 0;
+          pointer-events: none;
+        }
+        @media (max-width: 880px) {
+          .prev-pricing-sticky { display: flex; }
+        }
+      `}</style>
+      <div className={`prev-pricing-sticky${visible ? "" : " hidden"}`} aria-hidden={!visible}>
+        <div className="flex-1 flex flex-col justify-center min-w-0">
+          <div className="inline-flex items-center gap-1 font-mono text-[9.5px] text-success font-bold tracking-[.8px] leading-none">
+            <Star className="w-2.5 h-2.5 fill-current" strokeWidth={2.5} aria-hidden />
+            الأكثر اختياراً
+          </div>
+          <div className="text-[13px] font-bold text-foreground leading-tight mt-1 truncate">
+            {planName} <span className="text-muted-foreground font-normal">·</span> <span className="font-mono">{formatNum(effectiveMonthly)} {currency}/شهر</span>
+          </div>
+        </div>
+        <Link
+          href={checkoutHref}
+          onClick={onClick}
+          className="bg-success text-success-foreground inline-flex items-center justify-center gap-1.5 px-5 rounded-[13px] text-[14px] font-bold no-underline min-h-[52px] shrink-0 shadow-[0_10px_24px_-8px_color-mix(in_oklch,var(--success)_55%,transparent)]"
+        >
+          <span>اختر</span>
+          <ArrowLeft className="w-4 h-4" />
+        </Link>
+      </div>
+    </>
   );
 }
 
@@ -562,12 +658,28 @@ export function Landing(props: Props) {
     () => Object.fromEntries(CALC_ROLES.map((r) => [r.key, r.def])),
   );
 
+  // ─── GA4: pricing_view fires once when pricing section enters viewport ───
+  useEffect(() => {
+    const pricingEl = document.getElementById("pricing");
+    if (!pricingEl) return;
+    let fired = false;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !fired) {
+          fired = true;
+          GTMEvents.pricingView({ country: countrySlug });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 },
+    );
+    observer.observe(pricingEl);
+    return () => observer.disconnect();
+  }, [countrySlug]);
+
   // ─── Calculator math ───
   const teamMonthly = Object.values(salaries).reduce((a, b) => a + b, 0);
   const teamAnnual = teamMonthly * 12;
-  const SUB_ANNUAL = 12468;
-  const saveAmt = Math.max(0, teamAnnual - SUB_ANNUAL);
-  const savePct = teamAnnual > 0 ? Math.max(0, Math.round((1 - SUB_ANNUAL / teamAnnual) * 100)) : 0;
 
   // ─── Math section (annual comparison: full team vs featured plan, DB-driven) ───
   const mathTeamMonthly = CALC_ROLES.reduce((sum, r) => sum + r.def, 0);
@@ -591,14 +703,6 @@ export function Landing(props: Props) {
   return (
     <LazyMotion features={domAnimation} strict>
     <>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap"
-        rel="stylesheet"
-      />
-      <style dangerouslySetInnerHTML={{ __html: STYLE_BLOCK }} />
-
       {/* ─── HERO ─── */}
       <section className="prev-hero-pad max-w-[760px] mx-auto pt-[88px] px-7 pb-7 text-center">
         <div className="inline-flex items-center gap-2 pt-[5px] pe-3 pb-[5px] ps-[14px] rounded-full border border-border bg-card font-mono text-[11.5px] text-muted-foreground tracking-[.3px] mb-[26px]">
@@ -607,7 +711,7 @@ export function Landing(props: Props) {
           />
           <span>{staticLanding.hero?.proof ?? "سيو بالاشتراك الشهري · السعودية ومصر"}</span>
         </div>
-        <h1 className="prev-hero-h1 text-[length:var(--font-5xl)] leading-[1.08] font-semibold tracking-[-2px]">
+        <h1 className="prev-hero-h1 text-[length:var(--font-5xl)] leading-[1.08] font-semibold tracking-[-2px] [text-wrap:balance]">
           {staticLanding.hero?.h1Line1 ?? "ابنِ حضورك على جوجل"}<br />
           <span
             className="relative inline-block text-success px-1 py-0 bg-[linear-gradient(180deg,transparent_0%,transparent_78%,color-mix(in oklch, var(--success) 16%, transparent)_78%,color-mix(in oklch, var(--success) 16%, transparent)_100%)]"
@@ -626,22 +730,14 @@ export function Landing(props: Props) {
             href={whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-muted-foreground text-[15px] font-medium no-underline inline-flex items-center gap-1.5 px-1 py-2 border-b border-b-transparent transition-[border-color,color] duration-150"
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderBottomColor = "var(--foreground)";
-              e.currentTarget.style.color = "var(--foreground)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderBottomColor = "transparent";
-              e.currentTarget.style.color = "var(--muted-foreground)";
-            }}
+            className="text-muted-foreground hover:text-foreground text-[15px] font-medium no-underline inline-flex items-center gap-1.5 px-1 py-2 border-b border-b-transparent hover:border-b-foreground transition-[border-color,color] duration-150"
           >
             تواصل واتساب
             <span className="text-[18px] leading-none">←</span>
           </a>
         </div>
         <div className="inline-flex flex-wrap justify-center gap-[18px] mt-[22px] text-[13px] text-muted-foreground">
-          {(staticLanding.hero?.trust ?? ["بدون بطاقة", "إلغاء بأي وقت", "دعم عربي ١٠٠٪"]).map((item, i) => (
+          {(staticLanding.hero?.trust ?? ["استرداد ١٤ يوم", "شركة سعودية مسجّلة", "دعم عربي ١٠٠٪"]).map((item, i) => (
             <span key={i} className="inline-flex items-center gap-1.5">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M5 12.5l5 5L20 7" />
@@ -731,16 +827,16 @@ export function Landing(props: Props) {
 
             <div className="mt-6 text-center">
               <div className="inline-flex items-center gap-2 text-[12px] text-muted-foreground mb-4">
-                <span>Property ID: <span className="font-mono">538167732</span></span>
+                <span>معرّف الحساب: <span className="font-mono" dir="ltr">538167732</span></span>
                 <span className="w-1 h-1 rounded-full bg-border" />
                 <span>تحقّق بنفسك من مصدرين مستقلّين ↓</span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-[720px] mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-[720px] mx-auto items-stretch">
                 <a
                   href="https://datastudio.google.com/s/nBnyGkiUdGw"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted hover:border-success/40 transition-all px-5 py-4 text-foreground"
+                  className="group h-full flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted hover:border-success/40 transition-all px-5 py-4 text-foreground"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-8 w-8 shrink-0" aria-label="Google">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -749,8 +845,8 @@ export function Landing(props: Props) {
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                   </svg>
                   <div className="text-right">
-                    <div className="text-[14px] font-semibold leading-tight">تقرير Google الرسمي</div>
-                    <div className="text-[11px] text-muted-foreground mt-0.5">Looker Studio · مباشر من جوجل</div>
+                    <div className="text-[14px] font-semibold leading-tight">تقرير Google</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">Looker Studio</div>
                   </div>
                   <span className="text-muted-foreground group-hover:text-success transition-colors">↗</span>
                 </a>
@@ -758,23 +854,22 @@ export function Landing(props: Props) {
                   href="https://www.modonty.com"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted hover:border-success/40 transition-all px-5 py-4 text-foreground"
+                  className="group h-full flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted hover:border-success/40 transition-all px-5 py-4 text-foreground"
                 >
                   <span
-                    className="shrink-0 inline-flex items-center justify-center"
-                    style={{ background: "#fff", padding: "4px 8px", borderRadius: 8, width: 112, height: 32 }}
+                    className="shrink-0 inline-flex items-center justify-center bg-white rounded-lg w-28 h-8 px-2 py-1"
                   >
                     <Image
                       src="https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,w_240/v1769683590/modontyLogo_ftf4yf.png"
                       alt="Modonty"
                       width={96}
                       height={24}
-                      style={{ width: "auto", height: 24, objectFit: "contain", maxWidth: "100%" }}
+                      className="h-6 w-auto max-w-full object-contain"
                     />
                   </span>
                   <div className="text-right">
-                    <div className="text-[14px] font-semibold leading-tight">شوف منصة مدونتي</div>
-                    <div className="text-[11px] text-muted-foreground mt-0.5">الموقع الحقيقي · عملاء · مقالات</div>
+                    <div className="text-[14px] font-semibold leading-tight">منصة مدونتي</div>
+                    <div className="text-[11px] text-muted-foreground mt-0.5">الموقع الرسمي</div>
                   </div>
                   <span className="text-muted-foreground group-hover:text-success transition-colors">↗</span>
                 </a>
@@ -794,8 +889,8 @@ export function Landing(props: Props) {
       >
         <div className="max-w-[920px] mx-auto px-7 py-14">
           <div className="flex flex-col md:flex-row items-start gap-6 md:gap-8">
-            <div className="shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-success/15 flex items-center justify-center text-[38px] md:text-[46px] mx-auto md:mx-0">
-              🛡️
+            <div className="shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-success/15 flex items-center justify-center mx-auto md:mx-0">
+              <ShieldCheck className="w-9 h-9 md:w-11 md:h-11 text-success" strokeWidth={2} aria-hidden />
             </div>
             <div className="flex-1 text-center md:text-right w-full">
               <div className="font-mono text-[11px] text-success tracking-[1px] mb-2">تعهّدنا لك</div>
@@ -817,9 +912,6 @@ export function Landing(props: Props) {
                   </li>
                 ))}
               </ul>
-              <div className="inline-flex items-center gap-2 bg-success/10 text-success text-[13.5px] font-semibold px-4 py-2.5 rounded-lg leading-[1.6]">
-                <span>لو أخللنا بأي واحد خلال ٣ شهور — الشهر الرابع خدمة مجاناً.</span>
-              </div>
               <p className="text-[12.5px] text-muted-foreground mt-3 max-w-[560px] mx-auto md:mx-0 leading-[1.6]">
                 ما نعد بمركز رقم ١ في جوجل — لأن هذا يعتمد على منافسيك وتحديثات جوجل. نضمن اللي نتحكّم فيه ١٠٠٪: النشر · الجودة · التقارير · الاستجابة.
               </p>
@@ -852,46 +944,52 @@ export function Landing(props: Props) {
           </div>
 
           <div className="rounded-2xl border border-border bg-card overflow-hidden">
-            {/* Header — flag + country + verified badge */}
-            <div className="flex items-center justify-between gap-3 flex-wrap px-6 py-4 border-b border-b-border bg-gradient-to-l from-transparent to-success/5">
-              <div className="flex items-center gap-2.5">
-                <span className="text-[22px]" aria-hidden>🇸🇦</span>
-                <span className="text-[13px] font-medium text-muted-foreground">المملكة العربية السعودية</span>
-              </div>
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-2.5 py-1 text-[11px] font-semibold text-success">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            {/* Header — brand relationship + verified badge (single row) */}
+            <div className="flex items-center justify-between gap-3 px-5 py-3.5 border-b border-b-border bg-gradient-to-l from-transparent to-success/5">
+              <span className="text-[13px] font-medium text-muted-foreground truncate">المشغّل الرسمي لمنصة مدونتي</span>
+              <div className="inline-flex shrink-0 items-center gap-1 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-[11px] font-semibold text-success">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M5 12.5l5 5L20 7" />
                 </svg>
-                موثّقة لدى وزارة التجارة
+                موثّق
               </div>
             </div>
 
             {/* Body — flex-col so we can reorder on mobile (address above cert) vs desktop (cert first) */}
-            <div className="p-6 md:p-7 flex flex-col">
-              {/* Legal entity + 4 badges (always first) */}
+            <div className="p-5 md:p-7 flex flex-col">
+              {/* Legal entity + compact badges */}
               <div className="order-1">
-                <div className="text-[11px] font-mono text-muted-foreground tracking-wide mb-1.5">الكيان القانوني</div>
-                <div className="text-[20px] font-semibold text-foreground leading-tight">
-                  شركة جبر الجنوبية للمقاولات
-                </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-3 py-1.5 text-[12px] font-semibold text-success">
-                    <span className="w-1.5 h-1.5 rounded-full bg-success" />
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-[10.5px] font-mono text-muted-foreground tracking-wide">الكيان القانوني</span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-success/10 border border-success/25 px-2 py-0.5 text-[10px] font-semibold text-success">
+                    <span className="w-1 h-1 rounded-full bg-success" />
                     نشط
                   </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-[12px] font-semibold text-foreground">
-                    <span className="text-muted-foreground font-mono text-[10.5px]">CR</span>
-                    <bdi className="font-mono">4030524305</bdi>
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-[12px] font-semibold text-foreground">
-                    <span className="text-muted-foreground font-mono text-[10.5px]">رأس المال</span>
-                    ٨,٠٠٠,٠٠٠ ﷼
-                  </span>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-[12px] font-semibold text-foreground">
-                    <span className="text-muted-foreground font-mono text-[10.5px]">تأسست</span>
-                    ٢٠٢٣
-                  </span>
                 </div>
+                <div className="text-[17px] md:text-[20px] font-semibold text-foreground leading-[1.25] tracking-[-.2px]">
+                  {COMPANY.legalName}
+                </div>
+                {/* Compact 3-cell key/value grid — same width on mobile & desktop */}
+                <dl className="mt-4 grid grid-cols-3 gap-2">
+                  <div className="rounded-lg border border-border bg-background/40 px-1.5 py-2 text-center overflow-hidden">
+                    <dt className="text-[9.5px] font-mono text-muted-foreground tracking-wide leading-none">الرقم الموحّد</dt>
+                    <dd className="text-[11px] md:text-[12.5px] font-mono font-semibold text-foreground mt-1.5 leading-none whitespace-nowrap">
+                      <bdi dir="ltr">{COMPANY.unifiedNumber}</bdi>
+                    </dd>
+                  </div>
+                  <div className="rounded-lg border border-border bg-background/40 px-1.5 py-2 text-center overflow-hidden">
+                    <dt className="text-[9.5px] font-mono text-muted-foreground tracking-wide leading-none">رأس المال</dt>
+                    <dd className="text-[11px] md:text-[12.5px] font-semibold text-foreground mt-1.5 leading-none whitespace-nowrap">
+                      {COMPANY.capital} ﷼
+                    </dd>
+                  </div>
+                  <div className="rounded-lg border border-border bg-background/40 px-1.5 py-2 text-center overflow-hidden">
+                    <dt className="text-[9.5px] font-mono text-muted-foreground tracking-wide leading-none">تأسست</dt>
+                    <dd className="text-[11px] md:text-[12.5px] font-mono font-semibold text-foreground mt-1.5 leading-none whitespace-nowrap">
+                      {COMPANY.foundedGregorian}
+                    </dd>
+                  </div>
+                </dl>
               </div>
 
               {/* Google Maps address — order-2 on mobile (right after badges), order-4 on desktop (bottom) */}
@@ -923,8 +1021,8 @@ export function Landing(props: Props) {
               {/* Full-width certificate — order-3 on mobile (bottom), order-2 on desktop (middle) */}
               <div className="order-3 md:order-2 mt-6 bg-white rounded-xl p-3 sm:p-4 shadow-sm ring-1 ring-border/50">
                 <Image
-                  src="/trust/jabr-cr-certificate.png"
-                  alt="شهادة السجل التجاري الرسمية · وزارة التجارة السعودية · شركة جبر الجنوبية للمقاولات · الرقم الموحّد 7036024383"
+                  src={COMPANY.crCertificatePath}
+                  alt={`شهادة السجل التجاري الرسمية من وزارة التجارة السعودية · الرقم الموحّد ${COMPANY.unifiedNumber} · تاريخ الإصدار ${COMPANY.certificateIssuedAt}`}
                   width={2573}
                   height={1818}
                   className="block w-full h-auto rounded-lg"
@@ -991,7 +1089,7 @@ export function Landing(props: Props) {
                 {CALC_ROLES.map((r) => (
                   <li key={r.key} className="flex items-center justify-between gap-2 pb-1.5 border-b border-b-border/50 last:border-b-0 last:pb-0">
                     <span className="flex items-center gap-2 min-w-0">
-                      <span className="text-[15px] shrink-0" aria-hidden>{r.icon}</span>
+                      <r.icon className="w-4 h-4 shrink-0 text-muted-foreground" aria-hidden />
                       <span className="text-[12.5px] text-foreground truncate">{r.label}</span>
                     </span>
                     <span className="font-mono text-[12.5px] text-muted-foreground shrink-0">
@@ -1037,8 +1135,9 @@ export function Landing(props: Props) {
 
             {/* Card 2 — Modonty subscription */}
             <div className="rounded-2xl border-2 border-success bg-gradient-to-br from-success/[0.10] to-success/[0.02] p-5 shadow-[0_24px_50px_-22px_color-mix(in_oklch,var(--success)_40%,transparent)] relative flex flex-col">
-              <span className="absolute -top-3 right-5 bg-success text-success-foreground text-[10px] font-bold px-2.5 py-1 rounded-full tracking-[.5px] shadow-sm">
-                ✨ الأذكى
+              <span className="absolute -top-3 right-5 bg-success text-success-foreground text-[10px] font-bold px-2.5 py-1 rounded-full tracking-[.5px] shadow-sm inline-flex items-center gap-1">
+                <Sparkles className="w-3 h-3" strokeWidth={2.5} aria-hidden />
+                الأذكى
               </span>
 
               <div className="mb-4 flex items-center gap-2.5">
@@ -1051,7 +1150,7 @@ export function Landing(props: Props) {
 
               <ul className="space-y-1.5 mb-4 flex-1">
                 {[
-                  "مقالات SEO محسّنة لجوجل",
+                  "مقالات سيو محسّنة لجوجل",
                   "تصميم صور ومحتوى بصري",
                   "متابعة الترتيب لايف",
                   "لوحة تحكم · تقارير · اعتماد بضغطة",
@@ -1097,7 +1196,7 @@ export function Landing(props: Props) {
           {mathTeamAnnual > mathPlanAnnual && mathPlanAnnual > 0 && (
             <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4">
               <div className="inline-flex items-center gap-2 bg-success/15 border border-success/40 text-success text-[14px] font-semibold px-4 py-2.5 rounded-full">
-                <span className="text-[16px]" aria-hidden>💰</span>
+                <PiggyBank className="w-4 h-4" strokeWidth={2} aria-hidden />
                 <span>
                   توفير <bdi className="font-mono font-bold">{formatNum(mathTeamAnnual - mathPlanAnnual)}</bdi>
                   <span className="text-success/80 mx-1.5">·</span>
@@ -1135,16 +1234,7 @@ export function Landing(props: Props) {
         <div className="max-w-[1080px] mx-auto px-7 py-14">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
-              <Image
-                src="/logos/flag-sa.svg"
-                alt="السعودية"
-                width={20}
-                height={14}
-                className="h-3.5 w-5 rounded-[2px] ring-1 ring-black/10 object-cover"
-              />
               <span>منصة سعودية ١٠٠٪</span>
-              <span className="text-success/60" aria-hidden>·</span>
-              <span className="text-success/80 font-mono text-[10.5px]">CR 4030524305</span>
             </div>
             <h2 className="prev-h2 text-[30px] md:text-[34px] font-semibold tracking-[-1px] mb-3">
               نبني <span className="text-success">حضورك</span> — لا نبيع وعود
@@ -1157,33 +1247,33 @@ export function Landing(props: Props) {
 
           {/* 3-step horizontal grid — clear "who does what" story */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8">
-            {[
+            {([
               {
                 num: "٠١",
                 title: "إحنا نجهّز كل شي",
-                icon: "⚙️",
+                icon: Settings2,
                 desc: "فريق محترف يشتغل ورا الكواليس: بحث كلمات مفتاحية · استراتيجية محتوى · كتابة متخصصة · تصميم صور · تحسين لجوجل — جاهز في لوحتك، بانتظار موافقتك للنشر على منصة مدونتي.",
               },
               {
                 num: "٠٢",
                 title: "أنت توافق بضغطة",
-                icon: "✅",
+                icon: CheckCircle2,
                 desc: "كل مقال يظهر في لوحتك قبل النشر. اعتمد، عدّل، أو ارفض — ما يُنشر شي على منصة مدونتي بدون إذنك. تحكّم كامل بلا صداع.",
               },
               {
                 num: "٠٣",
                 title: "العملاء يجونك من جوجل",
-                icon: "📈",
+                icon: TrendingUp,
                 desc: "زوّار حقيقيون يبحثون في جوجل عن خدمتك ويلاقونك — بلا إعلانات، بلا مطاردة. المقالات تنمو شهرياً وتجيب لك عملاء للأبد.",
               },
-            ].map((step, i) => (
+            ] as const).map((step, i) => (
               <div
                 key={i}
                 className="group relative rounded-2xl border border-border bg-background p-6 flex flex-col hover:border-success/40 hover:shadow-[0_20px_40px_-24px_color-mix(in_oklch,var(--success)_35%,transparent)] transition-all"
               >
                 <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center text-[26px] leading-none" aria-hidden>
-                    {step.icon}
+                  <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center text-success">
+                    <step.icon className="w-6 h-6" strokeWidth={2} aria-hidden />
                   </div>
                   <span className="font-mono text-[13px] text-muted-foreground tracking-[.5px] pt-1">{step.num}</span>
                 </div>
@@ -1196,33 +1286,134 @@ export function Landing(props: Props) {
               </div>
             ))}
           </div>
+          {/* — end 3-step story — */}
 
           {/* Multi-channel distribution — the hook that pulls the customer */}
           <div className="mb-8 rounded-2xl border border-success/30 bg-gradient-to-br from-success/[0.07] to-transparent px-5 py-5">
-            <div className="text-center">
-              <div className="inline-flex items-center gap-1.5 font-mono text-[11px] text-success font-bold tracking-[1.5px] mb-3">
-                <span className="text-[13px]" aria-hidden>✨</span>
-                <span>مقالك ما ينزل في مكان واحد</span>
+            <div>
+              <div className="flex items-center justify-center gap-1.5 font-mono text-[11px] text-success font-bold tracking-[1.5px] mb-4">
+                <Sparkles className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden />
+                <span>حضور رقمي كامل — بباقة واحدة</span>
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2.5 mb-2">
-                <span className="inline-flex items-center gap-1.5 bg-card border border-border rounded-full px-3 py-1.5 text-[13px] text-foreground font-medium">
-                  <span aria-hidden>🌐</span>
-                  <span>منصة مدونتي</span>
-                </span>
-                <span className="inline-flex items-center gap-1.5 bg-card border border-border rounded-full px-3 py-1.5 text-[13px] text-foreground font-medium">
-                  <span aria-hidden>📱</span>
-                  <span>سوشال ميديا مدونتي</span>
-                </span>
-                <span className="inline-flex items-center gap-1.5 bg-success/10 border border-success/40 rounded-full px-3 py-1.5 text-[13px] text-success font-semibold">
-                  <span aria-hidden>🔥</span>
-                  <span>موقعك أنت</span>
-                  <span className="text-[10px] font-mono bg-success/20 px-1.5 py-0.5 rounded-full">في الباقات الأعلى</span>
-                </span>
-              </div>
-              <p className="text-[12px] text-muted-foreground leading-[1.6] max-w-[500px] mx-auto">
+              <ul className="max-w-[440px] mx-auto space-y-2 mb-3">
+                {[
+                  {
+                    icon: Globe,
+                    name: "منصة مدونتي",
+                    desc: "مدوّنة عامة لكل عملاء المنصة",
+                    tag: "مشمول",
+                    variant: "included" as const,
+                  },
+                  {
+                    icon: Smartphone,
+                    name: "سوشال ميديا مدونتي",
+                    desc: "توزيع تلقائي على حسابات المنصة",
+                    tag: "مشمول",
+                    variant: "included" as const,
+                  },
+                  {
+                    icon: Flame,
+                    name: "موقعك الخاص",
+                    desc: "نشر مباشر على دومينك أنت",
+                    tag: "الباقات الأعلى",
+                    variant: "premium" as const,
+                  },
+                  {
+                    icon: LayoutDashboard,
+                    name: "لوحة تحكّم خاصة",
+                    desc: "كل تفاصيلك · تقارير · اعتماد بضغطة",
+                    tag: "مشمول",
+                    variant: "included" as const,
+                  },
+                ].map((row, i) => (
+                  <li
+                    key={i}
+                    className={cn(
+                      "flex items-center gap-3 rounded-xl border px-3 py-2.5",
+                      row.variant === "premium"
+                        ? "bg-success/[.06] border-success/30"
+                        : "bg-card border-border",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg",
+                        row.variant === "premium" ? "bg-success/15 text-success" : "bg-muted text-muted-foreground",
+                      )}
+                    >
+                      <row.icon className="w-4 h-4" strokeWidth={2} aria-hidden />
+                    </span>
+                    <div className="flex-1 min-w-0 text-right">
+                      <div className="text-[13px] font-semibold text-foreground leading-tight">{row.name}</div>
+                      <div className="text-[11px] text-muted-foreground mt-0.5 leading-tight">{row.desc}</div>
+                    </div>
+                    <span
+                      className={cn(
+                        "shrink-0 text-[10px] font-mono font-bold px-2 py-1 rounded-full",
+                        row.variant === "premium"
+                          ? "bg-success/15 text-success border border-success/30"
+                          : "bg-muted text-muted-foreground",
+                      )}
+                    >
+                      {row.tag}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-center text-[12px] text-muted-foreground leading-[1.6] max-w-[500px] mx-auto">
                 حضور رقمي على عدة قنوات — العميل يلاقيك من أكثر من مكان، وأنت تشتغل باقة واحدة.
               </p>
             </div>
+          </div>
+
+          {/* Business Profile hook — "you also get a full business page on Modonty" */}
+          <div className="mt-10 mb-8 rounded-2xl border-2 border-success/40 bg-gradient-to-br from-success/[.10] to-success/[.02] p-5 md:p-6 shadow-[0_24px_50px_-30px_color-mix(in_oklch,var(--success)_50%,transparent)] relative">
+            <span className="absolute -top-3 right-5 bg-success text-success-foreground text-[10px] font-bold px-2.5 py-1 rounded-full tracking-[.5px] shadow-sm inline-flex items-center gap-1 z-10">
+              <Sparkles className="w-3 h-3" strokeWidth={2.5} aria-hidden />
+              بونس
+            </span>
+
+            <div className="flex items-center gap-3 mb-3">
+              <span className="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-xl bg-success/15 text-success">
+                <LayoutDashboard className="w-6 h-6" strokeWidth={2} aria-hidden />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="font-mono text-[10.5px] text-success font-bold tracking-[1.5px] uppercase">Business Profile</div>
+                <h3 className="text-[18px] md:text-[22px] font-semibold text-foreground leading-tight tracking-[-.3px]">
+                  صفحة عمل رسمية <span className="text-success">جاهزة من اليوم الأول</span>
+                </h3>
+              </div>
+            </div>
+
+            <p className="text-[13px] text-muted-foreground leading-[1.7] mb-4 md:pr-[54px]">
+              مو بس مقالات — عندك <span className="text-foreground font-semibold">صفحة كاملة لنشاطك</span> على منصة مدونتي: بيانات، حجوزات، معرض، تقييمات — كل شي محضّر ومربوط بجوجل.
+            </p>
+
+            <ul className="grid grid-cols-2 gap-2 mb-4">
+              {[
+                { icon: CalendarClock, label: "حجز مواعيد" },
+                { icon: PhoneCall, label: "اتصال + واتساب" },
+                { icon: Images, label: "معرض أعمال" },
+                { icon: Star, label: "تقييمات العملاء" },
+                { icon: MapPin, label: "موقعك على الخريطة" },
+                { icon: Palette, label: "هوية بألوانك" }, /* Palette already imported for CALC_ROLES */
+              ].map((f, i) => (
+                <li key={i} className="flex items-center gap-2 rounded-lg bg-card/60 border border-border/60 px-2.5 py-2">
+                  <f.icon className="w-3.5 h-3.5 text-success shrink-0" strokeWidth={2} aria-hidden />
+                  <span className="text-[12px] text-foreground font-medium truncate">{f.label}</span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="https://www.modonty.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 bg-success text-success-foreground hover:bg-success/90 transition-colors px-4 py-2.5 rounded-xl text-[13px] font-semibold no-underline"
+            >
+              <span>شوف صفحة عميل حقيقي</span>
+              <ArrowLeft className="w-3.5 h-3.5" />
+            </a>
           </div>
 
           {/* Exit CTA to full features page */}
@@ -1235,7 +1426,7 @@ export function Landing(props: Props) {
               <span aria-hidden>←</span>
             </Link>
             <p className="mt-2 text-[12px] text-muted-foreground">
-              ٤ منظومات متكاملة · ٢٨ فحص جودة لكل مقال · ٢٣ تنبيه فوري
+              منظومة متكاملة · جودة + تنبيهات + تقارير
             </p>
           </div>
         </div>
@@ -1251,43 +1442,37 @@ export function Landing(props: Props) {
       >
         <div className="max-w-[1080px] mx-auto px-7 py-14">
           <div className="rounded-2xl border border-border overflow-hidden shadow-[0_20px_50px_-30px_color-mix(in_oklch,var(--foreground)_25%,transparent)]">
-            {/* Tier 1 — Gateway anchor (green-tinted so it reads as the credibility anchor) */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 px-6 py-5 bg-success/[0.08] border-b border-b-success/20">
-              <div className="text-center sm:text-right">
-                <div className="font-mono text-[11px] text-success tracking-[2px] mb-1 font-bold">SECURE PAYMENTS</div>
-                <div className="text-[15px] font-semibold text-foreground leading-tight">
-                  الدفع الآمن عبر <span className="text-success">Network International</span>
-                </div>
-                <div className="text-[11.5px] text-muted-foreground mt-0.5 font-mono">
-                  أكبر معالج دفع في الشرق الأوسط · LSE:NETW
-                </div>
-              </div>
-              <div className="shrink-0 inline-flex items-center justify-center bg-white rounded-lg ring-1 ring-black/10 shadow-sm w-[150px] h-11 px-3">
+            {/* Tier 1 — Gateway anchor: compact centered stack on mobile, side-by-side on desktop */}
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 px-5 py-5 md:py-6 bg-success/[0.08] border-b border-b-success/20">
+              <div className="inline-flex items-center justify-center bg-white rounded-lg ring-1 ring-black/10 shadow-sm w-[140px] h-11 px-3 shrink-0">
                 <Image
                   src="/logos/network-international.svg"
                   alt="Network International"
                   width={556}
                   height={126}
-                  className="w-[126px] h-[28px] object-contain"
+                  className="w-[118px] h-[26px] object-contain"
                 />
+              </div>
+              <div className="text-center md:text-right">
+                <div className="font-mono text-[10.5px] text-success tracking-[2px] mb-1 font-bold">دفع آمن</div>
+                <div className="text-[14px] md:text-[15px] font-semibold text-foreground leading-tight">
+                  عبر بوّابة <span className="text-success whitespace-nowrap">Network International</span>
+                </div>
+                <div className="text-[11px] text-muted-foreground mt-1 font-mono">
+                  أكبر معالج دفع في الشرق الأوسط · LSE:NETW
+                </div>
               </div>
             </div>
 
-            {/* Tier 2 — Payment methods, each in a white pill so brand colors render on both themes */}
-            <div className="bg-background px-6 py-6">
-              <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-5">
-                {/* Saudi cluster (RTL — appears first) */}
-                <div className="inline-flex items-center gap-2.5 flex-wrap justify-center">
-                  <span className="inline-flex items-center gap-1.5 text-[12px] font-mono text-foreground/80 tracking-wide font-semibold">
-                    <Image
-                      src="/logos/flag-sa.svg"
-                      alt="السعودية"
-                      width={24}
-                      height={16}
-                      className="h-4 w-6 rounded-[2px] ring-1 ring-black/10 object-cover"
-                    />
-                    <span>السعودية</span>
-                  </span>
+            {/* Tier 2 — Payment methods: 3-col grid on mobile, wide auto-fit flex on desktop */}
+            <div className="bg-background">
+              {/* Saudi section */}
+              <div className="px-5 pt-5 pb-4">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <span className="font-mono text-[10.5px] text-muted-foreground tracking-[1.5px] font-bold uppercase">السعودية</span>
+                  <span className="flex-1 h-px bg-border" aria-hidden />
+                </div>
+                <div className="grid grid-cols-3 md:flex md:flex-wrap md:justify-center gap-2 md:gap-3">
                   {[
                     { src: "/logos/mada.svg", alt: "مدى" },
                     { src: "/logos/visa.svg", alt: "Visa" },
@@ -1296,46 +1481,39 @@ export function Landing(props: Props) {
                     { src: "/logos/stcpay.svg", alt: "STC Pay" },
                     { src: "/logos/tamara.svg", alt: "Tamara" },
                   ].map((logo) => (
-                    <div key={logo.alt} className="h-11 bg-white rounded-lg ring-1 ring-black/5 shadow-sm flex items-center justify-center px-3">
+                    <div key={logo.alt} className="h-11 md:w-[104px] bg-white rounded-lg ring-1 ring-black/5 shadow-sm flex items-center justify-center px-2">
                       <Image
                         src={logo.src}
                         alt={logo.alt}
                         width={200}
                         height={44}
                         unoptimized
-                        style={{ height: 22, width: "auto", objectFit: "contain" }}
+                        style={{ height: 22, width: "auto", maxWidth: "100%", objectFit: "contain" }}
                       />
                     </div>
                   ))}
                 </div>
+              </div>
 
-                {/* Divider */}
-                <span className="hidden md:inline-block w-px h-10 bg-border" aria-hidden />
-
-                {/* Egypt cluster */}
-                <div className="inline-flex items-center gap-2.5 flex-wrap justify-center">
-                  <span className="inline-flex items-center gap-1.5 text-[12px] font-mono text-foreground/80 tracking-wide font-semibold">
-                    <Image
-                      src="/logos/flag-eg.svg"
-                      alt="مصر"
-                      width={24}
-                      height={16}
-                      className="h-4 w-6 rounded-[2px] ring-1 ring-black/10 object-cover"
-                    />
-                    <span>مصر</span>
-                  </span>
+              {/* Egypt section */}
+              <div className="px-5 pt-2 pb-5">
+                <div className="flex items-center gap-2.5 mb-3">
+                  <span className="font-mono text-[10.5px] text-muted-foreground tracking-[1.5px] font-bold uppercase">مصر</span>
+                  <span className="flex-1 h-px bg-border" aria-hidden />
+                </div>
+                <div className="grid grid-cols-3 md:flex md:flex-wrap md:justify-center gap-2 md:gap-3">
                   {[
                     { src: "/logos/instapay.svg", alt: "InstaPay" },
-                    { src: "/logos/saib-bank.png", alt: "saib" },
+                    { src: "/logos/saib-bank.png", alt: "SAIB Bank" },
                   ].map((logo) => (
-                    <div key={logo.alt} className="h-11 bg-white rounded-lg ring-1 ring-black/5 shadow-sm flex items-center justify-center px-3">
+                    <div key={logo.alt} className="h-11 md:w-[104px] bg-white rounded-lg ring-1 ring-black/5 shadow-sm flex items-center justify-center px-2">
                       <Image
                         src={logo.src}
                         alt={logo.alt}
                         width={200}
                         height={44}
                         unoptimized
-                        style={{ height: 22, width: "auto", objectFit: "contain" }}
+                        style={{ height: 22, width: "auto", maxWidth: "100%", objectFit: "contain" }}
                       />
                     </div>
                   ))}
@@ -1375,8 +1553,15 @@ export function Landing(props: Props) {
       <section id="pricing" className="max-w-[1080px] mx-auto px-7 pt-10 pb-20 scroll-mt-16">
         <div className="text-center mb-5">
           <h2 className="prev-h2 text-[32px] font-semibold tracking-[-1px]">باقات تنمو معك</h2>
-          <div className="prev-pricing-toggle inline-flex bg-muted rounded-[11px] p-1 mt-5 text-sm font-medium">
+          <div
+            className="prev-pricing-toggle inline-flex bg-muted rounded-[11px] p-1 mt-5 text-sm font-medium"
+            role="tablist"
+            aria-label="طريقة الفوترة"
+          >
             <button
+              type="button"
+              role="tab"
+              aria-selected={billing === "monthly"}
               onClick={() => setBilling("monthly")}
               className={cn(
                 "px-[18px] py-2 rounded-lg",
@@ -1386,13 +1571,16 @@ export function Landing(props: Props) {
               شهري
             </button>
             <button
+              type="button"
+              role="tab"
+              aria-selected={billing === "annual"}
               onClick={() => setBilling("annual")}
               className={cn(
                 "px-[18px] py-2 rounded-lg",
                 billing === "annual" ? "bg-card text-foreground shadow-[0_1px_3px_color-mix(in oklch, var(--foreground) 8%, transparent)]" : "bg-transparent text-muted-foreground",
               )}
             >
-              سنوي · ادفع 12 استلم 18
+              سنوي · ادفع ١٢ استلم ١٨
             </button>
           </div>
         </div>
@@ -1424,13 +1612,13 @@ export function Landing(props: Props) {
                 className={cn(
                   "rounded-[18px] px-[22px] py-[26px] relative border-2 bg-card text-foreground",
                   featured
-                    ? "border-success ring-2 ring-success/30 shadow-[0_24px_50px_-22px_color-mix(in_oklch,var(--success)_60%,transparent)]"
+                    ? "order-first md:order-none border-success ring-[3px] ring-success/50 shadow-[0_28px_60px_-22px_color-mix(in_oklch,var(--success)_65%,transparent)] scale-[1.015] md:scale-100 z-[1]"
                     : "border-border",
                 )}
               >
                 {featured && (
-                  <span className="absolute -top-[12px] right-[24px] bg-success text-success-foreground text-[10.5px] font-bold px-3 py-1 rounded-full tracking-[.3px] inline-flex items-center gap-1.5">
-                    <Flame className="w-3 h-3" strokeWidth={2.5} />
+                  <span className="absolute -top-[13px] right-[24px] bg-success text-success-foreground text-[11px] font-black px-3.5 py-1 rounded-full tracking-[.3px] inline-flex items-center gap-1.5 shadow-[0_10px_22px_-10px_color-mix(in_oklch,var(--success)_60%,transparent)]">
+                    <Star className="w-3 h-3 fill-current" strokeWidth={2.5} />
                     {p.featuredBadge}
                   </span>
                 )}
@@ -1484,14 +1672,32 @@ export function Landing(props: Props) {
                   href={isExternalCta ? whatsappLink : `${checkoutHref}?plan=${p.slug}&billing=${billing}`}
                   target={isExternalCta ? "_blank" : undefined}
                   rel={isExternalCta ? "noopener noreferrer" : undefined}
+                  onClick={() => {
+                    if (isExternalCta) GTMEvents.whatsappClick();
+                    else
+                      GTMEvents.planClick({
+                        plan: p.slug,
+                        price: billing === "annual" ? p.priceYearly * 12 : p.priceMonthly,
+                        billing,
+                        country: countrySlug,
+                      });
+                  }}
                   className={cn(
-                    "flex items-center justify-center gap-2 p-[13px] rounded-[11px] text-[14px] no-underline mt-[18px] mb-[22px] border font-bold",
+                    "flex items-center justify-center gap-2 p-[13px] rounded-[11px] text-[14px] no-underline mt-[18px] mb-2 border font-bold",
                     featured ? "bg-success text-success-foreground border-transparent" : "bg-background text-foreground border-border",
                   )}
                 >
                   <span>{isConsultation ? "احجز جلسة استشارة" : countrySlug === "eg" ? "تواصل عبر واتساب" : (p.ctaText || `ابدأ بـ${p.name}`)}</span>
                   <ArrowLeft className="w-4 h-4" />
                 </Link>
+                {/* Refund guarantee — only for Saudi + featured, matches project_refund_policy.md */}
+                {featured && countrySlug === "sa" && !isConsultation && (
+                  <div className="flex items-center justify-center gap-1.5 mb-[16px] text-[11px] text-success/90 font-medium">
+                    <ShieldCheck className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden />
+                    <span>استرداد ١٤ يوم · بدون أسئلة</span>
+                  </div>
+                )}
+                {!featured && <div className="mb-[16px]" />}
                 {/* Bullets label */}
                 <div className="text-[11.5px] text-muted-foreground mb-3 font-semibold pb-3 border-b border-border">
                   {content.bulletsLabel}
@@ -1567,7 +1773,7 @@ export function Landing(props: Props) {
               <div className="text-center mb-10">
                 {/* Trust badge — matches structure of other sections */}
                 <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
-                  <span className="text-[13px]" aria-hidden>⭐</span>
+                  <Star className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden fill="currentColor" />
                   <span>{socialProofEyebrow || "شهادات صادرة بإذن أصحابها"}</span>
                   <span className="text-success/60" aria-hidden>·</span>
                   <span className="text-success/80 font-mono text-[10.5px]">لا سيناريو</span>
@@ -1622,22 +1828,29 @@ export function Landing(props: Props) {
                           «{v.quote}»
                         </p>
                       )}
-                      <div className="flex items-center gap-3 pt-4 border-t border-t-border flex-wrap">
-                        <span className="prev-voice-avatar w-11 h-11">
-                          {v.avatarImg ? (
-                            <Image src={v.avatarImg} alt={v.name ?? ""} width={44} height={44} unoptimized />
-                          ) : (
-                            <span className="text-[15px]">{initials}</span>
-                          )}
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <div className="text-[15px] font-semibold text-foreground">{v.name}</div>
-                          <div className="text-[13px] text-muted-foreground mt-0.5">
-                            {[v.role, v.company].filter(Boolean).join(" · ")}
+                      <div className="pt-4 border-t border-t-border">
+                        <div className="flex items-center gap-3">
+                          <span className="prev-voice-avatar w-11 h-11 shrink-0">
+                            {v.avatarImg ? (
+                              <Image src={v.avatarImg} alt={v.name ?? ""} width={44} height={44} unoptimized />
+                            ) : (
+                              <span className="text-[15px]">{initials}</span>
+                            )}
+                          </span>
+                          <div className="min-w-0 flex-1">
+                            <div className="text-[15px] font-semibold text-foreground truncate">{v.name}</div>
+                            <div className="text-[13px] text-muted-foreground mt-0.5 truncate">
+                              {[v.role, v.company].filter(Boolean).join(" · ")}
+                            </div>
                           </div>
+                          {v.metric && (
+                            <div className="hidden md:inline-flex shrink-0 bg-success/10 text-success text-xs font-semibold px-3 py-1.5 rounded-full font-mono">
+                              {v.metric}
+                            </div>
+                          )}
                         </div>
                         {v.metric && (
-                          <div className="ms-auto bg-success/10 text-success text-xs font-semibold px-3 py-1.5 rounded-full font-mono">
+                          <div className="md:hidden mt-3 inline-flex bg-success/10 text-success text-xs font-semibold px-3 py-1.5 rounded-full font-mono">
                             {v.metric}
                           </div>
                         )}
@@ -1653,7 +1866,7 @@ export function Landing(props: Props) {
                       type="button"
                       onClick={() => setSelectedVoice(((safeIdx - 1) % voices.length + voices.length) % voices.length)}
                       aria-label="الشهادة السابقة"
-                      className="w-10 h-10 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
+                      className="w-11 h-11 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
                     >
                       <span className="text-[18px]">→</span>
                     </button>
@@ -1675,7 +1888,7 @@ export function Landing(props: Props) {
                       type="button"
                       onClick={() => setSelectedVoice((safeIdx + 1) % voices.length)}
                       aria-label="الشهادة التالية"
-                      className="w-10 h-10 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
+                      className="w-11 h-11 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
                     >
                       <span className="text-[18px]">←</span>
                     </button>
@@ -1698,19 +1911,6 @@ export function Landing(props: Props) {
         >
           <div className="max-w-[1080px] mx-auto px-7 py-14">
             <div className="text-center mb-10">
-              {/* Trust badge — legal accountability */}
-              <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
-                <Image
-                  src="/logos/flag-sa.svg"
-                  alt="السعودية"
-                  width={20}
-                  height={14}
-                  className="h-3.5 w-5 rounded-[2px] ring-1 ring-black/10 object-cover"
-                />
-                <span>مسؤولون قانونياً</span>
-                <span className="text-success/60" aria-hidden>·</span>
-                <span className="text-success/80 font-mono text-[10.5px]">CR 4030524305</span>
-              </div>
               <h2 className="prev-h2 text-[30px] md:text-[34px] font-semibold tracking-[-1px] mb-3">
                 الوجوه اللي <span className="text-success">تضمن</span> حضورك
               </h2>
@@ -1736,20 +1936,20 @@ export function Landing(props: Props) {
                     >
                       <div className="shrink-0 w-16 h-16 md:w-[76px] md:h-[76px] rounded-full overflow-hidden bg-muted flex items-center justify-center ring-2 ring-success/15">
                         {m.avatarUrl ? (
-                          <Image src={m.avatarUrl} alt={m.name} width={76} height={76} unoptimized className="w-full h-full object-cover" />
+                          <Image src={m.avatarUrl} alt={`${m.name} — ${m.role}`} width={76} height={76} unoptimized className="w-full h-full object-cover" />
                         ) : (
                           <span className="text-[22px] font-semibold text-muted-foreground">{initials}</span>
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 mb-1 flex-wrap">
-                          <div className="text-[16px] font-semibold text-foreground">{m.name}</div>
+                        <div className="text-[15px] md:text-[16px] font-semibold text-foreground leading-tight mb-1.5">{m.name}</div>
+                        <div className="flex items-center gap-2 flex-wrap mb-2">
                           <span className="inline-flex items-center gap-1 bg-success/10 text-success text-[10px] font-mono font-bold px-2 py-0.5 rounded-full tracking-wide">
                             <span className="w-1 h-1 rounded-full bg-success" aria-hidden />
                             <span>مسؤول</span>
                           </span>
+                          <span className="text-[12.5px] text-muted-foreground">{m.role}</span>
                         </div>
-                        <div className="text-[13px] text-muted-foreground mb-2">{m.role}</div>
                         {m.bio && (
                           <p className="text-[12.5px] text-muted-foreground leading-[1.7]">{m.bio}</p>
                         )}
@@ -1781,7 +1981,7 @@ export function Landing(props: Props) {
                       >
                         <div className="w-14 h-14 rounded-full overflow-hidden bg-muted flex items-center justify-center">
                           {m.avatarUrl ? (
-                            <Image src={m.avatarUrl} alt={m.name} width={56} height={56} unoptimized className="w-full h-full object-cover" />
+                            <Image src={m.avatarUrl} alt={`${m.name} — ${m.role}`} width={56} height={56} unoptimized className="w-full h-full object-cover" />
                           ) : (
                             <span className="text-[15px] font-semibold text-muted-foreground">{initials}</span>
                           )}
@@ -1817,13 +2017,13 @@ export function Landing(props: Props) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="border-t border-t-[var(--border)] bg-card"
+            className="border-t border-t-[var(--border)] bg-card overflow-x-clip"
           >
             <div className="max-w-[760px] mx-auto px-7 py-14">
               <div className="text-center mb-8">
                 {/* Trust badge — matches structure of other sections */}
                 <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
-                  <span className="text-[13px]" aria-hidden>💬</span>
+                  <MessageCircle className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden />
                   <span>إجابات مباشرة · بلا لف</span>
                   <span className="text-success/60" aria-hidden>·</span>
                   <span className="text-success/80 font-mono text-[10.5px]">{toArabicDigits(faqs.length)} سؤال</span>
@@ -1836,21 +2036,23 @@ export function Landing(props: Props) {
                 </p>
               </div>
 
-              {/* Category filter chips — jump to group */}
+              {/* Category filter chips — horizontal scroll on mobile, wrap on desktop */}
               {groups.length > 1 && (
-                <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
-                  {groups.map(([tag, items]) => (
-                    <a
-                      key={tag}
-                      href={`#faq-group-${encodeURIComponent(tag)}`}
-                      className="inline-flex items-center gap-1.5 bg-background border border-border hover:border-success/50 hover:bg-success/5 transition-colors text-[12px] font-medium text-foreground px-3 py-1.5 rounded-full"
-                    >
-                      <span>{tag}</span>
-                      <span className="text-[10px] font-mono text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded-full">
-                        {toArabicDigits(items.length)}
-                      </span>
-                    </a>
-                  ))}
+                <div className="mb-6 -mx-7 md:mx-0">
+                  <div className="flex md:flex-wrap items-center md:justify-center gap-2 overflow-x-auto md:overflow-visible px-7 md:px-0 snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    {groups.map(([tag, items]) => (
+                      <a
+                        key={tag}
+                        href={`#faq-group-${encodeURIComponent(tag)}`}
+                        className="inline-flex shrink-0 items-center gap-1.5 bg-background border border-border hover:border-success/50 hover:bg-success/5 transition-colors text-[12px] font-medium text-foreground px-3 py-1.5 rounded-full snap-start"
+                      >
+                        <span className="whitespace-nowrap">{tag}</span>
+                        <span className="text-[10px] font-mono text-muted-foreground bg-muted/50 px-1.5 py-0.5 rounded-full">
+                          {toArabicDigits(items.length)}
+                        </span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -1875,11 +2077,13 @@ export function Landing(props: Props) {
                             <button
                               className="prev-faq-q"
                               onClick={() => setOpenFaq(isOpen ? null : flatIdx)}
+                              aria-expanded={isOpen}
+                              aria-controls={`faq-a-${flatIdx}`}
                             >
                               <span>{item.q}</span>
-                              <span className="prev-faq-toggle">{isOpen ? "×" : "+"}</span>
+                              <span className="prev-faq-toggle" aria-hidden>{isOpen ? "×" : "+"}</span>
                             </button>
-                            <div className="prev-faq-a">{item.a}</div>
+                            <div id={`faq-a-${flatIdx}`} role="region" className="prev-faq-a">{item.a}</div>
                           </div>
                         );
                       })}
@@ -1906,18 +2110,19 @@ export function Landing(props: Props) {
 
       {/* ─── FINAL CTA (DB) ─── */}
       <m.section
+        id="final-cta"
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-60px" }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="max-w-[1080px] mx-auto pt-[60px] px-7 pb-[90px]"
       >
-        <div className="bg-foreground rounded-[26px] px-10 py-[72px] text-center">
-          <h2 className="prev-cta-h2 text-[44px] font-semibold text-background tracking-[-1.5px] leading-[1.15] mb-4">
+        <div className="bg-foreground rounded-[20px] md:rounded-[26px] px-5 py-10 md:px-10 md:py-[72px] text-center">
+          <h2 className="prev-cta-h2 text-[26px] md:text-[44px] font-semibold text-background tracking-[-1px] md:tracking-[-1.5px] leading-[1.2] md:leading-[1.15] mb-4 [text-wrap:balance]">
             {finalCtaData?.title1 ?? "منافسك يتصدّر الحين."}<br />
             {finalCtaData?.title2 ?? "وأنت؟"}
           </h2>
-          <p className="text-[17px] text-background/70 max-w-[460px] mx-auto mb-8 leading-[1.7] font-light">
+          <p className="text-[14.5px] md:text-[17px] text-background/70 max-w-[460px] mx-auto mb-6 md:mb-8 leading-[1.7] font-light [text-wrap:pretty]">
             {finalCtaData?.subtitle ?? "انضم لأوائل الشركات اللي اختارت المحتوى طريقاً للنمو — لا الإعلانات."}
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
@@ -1933,8 +2138,8 @@ export function Landing(props: Props) {
 
       {/* ─── CALCULATOR MODAL (spring · compact) ─── */}
       <AnimatePresence>
-      {calcOpen && (() => {
-        const calcModontyAnnual = mathPlanAnnual > 0 ? mathPlanAnnual : 12468;
+      {calcOpen && mathPlanAnnual > 0 && (() => {
+        const calcModontyAnnual = mathPlanAnnual;
         const calcSaveAmt = Math.max(0, teamAnnual - calcModontyAnnual);
         const calcSavePct = teamAnnual > 0 ? Math.max(0, Math.round((1 - calcModontyAnnual / teamAnnual) * 100)) : 0;
         return (
@@ -1960,16 +2165,16 @@ export function Landing(props: Props) {
                 <button
                   type="button"
                   onClick={() => setSalaries(Object.fromEntries(CALC_ROLES.map((r) => [r.key, r.def])))}
-                  className="bg-transparent border-none text-[11.5px] text-muted-foreground cursor-pointer px-2 py-1 font-mono"
+                  className="bg-transparent border border-border text-[12px] text-muted-foreground hover:text-foreground hover:border-foreground/40 cursor-pointer min-h-11 px-3 rounded-lg font-medium transition-colors"
                 >
-                  reset
+                  إعادة
                 </button>
                 <button
                   onClick={() => setCalcOpen(false)}
                   aria-label="إغلاق"
-                  className="bg-transparent border-none text-xl text-muted-foreground cursor-pointer leading-none px-1.5 py-0.5"
+                  className="bg-transparent border-none text-muted-foreground hover:text-foreground cursor-pointer inline-flex items-center justify-center w-11 h-11 rounded-lg transition-colors"
                 >
-                  ✕
+                  <X className="w-5 h-5" strokeWidth={2} />
                 </button>
               </div>
             </div>
@@ -2079,6 +2284,30 @@ export function Landing(props: Props) {
         );
       })()}
       </AnimatePresence>
+
+      {/* Context-aware pricing sticky — appears after user scrolls past #pricing.
+          Saudi only (payment supported); disabled if no featured plan configured. */}
+      {countrySlug === "sa" && (() => {
+        const featured = visiblePlans.find((p) => !!p.featuredBadge?.trim() && p.priceYearly > 0);
+        if (!featured) return null;
+        const effectiveMonthly = Math.round((featured.priceYearly * 12) / 18);
+        return (
+          <PricingSticky
+            planName={featured.name}
+            effectiveMonthly={effectiveMonthly}
+            currency={currency}
+            checkoutHref={`${checkoutHref}?plan=${featured.slug}&billing=annual`}
+            onClick={() =>
+              GTMEvents.planClick({
+                plan: featured.slug,
+                price: featured.priceYearly * 12,
+                billing: "annual",
+                country: countrySlug,
+              })
+            }
+          />
+        );
+      })()}
     </>
     </LazyMotion>
   );

@@ -8,7 +8,11 @@ type HeaderLogoProps = { logoHref?: string };
 export function HeaderLogo({ logoHref = "/#hero" }: HeaderLogoProps): ReactElement {
   return (
     <div className="flex shrink-0 flex-col items-start gap-0.5">
-      <Link href={logoHref} aria-label="الرئيسية">
+      <Link
+        href={logoHref}
+        aria-label="الرئيسية"
+        className="inline-flex min-h-11 items-center"
+      >
         <Image
           src={SITE_LOGO_URL}
           alt="شعار JBRSEO — منصة مدونتي"

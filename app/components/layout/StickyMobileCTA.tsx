@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import NextLink from "next/link";
+import { Sparkles } from "lucide-react";
+import { WhatsAppIcon } from "@/app/components/icons/WhatsAppIcon";
 
 type Props = {
   pricingHref: string;
@@ -17,7 +19,10 @@ export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) 
       const y = window.scrollY;
       const viewportH = window.innerHeight;
       const docH = document.documentElement.scrollHeight;
-      const nearTop = y < 320;
+      // Viewport-relative threshold (was hardcoded 320px). On a short
+      // screen (320h) this hides for the first 160px; on a tall one (900h)
+      // for 450px — always covers roughly the visible hero.
+      const nearTop = y < viewportH * 0.5;
       const nearBottom = y + viewportH > docH - 200;
       setVisible(!nearTop && !nearBottom);
     }
@@ -34,16 +39,27 @@ export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) 
           bottom: 0;
           left: 0;
           right: 0;
-          z-index: 55;
+          /* Below Radix Dialog (z-50) so any modal opened over the landing
+             wins the stacking context. Above normal content (z-10..30). */
+          z-index: 40;
           padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
           background: color-mix(in oklch, var(--background) 92%, transparent);
           backdrop-filter: blur(14px);
+          -webkit-backdrop-filter: blur(14px);
           border-top: 1px solid var(--border);
           display: none;
           gap: 8px;
           align-items: stretch;
           box-shadow: 0 -10px 24px -16px color-mix(in oklch, var(--foreground) 18%, transparent);
           transition: transform .25s ease, opacity .2s ease;
+        }
+        /* Fallback for old Android WebViews / iOS Safari <14 where
+           backdrop-filter is unsupported — bump the base opacity to 98% so
+           text remains legible over any hero content bleeding underneath. */
+        @supports not ((backdrop-filter: blur(14px)) or (-webkit-backdrop-filter: blur(14px))) {
+          .prev-sticky-mobile-cta {
+            background: color-mix(in oklch, var(--background) 98%, transparent);
+          }
         }
         .prev-sticky-mobile-cta.hidden {
           transform: translateY(110%);
@@ -62,14 +78,17 @@ export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) 
           aria-label="تواصل عبر واتساب"
           className="w-[52px] h-[52px] rounded-[13px] bg-success text-success-foreground inline-flex items-center justify-center shrink-0 shadow-[0_8px_20px_-10px_color-mix(in oklch, var(--success) 55%, transparent)] no-underline"
         >
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden>
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-          </svg>
+          <WhatsAppIcon className="w-[22px] h-[22px]" />
         </a>
         <NextLink
           href={pricingHref}
-          className="flex-1 inline-flex items-center justify-center bg-foreground text-background px-[18px] rounded-[13px] text-[15px] font-semibold no-underline shadow-[0_12px_26px_-14px_color-mix(in oklch, var(--foreground) 50%, transparent)] min-h-[52px]"
+          className="group flex-1 inline-flex items-center justify-center gap-2 bg-foreground text-background px-[18px] rounded-[13px] text-[15px] font-semibold no-underline shadow-[0_12px_26px_-14px_color-mix(in oklch, var(--foreground) 50%, transparent)] min-h-[52px]"
         >
+          <Sparkles
+            className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"
+            strokeWidth={2.5}
+            aria-hidden
+          />
           {ctaLabel}
         </NextLink>
       </div>

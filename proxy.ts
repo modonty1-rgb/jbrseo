@@ -4,36 +4,48 @@ import {
   RESERVED_FIRST_SEGMENTS,
   SUPPORTED_COUNTRY_SLUGS,
 } from "@/lib/country-config";
-
-const rateMap = new Map<string, { count: number; resetAt: number }>();
-
-function isRateLimited(ip: string, limit = 30, windowMs = 60_000): boolean {
-  const now = Date.now();
-  const entry = rateMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateMap.set(ip, { count: 1, resetAt: now + windowMs });
-    return false;
-  }
-  if (entry.count >= limit) return true;
-  entry.count++;
-  return false;
-}
+import { landingLimiter } from "@/lib/rate-limit";
 
 function copySearchParams(from: URL, to: URL) {
   from.searchParams.forEach((v, k) => to.searchParams.set(k, v));
 }
 
-export function proxy(request: NextRequest) {
+// Skip rate-limiting for static assets + framework internals to avoid
+// wasting Upstash quota on non-user-driven requests (chunks, images, RSC).
+function shouldSkipRateLimit(pathname: string): boolean {
+  return (
+    pathname.startsWith("/_next/") ||
+    pathname === "/favicon.ico" ||
+    pathname === "/robots.txt" ||
+    pathname === "/sitemap.xml" ||
+    pathname.startsWith("/logos/") ||
+    pathname.endsWith(".png") ||
+    pathname.endsWith(".jpg") ||
+    pathname.endsWith(".jpeg") ||
+    pathname.endsWith(".webp") ||
+    pathname.endsWith(".svg") ||
+    pathname.endsWith(".ico")
+  );
+}
+
+export async function proxy(request: NextRequest) {
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
     request.headers.get("x-real-ip") ??
     "127.0.0.1";
 
-  if (isRateLimited(ip)) {
-    return NextResponse.json(
-      { error: "Too many requests. Please try again later." },
-      { status: 429, headers: { "Retry-After": "60" } },
-    );
+  // Landing-tier rate limit — 30 req / 60s / IP (Upstash Redis, shared across
+  // serverless instances so it actually works). Stricter tiers for /checkout
+  // submit + N-Genius order creation live inside their respective API routes.
+  if (!shouldSkipRateLimit(request.nextUrl.pathname)) {
+    const { success, reset } = await landingLimiter.limit(ip);
+    if (!success) {
+      const retryAfter = Math.max(1, Math.ceil((reset - Date.now()) / 1000));
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        { status: 429, headers: { "Retry-After": String(retryAfter) } },
+      );
+    }
   }
 
   if (

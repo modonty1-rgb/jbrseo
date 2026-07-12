@@ -110,12 +110,12 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
             <p className={HEADING_CLS} style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
               استكشف
             </p>
-            <ul className="flex flex-col gap-2.5">
+            <ul className="flex flex-col">
               {footerLinks.map((l, i) => (
                 <li key={i}>
                   <Link
                     href={l.href}
-                    className="group flex items-center gap-1.5 text-sm font-semibold text-white/70 transition-colors duration-200 hover:text-white before:content-[''] before:inline-block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-transparent before:transition-colors group-hover:before:bg-success"
+                    className="group flex min-h-11 items-center gap-1.5 py-1 text-sm font-semibold text-white/70 transition-colors duration-200 hover:text-white before:content-[''] before:inline-block before:h-1 before:w-1 before:shrink-0 before:rounded-full before:bg-transparent before:transition-colors group-hover:before:bg-success"
                   >
                     {l.label}
                   </Link>
@@ -134,14 +134,14 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full border border-success bg-success px-4 py-2.5 text-sm font-bold text-success-foreground transition-all duration-200 hover:bg-success/90"
+                className="inline-flex min-h-11 items-center gap-2 rounded-full border border-success bg-success px-4 text-sm font-bold text-success-foreground transition-all duration-200 hover:bg-success/90"
               >
                 <WhatsAppIcon />
                 {WA_LABEL}
               </WhatsAppTrackLink>
               <a
                 href="mailto:support@jbrseo.com"
-                className="text-sm text-white/75 transition-colors hover:text-white inline-flex items-center gap-2"
+                className="inline-flex min-h-11 items-center gap-2 text-sm text-white/75 transition-colors hover:text-white"
                 style={{ direction: "ltr", fontFamily: "'IBM Plex Mono', monospace" }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -168,9 +168,9 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
                       aria-label={label}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-[38px] w-[38px] items-center justify-center rounded-[10px] border border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
+                      className="flex h-11 w-11 items-center justify-center rounded-[10px] border border-white/10 bg-white/5 text-white/70 transition-all duration-200 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/10 hover:text-white"
                     >
-                      <Icon className="h-[15px] w-[15px]" />
+                      <Icon className="h-4 w-4" />
                     </Link>
                   ))}
                 </div>
@@ -234,12 +234,12 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
         {/* ── BOTTOM ROW: copyright + legal only ── */}
         <div className="flex flex-col-reverse sm:flex-row items-center justify-between gap-3 pt-6">
           <p className="text-sm text-white/70">{COPYRIGHT}</p>
-          <nav className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+          <nav className="flex flex-wrap justify-center gap-x-5">
             {LEGAL_LINKS.map((l, i) => (
               <Link
                 key={i}
                 href={l.href}
-                className="text-sm text-white/70 transition-colors duration-200 hover:text-white"
+                className="inline-flex min-h-11 items-center text-sm text-white/70 transition-colors duration-200 hover:text-white"
               >
                 {l.label}
               </Link>

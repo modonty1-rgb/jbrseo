@@ -10,7 +10,12 @@ import {
   displayMainTotalFromMoYr,
   formatPlanTotalDisplay,
 } from "@/lib/pricing-plan-amounts";
+import { resolveReason, MAX_INLINE_RETRIES } from "@/lib/checkout-reasons";
+import { getTurnstileSiteKey } from "@/lib/turnstile";
 import { CheckoutHeader } from "./_components/CheckoutHeader";
+
+const NGENIUS_HOSTED_KEY = process.env.NEXT_PUBLIC_NGENIUS_HOSTED_SESSION_API_KEY ?? "";
+const NGENIUS_OUTLET_REF = process.env.NGENIUS_OUTLET_ID ?? "";
 import { CheckoutSummary } from "./_components/CheckoutSummary";
 import { CheckoutForm } from "./_components/CheckoutForm";
 
@@ -22,7 +27,7 @@ export const metadata: Metadata = {
 
 type CheckoutPageProps = {
   params: Promise<{ country: string }>;
-  searchParams: Promise<{ plan?: string; billing?: string }>;
+  searchParams: Promise<{ plan?: string; billing?: string; error?: string; attempt?: string; order?: string }>;
 };
 
 export default async function CheckoutPage({ params, searchParams }: CheckoutPageProps) {
@@ -36,11 +41,24 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
   if (countrySlug === "eg") notFound();
 
   const country = getCountryCodeFromSlug(countrySlug);
-  const { plan: planParam, billing: billingParam } = await searchParams;
+  const { plan: planParam, billing: billingParam, error: errorParam, attempt: attemptParam, order: orderParam } = await searchParams;
 
   // Q2.1: no ?plan= → redirect to pricing selector.
   if (!planParam || !planParam.trim()) {
     redirect(`/${countrySlug}#pricing`);
+  }
+
+  // Inline retry policy — recoverable errors show a banner and let the user
+  // retry in-place. After MAX_INLINE_RETRIES attempts, escalate to /failed
+  // so the user gets a support escape valve instead of a doom loop.
+  const attemptNumber = Math.max(1, Number.parseInt(attemptParam ?? "1", 10) || 1);
+  const paymentError = errorParam ? resolveReason(errorParam) : null;
+
+  // If unrecoverable OR too many attempts → hand off to /failed
+  if (paymentError && (!paymentError.recoverable || attemptNumber >= MAX_INLINE_RETRIES)) {
+    const q = new URLSearchParams({ reason: errorParam!, plan: planParam.trim(), billing: billingParam ?? "annual" });
+    if (orderParam) q.set("order", orderParam);
+    redirect(`/${countrySlug}/checkout/failed?${q.toString()}`);
   }
 
   const plans = await getAllPlans(country);
@@ -60,37 +78,41 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
   return (
     <>
       <CheckoutHeader backHref={`/${countrySlug}#pricing`} />
-      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+      {/* Single-column layout — matches Stripe Checkout / Apple Pay Sheet UX
+          where the entire flow reads top-to-bottom as one coherent form. Cleaner
+          than a summary sidebar because the "trust boundary" panel now has room
+          to breathe and dominates the eye. Max width ~ 620px keeps line-length
+          comfortable for reading + touch targets natural on mobile. */}
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
         <div className="mb-6 text-center sm:mb-8">
           <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
             أكمل اشتراكك
           </h1>
-          <p className="mt-2 text-[13.5px] text-muted-foreground">
+          <p className="mt-2 text-sm text-muted-foreground">
             خطوة واحدة تفصلك عن إطلاق منظومة السيو الخاصة بنشاطك.
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,320px)] lg:items-start">
-          {/* Form column — appears BELOW summary on mobile (per Q1). */}
-          <div className="order-2 lg:order-1">
-            <CheckoutForm
-              country={country}
-              planSlug={plan.slug}
-              planName={plan.name}
-              billing={billing}
-              totalDisplay={totalDisplay}
-            />
-          </div>
+        <div className="space-y-5">
+          <CheckoutSummary
+            planName={plan.name}
+            planTagline={plan.tagline}
+            totalDisplay={totalDisplay}
+            billingLabel={billingLabel}
+          />
 
-          {/* Summary column — appears ABOVE form on mobile (per Q1). */}
-          <div className="order-1 lg:order-2 lg:sticky lg:top-6">
-            <CheckoutSummary
-              planName={plan.name}
-              planTagline={plan.tagline}
-              totalDisplay={totalDisplay}
-              billingLabel={billingLabel}
-            />
-          </div>
+          <CheckoutForm
+            country={country}
+            planSlug={plan.slug}
+            planName={plan.name}
+            billing={billing}
+            totalDisplay={totalDisplay}
+            paymentError={paymentError}
+            attemptNumber={paymentError ? attemptNumber : undefined}
+            turnstileSiteKey={getTurnstileSiteKey()}
+            ngeniusHostedSessionKey={NGENIUS_HOSTED_KEY}
+            ngeniusOutletRef={NGENIUS_OUTLET_REF}
+          />
         </div>
       </main>
     </>

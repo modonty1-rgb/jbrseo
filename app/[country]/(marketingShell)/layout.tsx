@@ -40,7 +40,7 @@ export default async function MarketingShellLayout({
   const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
 
   return (
-    <div className="marketing-surface text-foreground overflow-x-clip">
+    <div className="marketing-surface text-foreground">
       <AnnouncementBar message={meta?.announcement ?? "أسعار التأسيس — أول ١٥٠ شركة."} />
       <LandingHeader
         content={content}

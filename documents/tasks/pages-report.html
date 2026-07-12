@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Audit Plan — JBRSEO Mobile Readiness</title>
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --panel: #141414;
+    --panel-2: #1a1a1a;
+    --panel-3: #202020;
+    --border: #262626;
+    --text: #e5e5e5;
+    --muted: #737373;
+    --success: #10b981;
+    --info: #3b82f6;
+    --warn: #f59e0b;
+    --danger: #ef4444;
+    --accent: #a855f7;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, "Arial", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+  .container { max-width: 1080px; margin: 0 auto; padding: 28px 20px 64px; }
+
+  header {
+    text-align: center;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  h1 { font-size: 26px; margin: 0 0 4px; font-weight: 900; letter-spacing: -0.02em; }
+  .subtitle { color: var(--muted); font-size: 13px; margin: 0; }
+
+  /* Progress */
+  .progress-wrap {
+    margin-top: 18px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+  }
+  .progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    font-size: 12px;
+  }
+  .progress-header .label { color: var(--muted); font-weight: 600; }
+  .progress-header .count { font-family: monospace; color: var(--text); font-weight: 700; }
+  .progress-bar { height: 8px; background: var(--panel-2); border-radius: 999px; overflow: hidden; }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--success), #6ee7b7);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+  .actions { display: flex; gap: 8px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+  .btn {
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+  .btn:hover { border-color: #404040; background: #222; }
+  .btn.danger { color: var(--danger); }
+  .btn.danger:hover { border-color: var(--danger); background: rgba(239, 68, 68, 0.08); }
+
+  /* Phase Section */
+  .phase {
+    margin-bottom: 32px;
+  }
+  .phase-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border);
+  }
+  .phase-num {
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 3px 10px;
+    border-radius: 6px;
+    background: var(--panel-3);
+    color: var(--muted);
+    letter-spacing: 1.5px;
+  }
+  .phase-title { font-size: 17px; font-weight: 800; margin: 0; }
+  .phase-note { color: var(--muted); font-size: 12px; margin-inline-start: auto; }
+
+  /* Standards Card */
+  .standards {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    font-size: 12.5px;
+  }
+  .standards-title {
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--info);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .standards ul { margin: 0; padding-inline-start: 20px; color: var(--muted); }
+  .standards li { margin-bottom: 3px; }
+  .standards a { color: var(--info); text-decoration: none; }
+  .standards a:hover { text-decoration: underline; }
+
+  /* Item Card */
+  section.item-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    transition: all 0.15s;
+  }
+  section.item-card.done {
+    opacity: 0.55;
+    background: rgba(16, 185, 129, 0.05);
+    border-color: rgba(16, 185, 129, 0.25);
+  }
+  section.item-card.done .item-title,
+  section.item-card.done .item-desc { text-decoration: line-through; }
+  section.item-card.current {
+    background: rgba(59, 130, 246, 0.06);
+    border-color: rgba(59, 130, 246, 0.45);
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.25), 0 8px 24px -12px rgba(59, 130, 246, 0.35);
+  }
+  section.item-card.current::before {
+    content: "◉ الحالي";
+    display: inline-block;
+    font-family: monospace;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--info);
+    background: rgba(59, 130, 246, 0.12);
+    border: 1px solid rgba(59, 130, 246, 0.4);
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+
+  .item-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .item-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .item-path {
+    font-family: monospace;
+    color: var(--info);
+    font-size: 12px;
+    direction: ltr;
+    text-align: start;
+  }
+  .item-desc {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .item-badge {
+    font-family: monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--panel-3);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .item-badge.shared { color: var(--accent); border-color: rgba(168, 85, 247, 0.3); }
+  .item-badge.static { color: var(--success); border-color: rgba(16, 185, 129, 0.3); }
+  .item-badge.dynamic { color: var(--warn); border-color: rgba(245, 158, 11, 0.3); }
+  .item-badge.complex { color: var(--danger); border-color: rgba(239, 68, 68, 0.3); }
+  .item-badge.admin { color: var(--accent); border-color: rgba(168, 85, 247, 0.3); }
+
+  /* Custom checkbox */
+  .check-wrap { display: flex; align-items: center; cursor: pointer; user-select: none; }
+  .check-wrap input {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .check-wrap input:hover { border-color: #666; }
+  .check-wrap input:checked { background: var(--success); border-color: var(--success); }
+  .check-wrap input:checked::after {
+    content: "✓";
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    font-weight: 900;
+  }
+
+  /* Subtasks */
+  .subtasks {
+    background: var(--panel-2);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-top: 8px;
+  }
+  .subtasks-label {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--muted);
+    letter-spacing: 1.2px;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .subtask-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 4px;
+  }
+  .subtask-list li {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 2px 0;
+  }
+  .subtask-list li::before {
+    content: "□";
+    font-size: 13px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .subtask-list li.risk::before { content: "⚠"; color: var(--warn); }
+
+  footer {
+    text-align: center;
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 11px;
+  }
+  code {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 11px;
+  }
+
+  @media (max-width: 700px) {
+    .item-head { grid-template-columns: auto 1fr; }
+    .item-badge { grid-column: 2; justify-self: start; margin-top: 4px; }
+    .phase-note { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1>Audit Plan — JBRSEO Mobile Readiness</h1>
+    <p class="subtitle">جرد كامل قبل الحملات الإعلانية · Shared Components → Pages → Ad Readiness</p>
+
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="label">التقدم الكامل</span>
+        <span class="count" id="counter">0 / 25</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="fill" style="width:0%"></div>
+      </div>
+      <div class="actions">
+        <button class="btn" onclick="markAllDone()">✅ اكتمل الكل</button>
+        <button class="btn danger" onclick="resetAll()">🔄 مسح الكل</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════ PHASE 1 — Shared Components ══════════════════════ -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 1</span>
+      <h2 class="phase-title">Shared Components (تُرث في كل صفحة)</h2>
+      <span class="phase-note">أول أولوية — أي bug هنا = ٢٥ صفحة معطوبة</span>
+    </div>
+
+    <div class="standards">
+      <div class="standards-title">📐 المعايير المرجعية</div>
+      <ul>
+        <li><strong>Touch target:</strong> 44×44px (<a href="https://developer.apple.com/design/human-interface-guidelines/inputs/touch-and-gesture" target="_blank">Apple HIG</a>) · 48×48dp (<a href="https://m3.material.io/foundations/accessibility" target="_blank">Material 3</a>) · 24×24 (<a href="https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html" target="_blank">WCAG 2.2 AA</a>)</li>
+        <li><strong>Font body:</strong> 14-16px · <strong>Form input:</strong> 16px (منع iOS zoom) · <a href="https://www.nngroup.com/articles/mobile-ux/" target="_blank">NN/g Mobile UX</a></li>
+        <li><strong>Contrast:</strong> 4.5:1 نص عادي · 3:1 نص كبير — <a href="https://www.w3.org/WAI/WCAG22/quickref/" target="_blank">WCAG 2.2</a></li>
+        <li><strong>Viewport:</strong> 320px حد أدنى (iPhone SE) · تحقق: 320 · 375 · 390 · 768</li>
+      </ul>
+    </div>
+
+    <section class="item-card" data-key="header-mobile">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="header-mobile" checked></label>
+        <div>
+          <div class="item-title">LandingHeader + MobileMenu Drawer</div>
+          <div class="item-path">app/components/layout/header/{LandingHeader, MobileMenu, ThemeToggle}.tsx</div>
+        </div>
+        <span class="item-badge shared">Shared</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ</div>
+        <ul class="subtask-list">
+          <li>Sticky top + z-50 صحيح</li>
+          <li>Mobile: hamburger واحد (Salla/Zid pattern) — الشبكة القديمة grid-cols-5 محذوفة</li>
+          <li>Drawer بـ shadcn Sheet: Header (logo + subtitle) → Nav rows (icon + label + chevron) → Trust chip (١٤ يوم استرداد) → Footer (WhatsApp + phone + toggle)</li>
+          <li>Nav icons دلالية: TrendingUp · MessageSquareQuote · Sparkles · CreditCard · HelpCircle</li>
+          <li>CTA "اختر باقتك" بـ Sparkles icon (desktop + mobile) + hover rotate/scale</li>
+          <li>WhatsAppIcon مستخرج كـ shared component — نفسه في LandingHeader + MobileMenu + StickyMobileCTA</li>
+          <li>ThemeToggle بـ Lucide Sun/Moon (بديل emoji)</li>
+          <li>Touch targets ≥ 44×44 على كل زر</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card" data-key="sticky-cta">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="sticky-cta" checked></label>
+        <div>
+          <div class="item-title">StickyMobileCTA (الشريط السفلي)</div>
+          <div class="item-path">app/components/layout/StickyMobileCTA.tsx</div>
+        </div>
+        <span class="item-badge shared">Shared</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">🔍 نقاط الفحص</div>
+        <ul class="subtask-list">
+          <li>env(safe-area-inset-bottom) ✓ — iOS notch/home bar محترم</li>
+          <li>WhatsApp button 52×52 ✓ / Main CTA min-height 52px ✓</li>
+          <li>يختفي < 320px scroll و near-bottom (منع تغطية footer)</li>
+          <li class="risk">backdrop-blur(14px) — أداء على Android قديم / iOS Safari 15-</li>
+          <li>ما يغطي زر الدفع في /sa/checkout</li>
+          <li>ما يظهر في صفحات الأدمن</li>
+          <li>z-index (55) — لا يتقاطع مع modals (Dialog z-50)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card" data-key="announcement">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="announcement" checked></label>
+        <div>
+          <div class="item-title">AnnouncementBar</div>
+          <div class="item-path">app/components/layout/AnnouncementBar.tsx</div>
+        </div>
+        <span class="item-badge shared">Shared</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">🔍 نقاط الفحص</div>
+        <ul class="subtask-list">
+          <li>role="status" ✓ / dismiss button touch target</li>
+          <li>SessionStorage يحترم اختيار المستخدم</li>
+          <li>النص يـ wrap بدون overflow على 320px</li>
+          <li class="risk">قد يزحم Header عالياً — احسب total sticky height</li>
+          <li>Contrast خلفية → نص (بكل الـ themes)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card" data-key="footer">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="footer" checked></label>
+        <div>
+          <div class="item-title">Footer</div>
+          <div class="item-path">app/components/layout/footer/Footer.tsx</div>
+        </div>
+        <span class="item-badge shared">Shared</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">🔍 نقاط الفحص</div>
+        <ul class="subtask-list">
+          <li>Grid 1/2/4 cols يعمل صح</li>
+          <li class="risk">Social icons 38×38 — <strong>تحت 44px</strong> (Apple HIG)</li>
+          <li class="risk">Powered-by Modonty logo width=140 ثابت — يـ overflow على 320؟</li>
+          <li>Trust strip (SA) — علامات الوزارة/المركز واضحة</li>
+          <li>Legal links touch target كافي</li>
+          <li>text-white/70 & text-white/75 — contrast مع bg-neutral-900</li>
+          <li>pb-24 (96px) — يستوعب StickyMobileCTA بدون تراكب</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card" data-key="root-layout">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="root-layout" checked></label>
+        <div>
+          <div class="item-title">RootLayout · Viewport · Meta · Fonts</div>
+          <div class="item-path">app/layout.tsx</div>
+        </div>
+        <span class="item-badge shared">Shared</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">🔍 نقاط الفحص</div>
+        <ul class="subtask-list">
+          <li>viewport meta = width=device-width, initial-scale=1</li>
+          <li>themeColor يوافق dark + light</li>
+          <li>Tajawal font preload + display:swap ✓</li>
+          <li>Skip-link ✓ (accessibility)</li>
+          <li>GTM يحمّل بدون blocking</li>
+          <li>OG image + favicon يشتغلوا</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════════ PHASE 2 — Pages ══════════════════════ -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 2</span>
+      <h2 class="phase-title">Pages (Static → Complex → Landing)</h2>
+      <span class="phase-note">بعد ما نصلح الـ shared</span>
+    </div>
+
+    <div class="standards">
+      <div class="standards-title">✅ الفحص لكل صفحة</div>
+      <ul>
+        <li>لا horizontal scroll على 320px</li>
+        <li>كل النصوص مقروءة (لا truncate غير مقصود)</li>
+        <li>الأزرار والروابط touch target ≥ 44×44</li>
+        <li>Loading + empty states موجودة</li>
+        <li>SEO meta + canonical صحيح</li>
+      </ul>
+    </div>
+
+    <!-- STATIC PAGES -->
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="privacy" checked></label>
+        <div><div class="item-title">/privacy</div><div class="item-desc">سياسة الخصوصية</div></div>
+        <span class="item-badge static">Static</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ</div>
+        <ul class="subtask-list">
+          <li>🚨 تصحيح اسم الشركة القانوني: "جبر سيو" → "جبر الجنوبية" (privacy.intro + terms.intro/definitions/billing) — dev DB مثبت، prod script جاهز</li>
+          <li>Skeleton رُبني من الصفر ليطابق page.tsx 100% (hero + TOC + sections + contact)</li>
+          <li>page.tsx: prose-invert محذوف (يتكيّف مع theme) · empty state max-w-5xl · TOC touch targets ≥44 · icons ≥16px · TOC label 11→12px · prose 13.5→14px</li>
+          <li>seed scripts محدّثة (privacy-policy-data.mjs + terms-of-service-data.mjs) للـ re-seeds المستقبلية</li>
+          <li>mockups + docs الاسم قيمة صُحّحت (about-page-mockup, payment-flow-mockup, SEO-OVERHAUL-LOG, modonty-sales-research)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="terms" checked></label>
+        <div><div class="item-title">/terms</div><div class="item-desc">الشروط والأحكام</div></div>
+        <span class="item-badge static">Static</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ</div>
+        <ul class="subtask-list">
+          <li>Skeleton رُبني من الصفر ليطابق page.tsx 100% (hero + TOC + 10 sections + contact)</li>
+          <li>page.tsx: prose-invert محذوف · empty state max-w-5xl · TOC touch targets ≥44 · icons ≥16px · TOC label 11→12px · prose 13.5→14px</li>
+          <li>DB: نص قانوني محدّث في Phase 2.1 (terms.intro + terms.definitions + terms.billing)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="billing-policy" checked></label>
+        <div><div class="item-title">/billing-policy</div><div class="item-desc">سياسة الفوترة والتزام التسليم</div></div>
+        <span class="item-badge static">Static</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ</div>
+        <ul class="subtask-list">
+          <li>ShieldCheck icon: 14→16px</li>
+          <li>CTA button: text-[14.5px]→text-sm · min-h-12 صريح · WhatsAppIcon البراند بدل MessageCircle</li>
+          <li>loading.tsx جديد يطابق page.tsx (hero + 4 cards + closing) — رغم إن الصفحة synchronous</li>
+        </ul>
+        <div class="subtasks-label" style="margin-top:10px;color:var(--warn)">⚠️ للمراجعة (سياسة، ليس كود)</div>
+        <ul class="subtask-list">
+          <li class="risk">تناقض محتمل: هذي الصفحة تنفي الاسترداد النقدي بعد التسليم — Landing/Pricing قد يوعد بـ "١٤ يوم استرداد"</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="about" checked></label>
+        <div><div class="item-title">/about</div><div class="item-desc">من نحن — يذكر الشركة القانونية + CR</div></div>
+        <span class="item-badge static">Static</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ</div>
+        <ul class="subtask-list">
+          <li>🚨 DB: legalName محدّث ("جبر سيو (ذات مسؤولية محدودة)" → "جبر الجنوبية") + prod-mirror script جاهز</li>
+          <li>🚨 DB: phone ملغوط (34 digit) اتفرّغ مؤقتاً — يحتاج رقم صحيح لاحقاً</li>
+          <li>Skeleton رُبني من الصفر ليطابق page.tsx 100% (hero + mission + story + values + team + fit/notFit + legal + CTA)</li>
+          <li>page.tsx tech: Compass 14→16 · story label icon 14→16 · text-[10.5px]→11 · text-[12.5px]→text-xs · text-[13.5px]→text-sm · Phone icon 12→14 · CTA buttons min-h-11 صريح</li>
+          <li>Phone يختفي لو فاضي (conditional render)</li>
+        </ul>
+        <div class="subtasks-label" style="margin-top:10px;color:var(--warn)">⚠️ للمراجعة</div>
+        <ul class="subtask-list">
+          <li class="risk">رقم هاتف الشركة الرسمي — تحتاج تضيفه</li>
+          <li class="risk">CR digit format: Latin `4030560460` معتمد — لكن /privacy /terms لسه فيهم ٤٠٣٠٥٦٠٤٦٠ (Arabic-Indic). توحيد لاحق؟</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="team" checked></label>
+        <div><div class="item-title">/team</div><div class="item-desc">فريق العمل</div></div>
+        <span class="item-badge static">Static</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ</div>
+        <ul class="subtask-list">
+          <li>Skeleton رُبني من الصفر ليطابق page.tsx 100% (hero + core 2-col + exec 2/3/4-col + CTA)</li>
+          <li>page.tsx tech: Users icon 14→16 · text-[12.5px]→text-xs · text-[11.5px]→text-[11px] · CTA min-h-11 + no-underline</li>
+          <li>Avatar gradient hardcoded محذوف — bg-muted (theme-adaptive) بدل from-neutral-800 to-neutral-900</li>
+          <li>نفس الإصلاح (bg-muted) طُبّق على /about لأتساق</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CHECKOUT RESULTS -->
+    <section class="item-card current">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="signup"></label>
+        <div><div class="item-title">/sa/signup</div><div class="item-desc">يوجّه permanent لـ /sa/checkout</div></div>
+        <span class="item-badge dynamic">Redirect</span>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="processing" checked></label>
+        <div><div class="item-title">/sa/checkout/processing</div><div class="item-desc">polling كل ٢ ثانية + Spinner</div></div>
+        <span class="item-badge dynamic">Dynamic</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ</div>
+        <ul class="subtask-list">
+          <li>POLL_TIMEOUT_MS: 60s → 90s (webhook whitelist لسه غير مفعل)</li>
+          <li>٥ half-pixels صحّحت (text-sm / text-xs / text-[11px])</li>
+          <li>Console fallback button min-h-11 صريح + no-underline</li>
+          <li>loading.tsx جديد يعرض نفس spinner UI قبل ما server-side DB check يخلص</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="success" checked></label>
+        <div><div class="item-title">/sa/checkout/success</div><div class="item-desc">إيصال + رقم الفاتورة + زر console</div></div>
+        <span class="item-badge dynamic">DB read</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ</div>
+        <ul class="subtask-list">
+          <li>٥ half-pixels صحّحت (text-sm / text-xs / text-[11px])</li>
+          <li>loading.tsx جديد يطابق 4 blocks (icon + invoice card + CTA + email notice)</li>
+        </ul>
+        <div class="subtasks-label" style="margin-top:10px;color:var(--warn)">⚠️ للمراجعة</div>
+        <ul class="subtask-list">
+          <li class="risk">VAT claim "شامل ١٥٪" — يعتمد على كون plan.priceMonthly/Yearly في DB VAT-inclusive. لو لا، الـ claim غلط قانونياً.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="failed" checked></label>
+        <div><div class="item-title">/sa/checkout/failed</div><div class="item-desc">رسالة + إعادة محاولة</div></div>
+        <span class="item-badge dynamic">DB read</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ</div>
+        <ul class="subtask-list">
+          <li>٥ half-pixels صحّحت (text-sm / text-xs / text-[11px])</li>
+          <li>MessageCircle → WhatsAppIcon البراند (تناسق مع كل الأزرار)</li>
+          <li>Retry + WA buttons أضيف لهم no-underline</li>
+          <li>loading.tsx جديد يطابق 4 blocks</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="features" checked></label>
+        <div><div class="item-title">/features</div><div class="item-desc">صفحة المميزات التفصيلية</div></div>
+        <span class="item-badge static">Static+</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ (rewrite كامل)</div>
+        <ul class="subtask-list">
+          <li>🚨 حُذفت 115 سطر CSS inline (كانت تخالف [[feedback_tailwind_only]]) — كل شي Tailwind الآن</li>
+          <li>30+ emoji بدّلوا بـ Lucide icons دلالية (LayoutDashboard · AlertTriangle · TrendingUp · Users · ShieldCheck · Stethoscope · Scale · Wallet · CreditCard · Bell · Flame · CheckCircle2 · XCircle · WhatsAppIcon...)</li>
+          <li>Theme-adaptive بالكامل — bg-background · text-foreground · text-success · border-border (كانت hardcoded #0a0a0a #4ade80 #fff)</li>
+          <li>مكوّنات محلية للتكرار: HeroStat · FeatureSection · Screenshot · FeatureCard · SectorCard · AlertCard · CompareCard</li>
+          <li>VAT indication أُضيفت (شامل ١٥٪) — تناسق مع /checkout/success</li>
+          <li>Final CTA button min-h-12 + no-underline + WhatsAppIcon البراند</li>
+          <li>loading.tsx جديد يطابق كل الأقسام (hero + 3 sections بـ screenshot + YMYL card + alerts + pricing/compare/CTA)</li>
+        </ul>
+        <div class="subtasks-label" style="margin-top:10px;color:var(--warn)">⚠️ للمراجعة</div>
+        <ul class="subtask-list">
+          <li class="risk">أرقام hardcoded في hero stats: "٢٩ ميزة" · "٢٣ تنبيه" · "٤ قطاعات" — تحتاج تحقق أو ربط بمصدر ديناميكي</li>
+          <li class="risk">إحصائيات سمايل تاون في captions ("١٠,٦٨٤ من جوجل" · "٥ مقالات · ١٦٦ مشاهدة") — تحديث؟</li>
+          <li class="risk">VAT-inclusive claim للأسعار — نفس ملاحظة /checkout/success (تحتاج تأكيد إن plan.priceMonthly شامل)</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- COMPLEX -->
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="checkout" checked></label>
+        <div><div class="item-title">/sa/checkout</div><div class="item-desc">نموذج + N-Genius SDK + 3DS + Turnstile</div></div>
+        <span class="item-badge complex">Complex</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ ما تمّ</div>
+        <ul class="subtask-list">
+          <li>🚨 iOS zoom bug: 3 حقول form رفعوا من 14.5px → text-base (16px) — منع تكبير Safari تلقائي</li>
+          <li>10+ half-pixels صحّحت (text-sm / text-xs / text-[11px])</li>
+          <li>⏱️ emoji → Clock من Lucide</li>
+          <li>loading.tsx جديد يطابق (title + summary + 3 fields + card mount + terms + pay button + trust badge)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="root" checked></label>
+        <div><div class="item-title">/</div><div class="item-desc">توجيه حسب البلد (geo detection)</div></div>
+        <span class="item-badge dynamic">Redirect</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label">✅ فُحص — النظام optimized بالفعل</div>
+        <ul class="subtask-list">
+          <li>proxy.ts (Next.js 16 - كان middleware.ts) يعترض / عند الـ edge ويحوّل بـ 307 قبل ما يوصل الـ router — صفر DB fetch</li>
+          <li>Proxy فيه bonus: rate limiting Upstash · preview country param · 405 لـ /checkout غير GET/POST · admin auth</li>
+          <li>app/(site)/page.tsx = safety fallback (فعلياً ما يشتغل بسبب الـ proxy) — ممكن حذفه لاحقاً كتنظيف dead code</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- LANDING (HARDEST) -->
+    <section class="item-card current">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="landing-sa"></label>
+        <div><div class="item-title">/sa (Landing)</div><div class="item-desc">Hero · Pricing · FAQ · Testimonials · كل الأقسام — 2085 سطر</div></div>
+        <span class="item-badge complex">Full</span>
+      </div>
+      <div class="subtasks">
+        <div class="subtasks-label" style="color:#10b981">✅ BATCH A — تم الإصلاح (١١/١١)</div>
+        <ul class="subtask-list" style="opacity:.55;text-decoration:line-through">
+          <li>Landing:644 — fallback trust chips → <code>["استرداد ١٤ يوم", "شركة سعودية مسجّلة", "دعم عربي ١٠٠٪"]</code></li>
+          <li>Landing:1395 — أرقام لاتينية → <code>"ادفع ١٢ استلم ١٨"</code></li>
+          <li>Landing:820 — pill "الشهر الرابع مجاناً" حُذف (وعد ليس في /terms)</li>
+          <li>Landing:1257 — <code>SECURE PAYMENTS</code> → <code>دفع آمن</code></li>
+          <li>Landing:1054 — <code>SEO</code> → <code>سيو</code></li>
+          <li>Landing:200-335 — كل مواضع <code>organic</code> → <code>عضوي</code> / <code>مجاني من جوجل</code></li>
+          <li>Landing:42-117 + 600 — <code>STYLE_BLOCK</code> نُقل إلى <code>app/components/landing/landing.css</code> + <code>import "./landing.css"</code></li>
+          <li>Landing:66 → 2029 — <code>.prev-calc-btn</code> رُفع من 26×26 إلى 44×44 (WCAG)</li>
+          <li>Landing:CALC_ROLES + جميع الـ emoji — استُبدلت بـ lucide (ShieldCheck · Sparkles · PiggyBank · Settings2 · CheckCircle2 · TrendingUp · Globe · Smartphone · Flame · Star · MessageCircle · X · PenTool · Palette · Search · Video · Code) + flag SVG</li>
+          <li>Landing:630-637 — WhatsApp CTA → Tailwind <code>hover:text-foreground hover:border-b-foreground</code></li>
+          <li>TSC: <strong>صفر أخطاء</strong> بعد كامل الـ batch</li>
+        </ul>
+        <div class="subtasks-label" style="margin-top:14px;color:#f59e0b">⚠ يحتاج مراجعتك</div>
+        <ul class="subtask-list">
+          <li class="risk"><strong>Landing:1481</strong> — <code>"٦ شهور هدية"</code> — الحساب رياضياً صحيح (annualTotal/18 = effectiveMonthly)، لكنه ادعاء تسويقي لكل الباقات. أبقيته لأنه متسق مع toggle ادفع ١٢ استلم ١٨ — <strong>قرارك: يبقى أو نضيفه لـ Plan.bonusMonths في الـ DB؟</strong></li>
+        </ul>
+        <div class="subtasks-label" style="margin-top:14px;color:#10b981">✅ BATCH B — تم الإصلاح (٨/١٢)</div>
+        <ul class="subtask-list" style="opacity:.55;text-decoration:line-through">
+          <li>Slider arrows ×٤ — <code>w-10 h-10</code> → <code>w-11 h-11</code> (44×44)</li>
+          <li>Modal reset button — <code>reset</code> → <code>إعادة</code> + <code>min-h-11 px-3 border rounded-lg</code></li>
+          <li>FAQ button — <code>aria-expanded</code> + <code>aria-controls</code> + <code>id="faq-a-N" role="region"</code> على الإجابة</li>
+          <li>Billing toggle — <code>role="tablist"</code> + <code>role="tab" aria-selected</code> على كل زر</li>
+          <li>Magic number <code>12468</code> — <strong>حُذف</strong> (كان dead code: <code>SUB_ANNUAL/saveAmt/savePct</code>). المودال الآن يظهر فقط إذا <code>mathPlanAnnual > 0</code></li>
+          <li>بيانات الشركة — أُنشئ <code>lib/company.ts</code> + وُصل في ٧ مواضع (<code>legalName · unifiedNumber ×3 · capital · foundedGregorian · crCertificatePath · certificateIssuedAt</code>)</li>
+          <li>Property ID → <code>معرّف الحساب</code> + <code>dir="ltr"</code> على الرقم</li>
+          <li>Google Analytics — <strong>مُتحقّق</strong>: اسم علم (Tier 3) — يبقى inline (القاعدة تسمح)</li>
+          <li>TSC: <strong>صفر أخطاء</strong> بعد كامل الـ batch</li>
+        </ul>
+        <div class="subtasks-label" style="margin-top:14px;color:#f59e0b">⏸ يحتاج قرار DB schema (٤ عناصر مؤجلة)</div>
+        <ul class="subtask-list">
+          <li class="risk"><strong>3 خطوات "شغلنا"</strong> hardcoded — يحتاج حقل <code>howItWorks.steps[]</code> في <code>LandingSection</code> + admin form. <strong>قرارك:</strong> نضيفه للـ schema أو نتركه في الكود؟</li>
+          <li class="risk"><strong>CASE_FALLBACK</strong> بأسماء عملاء (Smile Town · Kima Zone · Baqatek) — يحتاج جدول <code>CaseStudy</code> جديد في DB. الحالي: fallback يظهر فقط إذا فشل GA4</li>
+          <li class="risk"><strong>قائمة الضمانات ٤</strong> hardcoded — تحتاج مطابقة مع <code>/terms</code> + حقل DB. الحالي: نصوص ثابتة موثوقة</li>
+          <li class="risk"><strong>bullets مدونتي</strong> مكررة (٤ سطور في comparison card) — يحتاج فحص إذا <code>getPlanCardContent</code> يصدّر <code>bullets</code> بنفس التنسيق</li>
+        </ul>
+        <div class="subtasks-label" style="margin-top:14px;color:#10b981">✅ BATCH C — تم الإصلاح (٦/٧)</div>
+        <ul class="subtask-list" style="opacity:.55;text-decoration:line-through">
+          <li><code>ARABIC_INDEX</code> + <code>toAr</code> — <strong>حُذف</strong> (٢٦ نداء أُعيدت لـ <code>toArabicDigits</code>)</li>
+          <li>Google Fonts — ٣ <code>&lt;link&gt;</code> tags حُذفت. <code>.mono</code> في globals.css يعود لـ system monospace (fallback نظيف)</li>
+          <li><code>alt="saib"</code> → <code>alt="SAIB Bank"</code></li>
+          <li>Team avatars alt → <code>{name} — {role}</code> (نسختين: coreTeam + executionTeam)</li>
+          <li>SerpAnimation.tsx — كان مذكور "غير مستخدم" — ⚠ الحذف طلب تأكيد يدوي منك</li>
+          <li>TSC: <strong>صفر أخطاء</strong> بعد كامل الـ batch</li>
+        </ul>
+        <div class="subtasks-label" style="margin-top:14px;color:#f59e0b">⏸ يحتاج تنفيذك اليدوي (رفض الـ shell الحذف)</div>
+        <ul class="subtask-list">
+          <li class="risk">شغّل هذا الأمر لحذف الـ ٥ ملفات الميتة:<br><code style="display:block;margin-top:6px;padding:8px;background:#0a0a0a;font-size:11px">git rm app/components/landing/Navbar.tsx app/components/landing/Footer.tsx app/components/landing/AnnouncementBar.tsx app/components/landing/StickyMobileCTA.tsx app/components/landing/SerpAnimation.tsx</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- LANDING FIX BATCHES (checkboxes per group) -->
+    <section class="item-card done">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="landing-fix-critical" checked></label>
+        <div><div class="item-title">Batch A — CRITICAL (١١/١١ تم)</div><div class="item-desc">الوعود الكاذبة + emojis + English-in-Arabic + STYLE_BLOCK + touch 26px · TSC نظيف</div></div>
+        <span class="item-badge static">✅ DONE</span>
+      </div>
+    </section>
+
+    <section class="item-card done">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="landing-fix-medium" checked></label>
+        <div><div class="item-title">Batch B — MEDIUM (٨/١٢ تم · ٤ مؤجلة لقرار schema)</div><div class="item-desc">Touch targets · a11y · lib/company.ts · magic number cleanup · TSC نظيف</div></div>
+        <span class="item-badge static">✅ 8/12</span>
+      </div>
+    </section>
+
+    <section class="item-card done">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="landing-fix-low" checked></label>
+        <div><div class="item-title">Batch C — LOW / Cleanup (٦/٧ تم · ١ يحتاج git rm يدوي)</div><div class="item-desc">Duplicates · fonts cleanup · alts · TSC نظيف</div></div>
+        <span class="item-badge static">✅ 6/7</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════════ PHASE 3 — Ad Readiness ══════════════════════ -->
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-num">PHASE 3</span>
+      <h2 class="phase-title">Ad Readiness (قبل إطلاق الحملات)</h2>
+      <span class="phase-note">اختبار حقيقي + performance</span>
+    </div>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="lighthouse"></label>
+        <div><div class="item-title">Lighthouse Mobile Audit</div><div class="item-desc">Performance · Accessibility · Best Practices · SEO — ≥ 90 على كل واحد</div></div>
+        <span class="item-badge complex">Perf</span>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="real-devices"></label>
+        <div><div class="item-title">اختبار على أجهزة حقيقية</div><div class="item-desc">iPhone SE 320w · iPhone 15 390w · Galaxy Fold 280w · Android منتصف الفئة</div></div>
+        <span class="item-badge complex">Real</span>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="throttled"></label>
+        <div><div class="item-title">اختبار على شبكة بطيئة</div><div class="item-desc">3G throttle — LCP ≤ 2.5s · Time to Interactive ≤ 5s</div></div>
+        <span class="item-badge complex">Perf</span>
+      </div>
+    </section>
+
+    <section class="item-card">
+      <div class="item-head">
+        <label class="check-wrap"><input type="checkbox" data-key="ad-tracking"></label>
+        <div><div class="item-title">Ad Click → Landing → Checkout tracking</div><div class="item-desc">GTM/GA4 events · Meta Pixel · UTM params passed correctly</div></div>
+        <span class="item-badge complex">Tracking</span>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <p>التقدم يُحفظ تلقائياً في المتصفح (localStorage) · يبقى بعد الإغلاق</p>
+    <p>ملف مرجعية بيني وبين Claude · نمشي معاً حسب الترتيب</p>
+  </footer>
+
+</div>
+
+<script>
+  const STORAGE_KEY = 'jbrseo-audit-plan';
+  const boxes = () => document.querySelectorAll('input[type="checkbox"][data-key]');
+  const total = boxes().length;
+
+  function loadState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
+  }
+  function saveState(state) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  function updateProgress() {
+    const done = document.querySelectorAll('input[type="checkbox"][data-key]:checked').length;
+    document.getElementById('counter').textContent = `${done} / ${total}`;
+    document.getElementById('fill').style.width = `${(done / total) * 100}%`;
+  }
+  function applyState(cb) {
+    const card = cb.closest('.item-card');
+    if (!card) return;
+    if (cb.checked) card.classList.add('done'); else card.classList.remove('done');
+  }
+
+  const state = loadState();
+  let stateDirty = false;
+  boxes().forEach(cb => {
+    // localStorage wins if user explicitly toggled this key before (true or false).
+    // Otherwise the HTML `checked` default carries over — and we sync it to state
+    // so the reported progress reflects it on first load.
+    if (Object.prototype.hasOwnProperty.call(state, cb.dataset.key)) {
+      cb.checked = !!state[cb.dataset.key];
+    } else if (cb.checked) {
+      state[cb.dataset.key] = true;
+      stateDirty = true;
+    }
+    applyState(cb);
+    cb.addEventListener('change', () => {
+      const s = loadState();
+      s[cb.dataset.key] = cb.checked;
+      saveState(s);
+      applyState(cb);
+      updateProgress();
+    });
+  });
+  if (stateDirty) saveState(state);
+  updateProgress();
+
+  function markAllDone() {
+    const s = {};
+    boxes().forEach(cb => { cb.checked = true; applyState(cb); s[cb.dataset.key] = true; });
+    saveState(s);
+    updateProgress();
+  }
+  function resetAll() {
+    if (!confirm('مسح كل التقدم؟')) return;
+    boxes().forEach(cb => { cb.checked = false; applyState(cb); });
+    localStorage.removeItem(STORAGE_KEY);
+    updateProgress();
+  }
+</script>
+</body>
+</html>

@@ -27,7 +27,7 @@ export default async function TeamPage() {
       {/* HERO */}
       <section className="text-center mb-16">
         <div className="inline-flex items-center gap-1.5 rounded-full bg-success/12 px-4 py-1.5 text-xs font-bold text-success mb-4">
-          <Users className="w-3.5 h-3.5" />
+          <Users className="w-4 h-4" />
           <span>{totalCount} شخص يعمل عليك</span>
         </div>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight tracking-tight text-foreground mb-4">
@@ -96,7 +96,7 @@ export default async function TeamPage() {
         </p>
         <a
           href="/sa#pricing"
-          className="inline-flex items-center gap-2 rounded-xl bg-success px-6 py-3 text-sm font-bold text-success-foreground hover:opacity-90 transition"
+          className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-success px-6 py-3 text-sm font-bold text-success-foreground hover:opacity-90 transition no-underline"
         >
           <span>اختر باقتك</span>
           <ArrowLeft className="w-4 h-4" />
@@ -120,7 +120,7 @@ function MemberCardLarge({ member }: { member: Member }) {
       <MemberAvatar member={member} size={128} sizeClass="w-32 h-32" ringClass="ring-2 ring-success/25" />
       <div className="text-sm font-bold text-foreground mt-4">{member.name}</div>
       <div className="text-xs text-success font-semibold mt-1">{member.role}</div>
-      <p className="text-[12.5px] text-muted-foreground mt-3 leading-relaxed">
+      <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
         {member.bio}
       </p>
     </div>
@@ -133,7 +133,7 @@ function MemberCardSmall({ member }: { member: Member }) {
       <MemberAvatar member={member} size={80} sizeClass="w-20 h-20" ringClass="ring-1 ring-border" />
       <div className="text-[13px] font-bold text-foreground mt-3 leading-tight">{member.name}</div>
       <div className="text-[11px] text-success font-semibold mt-1">{member.role}</div>
-      <p className="text-[11.5px] text-muted-foreground mt-2 leading-relaxed line-clamp-3">
+      <p className="text-[11px] text-muted-foreground mt-2 leading-relaxed line-clamp-3">
         {member.bio}
       </p>
     </div>
@@ -152,7 +152,10 @@ function MemberAvatar({
   ringClass: string;
 }) {
   return (
-    <div className={`relative ${sizeClass} rounded-full overflow-hidden bg-gradient-to-br from-neutral-800 to-neutral-900 ${ringClass}`}>
+    // bg-muted is theme-adaptive (dark in dark mode, light in light mode) —
+    // fallback initials stay readable in both. Hardcoded neutrals would look
+    // out of place on light theme.
+    <div className={`relative ${sizeClass} rounded-full overflow-hidden bg-muted ${ringClass}`}>
       {member.avatarUrl ? (
         <Image
           src={member.avatarUrl}

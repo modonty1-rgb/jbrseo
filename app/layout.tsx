@@ -13,8 +13,19 @@ const SITE_URL = ensureWwwJbrseoUrl(
   (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jbrseo.com").replace(/\/$/, ""),
 );
 
+// Native theme-color per system preference — Android/iOS PWA browsers paint
+// the OS chrome (address bar + task-switcher card) with this. Hardcoding a
+// dark value made the light theme look inconsistent on switch.
+//
+// `colorScheme: "dark light"` tells the browser we support both, so it can
+// apply appropriate default styles for form controls, scrollbars, and other
+// user-agent surfaces. Per Next.js docs.
 export const viewport: Viewport = {
-  themeColor: "#0c0c12",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c0c12" },
+  ],
+  colorScheme: "dark light",
 };
 
 const tajawal = Tajawal({
@@ -65,10 +76,11 @@ export default async function RootLayout({
 
   return (
     <html lang="ar" dir="rtl" className={tajawal.variable} suppressHydrationWarning>
-      {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
       <head>
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        {/* Inline pre-React theme-init — runs before hydration to prevent a
+            flash-of-wrong-theme. MUST stay in <head>, not moved to <body>. */}
         <script
           id="theme-init"
           dangerouslySetInnerHTML={{
@@ -77,6 +89,10 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${tajawal.className} bg-background text-foreground`}>
+        {/* Google Tag Manager — placed inside <body> per Next.js docs. The
+            @next/third-parties component internally chooses the correct
+            script strategy; nesting between <html> and <head> is HTML-invalid. */}
+        {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
         {gtmId && (
           <noscript>
             <iframe

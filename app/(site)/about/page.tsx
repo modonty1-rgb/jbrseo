@@ -97,7 +97,7 @@ export default async function AboutPage() {
       {/* HERO */}
       <section className="text-center mb-16">
         <div className="inline-flex items-center gap-1.5 rounded-full bg-success/12 px-4 py-1.5 text-xs font-bold text-success mb-4">
-          <Compass className="w-3.5 h-3.5" />
+          <Compass className="w-4 h-4" />
           <span>{hero.eyebrow || "عن منصة JBRSEO"}</span>
         </div>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight tracking-tight text-foreground mb-4">
@@ -160,8 +160,8 @@ export default async function AboutPage() {
                 key={block.label}
                 className="rounded-2xl border border-border bg-card p-5"
               >
-                <div className="inline-flex items-center gap-1.5 text-[10.5px] font-extrabold tracking-wide text-success bg-success/12 px-2.5 py-1 rounded-md mb-3">
-                  <Icon className="w-3.5 h-3.5" />
+                <div className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-wide text-success bg-success/12 px-2.5 py-1 rounded-md mb-3">
+                  <Icon className="w-4 h-4" />
                   <span>{block.label}</span>
                 </div>
                 <h3 className="text-sm font-bold text-foreground mb-2 leading-snug">
@@ -238,7 +238,7 @@ export default async function AboutPage() {
                 key={`${i}-${member.name}`}
                 className="rounded-2xl border border-border bg-card p-6 flex flex-col items-center text-center"
               >
-                <div className="relative w-28 h-28 rounded-full overflow-hidden bg-gradient-to-br from-neutral-800 to-neutral-900 ring-2 ring-success/25 mb-4">
+                <div className="relative w-28 h-28 rounded-full overflow-hidden bg-muted ring-2 ring-success/25 mb-4">
                   {member.avatarUrl ? (
                     <Image
                       src={member.avatarUrl}
@@ -255,7 +255,7 @@ export default async function AboutPage() {
                 </div>
                 <div className="text-sm font-bold text-foreground">{member.name}</div>
                 <div className="text-xs text-success font-semibold mt-1">{member.role}</div>
-                <p className="text-[12.5px] text-muted-foreground mt-3 leading-relaxed">
+                <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
                   {member.bio}
                 </p>
               </div>
@@ -271,7 +271,7 @@ export default async function AboutPage() {
                   {extraTeam.map((m, i) => (
                     <div
                       key={`${i}-${m.name}`}
-                      className="relative aspect-square rounded-lg overflow-hidden bg-gradient-to-br from-neutral-800 to-neutral-900 ring-1 ring-border"
+                      className="relative aspect-square rounded-lg overflow-hidden bg-muted ring-1 ring-border"
                     >
                       {m.avatarUrl ? (
                         <Image
@@ -295,12 +295,12 @@ export default async function AboutPage() {
                 <div className="text-xs text-success font-semibold mt-1">
                   {`+${extraCount} عضو متخصّص`}
                 </div>
-                <p className="text-[12.5px] text-muted-foreground mt-3 leading-relaxed">
+                <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
                   ميديا · محتوى · تصميم · تطوير · SEO — كل تخصّص وله شخص متفرّغ.
                 </p>
                 <div className="inline-flex items-center gap-1.5 text-[13px] font-bold text-success mt-4 group-hover:gap-2 transition-all">
                   <span>شاهد الفريق كامل</span>
-                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <ArrowLeft className="w-4 h-4" />
                 </div>
               </Link>
             )}
@@ -382,13 +382,15 @@ export default async function AboutPage() {
               <div className="text-[11px] font-bold text-muted-foreground/80 tracking-wide mb-1">
                 قنوات التواصل الرسمية
               </div>
-              <div className="text-[13.5px] text-foreground font-medium break-all">
+              <div className="text-sm text-foreground font-medium break-all">
                 {legalInfo.email}
               </div>
-              <div className="text-[12.5px] text-muted-foreground mt-1 flex items-center gap-1.5">
-                <Phone className="w-3 h-3" />
-                <span>{legalInfo.phone}</span>
-              </div>
+              {legalInfo.phone && (
+                <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>{legalInfo.phone}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -408,14 +410,14 @@ export default async function AboutPage() {
         <div className="flex flex-wrap gap-3 justify-center">
           <Link
             href={cta.primaryHref}
-            className="inline-flex items-center gap-2 rounded-xl bg-success px-6 py-3 text-sm font-bold text-success-foreground hover:opacity-90 transition"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-success px-6 py-3 text-sm font-bold text-success-foreground hover:opacity-90 transition no-underline"
           >
             <span>{cta.primaryLabel}</span>
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <Link
             href={cta.secondaryHref}
-            className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-bold text-foreground hover:bg-card transition"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-bold text-foreground hover:bg-card transition no-underline"
           >
             <span>{cta.secondaryLabel}</span>
           </Link>
@@ -430,10 +432,10 @@ function LegalItem({ icon: Icon, label, value }: { icon: LucideIcon; label: stri
     <div className="rounded-xl border border-border bg-card p-4 flex gap-3 items-start">
       <Icon className="w-4 h-4 text-muted-foreground mt-1 shrink-0" />
       <div className="min-w-0">
-        <div className="text-[11px] font-bold text-muted-foreground/80 tracking-wide mb-1">
+        <div className="text-xs font-bold text-muted-foreground/80 tracking-wide mb-1">
           {label}
         </div>
-        <div className="text-[13.5px] text-foreground font-medium">{value}</div>
+        <div className="text-sm text-foreground font-medium">{value}</div>
       </div>
     </div>
   );

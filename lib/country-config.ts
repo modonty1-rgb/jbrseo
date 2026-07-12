@@ -9,7 +9,7 @@ export type CountrySlug = keyof typeof COUNTRY_CONFIG;
 
 export const SUPPORTED_COUNTRY_SLUGS: CountrySlug[] = Object.keys(COUNTRY_CONFIG) as CountrySlug[];
 
-export const RESERVED_FIRST_SEGMENTS = ["about", "team", "privacy", "terms", "admin", "features", "preview"] as const;
+export const RESERVED_FIRST_SEGMENTS = ["about", "team", "privacy", "terms", "billing-policy", "admin", "features", "preview", "api"] as const;
 
 export function getCountrySlugFromParam(param: string | undefined): CountrySlug {
   const slug = param?.toLowerCase();

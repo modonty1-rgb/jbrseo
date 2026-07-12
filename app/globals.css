@@ -462,6 +462,16 @@ html {
   scroll-padding-top: 104px;
 }
 
+/* Prevent horizontal page overflow from any bleed / snap-scroll containers
+   (e.g. FAQ category chips edge-to-edge scroll on mobile). `clip` is like
+   `hidden` but does NOT create a scroll container, so it's cheaper for perf
+   and doesn't interfere with `position: sticky`. Chromium/Safari/Firefox all
+   support it. */
+html,
+body {
+  overflow-x: clip;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

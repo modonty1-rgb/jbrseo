@@ -1,108 +1,151 @@
-# سجل القرارات المعلّقة — رحلة الدفع
+# قرارات رحلة الدفع — الحالة النهائية
 
-> نُخلّص الـ UI/UX أولاً، ثم نرجع لهذه النقاط قبل كتابة أي كود.
-> آخر تحديث: 2026-07-11
-
----
-
-## القرارات المعلّقة (٦ نقاط blocking قبل الكود)
-
-### ١. مكان بيانات النموذج قبل نجاح الدفع
-
-**السؤال:** أين تُحفظ بيانات العميل (اسم/إيميل/جوال/باقة) بين ضغطة "ادفع" ونجاح الدفع؟
-
-**الخيارات:**
-- (أ) **Order model في DB** — Prisma model جديد بحالة `pending`، يُحدَّث لـ `paid` عند webhook.
-- (ب) **Session memory فقط** — لا نحفظ حتى يكتمل الدفع، ثم نرسل مباشرة لمدونتي.
-- (ج) **Metadata في N-Genius** — نمرّرها كـ metadata مع الطلب، تُسترجع في webhook.
-
-**التأثير:** يحدّد schema Prisma بالكامل + آلية استعادة الحالة عند refresh.
+> **آخر تحديث: 2026-07-12** — كل القرارات الستّة مقفولة. جاهزون لبناء Stage 3.
 
 ---
 
-### ٢. Idempotency (منع الخصم المزدوج)
+## القرارات المقفولة (٦/٦)
 
-**السؤال:** لو ضغط "ادفع" مرتين بسرعة، كيف نمنع خصم مضاعف؟
+### ✅ القرار #١ — مكان بيانات النموذج قبل الدفع
 
-**الخيارات:**
-- (أ) **Idempotency key من العميل** — hash من (email + plan + timestamp) يُرسل مع الطلب.
-- (ب) **Unique DB constraint** — على (email, plan, dateWindow).
-- (ج) **Disable button + optimistic UI** — client-side فقط (ضعيف).
+**النهج:** `Subscriber` model في JBRSEO (يُعاد استعمال الجدول الموجود) + `Client` model في Modonty (يُنشأ فقط بعد الدفع الناجح).
 
-**التوصية الأولية:** (أ) + (ب) معاً — دفاع متعدد الطبقات.
+**الآلية:**
+```
+form submit → JBRSEO Subscriber row (paymentStatus=pending)
+    ↓ (Payment ينجح)
+    ├─→ Update Subscriber.paymentStatus=paid
+    └─→ HMAC webhook → Modonty ينشئ Client + welcome email
+    ↓ (Payment يفشل)
+    └─→ Update Subscriber.paymentStatus=failed + failReason
+```
 
----
+**Schema tweaks على Subscriber:**
+- إضافة: `paymentStatus` (enum: pending/paid/failed/abandoned/refunded), `paymentRef` (N-Genius transaction ID), `paidAt`, `failReason`
+- `@@unique([email, plan, billing])` — يمنع تكرار الصفوف؛ upsert بدل insert
 
-### ٣. Rate Limiting
-
-**السؤال:** الحالي in-memory (يُعاد ضبطه لكل serverless instance). آمن لصفحة دفع؟
-
-**الخيارات:**
-- (أ) **Upstash Redis** — مجاني حتى ١٠K طلب/يوم، دائم.
-- (ب) **Vercel KV** — مدفوع.
-- (ج) **إبقاء in-memory** — قبول المخاطرة.
-
-**التوصية الأولية:** (أ) Upstash — الأنصح صناعياً.
+**السبب:** فصل واضح لحدود البيانات (payment في JBRSEO · product access في Modonty). يعيد استخدام schema موجود. صفر coupling وقت الـ checkout.
 
 ---
 
-### ٤. مهلة انتهاء Order pending
+### ✅ القرار #٢ — Idempotency (منع الخصم المضاعف)
 
-**السؤال:** كم دقيقة قبل ما نُلغي طلب `pending` لم يكتمل دفعه؟
+**النهج:** ٣ طبقات دفاع:
 
-**الخيارات:**
-- (أ) **٣٠ دقيقة** — توصية Baymard.
-- (ب) **١٥ دقيقة** — أشد.
-- (ج) **٢٤ ساعة** — أوسع.
+| الطبقة | الآلية |
+|---|---|
+| ١. Form Submit | Subscriber `@@unique(email, plan, billing)` → upsert بدل insert |
+| ٢. N-Genius Order Create | نستخدم `merchantOrderReference` كمفتاح فريد (alphanumeric + hyphens) — يُبنى من hash(subscriberId + timestamp). N-Genius يُرجع نفس الجلسة لو المرجع متكرّر |
+| ٣. Webhook Processing | جدول `WebhookEvent` جديد (id · provider · providerEventId @unique · payload · receivedAt) — يمنع معالجة نفس الحدث مرتين |
 
-**التوصية الأولية:** (أ) ٣٠ دقيقة + cron job يومي يُنظّف.
+**+ حماية UX:** زر "ادفع" disabled بعد أول ضغطة (client-side فقط، ليس أمان).
 
----
-
-### ٥. إيميل مكرر — عميل يدفع مرتين
-
-**السؤال:** لو نفس الإيميل دفع باقة ثانية (أو نفسها)، ماذا نفعل؟
-
-**الحالات:**
-- (أ) **نفس الباقة مرة أخرى** — تجديد؟ إضافة مدة؟ رفض؟
-- (ب) **باقة مختلفة (upgrade)** — استبدال؟ رصيد؟
-- (ج) **باقة أدنى (downgrade)** — قابل؟
-
-**التوصية الأولية:** رفض في checkout مع رسالة "لديك اشتراك نشط — راسلنا للتغيير عبر واتساب".
+**Note:** N-Genius يوفّر `paymentAttempts=5` كحد أقصى داخلياً (حماية إضافية مجانية).
 
 ---
 
-### ٦. قناة طلب الاسترداد
+### ✅ القرار #٣ — Rate Limiting
 
-**السؤال:** كيف يطلب العميل الاسترداد ضمن الـ ١٤ يوم؟
+**النهج:** **Upstash Redis** (مجاني حتى ١٠K request/يوم).
 
-**الخيارات:**
-- (أ) **واتساب فقط** — بسيط، بشري، سريع.
-- (ب) **إيميل مخصّص** (`refund@jbrseo.com`) + رد آلي.
-- (ج) **Form في `/billing-policy`** — رسمي، موثّق، بطيء.
-- (د) **الاثنان (أ) + (ب)**.
+**السبب:** N-Genius Risk Module يبلوك BINs/دول/إيميلات فقط — **لا velocity checks ولا IP-based blocking**. يعني بوت يقدر يجرّب ١٠٠ بطاقة حقيقية بدون رفض. نحن مسؤولون ١٠٠٪ عن الحماية.
 
-**التوصية الأولية:** (د) واتساب أساسي + إيميل احتياطي.
+**الإعدادات المقترحة:**
+- Landing browsing: 30 req/دقيقة/IP (زي الحالي)
+- `/checkout` submit: **5 محاولات/١٠ دقائق/IP** (أشد)
+- N-Genius order create: **3 محاولات/دقيقة/IP** (أشد الشدة)
 
----
-
-## تعديلات لاحقة على مدونتي (side-effects)
-
-- `Client.email @unique` في Prisma schema.
-- استبدال `admin123` بمولّد كلمات سر عشوائية.
-- بناء endpoint استقبال HMAC في `modonty/app/api/admin/checkout-webhook/route.ts`.
-- قالب welcome email في Resend يشمل بيانات الدخول + سياسة الاسترداد.
+**الحزمة:** `@upstash/ratelimit` (SDK رسمي، 3 أسطر كود).
 
 ---
 
-## مهام UI/UX الباقية قبل القرارات هذه
+### ✅ القرار #٤ — Order Pending Timeout
 
-- (تُضاف هنا مع كل نقطة نُغلقها في مرحلة الـ UI/UX)
+**النهج:** **Lazy check + N-Genius `findorder` polling — بدون cron.**
+
+**الآلية:**
+```
+لو Subscriber عنده paymentStatus=pending + طلب دفع جديد للإيميل نفسه:
+  ├─ عمر الصف < ٣٠ دقيقة → "لديك دفع معلّق، أكمله" + رابط للجلسة
+  └─ عمر الصف > ٣٠ دقيقة → استدعاء N-Genius: GET /orders/{ourRef}
+       ├─ N-Genius يقول pending/none → نحدّث DB إلى abandoned، نسمح بمحاولة جديدة
+       └─ N-Genius يقول captured → استرجعنا webhook ضائع، نُنشئ Client في Modonty يدوياً + نحدّث DB إلى paid
+```
+
+**الفوائد:**
+- ✅ صفر cron / background jobs
+- ✅ يحلّ مشكلة webhook الضائع (N-Genius **لا يعيد المحاولة** — موثّق في دوكسهم)
+- ✅ N-Genius يبقى مصدر الحقيقة للحالة
+
+**Trade-off:** صفوف pending قديمة جداً لا يتفاعل معها أحد قد تظل في التقارير. حل: زر يدوي في admin "نظّف القديم" (اختياري).
 
 ---
 
-## الحالة
+### ✅ القرار #٥ — إيميل مكرّر (نفس الشخص يدفع مرة ثانية)
 
-- **مؤجّل حتى:** إغلاق آخر نقاط الـ UI/UX.
-- **من يُقرّ:** خالد.
-- **مرجع:** [`project_payment_journey.md`](../../../../.claude/projects/c--Users-w2nad-Desktop-dreamToApp-JBRSEO-jbrseo-com/memory/project_payment_journey.md) + [`project_refund_policy.md`](../../../../.claude/projects/c--Users-w2nad-Desktop-dreamToApp-JBRSEO-jbrseo-com/memory/project_refund_policy.md)
+**النهج:** **فحص واحد فقط** قبل قبول الـ submit — هل عميل نشط في Modonty؟
+
+**الآلية:**
+```
+GET /api/clients/lookup?email=X  (Modonty API — مع fail-open)
+   نشط → 📱 رسالة: "لديك اشتراك نشط — للتغيير أو الترقية، تواصل مع الفريق التقني عبر واتساب" + زر
+   لا  → ✅ يستمر الدفع طبيعي
+```
+
+**Fail-open:** لو Modonty API عندها outage → نسمح بالدفع (لا نبلوك المستخدم بسبب خطأ عندنا).
+
+**كل الحالات الأخرى** (pending, failed, expired, race condition) → يُسمح بالمرور. N-Genius `merchantOrderReference` يحمي من الدبل تلقائياً. الحالة النادرة (١ في ٥٠٠) = تذكرة دعم يدوياً.
+
+---
+
+### ✅ القرار #٦ — سياسة الفوترة (تحوّل جوهري)
+
+**النهج:** **"التزام بالتسليم"** — تمديد اشتراك مجاني عند التأخّر، بدل استرداد نقدي.
+
+**الصياغة:**
+
+> **"التزام بالتسليم — إذا لم نُنشئ حسابك خلال ٧٢ ساعة من الدفع، نمدّد اشتراكك بدون تكلفة إضافية حتى نُسلّم."**
+
+**قناة الطلب:** واتساب فقط. Deep-link مع رسالة معبأة مسبقاً في `/billing-policy`.
+
+**لماذا هذا التحوّل (من الاسترداد النقدي):**
+- ✅ يفي بالالتزام القانوني (نظام التجارة الإلكترونية، المادة ٥)
+- ✅ حماية من chargebacks
+- ✅ **صفر تدفّق نقدي خارج** (لا مال يعود)
+- ✅ **صفر حافز للاستغلال** (لا مال = لا "أبغى فلوسي")
+- ✅ verifiable (Client موجود في Modonty = تسليم تم)
+
+**تفاصيل كاملة:** [`project_refund_policy.md`](../../../../.claude/projects/c--Users-w2nad-Desktop-dreamToApp-JBRSEO-jbrseo-com/memory/project_refund_policy.md)
+
+---
+
+## تعديلات جانبية على مدونتي (Stage 3)
+
+- `Client.email @unique` في Prisma schema
+- استبدال `admin123` بمولّد كلمات سر عشوائية (`nanoid` أو مشابه)
+- بناء endpoint استقبال HMAC في `modonty/app/api/admin/checkout-webhook/route.ts`
+- بناء endpoint lookup في `modonty/app/api/clients/lookup?email=X` (للفحص من JBRSEO)
+- قالب welcome email في Resend (يشمل بيانات الدخول + سياسة التزام التسليم)
+- زر "استرداد/تمديد" في Modonty admin (يستدعي N-Genius refund API + يحدّث حالة الاشتراك)
+
+---
+
+## تعديلات UI text (تُطبَّق في Stage 3)
+
+النصوص الحالية على prod تقول "استرداد ١٤ يوم مضمون". هذي تُحدَّث في Stage 3 لتصبح **"التزام بالتسليم ٧٢ ساعة"**:
+
+| المكان | من | إلى |
+|---|---|---|
+| Landing hero.trust في DB | استرداد ١٤ يوم مضمون | ⏱️ التزام بالتسليم ٧٢ ساعة |
+| CheckoutSummary badge | استرداد ١٤ يوم مضمون | ⏱️ التزام بالتسليم ٧٢ ساعة |
+| CheckoutForm badge أسفل زر الدفع | استرداد ١٤ يوم مضمون — إذا لم نلتزم بإعداد حسابك | التزام بالتسليم — نُنشئ حسابك خلال ٧٢ ساعة أو نمدّد اشتراكك مجاناً |
+| Terms checkbox link | سياسة الاسترداد ١٤ يوم | سياسة الفوترة |
+| `/billing-policy` page | (لم تُنشأ بعد) | صفحة التزام التسليم كاملة |
+
+---
+
+## الحالة العامة
+
+- ✅ **٦/٦ قرارات مقفولة** (2026-07-12)
+- ✅ Stage 1 + 2 مطبّق ومنشور على prod (commit `dd801fe`)
+- 🔜 **Stage 3 جاهزة للبدء** — بناء N-Genius integration + Success/Failed pages + `/billing-policy` + Order webhook + Modonty integration

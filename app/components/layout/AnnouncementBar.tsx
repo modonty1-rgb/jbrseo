@@ -25,20 +25,20 @@ export function AnnouncementBar({ message }: { message: string }) {
   return (
     <div
       role="status"
-      className="relative flex flex-wrap items-center justify-center gap-x-[14px] gap-y-1 ps-[var(--tap)] pe-4 py-[10px] text-[13px] sm:text-[13.5px] font-medium text-card text-center bg-card-foreground"
+      className="relative bg-card-foreground text-card"
     >
-      <span
-        className="font-bold text-[10.5px] text-success-foreground bg-success py-[3px] px-[7px] rounded-[4px] tracking-[0.5px]"
-        style={{ fontFamily: "'IBM Plex Mono',monospace" }}
-      >
-        جديد
-      </span>
-      <span className="flex-[0_1_auto]">{message}</span>
+      {/* Content lives in a flex row that keeps the "جديد" badge inline with
+          the message's first line — no flex-wrap so the badge never breaks to
+          its own row. Text wraps naturally if long; badge follows the first
+          line via `items-baseline`. Left padding reserves space for dismiss. */}
+      <div className="flex items-center justify-center ps-11 pe-4 py-3.5 text-[14px] sm:py-4 sm:text-[15px] font-semibold">
+        <span className="text-center whitespace-nowrap">{message}</span>
+      </div>
       <button
         type="button"
         onClick={dismiss}
         aria-label="إخفاء الإعلان"
-        className="absolute start-1 top-1/2 -translate-y-1/2 w-[var(--tap)] h-[var(--tap)] rounded-[var(--radius-sm)] text-card opacity-60 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-card/60 text-xl leading-none inline-flex items-center justify-center transition-opacity duration-150"
+        className="absolute start-1 top-1/2 -translate-y-1/2 inline-flex h-11 w-11 items-center justify-center rounded-[var(--radius-sm)] text-xl leading-none text-card opacity-60 transition-opacity duration-150 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline-2 focus-visible:outline-card/60"
       >
         ×
       </button>

@@ -3,9 +3,12 @@ import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { LandingHeader } from "@/app/components/layout/header/LandingHeader";
 import { Footer } from "@/app/components/layout/footer/Footer";
+import { StickyMobileCTA } from "@/app/components/layout/StickyMobileCTA";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getLandingContent } from "@/lib/getLandingContent";
+import { getWhatsAppLink } from "@/lib/site-links";
+import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 
 function SiteLayoutFallback({ children }: { children: ReactNode }) {
   return (
@@ -36,11 +39,22 @@ async function SiteLayoutContent({ children }: { children: ReactNode }) {
     getLandingContent(country),
     getStaticLandingWithOverrides(),
   ]);
+  // Sticky CTA needs country-scoped links so /privacy visitors from an ad get
+  // routed back to /sa#pricing (or /eg#pricing) — not just /#pricing.
+  const countrySlug = country.toLowerCase();
+  const pricingHref = `/${countrySlug}#pricing`;
+  const whatsappLink = getWhatsAppLink(country, content.siteSettings?.whatsappNumber);
+  const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
   return (
     <>
       <LandingHeader content={content} staticLanding={staticLanding} country={country} />
       <main id="main-content">{children}</main>
       <Footer content={content} staticLanding={staticLanding} country={country} />
+      <StickyMobileCTA
+        pricingHref={pricingHref}
+        whatsappLink={whatsappLink}
+        ctaLabel={ctaLabel}
+      />
     </>
   );
 }
