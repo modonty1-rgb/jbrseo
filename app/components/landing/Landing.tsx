@@ -114,16 +114,6 @@ const FADE_IN_UP = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
 };
 
-const STAGGER_PARENT = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.05 } },
-};
-
-const STAGGER_CHILD = {
-  hidden: { opacity: 0, y: 28 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } },
-};
-
 type CaseStudy = {
   name: string;
   industry: string;
@@ -312,11 +302,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
   const goTo = (i: number) => setIdx(((i % studies.length) + studies.length) % studies.length);
 
   return (
-    <m.section
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+    <section
       id="case-study"
       className="bg-background"
     >
@@ -485,7 +471,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
           </div>
         </div>
       </div>
-    </m.section>
+    </section>
   );
 }
 
@@ -626,11 +612,7 @@ export function Landing(props: Props) {
 
       {/* ─── MODONTY IMPACT BAR · live GA4 platform-wide numbers ─── */}
       {modontyImpact && (
-        <m.section
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        <section
           className="bg-background"
         >
           <div className="max-w-[1080px] mx-auto px-7 py-14">
@@ -748,15 +730,11 @@ export function Landing(props: Props) {
               </div>
             </div>
           </div>
-        </m.section>
+        </section>
       )}
 
       {/* ─── GUARANTEE — activity-based (things we 100% control), no risky ranking promise ─── */}
-      <m.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      <section
         className="bg-card border-t border-t-border border-b border-b-border"
       >
         <div className="max-w-[920px] mx-auto px-7 py-14">
@@ -790,14 +768,10 @@ export function Landing(props: Props) {
             </div>
           </div>
         </div>
-      </m.section>
+      </section>
 
       {/* ─── SAUDI IDENTITY CARD · answers "من أنتم؟" — critical for Saudi buyer ─── */}
-      <m.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      <section
         className="bg-background"
       >
         <div className="max-w-[920px] mx-auto px-7 py-14">
@@ -909,7 +883,7 @@ export function Landing(props: Props) {
 
           </div>
         </div>
-      </m.section>
+      </section>
 
       {/* ─── TRUST SECTION — live from Modonty's real paying clients ─── */}
       {trustBundle.logos.length > 0 && (
@@ -917,11 +891,7 @@ export function Landing(props: Props) {
       )}
 
       {/* ─── MATH — compact side-by-side comparison for non-technical visitor ─── */}
-      <m.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      <section
         className="bg-background"
       >
         <div className="max-w-[1080px] mx-auto px-7 py-14">
@@ -1099,7 +1069,7 @@ export function Landing(props: Props) {
             المقالات ملكك للأبد — حتى لو ألغيت الاشتراك، تظل في موقعك تجيب لك زوّار.
           </p>
         </div>
-      </m.section>
+      </section>
 
       {/* ─── FEATURES — reframed as a Saudi platform, production system (not "writing") ─── */}
       <section id="features" className="border-t border-t-[var(--border)] bg-card">
@@ -1305,11 +1275,7 @@ export function Landing(props: Props) {
       </section>
 
       {/* ─── PAYMENT TRUST (Network International anchor · single bar) ─── */}
-      <m.section
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+      <section
         className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card"
       >
         <div className="max-w-[1080px] mx-auto px-7 py-14">
@@ -1419,7 +1385,7 @@ export function Landing(props: Props) {
             </div>
           </div>
         </div>
-      </m.section>
+      </section>
 
       {/* ─── PRICING (DB Plan model) ─── */}
       <section id="pricing" className="max-w-[1080px] mx-auto px-7 pt-10 pb-20 scroll-mt-16">
@@ -1457,12 +1423,8 @@ export function Landing(props: Props) {
           </div>
         </div>
 
-        <m.div
+        <div
           className="prev-pricing-grid grid gap-[14px]"
-          variants={STAGGER_PARENT}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
           style={{ gridTemplateColumns: `repeat(${Math.min(visiblePlans.length, 4)}, 1fr)` }}
         >
           {visiblePlans.map((p) => {
@@ -1478,13 +1440,12 @@ export function Landing(props: Props) {
             const isExternalCta = isConsultation || countrySlug === "eg";
 
             return (
-              <m.div
+              <div
                 key={p.id}
-                variants={STAGGER_CHILD}
                 className={cn(
                   "rounded-[18px] px-[22px] py-[26px] relative border-2 bg-card text-foreground",
                   featured
-                    ? "order-first md:order-none border-success ring-[3px] ring-success/50 shadow-[0_28px_60px_-22px_color-mix(in_oklch,var(--success)_65%,transparent)] scale-[1.015] md:scale-100 z-[1]"
+                    ? "order-first md:order-none border-success ring-2 ring-success/40"
                     : "border-border",
                 )}
               >
@@ -1606,10 +1567,10 @@ export function Landing(props: Props) {
                     </div>
                   </div>
                 )}
-              </m.div>
+              </div>
             );
           })}
-        </m.div>
+        </div>
 
         {/* Escape valve — placed AFTER cards per Baymard 2024 (post-scan fallback for hesitant B2B buyers). */}
         <div className="mt-10 text-center">
@@ -1633,12 +1594,8 @@ export function Landing(props: Props) {
         const embedUrl = ytEmbed(v.videoUrl);
         const initials = (v.name ?? "").trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("");
         return (
-          <m.section
+          <section
             id="social-proof"
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="border-t border-t-[var(--border)] bg-background"
           >
             <div className="max-w-[1080px] mx-auto px-7 py-14">
@@ -1768,17 +1725,13 @@ export function Landing(props: Props) {
                 )}
               </div>
             </div>
-          </m.section>
+          </section>
         );
       })()}
 
       {/* ─── TEAM — "faces that guarantee your presence" (aligned with slogan + CR) ─── */}
       {(coreTeam.length > 0 || executionTeam.length > 0) && (
-        <m.section
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        <section
           className="border-t border-t-[var(--border)] bg-card"
         >
           <div className="max-w-[1080px] mx-auto px-7 py-14">
@@ -1869,7 +1822,7 @@ export function Landing(props: Props) {
               </div>
             )}
           </div>
-        </m.section>
+        </section>
       )}
 
       {/* ─── FAQ — grouped by tag (leverages FaqItem.tag from DB) ─── */}
@@ -1883,12 +1836,8 @@ export function Landing(props: Props) {
         }
         const groups = Array.from(grouped.entries());
         return (
-          <m.section
+          <section
             id="faq"
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="border-t border-t-[var(--border)] bg-card overflow-x-clip"
           >
             <div className="max-w-[760px] mx-auto px-7 py-14">
@@ -1976,17 +1925,13 @@ export function Landing(props: Props) {
                 </a>
               </div>
             </div>
-          </m.section>
+          </section>
         );
       })()}
 
       {/* ─── FINAL CTA (DB) ─── */}
-      <m.section
+      <section
         id="final-cta"
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-60px" }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className="max-w-[1080px] mx-auto pt-[60px] px-7 pb-[90px]"
       >
         <div className="bg-foreground rounded-[20px] md:rounded-[26px] px-5 py-10 md:px-10 md:py-[72px] text-center">
@@ -2006,7 +1951,7 @@ export function Landing(props: Props) {
             </a>
           </div>
         </div>
-      </m.section>
+      </section>
 
       {/* ─── CALCULATOR MODAL (spring · compact) ─── */}
       <AnimatePresence>
