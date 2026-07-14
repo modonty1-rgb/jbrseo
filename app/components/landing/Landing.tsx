@@ -304,7 +304,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
   return (
     <section
       id="case-study"
-      className="bg-background"
+      className="bg-background max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
     >
       <div className="max-w-[1080px] mx-auto px-7 py-20">
         <div className="text-center mb-10">
@@ -613,7 +613,7 @@ export function Landing(props: Props) {
       {/* ─── MODONTY IMPACT BAR · live GA4 platform-wide numbers ─── */}
       {modontyImpact && (
         <section
-          className="bg-background"
+          className="bg-background max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
         >
           <div className="max-w-[1080px] mx-auto px-7 py-14">
             <div className="text-center mb-8">
@@ -735,7 +735,7 @@ export function Landing(props: Props) {
 
       {/* ─── GUARANTEE — activity-based (things we 100% control), no risky ranking promise ─── */}
       <section
-        className="bg-card border-t border-t-border border-b border-b-border"
+        className="bg-card border-t border-t-border border-b border-b-border max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
       >
         <div className="max-w-[920px] mx-auto px-7 py-14">
           <div className="flex flex-col md:flex-row items-start gap-6 md:gap-8">
@@ -772,7 +772,7 @@ export function Landing(props: Props) {
 
       {/* ─── SAUDI IDENTITY CARD · answers "من أنتم؟" — critical for Saudi buyer ─── */}
       <section
-        className="bg-background"
+        className="bg-background max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
       >
         <div className="max-w-[920px] mx-auto px-7 py-14">
           {/* Section title */}
@@ -892,7 +892,7 @@ export function Landing(props: Props) {
 
       {/* ─── MATH — compact side-by-side comparison for non-technical visitor ─── */}
       <section
-        className="bg-background"
+        className="bg-background max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
       >
         <div className="max-w-[1080px] mx-auto px-7 py-14">
           {/* Header */}
@@ -1072,7 +1072,7 @@ export function Landing(props: Props) {
       </section>
 
       {/* ─── FEATURES — reframed as a Saudi platform, production system (not "writing") ─── */}
-      <section id="features" className="border-t border-t-[var(--border)] bg-card">
+      <section id="features" className="border-t border-t-[var(--border)] bg-card max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]">
         <div className="max-w-[1080px] mx-auto px-7 py-14">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
@@ -1276,7 +1276,7 @@ export function Landing(props: Props) {
 
       {/* ─── PAYMENT TRUST (Network International anchor · single bar) ─── */}
       <section
-        className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card"
+        className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
       >
         <div className="max-w-[1080px] mx-auto px-7 py-14">
           <div className="rounded-2xl border border-border overflow-hidden shadow-[0_20px_50px_-30px_color-mix(in_oklch,var(--foreground)_25%,transparent)]">
@@ -1388,7 +1388,7 @@ export function Landing(props: Props) {
       </section>
 
       {/* ─── PRICING (DB Plan model) ─── */}
-      <section id="pricing" className="max-w-[1080px] mx-auto px-7 pt-10 pb-20 scroll-mt-16">
+      <section id="pricing" className="max-w-[1080px] mx-auto px-7 pt-10 pb-20 scroll-mt-16 max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]">
         <div className="text-center mb-5">
           <h2 className="prev-h2 text-[32px] font-semibold tracking-[-1px]">باقات تنمو معك</h2>
           <div
@@ -1596,7 +1596,7 @@ export function Landing(props: Props) {
         return (
           <section
             id="social-proof"
-            className="border-t border-t-[var(--border)] bg-background"
+            className="border-t border-t-[var(--border)] bg-background max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
           >
             <div className="max-w-[1080px] mx-auto px-7 py-14">
               <div className="text-center mb-10">
@@ -1732,7 +1732,7 @@ export function Landing(props: Props) {
       {/* ─── TEAM — "faces that guarantee your presence" (aligned with slogan + CR) ─── */}
       {(coreTeam.length > 0 || executionTeam.length > 0) && (
         <section
-          className="border-t border-t-[var(--border)] bg-card"
+          className="border-t border-t-[var(--border)] bg-card max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
         >
           <div className="max-w-[1080px] mx-auto px-7 py-14">
             <div className="text-center mb-10">
@@ -1838,7 +1838,7 @@ export function Landing(props: Props) {
         return (
           <section
             id="faq"
-            className="border-t border-t-[var(--border)] bg-card overflow-x-clip"
+            className="border-t border-t-[var(--border)] bg-card overflow-x-clip max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
           >
             <div className="max-w-[760px] mx-auto px-7 py-14">
               <div className="text-center mb-8">
@@ -1932,7 +1932,7 @@ export function Landing(props: Props) {
       {/* ─── FINAL CTA (DB) ─── */}
       <section
         id="final-cta"
-        className="max-w-[1080px] mx-auto pt-[60px] px-7 pb-[90px]"
+        className="max-w-[1080px] mx-auto pt-[60px] px-7 pb-[90px] max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
       >
         <div className="bg-foreground rounded-[20px] md:rounded-[26px] px-5 py-10 md:px-10 md:py-[72px] text-center">
           <h2 className="prev-cta-h2 text-[26px] md:text-[44px] font-semibold text-background tracking-[-1px] md:tracking-[-1.5px] leading-[1.2] md:leading-[1.15] mb-4 [text-wrap:balance]">
@@ -1966,7 +1966,7 @@ export function Landing(props: Props) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={(e) => { if (e.target === e.currentTarget) setCalcOpen(false); }}
-          className="fixed inset-0 z-[70] bg-[color-mix(in oklch, var(--foreground) 42%, transparent)] backdrop-blur-[5px] flex items-center justify-center p-[18px]"
+          className="fixed inset-0 z-[70] bg-foreground/50 flex items-center justify-center p-[18px]"
         >
           <m.div
             initial={{ y: 40, opacity: 0, scale: 0.96 }}

@@ -14,20 +14,11 @@ type Props = {
 /**
  * Mobile-only bottom CTA — WhatsApp + primary action to #pricing.
  *
- * Visibility model (evidence-backed):
- *  - Two IntersectionObserver sentinels (NOT a scroll listener) — MDN:
- *    "sites no longer need to do anything on the main thread to watch for this
- *    kind of element intersection". Zero getBoundingClientRect(), zero scroll
- *    handling, zero per-frame React setState.
- *  - Show when we leave the top-of-page sentinel behind (past ~50vh of hero).
- *  - Hide again when we approach the bottom-of-page sentinel (near footer / final CTA).
- *
- * Paint model (evidence-backed):
- *  - Solid background — NO backdrop-filter. web.dev "Stick to compositor-only
- *    properties": only `transform` and `opacity` are compositor-only; blur is
- *    a paint operation re-computed every frame during scroll = the mobile jank
- *    we hit on 2026-07-13.
- *  - Enter/exit uses only `transform` + `opacity` — compositor-only path.
+ * Visibility: two IntersectionObserver sentinels (no scroll listener, no
+ * getBoundingClientRect) — MDN-recommended pattern.
+ * Paint: solid background, no backdrop-filter, no will-change; enter/exit
+ * transitions only transform + opacity (compositor-only per web.dev).
+ * Styling: pure Tailwind — visibility driven by data-visible attribute.
  */
 export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) {
   const [visible, setVisible] = useState(false);
@@ -42,17 +33,12 @@ export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) 
     let topVisible = true;
     let bottomVisible = false;
 
-    const apply = () => {
-      // Show when the hero-height sentinel has scrolled OUT of view AND we
-      // aren't yet near the footer sentinel.
-      setVisible(!topVisible && !bottomVisible);
-    };
+    const apply = () => setVisible(!topVisible && !bottomVisible);
 
     const topObs = new IntersectionObserver((entries) => {
       topVisible = entries[0]?.isIntersecting ?? true;
       apply();
     });
-
     const bottomObs = new IntersectionObserver((entries) => {
       bottomVisible = entries[0]?.isIntersecting ?? false;
       apply();
@@ -69,63 +55,29 @@ export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) 
 
   return (
     <>
-      {/* Sentinel at 50vh from the top of <main>. When it exits viewport, we
-          know user has scrolled past the hero and the CTA should appear. */}
+      {/* Top sentinel: spans the hero (~50vh). CTA appears once it scrolls out. */}
       <div
         ref={topSentinelRef}
         aria-hidden
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: 1,
-          height: "50vh",
-          pointerEvents: "none",
-        }}
+        className="pointer-events-none absolute top-0 left-0 w-px h-[50vh]"
       />
-      <style>{`
-        .prev-sticky-mobile-cta {
-          position: fixed;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          z-index: 40;
-          padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
-          background: var(--background);
-          border-top: 1px solid var(--border);
-          display: none;
-          gap: 8px;
-          align-items: stretch;
-          box-shadow: 0 -10px 24px -16px color-mix(in oklch, var(--foreground) 18%, transparent);
-          /* Compositor-only transition — web.dev "Stick to compositor-only
-             properties": only transform + opacity avoid layout AND paint. */
-          transition: transform .25s ease, opacity .2s ease;
-          transform: translateY(0);
-          opacity: 1;
-          will-change: transform, opacity;
-        }
-        .prev-sticky-mobile-cta.hidden {
-          transform: translateY(110%);
-          opacity: 0;
-          pointer-events: none;
-        }
-        @media (max-width: 880px) {
-          .prev-sticky-mobile-cta { display: flex; }
-        }
-      `}</style>
-      <div className={`prev-sticky-mobile-cta${visible ? "" : " hidden"}`} aria-hidden={!visible}>
+      <div
+        data-visible={visible}
+        aria-hidden={!visible}
+        className="fixed inset-x-0 bottom-0 z-40 hidden max-[880px]:flex items-stretch gap-2 border-t border-border bg-background px-3.5 pt-2.5 pb-[calc(10px+env(safe-area-inset-bottom))] shadow-[0_-10px_24px_-16px_color-mix(in_oklch,var(--foreground)_18%,transparent)] transition-[transform,opacity] duration-200 ease-out data-[visible=false]:translate-y-[110%] data-[visible=false]:opacity-0 data-[visible=false]:pointer-events-none"
+      >
         <a
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="تواصل عبر واتساب"
-          className="w-[52px] h-[52px] rounded-[13px] bg-success text-success-foreground inline-flex items-center justify-center shrink-0 shadow-[0_8px_20px_-10px_color-mix(in oklch, var(--success) 55%, transparent)] no-underline"
+          className="w-[52px] h-[52px] rounded-[13px] bg-success text-success-foreground inline-flex items-center justify-center shrink-0 shadow-[0_8px_20px_-10px_color-mix(in_oklch,var(--success)_55%,transparent)] no-underline"
         >
           <WhatsAppIcon className="w-[22px] h-[22px]" />
         </a>
         <NextLink
           href={pricingHref}
-          className="group flex-1 inline-flex items-center justify-center gap-2 bg-foreground text-background px-[18px] rounded-[13px] text-[15px] font-semibold no-underline shadow-[0_12px_26px_-14px_color-mix(in oklch, var(--foreground) 50%, transparent)] min-h-[52px]"
+          className="group flex-1 inline-flex items-center justify-center gap-2 bg-foreground text-background px-[18px] rounded-[13px] text-[15px] font-semibold no-underline shadow-[0_12px_26px_-14px_color-mix(in_oklch,var(--foreground)_50%,transparent)] min-h-[52px]"
         >
           <Sparkles
             className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"
@@ -135,19 +87,11 @@ export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) 
           {ctaLabel}
         </NextLink>
       </div>
-      {/* Sentinel 200px above the bottom of the document. When it enters the
-          viewport, hide the CTA (user reached the footer / final CTA). */}
+      {/* Bottom sentinel: 200px above document end. CTA hides when it enters. */}
       <div
         ref={bottomSentinelRef}
         aria-hidden
-        style={{
-          position: "absolute",
-          bottom: 200,
-          left: 0,
-          width: 1,
-          height: 1,
-          pointerEvents: "none",
-        }}
+        className="pointer-events-none absolute bottom-[200px] left-0 w-px h-px"
       />
     </>
   );
