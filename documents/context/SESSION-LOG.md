@@ -4,6 +4,83 @@
 
 ---
 
+## Session: 2026-07-13 00:00 — N-Genius sandbox E2E on prod + region fix (fra1) + go-live email
+
+### 🎯 Where I stopped
+- **Last action:** Ran second full E2E payment test on prod (`starter/annual`, 4,788 SAR) — succeeded end-to-end. Redirected `/checkout` → `/checkout/processing` → `/checkout/success` in ~41 seconds (includes 3DS OTP + polling). DB row `6a5423e5dc9badc5d0d3ee73` shows `paymentStatus: paid`, `paidAt: 2026-07-12T23:32:30`. Screenshot: `.playwright-mcp/retest-success.png`.
+- **Next concrete action when resuming:**
+  1. Open `documents/context/NGENIUS-GO-LIVE-EMAIL.md`, fill in personal contact info (email + phone) at the end.
+  2. Send that email to N-Genius KSA integration team (subject line already drafted).
+  3. When N-Genius replies with LIVE credentials + webhook whitelist confirmation → follow the "internal notes" section at bottom of that email file (env sync + Turnstile real keys + redeploy).
+  4. **Optional cleanup before LIVE swap:** commit the 2 untracked helper files (`documents/context/NGENIUS-GO-LIVE-EMAIL.md`, `scripts/check-retest.mjs`) — no push needed yet.
+
+### ✅ Done this session
+- **Push #1:** `74fc6c4` — full checkout integration + Landing UI overhaul + skeleton rebuild (101 files, 10,993 insertions).
+- **Push #2:** `8813687` — added 6s AbortController timeout to `lib/ngenius/auth.ts` + `find-order.ts` + surfaced silent-caught poll error via `?debug=1` on status endpoint. Turned "72s hang returning pending" into "diagnosable error".
+- **Push #3:** `a0732c4` — added `preferredRegion = ['fra1', 'bom1']` to all 3 N-Genius routes (was ignored — see project config change below).
+- **Vercel env sync:** 13 keys added to jbrseo prod project (target=production) via `POST /v10/projects/.../env`:
+  - N-Genius: `NGENIUS_TOKEN_URL`, `NGENIUS_API_BASE`, `NGENIUS_API_KEY`, `NGENIUS_OUTLET_ID`, `NGENIUS_WEBHOOK_SECRET`, `NGENIUS_ENV`, `NGENIUS_OUTLET_NAME`, `NGENIUS_TOKEN_GROUP`
+  - Client: `NEXT_PUBLIC_NGENIUS_HOSTED_SESSION_API_KEY`
+  - Turnstile: `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (both are Cloudflare dummy test keys `1x00...` — need real keys before LIVE swap)
+  - Upstash Redis (rate-limit): `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN`
+- **Vercel project-level region:** PATCHed `serverlessFunctionRegion` from `iad1` → `fra1`. This was the ROOT CAUSE of the "72s pending" bug — code-level `preferredRegion` in route files was being overridden by the project setting.
+- **Prod DB scripts run:** `fix-hero-trust-prod.mjs` (removed 4 false claims, replaced with 3 accurate ones) + `fix-legal-name-full-prod.mjs` (updated about/privacy/terms legal identifier). Both verified pointing to `/modonty` (not `/modonty_dev`).
+- **E2E test #1** — plan=growth, monthly, 1,299 SAR — subscriber `6a541c9468f24fb252613491`, paymentRef `f4179b5f-6bc1-4252-941d-97b451baebae`, state=PURCHASED on N-Genius, `paidAt` set at 23:28:40.
+- **E2E test #2 (retest)** — plan=starter, annual, 4,788 SAR — subscriber `6a5423e5dc9badc5d0d3ee73`, paymentRef `6506f67c-7fed-4b13-84d8-832cb98d3078`, `paidAt` set at 23:32:30.
+- **Go-live email drafted** at `documents/context/NGENIUS-GO-LIVE-EMAIL.md` — subject + merchant details + E2E verification table + 7 LIVE credential requests + webhook whitelist request + internal handoff notes.
+- **TSC gate:** zero errors (ran twice — before push #2 and push #3).
+
+### 📝 Decisions taken (with reasoning)
+- **Push with sandbox N-Genius keys first, LIVE later** → Khalid explicitly told N-Genius flow: test with sandbox → they verify → they issue LIVE keys → swap. No real money at risk during the test window. Alternative rejected: waiting for LIVE keys before any push (blocks other prod validation).
+- **Change project-level region on Vercel dashboard, not just route-level `preferredRegion`** → I first tried `preferredRegion = ['fra1', 'bom1']` in route code, but `X-Vercel-Id` header still showed `iad1` after redeploy. Reason: project-level `serverlessFunctionRegion: iad1` overrides all route-level hints. Alternative rejected: keeping iad1 + adding retries (adds latency, doesn't fix root cause, still fails for Saudi users of the main site).
+- **fra1 (Frankfurt) as primary region** → ~100ms RTT to N-Genius KSA (vs 250+ms for iad1 which was timing out at 6s). Also better for Saudi users of the main site (fra1 → KSA is faster than iad1 → KSA). `bom1` (Mumbai) as fallback. Alternative rejected: `dxb1` (Dubai) — Enterprise-only, we're on Pro.
+- **6-second fetch timeout** → chosen because N-Genius normal response is <1s from a nearby region. 6s is generous but still short enough to detect "route to wrong region / genuinely unreachable" quickly.
+- **Emit poll error to console.error + expose via `?debug=1`** → prod debugging requires observability. Kept silent catch for production behavior (return "pending" so client polling continues) but surfaced the error for humans.
+- **`target: ['production']` only on new env vars** (unlike existing `DATABASE_URL` which is on production+preview+development) → prevents Vercel preview deploys from accidentally hitting real N-Genius sandbox with wrong context. Also documented the risk that `DATABASE_URL` is shared across all 3 environments (deferred fix).
+
+### 🚧 Pending / blocked
+- **N-Genius LIVE swap** — blocked on N-Genius team: (1) whitelist `https://www.jbrseo.com/api/webhooks/n-genius`, (2) issue LIVE credentials. Email ready to send.
+- **Real Cloudflare Turnstile keys** — currently using dummy `1x00...` test keys that always pass. Before LIVE launch: create real Turnstile widget bound to `jbrseo.com` domain, replace both `TURNSTILE_SECRET_KEY` and `NEXT_PUBLIC_TURNSTILE_SITE_KEY` on Vercel.
+- **Webhook whitelist not yet active** — polling backup covers this (verified working end-to-end). But webhook is preferred for instant confirmation.
+- **`DATABASE_URL` scope on Vercel** = production+preview+development in same value → risky if a preview deploy runs prod writes. Consider splitting to per-env values before scaling.
+- **Prod-mirror script skips** — `fix-about-legal-info-prod.mjs` and `fix-legal-entity-name-prod.mjs` need `PROD_DATABASE_URL` env var; both are superseded by `fix-legal-name-full-prod.mjs` which ran successfully — no action needed unless a new edge case appears.
+- **2 files untracked** (should be committed but not pushed alone — bundle with next push): `documents/context/NGENIUS-GO-LIVE-EMAIL.md`, `scripts/check-retest.mjs`.
+
+### 📂 Files touched
+- `app/api/checkout/status/route.ts` — added `runtime = "nodejs"`, `preferredRegion = ["fra1", "bom1"]`, debug flag, `pollErr` capture + console.error
+- `app/api/checkout/create-payment/route.ts` — added `preferredRegion = ["fra1", "bom1"]`
+- `app/api/webhooks/n-genius/route.ts` — added `preferredRegion = ["fra1", "bom1"]`
+- `lib/ngenius/auth.ts` — AbortController 6s timeout wrapping the token fetch
+- `lib/ngenius/find-order.ts` — AbortController 6s timeout wrapping the order fetch
+- `scripts/check-e2e-subscriber.mjs` — READ-ONLY DB check for E2E test row
+- `scripts/check-ngenius-order.mjs` — direct N-Genius API call to inspect order state
+- `scripts/check-retest.mjs` — READ-ONLY DB check for retest row (untracked)
+- `documents/context/NGENIUS-GO-LIVE-EMAIL.md` — full email draft (untracked)
+- `documents/context/SESSION-LOG.md` — this block
+
+### 🔁 Git / deploy state
+- **Branch:** `main`
+- **HEAD:** `a0732c4` — "fix: pin N-Genius routes to fra1/bom1 (KSA-proximate) — was iad1 timing out"
+- **Uncommitted:** 2 untracked files (see Pending list) + `.claude/settings.local.json` modified (intentionally excluded from commits).
+- **Last commit pushed:** yes — `a0732c4` on `main`, deployed as `dpl_ByLvm5GnjbEbakyMBWfga2tppXQb`, state READY.
+- **Vercel project:** jbrseo (`prj_t1MVc9m66iM7uPB5evHDLsctJ9iN`), team `team_OIl7TDxOqFj8NnBlo4ZAtx5B`.
+- **Vercel region:** `serverlessFunctionRegion=fra1`, `resourceConfig.functionDefaultRegions=["fra1"]`, `fluid=true`.
+- **Verified live URLs:** `https://www.jbrseo.com/sa/checkout` (200), `/api/checkout/create-payment` (400 on empty POST — validation works), `/api/checkout/status?order=X` (200, returns paid for both test IDs), `/sa/checkout/success?order=X` (200, renders invoice).
+- **Response headers proof of region:** `X-Vercel-Id: cdg1::fra1::...` after redeploy.
+
+### 🚀 How to resume in 30 seconds
+1. `cat documents/context/NGENIUS-GO-LIVE-EMAIL.md` — open the email draft, fill in Contact section (email + phone).
+2. Send it to N-Genius KSA integration team.
+3. When they reply with LIVE creds → follow the "Notes for Khalid (internal)" section at bottom of that same file: (a) `POST /v10/projects/prj_t1MVc9m66iM7uPB5evHDLsctJ9iN/env?upsert=true` for each new value, (b) get real Cloudflare Turnstile keys bound to `jbrseo.com`, (c) trigger redeploy so NEXT_PUBLIC vars bake in, (d) run one test with the new sandbox → prod swap OK, (e) tell N-Genius "we're live".
+
+### 🧪 Test evidence (for handoff)
+- **Test 1 order:** N-Genius `f4179b5f-6bc1-4252-941d-97b451baebae` → state=PURCHASED, resultCode=00. DB `6a541c9468f24fb252613491` → paid.
+- **Test 2 order:** N-Genius `6506f67c-7fed-4b13-84d8-832cb98d3078` → state=PURCHASED. DB `6a5423e5dc9badc5d0d3ee73` → paid, create→paid = 41s.
+- **Polling latency after fra1 fix:** cold=2.7s, warm=640ms (was 72s on iad1).
+- **Screenshots:** `.playwright-mcp/checkout-filled.png`, `.playwright-mcp/success-page.png`, `.playwright-mcp/retest-success.png`.
+
+---
+
 ## Session: 2026-07-12 (Cont.) — Device restart before Round B
 
 ### 🎯 Where I stopped

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import NextLink from "next/link";
 import { Sparkles } from "lucide-react";
 import { WhatsAppIcon } from "@/app/components/icons/WhatsAppIcon";
@@ -11,55 +11,98 @@ type Props = {
   ctaLabel: string;
 };
 
+/**
+ * Mobile-only bottom CTA — WhatsApp + primary action to #pricing.
+ *
+ * Visibility model (evidence-backed):
+ *  - Two IntersectionObserver sentinels (NOT a scroll listener) — MDN:
+ *    "sites no longer need to do anything on the main thread to watch for this
+ *    kind of element intersection". Zero getBoundingClientRect(), zero scroll
+ *    handling, zero per-frame React setState.
+ *  - Show when we leave the top-of-page sentinel behind (past ~50vh of hero).
+ *  - Hide again when we approach the bottom-of-page sentinel (near footer / final CTA).
+ *
+ * Paint model (evidence-backed):
+ *  - Solid background — NO backdrop-filter. web.dev "Stick to compositor-only
+ *    properties": only `transform` and `opacity` are compositor-only; blur is
+ *    a paint operation re-computed every frame during scroll = the mobile jank
+ *    we hit on 2026-07-13.
+ *  - Enter/exit uses only `transform` + `opacity` — compositor-only path.
+ */
 export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) {
   const [visible, setVisible] = useState(false);
+  const topSentinelRef = useRef<HTMLDivElement>(null);
+  const bottomSentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    function onScroll() {
-      const y = window.scrollY;
-      const viewportH = window.innerHeight;
-      const docH = document.documentElement.scrollHeight;
-      // Viewport-relative threshold (was hardcoded 320px). On a short
-      // screen (320h) this hides for the first 160px; on a tall one (900h)
-      // for 450px — always covers roughly the visible hero.
-      const nearTop = y < viewportH * 0.5;
-      const nearBottom = y + viewportH > docH - 200;
-      setVisible(!nearTop && !nearBottom);
-    }
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const top = topSentinelRef.current;
+    const bottom = bottomSentinelRef.current;
+    if (!top || !bottom) return;
+
+    let topVisible = true;
+    let bottomVisible = false;
+
+    const apply = () => {
+      // Show when the hero-height sentinel has scrolled OUT of view AND we
+      // aren't yet near the footer sentinel.
+      setVisible(!topVisible && !bottomVisible);
+    };
+
+    const topObs = new IntersectionObserver((entries) => {
+      topVisible = entries[0]?.isIntersecting ?? true;
+      apply();
+    });
+
+    const bottomObs = new IntersectionObserver((entries) => {
+      bottomVisible = entries[0]?.isIntersecting ?? false;
+      apply();
+    });
+
+    topObs.observe(top);
+    bottomObs.observe(bottom);
+
+    return () => {
+      topObs.disconnect();
+      bottomObs.disconnect();
+    };
   }, []);
 
   return (
     <>
+      {/* Sentinel at 50vh from the top of <main>. When it exits viewport, we
+          know user has scrolled past the hero and the CTA should appear. */}
+      <div
+        ref={topSentinelRef}
+        aria-hidden
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 1,
+          height: "50vh",
+          pointerEvents: "none",
+        }}
+      />
       <style>{`
         .prev-sticky-mobile-cta {
           position: fixed;
           bottom: 0;
           left: 0;
           right: 0;
-          /* Below Radix Dialog (z-50) so any modal opened over the landing
-             wins the stacking context. Above normal content (z-10..30). */
           z-index: 40;
           padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
-          background: color-mix(in oklch, var(--background) 92%, transparent);
-          backdrop-filter: blur(14px);
-          -webkit-backdrop-filter: blur(14px);
+          background: var(--background);
           border-top: 1px solid var(--border);
           display: none;
           gap: 8px;
           align-items: stretch;
           box-shadow: 0 -10px 24px -16px color-mix(in oklch, var(--foreground) 18%, transparent);
+          /* Compositor-only transition — web.dev "Stick to compositor-only
+             properties": only transform + opacity avoid layout AND paint. */
           transition: transform .25s ease, opacity .2s ease;
-        }
-        /* Fallback for old Android WebViews / iOS Safari <14 where
-           backdrop-filter is unsupported — bump the base opacity to 98% so
-           text remains legible over any hero content bleeding underneath. */
-        @supports not ((backdrop-filter: blur(14px)) or (-webkit-backdrop-filter: blur(14px))) {
-          .prev-sticky-mobile-cta {
-            background: color-mix(in oklch, var(--background) 98%, transparent);
-          }
+          transform: translateY(0);
+          opacity: 1;
+          will-change: transform, opacity;
         }
         .prev-sticky-mobile-cta.hidden {
           transform: translateY(110%);
@@ -70,7 +113,7 @@ export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) 
           .prev-sticky-mobile-cta { display: flex; }
         }
       `}</style>
-      <div className={`prev-sticky-mobile-cta${visible ? "" : " hidden"}`}>
+      <div className={`prev-sticky-mobile-cta${visible ? "" : " hidden"}`} aria-hidden={!visible}>
         <a
           href={whatsappLink}
           target="_blank"
@@ -92,6 +135,20 @@ export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) 
           {ctaLabel}
         </NextLink>
       </div>
+      {/* Sentinel 200px above the bottom of the document. When it enters the
+          viewport, hide the CTA (user reached the footer / final CTA). */}
+      <div
+        ref={bottomSentinelRef}
+        aria-hidden
+        style={{
+          position: "absolute",
+          bottom: 200,
+          left: 0,
+          width: 1,
+          height: 1,
+          pointerEvents: "none",
+        }}
+      />
     </>
   );
 }
