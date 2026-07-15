@@ -13,6 +13,11 @@ import { getPlanCardContent } from "@/lib/plan-card-content";
 import {
   FileText,
   ArrowLeft,
+  ChevronDown,
+  Newspaper,
+  Share2,
+  Store,
+  Gift,
   Flame,
   ShieldCheck,
   Sparkles,
@@ -138,12 +143,12 @@ function formatPct(x: number): string {
 // Fallback values (used if GA4 fetch failed) — real numbers from probe on 2026-07-10.
 const CASE_FALLBACK: Record<string, Omit<CaseStudy, "name" | "industry" | "tag" | "daysActive" | "startDate" | "endDate">> = {
   smileTown: {
-    heroStat: { big: "٣١", label: "مريض حقيقي حجز موعد", sub: "بدون ريال إعلانات · آخر ٩٠ يوم" },
+    heroStat: { big: "٣١", label: "ضغطة على «احجز موعد»", sub: "بدون ريال إعلانات · آخر ٩٠ يوم" },
     after: [
-      { label: "زوّار الموقع", value: "١٠٠", sub: "٩٠ يوم متتالي" },
-      { label: "مشاهدات صفحات", value: "٣٨٢", sub: "قراءة عميقة" },
-      { label: "ضغطات 'احجز موعد'", value: "٣١", sub: "مرضى فعليون" },
       { label: "زوّار من جوجل", value: "٨٣", sub: "عضوي · نية شراء" },
+      { label: "مشاهدات صفحات", value: "٣٨٢", sub: "قراءة عميقة" },
+      { label: "زوّار الموقع", value: "١٠٠", sub: "٩٠ يوم متتالي" },
+      { label: "ضغطات 'احجز موعد'", value: "٣١", sub: "زيارات صفحة الحجز" },
     ],
     quality: [
       { k: "متوسط الجلسة", v: "٢:٥٦", sub: "دقيقة · تصفح جاد" },
@@ -214,17 +219,17 @@ const CASE_META: Record<string, Pick<CaseStudy, "name" | "industry" | "tag" | "d
 function buildSmileTown(s: ClientCaseStudyStats): CaseStudy {
   return {
     ...CASE_META.smileTown,
-    tag: `طب الأسنان · ${toArabicDigits(s.bookingPageViews)} حجز`,
+    tag: "طب الأسنان",
     heroStat: {
       big: toArabicDigits(s.bookingPageViews),
-      label: "مريض حقيقي حجز موعد",
+      label: "ضغطة على «احجز موعد»",
       sub: "بدون ريال إعلانات · آخر ٩٠ يوم",
     },
     after: [
-      { label: "زوّار الموقع", value: toArabicDigits(s.users), sub: "٩٠ يوم متتالي" },
-      { label: "مشاهدات صفحات", value: toArabicDigits(s.pageViews), sub: "قراءة عميقة" },
-      { label: "ضغطات 'احجز موعد'", value: toArabicDigits(s.bookingPageViews), sub: "مرضى فعليون" },
       { label: "زوّار من جوجل", value: toArabicDigits(s.organicSessions), sub: "عضوي · نية شراء" },
+      { label: "مشاهدات صفحات", value: toArabicDigits(s.pageViews), sub: "قراءة عميقة" },
+      { label: "زوّار الموقع", value: toArabicDigits(s.users), sub: "٩٠ يوم متتالي" },
+      { label: "ضغطات 'احجز موعد'", value: toArabicDigits(s.bookingPageViews), sub: "زيارات صفحة الحجز" },
     ],
     quality: [
       { k: "متوسط الجلسة", v: formatMinSec(s.avgSessionSeconds), sub: "دقيقة · تصفح جاد" },
@@ -295,6 +300,18 @@ function buildCaseStudies(caseStats: Record<string, ClientCaseStudyStats> | null
   ];
 }
 
+/** Official Google Analytics logomark — inline SVG (3 shapes, original brand
+ *  colors per Google guidelines; never recolored). Used in GA-sourced chips. */
+function GAMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden focusable="false">
+      <rect x="16.5" y="2" width="5.5" height="20" rx="2.75" fill="#F9AB00" />
+      <rect x="9.25" y="9.5" width="5.5" height="12.5" rx="2.75" fill="#E37400" />
+      <circle cx="4.75" cy="19.25" r="2.75" fill="#E37400" />
+    </svg>
+  );
+}
+
 function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<string, ClientCaseStudyStats> | null; clientsCount: number }) {
   const studies = useMemo(() => buildCaseStudies(caseStats), [caseStats]);
   const [idx, setIdx] = useState(0);
@@ -306,16 +323,18 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
       id="case-study"
       className="bg-background"
     >
-      <div className="max-w-[1080px] mx-auto px-7 py-20">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 font-mono text-[11px] text-success tracking-[1px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-success" />
-            أرقام حقيقية من Google Analytics · آخر ٩٠ يوم
+      <div className="max-w-[1080px] mx-auto px-7 py-8 md:py-14">
+        <div className="text-center mb-5 md:mb-10">
+          <div className="inline-flex flex-wrap justify-center text-center items-center gap-2 font-mono text-[11px] text-success tracking-[1px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
+            <GAMark className="w-3.5 h-3.5 shrink-0" />
+            أرقام حقيقية من Google Analytics<span className="hidden md:inline"> · آخر ٩٠ يوم</span>
           </div>
-          <h2 className="prev-h2 text-[38px] font-semibold tracking-[-1px] mb-3">
+          <h2 className="prev-h2 text-[clamp(20px,6vw,38px)] font-semibold tracking-[-1px] mb-3">
             نتائج تشوفها — <span className="text-success">مش وعود</span>
           </h2>
-          <p className="text-base text-muted-foreground max-w-[640px] mx-auto leading-[1.75]">
+          {/* Mobile brevity (NN/g): the eyebrow + H2 carry the message — the
+              longer intro reads on desktop only. */}
+          <p className="hidden md:block text-base text-muted-foreground max-w-[640px] mx-auto leading-[1.75]">
             {clientsCount > 0 ? (
               <>
                 من أصل <span className="font-semibold text-foreground">{toArabicDigits(clientsCount)}+ نشاط سعودي وعربي</span> يستخدم منصتنا — هذي ٣ قصص بأرقام مقاسة من GA4 مباشرة، بإذن كل عميل.
@@ -335,20 +354,20 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
             {/* Client header */}
-            <div className="flex items-center justify-between max-w-[880px] mx-auto mb-6 flex-wrap gap-3">
+            <div className="flex items-center justify-between max-w-[880px] mx-auto mb-4 md:mb-6 flex-wrap gap-3">
               <div>
                 <div className="text-[20px] font-semibold text-foreground">{c.name}</div>
                 <div className="text-[13px] text-muted-foreground mt-0.5">{c.industry}</div>
               </div>
-              <div className="inline-flex items-center gap-2 font-mono text-[11px] text-muted-foreground bg-card border border-border rounded-full px-3 py-1.5">
+              <div className="inline-flex flex-wrap justify-center text-center items-center gap-2 font-mono text-[11px] text-muted-foreground bg-card border border-border rounded-full px-3 py-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-success" />
                 <span>{c.tag} · {c.daysActive} يوماً فقط</span>
               </div>
             </div>
 
             {/* HERO STAT — the one big proof number for this client */}
-            <div className="max-w-[880px] mx-auto mb-6 bg-gradient-to-br from-success/10 to-transparent border-2 border-success/30 rounded-2xl p-6 md:p-8 text-center">
-              <div className="font-mono text-[72px] md:text-[96px] font-semibold text-success leading-none tracking-[-3px]">
+            <div className="max-w-[880px] mx-auto mb-3 md:mb-6 bg-gradient-to-br from-success/10 to-transparent border-2 border-success/30 rounded-2xl p-5 md:p-8 text-center">
+              <div className="font-mono text-[clamp(45px,13.8vw,72px)] md:text-[96px] font-semibold text-success leading-none tracking-[-3px]">
                 {c.heroStat.big}
               </div>
               <div className="text-[18px] md:text-[20px] font-semibold text-foreground mt-3">
@@ -359,8 +378,10 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
               </div>
             </div>
 
-            {/* Before ← → After — full 2-card grid on desktop; mobile shows compact BEFORE strip + full AFTER card */}
-            <div className="max-w-[880px] mx-auto mb-8 md:grid md:grid-cols-2 md:gap-6 space-y-3 md:space-y-0">
+            {/* Before ← → After — desktop only (Khalid 2026-07-15: mobile client
+                sees the ARTICLES + the ONE big impact number, zero technical
+                detail rows — details confuse and create liability). */}
+            <div className="max-w-[880px] mx-auto mb-4 md:mb-8 hidden md:grid md:grid-cols-2 md:gap-6 space-y-3 md:space-y-0">
               {/* BEFORE — compact horizontal strip on mobile, full card on desktop */}
               <div className="bg-card border border-border rounded-xl md:rounded-2xl md:p-7">
                 {/* Mobile: single-row clear summary */}
@@ -375,7 +396,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
                 </div>
                 {/* Desktop: full detailed card */}
                 <div className="hidden md:block">
-                  <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center justify-between mb-3 md:mb-5">
                     <div className="font-mono text-[11px] text-muted-foreground tracking-[1px]">قبل الاشتراك</div>
                     <div className="font-mono text-[11px] text-muted-foreground">{c.startDate}</div>
                   </div>
@@ -396,17 +417,22 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
               </div>
 
               {/* AFTER */}
-              <div className="bg-foreground text-background border border-foreground rounded-2xl p-5 md:p-7 md:shadow-[0_24px_50px_-22px_color-mix(in oklch, var(--foreground) 50%, transparent)] relative">
+              <div className="bg-foreground text-background border border-foreground rounded-2xl p-4 md:p-7 md:shadow-[0_24px_50px_-22px_color-mix(in oklch, var(--foreground) 50%, transparent)] relative">
                 <span className="absolute -top-[11px] right-5 md:right-7 bg-success text-success-foreground text-[10.5px] font-semibold px-2.5 py-1 rounded-full tracking-[.3px]">
                   بعد {toArabicDigits(c.daysActive)} يوم
                 </span>
-                <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center justify-between mb-3 md:mb-5">
                   <div className="font-mono text-[11px] text-background/70 tracking-[1px]">بعد الاشتراك</div>
                   <div className="font-mono text-[11px] text-background/70">{c.endDate}</div>
                 </div>
                 <div className="space-y-3">
+                  {/* Mobile shows the top 2 rows only (hero stat already carries
+                      the headline number) — full detail on desktop. */}
                   {c.after.map((row, i) => (
-                    <div key={i} className="flex items-center justify-between pb-2.5 border-b border-b-background/10 last:border-b-0 last:pb-0">
+                    <div key={i} className={cn(
+                      "items-center justify-between pb-2.5 border-b border-b-background/10 last:border-b-0 last:pb-0",
+                      i > 1 ? "hidden md:flex" : "flex",
+                    )}>
                       <div>
                         <div className="text-[13px] text-background/70">{row.label}</div>
                         {row.sub && <div className="hidden md:block text-[10.5px] text-success font-mono mt-0.5">{row.sub}</div>}
@@ -418,12 +444,13 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
               </div>
             </div>
 
-            {/* Engagement quality strip — 4-across even on mobile; labels wrap naturally, no truncation */}
-            <div className="max-w-[880px] mx-auto grid grid-cols-4 gap-1.5 md:gap-4">
+            {/* Engagement quality strip — one unified stat bar (bank-app style):
+                single border, hairline column dividers, value over label. */}
+            <div className="max-w-[880px] mx-auto bg-card border border-border rounded-xl md:rounded-2xl grid grid-cols-4 divide-x divide-x-reverse divide-border/60">
               {c.quality.map((s, i) => (
-                <div key={i} className="bg-card border border-border rounded-lg md:rounded-xl px-1.5 py-3 md:p-4 text-center flex flex-col items-center justify-start gap-1">
-                  <div className="font-mono text-[16px] md:text-[28px] font-semibold text-foreground tracking-[-.5px] leading-none">{s.v}</div>
-                  <div className="text-[9.5px] md:text-[12px] text-muted-foreground md:text-foreground font-medium leading-[1.25] text-balance">{s.k}</div>
+                <div key={i} className="px-1 py-3 md:p-4 text-center flex flex-col items-center justify-center gap-1 min-w-0">
+                  <div className="font-mono text-[15px] md:text-[26px] font-semibold text-success tracking-[-.5px] leading-none whitespace-nowrap">{s.v}</div>
+                  <div className="text-[9px] md:text-[12px] text-muted-foreground md:text-foreground font-medium leading-[1.3] text-balance">{s.k}</div>
                   <div className="hidden md:block text-[10.5px] text-muted-foreground mt-0.5 leading-tight">{s.sub}</div>
                 </div>
               ))}
@@ -431,8 +458,9 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
           </m.div>
         </AnimatePresence>
 
-        {/* Slider controls */}
-        <div className="max-w-[880px] mx-auto flex items-center justify-center gap-4 mt-10">
+        {/* Slider controls — desktop only: mobile shows the single strongest
+            story (item 2 verdict: one story, no navigation). */}
+        <div className="max-w-[880px] mx-auto hidden md:flex items-center justify-center gap-4 mt-6 md:mt-10">
           <button
             onClick={() => goTo(idx - 1)}
             aria-label="القصة السابقة"
@@ -462,7 +490,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
           </button>
         </div>
 
-        <div className="text-center mt-6 flex flex-col items-center gap-2">
+        <div className="text-center mt-4 md:mt-6 flex flex-col items-center gap-2">
           <div className="inline-flex items-center gap-2 text-[12px] text-muted-foreground">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M5 12.5l5 5L20 7" />
@@ -562,12 +590,17 @@ export function Landing(props: Props) {
     <LazyMotion features={domAnimation} strict>
     <>
       {/* ─── HERO ─── */}
-      <section className="prev-hero-pad max-w-[760px] mx-auto pt-[88px] px-7 pb-7 text-center">
-        <div className="inline-flex items-center gap-2 pt-[5px] pe-3 pb-[5px] ps-[14px] rounded-full border border-border bg-card font-mono text-[11.5px] text-muted-foreground tracking-[.3px] mb-[26px]">
+      <section className="prev-hero-pad max-w-[760px] mx-auto pt-[72px] md:pt-[88px] px-7 pb-5 md:pb-7 text-center">
+        {/* Hard-coded hook (Khalid 2026-07-15) with the LIVE client count from
+            trustBundle.total (real paying clients) — falls back to ١٢٠ if the
+            live count is unavailable. Dialect varies per country. */}
+        <div className="inline-block text-center pt-[5px] px-3.5 pb-[5px] rounded-full border border-border bg-card font-mono text-[11.5px] text-muted-foreground tracking-[.3px] leading-[1.9] mb-4 md:mb-[26px]">
           <span
-            className="w-[7px] h-[7px] rounded-full bg-success shrink-0 shadow-[0_0_0_3px_color-mix(in oklch, var(--success) 16%, transparent)]"
+            className="inline-block w-[7px] h-[7px] rounded-full bg-success me-2 align-middle shadow-[0_0_0_3px_color-mix(in oklch, var(--success) 16%, transparent)]"
           />
-          <span>{staticLanding.hero?.proof ?? "سيو بالاشتراك الشهري · السعودية ومصر"}</span>
+          <span className="text-success font-bold">+{toArabicDigits(trustBundle.total > 0 ? trustBundle.total : 26)}</span>
+          {" شركة سعودية وعربية تبني حضورها على جوجل معنا — "}
+          <span className="text-success font-bold">{countrySlug === "eg" ? "إمتى دورك؟" : "متى دورك؟"}</span>
         </div>
         <h1 className="prev-hero-h1 text-[length:var(--font-5xl)] leading-[1.08] font-semibold tracking-[-2px] [text-wrap:balance]">
           {staticLanding.hero?.h1Line1 ?? "ابنِ حضورك على جوجل"}<br />
@@ -577,10 +610,10 @@ export function Landing(props: Props) {
             {staticLanding.hero?.h1Line2 ?? "بدون إعلانات · بدون فريق داخلي"}
           </span>
         </h1>
-        <p className="prev-hero-sub text-[20px] leading-[1.7] text-muted-foreground mt-[26px] mx-auto max-w-[520px] font-normal">
+        <p className="prev-hero-sub text-[20px] leading-[1.7] text-muted-foreground mt-4 md:mt-[26px] mx-auto max-w-[520px] font-normal">
           {staticLanding.hero?.sub ?? "فريقنا يكتب محتوى سيو وينشره على موقعك. أنت توافق بضغطة — وجوجل يجيب لك العملاء كل يوم."}
         </p>
-        <div className="flex gap-[18px] justify-center items-center mt-8 flex-wrap">
+        <div className="flex gap-[18px] justify-center items-center mt-6 md:mt-8 flex-wrap">
           <a href="#pricing" className="bg-foreground text-background px-7 py-[15px] rounded-xl text-base font-medium no-underline">
             {ctaLabel}
           </a>
@@ -594,7 +627,7 @@ export function Landing(props: Props) {
             <span className="text-[18px] leading-none">←</span>
           </a>
         </div>
-        <div className="inline-flex flex-wrap justify-center gap-[18px] mt-[22px] text-[13px] text-muted-foreground">
+        <div className="inline-flex flex-wrap justify-center gap-[18px] mt-4 md:mt-[22px] text-[13px] text-muted-foreground">
           {(staticLanding.hero?.trust ?? ["استرداد ١٤ يوم", "شركة سعودية مسجّلة", "دعم عربي ١٠٠٪"]).map((item, i) => (
             <span key={i} className="inline-flex items-center gap-1.5">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
@@ -615,16 +648,16 @@ export function Landing(props: Props) {
         <section
           className="bg-background"
         >
-          <div className="max-w-[1080px] mx-auto px-7 py-14">
-            <div className="text-center mb-8">
-              <div className="inline-flex items-center gap-2 font-mono text-[11px] text-success tracking-[1px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-                لايف من Google Analytics · يتحدّث كل ٥ دقائق
+          <div className="max-w-[1080px] mx-auto px-7 py-8 md:py-14">
+            <div className="text-center mb-5 md:mb-8">
+              <div className="inline-flex flex-wrap justify-center text-center items-center gap-2 font-mono text-[11px] text-success tracking-[1px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
+                <GAMark className="w-3.5 h-3.5 shrink-0" />
+                لايف من Google Analytics<span className="hidden md:inline"> · يتحدّث كل ٥ دقائق</span>
               </div>
-              <h2 className="prev-h2 text-[32px] md:text-[38px] font-semibold tracking-[-1px]">
+              <h2 className="prev-h2 text-[clamp(20px,5.8vw,38px)] font-semibold tracking-[-1px]">
                 مدونتي بالأرقام — <span className="text-success">لايف الآن</span>
               </h2>
-              <p className="text-[14px] text-muted-foreground mt-2">
+              <p className="hidden md:block text-[14px] text-muted-foreground mt-2">
                 هذي كل الأثر الرقمي عبر منصة مدونتي — تراكمياً منذ الإطلاق. تقدر تتحقّق من الأرقام مباشرة على الموقع.
               </p>
             </div>
@@ -634,7 +667,7 @@ export function Landing(props: Props) {
 
                 {/* Grand total hero */}
                 <div className="flex flex-col items-center justify-center px-6 py-8">
-                  <div className="font-mono text-[52px] md:text-[64px] font-black leading-none tracking-[-2px] text-background">
+                  <div className="font-mono text-[clamp(32px,10.0vw,52px)] md:text-[64px] font-black leading-none tracking-[-2px] text-background">
                     {modontyImpact.grandTotal.toLocaleString("en-US")}
                   </div>
                   <div className="mt-2 text-[11px] font-mono text-background/60 tracking-[1.5px]">الأثر الرقمي</div>
@@ -711,14 +744,14 @@ export function Landing(props: Props) {
                   className="group h-full flex items-center justify-center gap-3 rounded-xl border border-border bg-card hover:bg-muted hover:border-success/40 transition-all px-5 py-4 text-foreground"
                 >
                   <span
-                    className="shrink-0 inline-flex items-center justify-center bg-white rounded-lg w-28 h-8 px-2 py-1"
+                    className="relative shrink-0 inline-flex items-center justify-center bg-white rounded-lg w-28 h-8 px-2 py-1"
                   >
                     <Image
                       src="https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto,w_240/v1769683590/modontyLogo_ftf4yf.png"
                       alt="Modonty"
-                      width={96}
-                      height={24}
-                      className="h-6 w-auto max-w-full object-contain"
+                      fill
+                      sizes="112px"
+                      className="object-contain p-1"
                     />
                   </span>
                   <div className="text-right">
@@ -733,9 +766,11 @@ export function Landing(props: Props) {
         </section>
       )}
 
-      {/* ─── GUARANTEE — activity-based (things we 100% control), no risky ranking promise ─── */}
+      {/* ─── GUARANTEE — activity-based pledge. DESKTOP ONLY (item 3 verdict):
+          the refund line lives inside the pricing card + hero trust chips on
+          mobile — a standalone screen duplicates the trust signal. ─── */}
       <section
-        className="bg-card border-t border-t-border border-b border-b-border"
+        className="hidden md:block bg-card border-t border-t-border border-b border-b-border"
       >
         <div className="max-w-[920px] mx-auto px-7 py-14">
           <div className="flex flex-col md:flex-row items-start gap-6 md:gap-8">
@@ -774,17 +809,18 @@ export function Landing(props: Props) {
       <section
         className="bg-background"
       >
-        <div className="max-w-[920px] mx-auto px-7 py-14">
+        <div className="max-w-[920px] mx-auto px-7 py-8 md:py-14">
           {/* Section title */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 font-mono text-[11px] text-success tracking-[1px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
+          <div className="text-center mb-5 md:mb-8">
+            <div className="inline-flex flex-wrap justify-center text-center items-center gap-2 font-mono text-[11px] text-success tracking-[1px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
               <span className="w-1.5 h-1.5 rounded-full bg-success" />
               من نحن — بشفافية كاملة
             </div>
-            <h2 className="prev-h2 text-[32px] md:text-[38px] font-semibold tracking-[-1px]">
+            <h2 className="prev-h2 text-[clamp(20px,5.8vw,38px)] font-semibold tracking-[-1px]">
               شركة سعودية <span className="text-success">مسجّلة رسمياً</span>
             </h2>
-            <p className="text-[14px] text-muted-foreground max-w-[560px] mx-auto mt-2 leading-[1.7]">
+            {/* Mobile brevity: eyebrow + H2 carry it; details read on desktop. */}
+            <p className="hidden md:block text-[14px] text-muted-foreground max-w-[560px] mx-auto mt-2 leading-[1.7]">
               كل تفاصيلنا القانونية معلنة — تقدر تتحقّق منها بجوالك في ٣٠ ثانية عبر بوّابة وزارة التجارة السعودية.
             </p>
           </div>
@@ -838,30 +874,33 @@ export function Landing(props: Props) {
                 </dl>
               </div>
 
-              {/* Google Maps address — order-2 on mobile (right after badges), order-4 on desktop (bottom) */}
+              {/* Google Maps address — mobile: one-line "جدة، السعودية" with the
+                  official multicolor Maps pin; desktop: full street address. */}
               <a
                 href="https://www.google.com/maps?q=21.502370834350586,39.1859245300293"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group order-2 md:order-4 mt-6 flex items-start gap-3 pt-5 border-t border-t-border/60 hover:opacity-90 transition-opacity"
+                className="group order-2 md:order-4 mt-4 md:mt-6 flex items-center md:items-start gap-2.5 md:gap-3 pt-4 md:pt-5 border-t border-t-border/60 hover:opacity-90 transition-opacity"
                 aria-label="افتح موقع الشركة على خرائط جوجل"
               >
-                <span className="shrink-0 mt-0.5 inline-flex items-center justify-center w-9 h-9 rounded-lg bg-white shadow-sm">
-                  <svg width="22" height="22" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Google Maps">
-                    <path d="M12 2C7.58 2 4 5.58 4 10c0 5.25 8 12 8 12s8-6.75 8-12c0-4.42-3.58-8-8-8z" fill="#EA4335"/>
-                    <circle cx="12" cy="10" r="3" fill="#fff"/>
-                    <path d="M4 10c0-.7.09-1.38.26-2.03L12 10 4.26 12.03A8.02 8.02 0 0 1 4 10z" fill="#FBBC05" opacity="0.9"/>
-                    <path d="M20 10c0 .95-.17 1.86-.47 2.7L12 10l7.53-2.7c.3.85.47 1.75.47 2.7z" fill="#4285F4" opacity="0.85"/>
-                    <path d="M12 2c-2.44 0-4.62 1.1-6.08 2.83L12 10 5.92 4.83A7.98 7.98 0 0 1 12 2z" fill="#34A853" opacity="0.85"/>
+                <span className="shrink-0 inline-flex items-center justify-center md:mt-0.5 md:w-9 md:h-9 md:rounded-lg md:bg-white md:shadow-sm">
+                  {/* Official Google Maps pin (brand colors, original geometry) */}
+                  <svg width="16" height="22" viewBox="0 0 92.3 132.3" xmlns="http://www.w3.org/2000/svg" aria-hidden className="md:w-[15px] md:h-[21px]">
+                    <path fill="#1a73e8" d="M60.2 2.2C55.8.8 51 0 46.1 0 32 0 19.3 6.4 10.8 16.5l21.8 18.3L60.2 2.2z"/>
+                    <path fill="#ea4335" d="M10.8 16.5C4.1 24.5 0 34.9 0 46.1c0 8.7 1.7 15.7 4.6 22l28-33.3-21.8-18.3z"/>
+                    <path fill="#4285f4" d="M46.2 28.5c9.8 0 17.7 7.9 17.7 17.7 0 4.3-1.6 8.3-4.2 11.4 0 0 13.9-16.6 27.5-32.7-5.6-10.8-15.3-19-27-22.7L32.6 34.8c3.3-3.8 8.1-6.3 13.6-6.3"/>
+                    <path fill="#fbbc04 " d="M46.2 63.8c-9.8 0-17.7-7.9-17.7-17.7 0-4.3 1.5-8.3 4.1-11.3l-28 33.3c4.8 10.6 12.8 19.2 21 29.9l34.1-40.5c-3.3 3.9-8.1 6.3-13.5 6.3"/>
+                    <path fill="#34a853" d="M59.1 109.2c15.4-24.1 33.3-35 33.3-63 0-7.7-1.9-14.9-5.2-21.3L25.6 98c2.6 3.4 5.3 7.3 7.9 11.3 9.4 14.5 6.8 23.1 12.8 23.1s3.4-8.7 12.8-23.2"/>
                   </svg>
                 </span>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[10.5px] text-muted-foreground font-mono tracking-wide leading-none mb-1">العنوان — اضغط للفتح في خرائط جوجل</div>
-                  <div className="text-[13px] font-medium text-foreground leading-[1.6] group-hover:text-success transition-colors">
-                    شارع أبو بكر الصديق · حي الشرفية · جدة · المملكة العربية السعودية
+                  <div className="hidden md:block text-[10.5px] text-muted-foreground font-mono tracking-wide leading-none mb-1">العنوان — اضغط للفتح في خرائط جوجل</div>
+                  <div className="text-[13px] font-medium text-foreground leading-[1.6] group-hover:text-success transition-colors truncate md:whitespace-normal">
+                    <span className="md:hidden">جدة، المملكة العربية السعودية</span>
+                    <span className="hidden md:inline">شارع أبو بكر الصديق · حي الشرفية · جدة · المملكة العربية السعودية</span>
                   </div>
                 </div>
-                <span className="shrink-0 text-muted-foreground group-hover:text-success transition-colors mt-1.5">↗</span>
+                <span className="shrink-0 text-muted-foreground group-hover:text-success transition-colors md:mt-1.5">↗</span>
               </a>
 
               {/* Certificate image — DESKTOP ONLY (2026-07-15 decision): even a
@@ -897,26 +936,73 @@ export function Landing(props: Props) {
       <section
         className="bg-background"
       >
-        <div className="max-w-[1080px] mx-auto px-7 py-14">
+        <div className="max-w-[1080px] mx-auto px-7 py-8 md:py-14">
           {/* Header */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 font-mono text-[11px] text-success tracking-[1.5px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
+          <div className="text-center mb-5 md:mb-8">
+            <div className="inline-flex flex-wrap justify-center text-center items-center gap-2 font-mono text-[11px] text-success tracking-[1.5px] mb-3 bg-success/10 px-3 py-1.5 rounded-full">
               <span className="w-1.5 h-1.5 rounded-full bg-success" />
               قارن بنفسك
             </div>
-            <h2 className="prev-h2 text-[30px] md:text-[36px] font-semibold tracking-[-1px] mb-3">
+            <h2 className="prev-h2 text-[clamp(20px,5.6vw,36px)] font-semibold tracking-[-1px] mb-3">
               محتوى جوجل يحتاج <span className="text-success">فريق كامل</span>
             </h2>
-            <p className="text-[14.5px] text-muted-foreground leading-[1.7] max-w-[560px] mx-auto">
-              ست وظائف مختلفة — أو اشتراك واحد يعمل نفس شغلهم.
+            <p className="text-[14.5px] text-muted-foreground leading-[1.7] max-w-[560px] mx-auto truncate md:whitespace-normal">
+              <span className="md:hidden">٦ وظائف — أو اشتراك واحد</span>
+              <span className="hidden md:inline">ست وظائف مختلفة — أو اشتراك واحد يعمل نفس شغلهم.</span>
             </p>
-            <p className="text-[11.5px] text-muted-foreground/70 font-mono mt-2">
+            <p className="hidden md:block text-[11.5px] text-muted-foreground/70 font-mono mt-2">
               الأرقام بعملتك المحلية · تُطبَّق على السوق السعودي والمصري
             </p>
           </div>
 
-          {/* Two cards side-by-side on desktop, stacked on mobile */}
-          <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-5 md:gap-4 items-stretch">
+          {/* MOBILE — one compact verdict card. Team row is a native collapse:
+              closed = annual+monthly verdict; open = the 6-role breakdown
+              inline (Khalid 2026-07-15). */}
+          <div className="md:hidden rounded-2xl border border-border bg-card p-5">
+            <details className="group pb-3.5 border-b border-b-border/60">
+              <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                {/* Line 1 — one short line only */}
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-[13.5px] font-medium text-foreground truncate">توظّف الفريق بنفسك</span>
+                  <ChevronDown className="w-4 h-4 text-success shrink-0 animate-bounce group-open:animate-none group-open:rotate-180" strokeWidth={2.5} aria-hidden />
+                </div>
+                {/* Line 2 — numbers */}
+                <div className="mt-2 flex items-baseline gap-2 font-mono">
+                  <bdi className="text-[clamp(18px,5vw,23px)] font-bold text-destructive tracking-[-.5px] leading-none">{formatNum(mathTeamAnnual)}</bdi>
+                  <span className="text-[10px] text-muted-foreground">سنوياً</span>
+                  <span className="text-muted-foreground/40 text-[10px]">·</span>
+                  <bdi className="text-[13px] font-semibold text-foreground">{formatNum(mathTeamMonthly)}</bdi>
+                  <span className="text-[10px] text-muted-foreground">شهرياً</span>
+                </div>
+              </summary>
+              <ul className="mt-3 space-y-1.5 rounded-xl bg-background/50 border border-border/50 p-3">
+                {CALC_ROLES.map((r) => (
+                  <li key={r.key} className="flex items-center justify-between gap-2 pb-1.5 border-b border-b-border/40 last:border-b-0 last:pb-0">
+                    <span className="flex items-center gap-2 min-w-0">
+                      <r.icon className="w-3.5 h-3.5 shrink-0 text-muted-foreground" aria-hidden />
+                      <span className="text-[12px] text-foreground truncate">{r.label}</span>
+                    </span>
+                    <span className="font-mono text-[12px] text-muted-foreground shrink-0"><bdi>{formatNum(r.def)}</bdi></span>
+                  </li>
+                ))}
+              </ul>
+            </details>
+            <div className="pt-3.5">
+              {/* Line 1 — one short line only */}
+              <div className="text-[13.5px] font-semibold text-foreground truncate">اشتراك مدونتي — {mathPlanName}</div>
+              {/* Line 2 — numbers */}
+              <div className="mt-2 flex items-baseline gap-2 font-mono">
+                <bdi className="text-[clamp(20px,5.6vw,26px)] font-bold text-success tracking-[-1px] leading-none">{formatNum(mathPlanAnnual)}</bdi>
+                <span className="text-[10px] text-muted-foreground">سنوياً</span>
+                <span className="text-muted-foreground/40 text-[10px]">·</span>
+                <bdi className="text-[13px] font-semibold text-foreground">{formatNum(mathPlanMonthlyOnAnnual)}</bdi>
+                <span className="text-[10px] text-muted-foreground">شهرياً</span>
+              </div>
+            </div>
+          </div>
+
+          {/* DESKTOP — two detailed cards side-by-side */}
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-5 md:gap-4 items-stretch">
             {/* Card 1 — Internal team */}
             <div className="rounded-2xl border border-border bg-card p-5 flex flex-col">
               <div className="mb-4 flex items-start gap-2.5">
@@ -952,7 +1038,7 @@ export function Landing(props: Props) {
                       <span className="w-1.5 h-1.5 rounded-full bg-destructive" aria-hidden />
                       <span className="text-[11px] font-mono text-destructive tracking-wide font-bold">سنوياً</span>
                     </div>
-                    <div className="font-mono text-[24px] md:text-[26px] font-bold text-destructive tracking-[-1px] leading-none">
+                    <div className="font-mono text-[clamp(17px,4.6vw,24px)] md:text-[26px] font-bold text-destructive tracking-[-1px] leading-none">
                       <bdi>{formatNum(mathTeamAnnual)}</bdi>
                     </div>
                     <div className="text-[10px] text-muted-foreground font-mono mt-1.5">بعملتك المحلية</div>
@@ -1017,7 +1103,7 @@ export function Landing(props: Props) {
                       <span className="w-1.5 h-1.5 rounded-full bg-success" aria-hidden />
                       <span className="text-[11px] font-mono text-success tracking-wide font-bold">سنوياً</span>
                     </div>
-                    <div className="font-mono text-[28px] md:text-[32px] font-bold text-success tracking-[-1.5px] leading-none">
+                    <div className="font-mono text-[clamp(17px,5.4vw,28px)] md:text-[32px] font-bold text-success tracking-[-1.5px] leading-none">
                       <bdi>{formatNum(mathPlanAnnual)}</bdi>
                     </div>
                     <div className="text-[10px] text-muted-foreground font-mono mt-1.5">بعملتك المحلية</div>
@@ -1039,7 +1125,7 @@ export function Landing(props: Props) {
 
           {/* Savings pill + CTA — single row on desktop */}
           {mathTeamAnnual > mathPlanAnnual && mathPlanAnnual > 0 && (
-            <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4">
+            <div className="mt-5 md:mt-8 flex flex-col md:flex-row items-center justify-center gap-3 md:gap-4">
               <div className="inline-flex items-center gap-2 bg-success/15 border border-success/40 text-success text-[14px] font-semibold px-4 py-2.5 rounded-full">
                 <PiggyBank className="w-4 h-4" strokeWidth={2} aria-hidden />
                 <span>
@@ -1062,36 +1148,37 @@ export function Landing(props: Props) {
                   <circle cx="12" cy="12" r=".6" fill="currentColor" />
                   <circle cx="15.5" cy="12" r=".6" fill="currentColor" />
                 </svg>
-                <span>احسب بأرقام سوقك</span>
+                <span>احسب توفيرك بنفسك</span>
                 <span aria-hidden>←</span>
               </button>
             </div>
           )}
 
-          <p className="mt-4 text-center text-[12px] text-muted-foreground max-w-[520px] mx-auto leading-[1.7]">
-            المقالات ملكك للأبد — حتى لو ألغيت الاشتراك، تظل في موقعك تجيب لك زوّار.
+          <p className="mt-4 text-center text-[12px] text-muted-foreground max-w-[520px] mx-auto leading-[1.7] truncate md:whitespace-normal">
+            <span className="md:hidden">المقالات ملكك للأبد — حتى بعد الإلغاء</span>
+            <span className="hidden md:inline">المقالات ملكك للأبد — حتى لو ألغيت الاشتراك، تظل في موقعك تجيب لك زوّار.</span>
           </p>
         </div>
       </section>
 
       {/* ─── FEATURES — reframed as a Saudi platform, production system (not "writing") ─── */}
       <section id="features" className="border-t border-t-[var(--border)] bg-card">
-        <div className="max-w-[1080px] mx-auto px-7 py-14">
-          <div className="text-center mb-10">
+        <div className="max-w-[1080px] mx-auto px-7 py-8 md:py-14">
+          <div className="text-center mb-5 md:mb-10">
             <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
               <span>منصة سعودية ١٠٠٪</span>
             </div>
-            <h2 className="prev-h2 text-[30px] md:text-[34px] font-semibold tracking-[-1px] mb-3">
+            <h2 className="prev-h2 text-[clamp(20px,5.6vw,34px)] font-semibold tracking-[-1px] mb-3">
               نبني <span className="text-success">حضورك</span> — لا نبيع وعود
             </h2>
-            <p className="text-[14.5px] text-muted-foreground max-w-[580px] mx-auto leading-[1.7]">
+            <p className="hidden md:block text-[14.5px] text-muted-foreground max-w-[580px] mx-auto leading-[1.7]">
               حضور على منصة مدونتي + سوشال ميديا + موقعك (في الباقات الأعلى) —
               أرقام حقيقية من جوجل، لا شعارات.
             </p>
           </div>
 
           {/* 3-step horizontal grid — clear "who does what" story */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 md:gap-5 mb-5 md:mb-8">
             {([
               {
                 num: "٠١",
@@ -1114,18 +1201,18 @@ export function Landing(props: Props) {
             ] as const).map((step, i) => (
               <div
                 key={i}
-                className="group relative rounded-2xl border border-border bg-background p-6 flex flex-col hover:border-success/40 hover:shadow-[0_20px_40px_-24px_color-mix(in_oklch,var(--success)_35%,transparent)] transition-all"
+                className="group relative rounded-xl md:rounded-2xl border border-border bg-background px-3 py-2.5 md:p-6 flex flex-row md:flex-col items-center md:items-stretch gap-2.5 md:gap-0 hover:border-success/40 hover:shadow-[0_20px_40px_-24px_color-mix(in_oklch,var(--success)_35%,transparent)] transition-all"
               >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center text-success">
-                    <step.icon className="w-6 h-6" strokeWidth={2} aria-hidden />
+                <div className="flex items-start justify-between md:mb-4 shrink-0">
+                  <div className="w-7 h-7 md:w-12 md:h-12 rounded-lg md:rounded-xl bg-success/10 flex items-center justify-center text-success">
+                    <step.icon className="w-3.5 h-3.5 md:w-6 md:h-6" strokeWidth={2.2} aria-hidden />
                   </div>
-                  <span className="font-mono text-[13px] text-muted-foreground tracking-[.5px] pt-1">{step.num}</span>
+                  <span className="hidden md:block font-mono text-[13px] text-muted-foreground tracking-[.5px] pt-1">{step.num}</span>
                 </div>
-                <h3 className="text-[19px] font-semibold text-foreground tracking-[-.3px] mb-2">
+                <h3 className="text-[13px] md:text-[19px] font-medium md:font-semibold text-foreground tracking-[-.3px] md:mb-2 flex-1 md:flex-none min-w-0">
                   {step.title}
                 </h3>
-                <p className="text-[13.5px] text-muted-foreground leading-[1.75] flex-1">
+                <p className="hidden md:block text-[13.5px] text-muted-foreground leading-[1.75] flex-1">
                   {step.desc}
                 </p>
               </div>
@@ -1143,61 +1230,56 @@ export function Landing(props: Props) {
               <ul className="max-w-[440px] mx-auto space-y-2 mb-3">
                 {[
                   {
-                    icon: Globe,
-                    name: "منصة مدونتي",
-                    desc: "مدوّنة عامة لكل عملاء المنصة",
+                    icon: Newspaper,
+                    name: "مقالاتك على منصة مدونتي",
+                    desc: "مدوّنة عامة يقرأها عملاء كل المنصة",
                     tag: "مشمول",
                     variant: "included" as const,
                   },
                   {
-                    icon: Smartphone,
-                    name: "سوشال ميديا مدونتي",
+                    icon: Share2,
+                    name: "محتواك على سوشال مدونتي",
                     desc: "توزيع تلقائي على حسابات المنصة",
                     tag: "مشمول",
                     variant: "included" as const,
                   },
                   {
-                    icon: Flame,
-                    name: "موقعك الخاص",
-                    desc: "نشر مباشر على دومينك أنت",
+                    icon: Globe,
+                    name: "ننشر على موقعك أنت",
+                    desc: "نشر مباشر على دومينك الخاص",
                     tag: "الباقات الأعلى",
                     variant: "premium" as const,
-                  },
-                  {
-                    icon: LayoutDashboard,
-                    name: "لوحة تحكّم خاصة",
-                    desc: "كل تفاصيلك · تقارير · اعتماد بضغطة",
-                    tag: "مشمول",
-                    variant: "included" as const,
                   },
                 ].map((row, i) => (
                   <li
                     key={i}
                     className={cn(
-                      "flex items-center gap-3 rounded-xl border px-3 py-2.5",
+                      "flex items-center gap-2 md:gap-3 border-0 md:border rounded-none md:rounded-xl px-0 md:px-3 py-1.5 md:py-2.5",
                       row.variant === "premium"
-                        ? "bg-success/[.06] border-success/30"
-                        : "bg-card border-border",
+                        ? "md:bg-success/[.06] md:border-success/40"
+                        : "md:bg-card md:border-border",
                     )}
                   >
+                    {/* Mobile: plain bullet dot. Desktop: icon chip. */}
+                    <span className="md:hidden w-1.5 h-1.5 rounded-full bg-success shrink-0" aria-hidden />
                     <span
                       className={cn(
-                        "shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg",
-                        row.variant === "premium" ? "bg-success/15 text-success" : "bg-muted text-muted-foreground",
+                        "shrink-0 hidden md:inline-flex items-center justify-center w-8 h-8 rounded-lg",
+                        row.variant === "premium" ? "bg-success/15 text-success" : "bg-success/10 text-success",
                       )}
                     >
-                      <row.icon className="w-4 h-4" strokeWidth={2} aria-hidden />
+                      <row.icon className="w-4 h-4" strokeWidth={2.2} aria-hidden />
                     </span>
                     <div className="flex-1 min-w-0 text-right">
-                      <div className="text-[13px] font-semibold text-foreground leading-tight">{row.name}</div>
-                      <div className="text-[11px] text-muted-foreground mt-0.5 leading-tight">{row.desc}</div>
+                      <div className="text-[13px] font-medium md:font-semibold text-foreground leading-tight truncate">{row.name}</div>
+                      <div className="hidden md:block text-[11px] text-muted-foreground mt-0.5 leading-tight">{row.desc}</div>
                     </div>
                     <span
                       className={cn(
-                        "shrink-0 text-[10px] font-mono font-bold px-2 py-1 rounded-full",
+                        "shrink-0 text-[10px] font-mono font-bold px-2 py-1 rounded-full whitespace-nowrap",
                         row.variant === "premium"
-                          ? "bg-success/15 text-success border border-success/30"
-                          : "bg-muted text-muted-foreground",
+                          ? "bg-success text-success-foreground"
+                          : "hidden md:inline-flex bg-muted text-muted-foreground",
                       )}
                     >
                       {row.tag}
@@ -1211,37 +1293,68 @@ export function Landing(props: Props) {
             </div>
           </div>
 
-          {/* Business Profile hook — "you also get a full business page on Modonty" */}
-          <div className="mt-10 mb-8 rounded-2xl border-2 border-success/40 bg-gradient-to-br from-success/[.10] to-success/[.02] p-5 md:p-6 md:shadow-[0_24px_50px_-30px_color-mix(in_oklch,var(--success)_50%,transparent)] relative">
+          {/* Dashboard — standalone card (Khalid 2026-07-15): it's not a
+              publishing channel, it's the control room. */}
+          <div className="mb-5 md:mb-8 rounded-2xl border border-border bg-background p-4 md:p-6">
+            <div className="flex items-center gap-3 mb-3">
+              <span className="shrink-0 inline-flex items-center justify-center w-9 h-9 md:w-11 md:h-11 rounded-xl bg-success/15 text-success">
+                <LayoutDashboard className="w-4.5 h-4.5 md:w-6 md:h-6" strokeWidth={2} aria-hidden />
+              </span>
+              <h3 className="text-[15px] md:text-[20px] font-semibold text-foreground tracking-[-.3px] leading-tight">
+                لوحة تحكم <span className="text-success">خاصة فيك</span>
+              </h3>
+            </div>
+            <ul className="space-y-1.5 md:space-y-2">
+              {[
+                "تتابع كل خطوة وكل اللي يصير في مقالاتك",
+                "تقارير أداء حقيقية من جوجل",
+                "اعتماد أو تعديل أي مقال بضغطة",
+                "حملات إيميل تسويقية لعملائك",
+              ].map((line, i) => (
+                <li key={i} className="flex items-center gap-2 text-[13px] md:text-[13.5px] text-foreground leading-[1.6]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-success shrink-0" aria-hidden />
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Business Profile hook — collapse on mobile (closed = header line;
+              open = pills + CTA), always fully visible on desktop. */}
+          <details className="group mt-6 md:mt-10 mb-5 md:mb-8 rounded-2xl border-2 border-success/40 bg-gradient-to-br from-success/[.10] to-success/[.02] p-5 md:p-6 md:shadow-[0_24px_50px_-30px_color-mix(in_oklch,var(--success)_50%,transparent)] relative">
             <span className="absolute -top-3 right-5 bg-success text-success-foreground text-[10px] font-bold px-2.5 py-1 rounded-full tracking-[.5px] shadow-sm inline-flex items-center gap-1 z-10">
               <Sparkles className="w-3 h-3" strokeWidth={2.5} aria-hidden />
               بونس
             </span>
 
-            <div className="flex items-center gap-3 mb-3">
-              <span className="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-xl bg-success/15 text-success">
-                <LayoutDashboard className="w-6 h-6" strokeWidth={2} aria-hidden />
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="font-mono text-[10.5px] text-success font-bold tracking-[1.5px] uppercase">Business Profile</div>
-                <h3 className="text-[18px] md:text-[22px] font-semibold text-foreground leading-tight tracking-[-.3px]">
-                  صفحة عمل رسمية <span className="text-success">جاهزة من اليوم الأول</span>
-                </h3>
+            <summary className="cursor-pointer md:cursor-default list-none [&::-webkit-details-marker]:hidden">
+              <div className="flex items-center gap-3">
+                <span className="shrink-0 inline-flex items-center justify-center w-11 h-11 rounded-xl bg-success/15 text-success">
+                  <Store className="w-6 h-6" strokeWidth={2} aria-hidden />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <div className="font-mono text-[10.5px] text-success font-bold tracking-[1.5px] uppercase">Business Profile</div>
+                  <h3 className="text-[15.5px] md:text-[22px] font-semibold text-foreground leading-tight tracking-[-.3px]">
+                    صفحة عمل رسمية <span className="text-success">جاهزة من اليوم الأول</span>
+                  </h3>
+                </div>
+                <ChevronDown className="md:hidden w-4 h-4 text-success shrink-0 animate-bounce group-open:animate-none group-open:rotate-180" strokeWidth={2.5} aria-hidden />
               </div>
-            </div>
+            </summary>
 
-            <p className="text-[13px] text-muted-foreground leading-[1.7] mb-4 md:pr-[54px]">
+            <div className="hidden group-open:block md:block mt-3 md:mt-0">
+            <p className="hidden md:block text-[13px] text-muted-foreground leading-[1.7] mb-4 md:pr-[54px]">
               مو بس مقالات — عندك <span className="text-foreground font-semibold">صفحة كاملة لنشاطك</span> على منصة مدونتي: بيانات، حجوزات، معرض، تقييمات — كل شي محضّر ومربوط بجوجل.
             </p>
 
-            <ul className="grid grid-cols-2 gap-2 mb-4">
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-1.5 md:gap-2 mb-4">
               {[
                 { icon: CalendarClock, label: "حجز مواعيد" },
                 { icon: PhoneCall, label: "اتصال + واتساب" },
                 { icon: Images, label: "معرض أعمال" },
                 { icon: Star, label: "تقييمات العملاء" },
                 { icon: MapPin, label: "موقعك على الخريطة" },
-                { icon: Palette, label: "هوية بألوانك" }, /* Palette already imported for CALC_ROLES */
+                { icon: Sparkles, label: "+١٥ خاصية أخرى" },
               ].map((f, i) => (
                 <li key={i} className="flex items-center gap-2 rounded-lg bg-card/60 border border-border/60 px-2.5 py-2">
                   <f.icon className="w-3.5 h-3.5 text-success shrink-0" strokeWidth={2} aria-hidden />
@@ -1259,7 +1372,8 @@ export function Landing(props: Props) {
               <span>شوف صفحة عميل حقيقي</span>
               <ArrowLeft className="w-3.5 h-3.5" />
             </a>
-          </div>
+            </div>
+          </details>
 
           {/* Exit CTA to full features page */}
           <div className="text-center">
@@ -1281,7 +1395,7 @@ export function Landing(props: Props) {
       <section
         className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card"
       >
-        <div className="max-w-[1080px] mx-auto px-7 py-14">
+        <div className="max-w-[1080px] mx-auto px-7 py-8 md:py-14">
           <div className="rounded-2xl border border-border overflow-hidden md:shadow-[0_20px_50px_-30px_color-mix(in_oklch,var(--foreground)_25%,transparent)]">
             {/* Tier 1 — Gateway anchor: compact centered stack on mobile, side-by-side on desktop */}
             <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 px-5 py-5 md:py-6 bg-success/[0.08] border-b border-b-success/20">
@@ -1305,62 +1419,8 @@ export function Landing(props: Props) {
               </div>
             </div>
 
-            {/* Tier 2 — Payment methods: 3-col grid on mobile, wide auto-fit flex on desktop */}
-            <div className="bg-background">
-              {/* Saudi section */}
-              <div className="px-5 pt-5 pb-4">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <span className="font-mono text-[10.5px] text-muted-foreground tracking-[1.5px] font-bold uppercase">السعودية</span>
-                  <span className="flex-1 h-px bg-border" aria-hidden />
-                </div>
-                <div className="grid grid-cols-3 md:flex md:flex-wrap md:justify-center gap-2 md:gap-3">
-                  {[
-                    { src: "/logos/mada.svg", alt: "مدى" },
-                    { src: "/logos/visa.svg", alt: "Visa" },
-                    { src: "/logos/mastercard.svg", alt: "Mastercard" },
-                    { src: "/logos/apple-pay.svg", alt: "Apple Pay" },
-                    { src: "/logos/stcpay.svg", alt: "STC Pay" },
-                    { src: "/logos/tamara.svg", alt: "Tamara" },
-                  ].map((logo) => (
-                    <div key={logo.alt} className="h-11 md:w-[104px] bg-white rounded-lg ring-1 ring-black/5 shadow-sm flex items-center justify-center px-2">
-                      <Image
-                        src={logo.src}
-                        alt={logo.alt}
-                        width={200}
-                        height={44}
-                        unoptimized
-                        style={{ height: 22, width: "auto", maxWidth: "100%", objectFit: "contain" }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Egypt section */}
-              <div className="px-5 pt-2 pb-5">
-                <div className="flex items-center gap-2.5 mb-3">
-                  <span className="font-mono text-[10.5px] text-muted-foreground tracking-[1.5px] font-bold uppercase">مصر</span>
-                  <span className="flex-1 h-px bg-border" aria-hidden />
-                </div>
-                <div className="grid grid-cols-3 md:flex md:flex-wrap md:justify-center gap-2 md:gap-3">
-                  {[
-                    { src: "/logos/instapay.svg", alt: "InstaPay" },
-                    { src: "/logos/saib-bank.png", alt: "SAIB Bank" },
-                  ].map((logo) => (
-                    <div key={logo.alt} className="h-11 md:w-[104px] bg-white rounded-lg ring-1 ring-black/5 shadow-sm flex items-center justify-center px-2">
-                      <Image
-                        src={logo.src}
-                        alt={logo.alt}
-                        width={200}
-                        height={44}
-                        unoptimized
-                        style={{ height: 22, width: "auto", maxWidth: "100%", objectFit: "contain" }}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+            {/* Payment-method icons moved to the pricing section (decision
+                moment, per Baymard) — this section tells the GATEWAY story only. */}
 
             {/* Tier 3 — Trust badges (stronger contrast) */}
             <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 px-6 py-3.5 border-t border-t-border bg-card">
@@ -1391,11 +1451,18 @@ export function Landing(props: Props) {
       </section>
 
       {/* ─── PRICING (DB Plan model) ─── */}
-      <section id="pricing" className="max-w-[1080px] mx-auto px-7 pt-10 pb-20 scroll-mt-16">
+      <section id="pricing" className="max-w-[1080px] mx-auto px-7 pt-8 pb-12 md:pt-10 md:pb-20 scroll-mt-16">
         <div className="text-center mb-5">
-          <h2 className="prev-h2 text-[32px] font-semibold tracking-[-1px]">باقات تنمو معك</h2>
+          {/* Hook — plain green text + icon, no container at all (Khalid:
+              any pill shape reads as a button). */}
+          <div className="inline-flex items-center gap-1.5 text-success text-[13px] font-bold mb-2">
+            <Gift className="w-4 h-4" strokeWidth={2.5} aria-hidden />
+            <span>ادفع ١٢ شهر — واستلم ١٨</span>
+          </div>
+          <h2 className="prev-h2 text-[clamp(20px,5.8vw,32px)] font-semibold tracking-[-1px]">اختر باقتك وابدأ اليوم</h2>
+          {/* Segmented control — two clean equal halves */}
           <div
-            className="prev-pricing-toggle inline-flex bg-muted rounded-[11px] p-1 mt-5 text-sm font-medium"
+            className="prev-pricing-toggle grid grid-cols-2 w-full max-w-[260px] mx-auto bg-muted rounded-[13px] p-1 mt-5 text-sm font-medium"
             role="tablist"
             aria-label="طريقة الفوترة"
           >
@@ -1405,7 +1472,7 @@ export function Landing(props: Props) {
               aria-selected={billing === "monthly"}
               onClick={() => setBilling("monthly")}
               className={cn(
-                "px-[18px] py-2 rounded-lg",
+                "rounded-[10px] py-2.5 text-[14px] font-semibold",
                 billing === "monthly" ? "bg-card text-foreground shadow-[0_1px_3px_color-mix(in oklch, var(--foreground) 8%, transparent)]" : "bg-transparent text-muted-foreground",
               )}
             >
@@ -1417,14 +1484,73 @@ export function Landing(props: Props) {
               aria-selected={billing === "annual"}
               onClick={() => setBilling("annual")}
               className={cn(
-                "px-[18px] py-2 rounded-lg",
+                "rounded-[10px] py-2.5 text-[14px] font-semibold",
                 billing === "annual" ? "bg-card text-foreground shadow-[0_1px_3px_color-mix(in oklch, var(--foreground) 8%, transparent)]" : "bg-transparent text-muted-foreground",
               )}
             >
-              سنوي · ادفع ١٢ استلم ١٨
+              سنوي
             </button>
           </div>
         </div>
+
+        {/* Payment methods at the TOP of pricing (Khalid 2026-07-15): the
+            client sees how they can pay BEFORE reading prices. Only methods
+            the checkout actually offers; SA only (EG has no checkout).
+            Tamara joins the day it goes live in the gateway. */}
+        {countrySlug === "sa" && (
+          <div className="mb-6 md:mb-8 flex flex-col items-center gap-2">
+            <div className="flex items-center justify-center gap-2">
+              {[
+                { src: "/logos/mada.svg", alt: "مدى" },
+                { src: "/logos/visa.svg", alt: "Visa" },
+                { src: "/logos/mastercard.svg", alt: "Mastercard" },
+                { src: "/logos/apple-pay.svg", alt: "Apple Pay" },
+              ].map((logo) => (
+                <div key={logo.alt} className="h-7 w-12 bg-white rounded-md ring-1 ring-black/5 flex items-center justify-center px-1.5">
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    width={200}
+                    height={44}
+                    unoptimized
+                    style={{ height: 14, width: "auto", maxWidth: "100%", objectFit: "contain" }}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="text-[11px] text-muted-foreground font-mono">
+              دفع آمن عبر Network International · PCI DSS
+            </div>
+          </div>
+        )}
+        {/* Egypt: InstaPay / bank transfer + international cards (the N-Genius
+            gateway accepts Visa/Mastercard globally — Khalid 2026-07-15). */}
+        {countrySlug === "eg" && (
+          <div className="mb-6 md:mb-8 flex flex-col items-center gap-2">
+            <div className="flex items-center justify-center gap-2">
+              {[
+                { src: "/logos/instapay.svg", alt: "InstaPay" },
+                { src: "/logos/visa.svg", alt: "Visa" },
+                { src: "/logos/mastercard.svg", alt: "Mastercard" },
+                { src: "/logos/saib-bank.png", alt: "SAIB Bank" },
+              ].map((logo) => (
+                <div key={logo.alt} className="h-7 w-12 bg-white rounded-md ring-1 ring-black/5 flex items-center justify-center px-1.5">
+                  <Image
+                    src={logo.src}
+                    alt={logo.alt}
+                    width={200}
+                    height={44}
+                    unoptimized
+                    style={{ height: 14, width: "auto", maxWidth: "100%", objectFit: "contain" }}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="text-[11px] text-muted-foreground font-mono">
+              إنستا باي · البطاقات · التحويل البنكي
+            </div>
+          </div>
+        )}
 
         <div
           className="prev-pricing-grid grid gap-[14px]"
@@ -1539,9 +1665,11 @@ export function Landing(props: Props) {
                   {content.bulletsLabel}
                 </div>
 
-                {/* Bullets */}
-                <div className="flex flex-col gap-3 mb-5">
-                  {content.bullets.map((b, i) => {
+                {/* Bullets — mobile shows the top 3 differentiators; the rest
+                    live behind a counted collapse ("value stays countable" per
+                    Baymard). Desktop always shows the full list. */}
+                <div className="flex flex-col gap-3 mb-3 md:mb-5">
+                  {content.bullets.slice(0, 3).map((b, i) => {
                     const Icon = b.icon;
                     return (
                       <div key={i} className={cn(
@@ -1559,6 +1687,54 @@ export function Landing(props: Props) {
                     );
                   })}
                 </div>
+                {content.bullets.length > 3 && (
+                  <details className="group mb-5 md:hidden">
+                    <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-success">
+                      <span>كل مميزات الباقة (+{toArabicDigits(content.bullets.length - 3)})</span>
+                      <ChevronDown className="w-3.5 h-3.5 animate-bounce group-open:animate-none group-open:rotate-180" strokeWidth={2.5} aria-hidden />
+                    </summary>
+                    <div className="mt-3 flex flex-col gap-3">
+                      {content.bullets.slice(3).map((b, i) => {
+                        const Icon = b.icon;
+                        return (
+                          <div key={i} className={cn(
+                            "flex gap-2.5 items-start text-[13px] leading-[1.5]",
+                            b.highlight ? "text-foreground font-medium" : "text-muted-foreground",
+                          )}>
+                            <div className={cn(
+                              "w-[22px] h-[22px] rounded-md flex items-center justify-center shrink-0",
+                              b.highlight ? "bg-success/15 text-success" : "bg-foreground/[.04] text-muted-foreground",
+                            )}>
+                              <Icon className="w-3.5 h-3.5" />
+                            </div>
+                            <span className="pt-[2px]">{b.text}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </details>
+                )}
+                {content.bullets.length > 3 && (
+                  <div className="hidden md:flex flex-col gap-3 mb-5">
+                    {content.bullets.slice(3).map((b, i) => {
+                      const Icon = b.icon;
+                      return (
+                        <div key={i} className={cn(
+                          "flex gap-2.5 items-start text-[13px] leading-[1.5]",
+                          b.highlight ? "text-foreground font-medium" : "text-muted-foreground",
+                        )}>
+                          <div className={cn(
+                            "w-[22px] h-[22px] rounded-md flex items-center justify-center shrink-0",
+                            b.highlight ? "bg-success/15 text-success" : "bg-foreground/[.04] text-muted-foreground",
+                          )}>
+                            <Icon className="w-3.5 h-3.5" />
+                          </div>
+                          <span className="pt-[2px]">{b.text}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
                 {/* Trust chip — featured plan only, motivational (not persona) */}
                 {content.trustChip && (
@@ -1601,8 +1777,8 @@ export function Landing(props: Props) {
             id="social-proof"
             className="border-t border-t-[var(--border)] bg-background"
           >
-            <div className="max-w-[1080px] mx-auto px-7 py-14">
-              <div className="text-center mb-10">
+            <div className="max-w-[1080px] mx-auto px-7 py-8 md:py-14">
+              <div className="text-center mb-5 md:mb-10">
                 {/* Trust badge — matches structure of other sections */}
                 <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
                   <Star className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden fill="currentColor" />
@@ -1610,10 +1786,10 @@ export function Landing(props: Props) {
                   <span className="text-success/60" aria-hidden>·</span>
                   <span className="text-success/80 font-mono text-[10.5px]">لا سيناريو</span>
                 </div>
-                <h2 className="prev-h2 text-[30px] md:text-[34px] font-semibold tracking-[-1px] mb-3">
+                <h2 className="prev-h2 text-[clamp(16px,5vw,34px)] font-semibold tracking-[-1px] mb-3 whitespace-nowrap">
                   شهادات <span className="text-success">تشوفها</span> — لا وعود تسمعها
                 </h2>
-                <p className="text-[14.5px] text-muted-foreground max-w-[580px] mx-auto leading-[1.7]">
+                <p className="hidden md:block text-[14.5px] text-muted-foreground max-w-[580px] mx-auto leading-[1.7]">
                   نفس العملاء اللي شفت أرقامهم في قصص النجاح فوق — الحين اسمعهم بأصواتهم.
                 </p>
               </div>
@@ -1654,17 +1830,17 @@ export function Landing(props: Props) {
                         </div>
                       )}
                     </div>
-                    <div className="px-6 md:px-8 py-6">
+                    <div className="px-4 py-4 md:px-8 md:py-6">
                       {v.quote && (
-                        <p className="text-[16px] md:text-[17px] leading-[1.85] text-foreground font-normal mb-5">
+                        <p className="text-[15px] md:text-[17px] leading-[1.8] md:leading-[1.85] text-foreground font-normal mb-4 md:mb-5 line-clamp-3 md:line-clamp-none">
                           «{v.quote}»
                         </p>
                       )}
                       <div className="pt-4 border-t border-t-border">
                         <div className="flex items-center gap-3">
-                          <span className="prev-voice-avatar w-11 h-11 shrink-0">
+                          <span className="prev-voice-avatar relative w-11 h-11 shrink-0">
                             {v.avatarImg ? (
-                              <Image src={v.avatarImg} alt={v.name ?? ""} width={44} height={44} unoptimized />
+                              <Image src={v.avatarImg} alt={v.name ?? ""} fill sizes="44px" unoptimized className="object-cover" />
                             ) : (
                               <span className="text-[15px]">{initials}</span>
                             )}
@@ -1693,34 +1869,39 @@ export function Landing(props: Props) {
 
                 {/* Slider controls — arrows + dots (same pattern as CaseStudiesSlider) */}
                 {voices.length > 1 && (
-                  <div className="flex items-center justify-center gap-4 mt-8">
+                  <div className="flex items-center justify-center gap-4 mt-4 md:mt-8">
+                    {/* Arrows desktop-only; mobile flips via the dots (both
+                        testimonials — SA + EG — stay reachable). */}
                     <button
                       type="button"
                       onClick={() => setSelectedVoice(((safeIdx - 1) % voices.length + voices.length) % voices.length)}
                       aria-label="الشهادة السابقة"
-                      className="w-11 h-11 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
+                      className="hidden md:flex w-11 h-11 rounded-full bg-card border border-border hover:bg-muted transition-colors items-center justify-center text-muted-foreground hover:text-foreground"
                     >
                       <span className="text-[18px]">→</span>
                     </button>
                     <div className="flex items-center gap-2">
                       {voices.map((_, i) => (
+                        /* 44px hit area (WCAG 2.2) around a small visual dot */
                         <button
                           key={i}
                           type="button"
                           onClick={() => setSelectedVoice(i)}
                           aria-label={`الشهادة ${i + 1}`}
-                          className={cn(
-                            "h-2 rounded-full transition-all",
-                            i === safeIdx ? "w-8 bg-success" : "w-2 bg-border hover:bg-muted-foreground",
-                          )}
-                        />
+                          className="flex items-center justify-center w-10 h-10 -mx-1"
+                        >
+                          <span className={cn(
+                            "h-2.5 md:h-2 rounded-full transition-all",
+                            i === safeIdx ? "w-8 bg-success" : "w-2.5 md:w-2 bg-border",
+                          )} />
+                        </button>
                       ))}
                     </div>
                     <button
                       type="button"
                       onClick={() => setSelectedVoice((safeIdx + 1) % voices.length)}
                       aria-label="الشهادة التالية"
-                      className="w-11 h-11 rounded-full bg-card border border-border hover:bg-muted transition-colors flex items-center justify-center text-muted-foreground hover:text-foreground"
+                      className="hidden md:flex w-11 h-11 rounded-full bg-card border border-border hover:bg-muted transition-colors items-center justify-center text-muted-foreground hover:text-foreground"
                     >
                       <span className="text-[18px]">←</span>
                     </button>
@@ -1737,16 +1918,42 @@ export function Landing(props: Props) {
         <section
           className="border-t border-t-[var(--border)] bg-card"
         >
-          <div className="max-w-[1080px] mx-auto px-7 py-14">
-            <div className="text-center mb-10">
-              <h2 className="prev-h2 text-[30px] md:text-[34px] font-semibold tracking-[-1px] mb-3">
-                الوجوه اللي <span className="text-success">تضمن</span> حضورك
+          <div className="max-w-[1080px] mx-auto px-7 py-8 md:py-14">
+            <div className="text-center mb-5 md:mb-10">
+              <h2 className="prev-h2 text-[clamp(20px,5.6vw,34px)] font-semibold tracking-[-1px] mb-3">
+                مين يشتغل على <span className="text-success">حضورك؟</span>
               </h2>
-              <p className="text-[14.5px] text-muted-foreground max-w-[580px] mx-auto leading-[1.7]">
+              <p className="hidden md:block text-[14.5px] text-muted-foreground max-w-[580px] mx-auto leading-[1.7]">
                 هؤلاء وقّعوا تعهّد &laquo;حضور لا وعود&raquo; — تقدر تسائلهم شخصياً على كل مقال.
               </p>
             </div>
 
+            {/* Mobile: teaser+collapse — the closed summary itself shows real
+                faces (passive human-trust, like the client-logos teaser).
+                Desktop: full cards, always open. */}
+            <details className="group">
+              <summary className="md:hidden cursor-pointer list-none [&::-webkit-details-marker]:hidden flex flex-col items-center gap-2.5">
+                <div className="flex justify-center">
+                  {[...coreTeam, ...executionTeam].slice(0, 4).map((m, i) => {
+                    const initials = m.name.trim().split(/\s+/).slice(0, 2).map((w) => w[0]).join("");
+                    return (
+                      <span key={i} className="relative w-11 h-11 rounded-full overflow-hidden bg-muted ring-2 ring-card flex items-center justify-center -ms-2.5 first:ms-0">
+                        {m.avatarUrl ? (
+                          <Image src={m.avatarUrl} alt={m.name} fill sizes="44px" unoptimized className="object-cover" />
+                        ) : (
+                          <span className="text-[13px] font-semibold text-muted-foreground">{initials}</span>
+                        )}
+                      </span>
+                    );
+                  })}
+                </div>
+                <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-foreground">
+                  <span>فريق من {toArabicDigits(coreTeam.length + executionTeam.length)} شخص يبني حضورك</span>
+                  <ChevronDown className="w-4 h-4 text-success animate-bounce group-open:animate-none group-open:rotate-180" strokeWidth={2.5} aria-hidden />
+                </span>
+              </summary>
+
+              <div className="hidden group-open:block md:block mt-5 md:mt-0">
             {coreTeam.length > 0 && (
               <div
                 className={cn(
@@ -1762,9 +1969,9 @@ export function Landing(props: Props) {
                       key={i}
                       className="group bg-background border border-border rounded-2xl p-5 flex items-start gap-4 hover:border-success/40 hover:shadow-[0_20px_40px_-24px_color-mix(in_oklch,var(--success)_30%,transparent)] transition-all"
                     >
-                      <div className="shrink-0 w-16 h-16 md:w-[76px] md:h-[76px] rounded-full overflow-hidden bg-muted flex items-center justify-center ring-2 ring-success/15">
+                      <div className="relative shrink-0 w-16 h-16 md:w-[76px] md:h-[76px] rounded-full overflow-hidden bg-muted flex items-center justify-center ring-2 ring-success/15">
                         {m.avatarUrl ? (
-                          <Image src={m.avatarUrl} alt={`${m.name} — ${m.role}`} width={76} height={76} unoptimized className="w-full h-full object-cover" />
+                          <Image src={m.avatarUrl} alt={`${m.name} — ${m.role}`} fill sizes="76px" unoptimized className="object-cover" />
                         ) : (
                           <span className="text-[22px] font-semibold text-muted-foreground">{initials}</span>
                         )}
@@ -1807,9 +2014,9 @@ export function Landing(props: Props) {
                         key={i}
                         className="bg-background border border-border rounded-xl p-3 flex flex-col items-center text-center gap-2 hover:border-muted-foreground/50 transition-colors"
                       >
-                        <div className="w-14 h-14 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                        <div className="relative w-14 h-14 rounded-full overflow-hidden bg-muted flex items-center justify-center">
                           {m.avatarUrl ? (
-                            <Image src={m.avatarUrl} alt={`${m.name} — ${m.role}`} width={56} height={56} unoptimized className="w-full h-full object-cover" />
+                            <Image src={m.avatarUrl} alt={`${m.name} — ${m.role}`} fill sizes="56px" unoptimized className="object-cover" />
                           ) : (
                             <span className="text-[15px] font-semibold text-muted-foreground">{initials}</span>
                           )}
@@ -1824,6 +2031,8 @@ export function Landing(props: Props) {
                 </div>
               </div>
             )}
+              </div>
+            </details>
           </div>
         </section>
       )}
@@ -1843,8 +2052,8 @@ export function Landing(props: Props) {
             id="faq"
             className="border-t border-t-[var(--border)] bg-card overflow-x-clip"
           >
-            <div className="max-w-[760px] mx-auto px-7 py-14">
-              <div className="text-center mb-8">
+            <div className="max-w-[760px] mx-auto px-7 py-8 md:py-14">
+              <div className="text-center mb-5 md:mb-8">
                 {/* Trust badge — matches structure of other sections */}
                 <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
                   <MessageCircle className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden />
@@ -1852,7 +2061,7 @@ export function Landing(props: Props) {
                   <span className="text-success/60" aria-hidden>·</span>
                   <span className="text-success/80 font-mono text-[10.5px]">{toArabicDigits(faqs.length)} سؤال</span>
                 </div>
-                <h2 className="prev-h2 text-[30px] md:text-[34px] font-semibold tracking-[-1px] mb-3">
+                <h2 className="prev-h2 text-[clamp(20px,5.6vw,34px)] font-semibold tracking-[-1px] mb-3">
                   اقتنع <span className="text-success">قبل</span> ما تبدأ
                 </h2>
                 <p className="text-[14.5px] text-muted-foreground max-w-[520px] mx-auto leading-[1.7]">
@@ -1938,7 +2147,7 @@ export function Landing(props: Props) {
         className="max-w-[1080px] mx-auto pt-[60px] px-7 pb-[90px]"
       >
         <div className="bg-foreground rounded-[20px] md:rounded-[26px] px-5 py-10 md:px-10 md:py-[72px] text-center">
-          <h2 className="prev-cta-h2 text-[26px] md:text-[44px] font-semibold text-background tracking-[-1px] md:tracking-[-1.5px] leading-[1.2] md:leading-[1.15] mb-4 [text-wrap:balance]">
+          <h2 className="prev-cta-h2 text-[clamp(17px,5.0vw,26px)] md:text-[44px] font-semibold text-background tracking-[-1px] md:tracking-[-1.5px] leading-[1.2] md:leading-[1.15] mb-4 [text-wrap:balance]">
             {finalCtaData?.title1 ?? "منافسك يتصدّر الحين."}<br />
             {finalCtaData?.title2 ?? "وأنت؟"}
           </h2>
@@ -2020,7 +2229,7 @@ export function Landing(props: Props) {
                 {/* LEFT (RTL end): Saving % */}
                 <div className="text-left ps-[14px] border-s border-s-background/10">
                   <div className="text-[11px] text-background/60 font-mono tracking-[.5px] mb-[3px]">التوفير</div>
-                  <div className="font-mono text-[26px] font-semibold text-success leading-none">{calcSavePct}٪</div>
+                  <div className="font-mono text-[clamp(17px,5.0vw,26px)] font-semibold text-success leading-none">{calcSavePct}٪</div>
                   <div className="text-xs text-background/60 mt-[5px] font-mono">
                     = {formatNum(calcSaveAmt)}
                   </div>

@@ -20,17 +20,42 @@ button:focus-visible {
   padding: 10px 18px;
 }
 
+/* Section titles: if a title ever wraps on a very narrow screen, wrap into
+   two balanced lines instead of leaving one orphan word. */
+.prev-h2 { text-wrap: balance; }
+
+/* Zebra sections — odd/even alternate between the two coordinated surfaces
+   so a scrolling visitor FEELS each section boundary (Khalid 2026-07-15).
+   Scoped to the landing page via :has(#pricing).
+   Mobile counts only VISIBLE sections (nth-child "of" syntax skips .hidden
+   ones like the desktop-only guarantee) so the alternation never shows two
+   same-color neighbors after responsive hiding. */
+main:has(#pricing) > section { background: var(--background); }
+@media (min-width: 881px) {
+  main:has(#pricing) > section:nth-of-type(even) { background: var(--card); }
+}
+@media (max-width: 880px) {
+  main:has(#pricing) > section:nth-child(even of section:not(.hidden)) { background: var(--card); }
+}
+
 .prev-faq-item { border-bottom: 1px solid var(--border); }
 .prev-faq-q {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
   width: 100%;
   padding: 22px 0;
-  font-size: 16px;
+  /* Fluid question size — most questions fit one line on mobile; the rare
+     long one wraps into two balanced lines. */
+  font-size: clamp(13.5px, 4vw, 16px);
   font-weight: 500;
   color: var(--foreground);
   text-align: right;
+  text-wrap: balance;
+}
+@media (max-width: 640px) {
+  .prev-faq-q { padding: 16px 0; }
 }
 .prev-faq-a {
   max-height: 0;
@@ -147,7 +172,6 @@ button:focus-visible {
   font-weight: 600;
   color: var(--muted-foreground);
 }
-.prev-voice-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
 @media (max-width: 640px) {
   .prev-trust-metrics { grid-template-columns: 1fr !important; gap: var(--space-6); }
@@ -160,15 +184,14 @@ button:focus-visible {
 }
 @media (max-width: 640px) {
   .prev-hero-h1 {
-    font-size: 32px !important;
+    font-size: clamp(24px, 8vw, 32px) !important;
     letter-spacing: -1px !important;
     line-height: 1.15 !important;
     text-wrap: balance;
   }
   .prev-hero-sub { font-size: var(--font-md) !important; text-wrap: pretty; }
-  .prev-h2 { font-size: 30px !important; }
-  .prev-math-num { font-size: 36px !important; }
-  .prev-math-num-big { font-size: 46px !important; }
+  .prev-math-num { font-size: clamp(26px, 9vw, 36px) !important; }
+  .prev-math-num-big { font-size: clamp(30px, 11.5vw, 46px) !important; }
   .prev-pricing-grid { grid-template-columns: 1fr !important; }
   .prev-voice-metric { margin-inline-start: 0 !important; order: 3; width: 100%; text-align: center; }
   .prev-voices-grid { grid-template-columns: 1fr !important; gap: var(--space-5) !important; }

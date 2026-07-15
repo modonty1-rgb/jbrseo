@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أحكام أقسام الموبايل — jbrseo.com</title>
+<style>
+  :root{
+    --bg:#0e1116; --card:#161b23; --border:#242c38; --fg:#e8edf4; --muted:#93a0b4;
+    --green:#79CA45; --amber:#eab308; --red:#ef4444; --blue:#3b82f6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:"Segoe UI",Tahoma,sans-serif;line-height:1.7;padding:28px 16px 80px}
+  .wrap{max-width:860px;margin:0 auto}
+  h1{font-size:26px;margin-bottom:6px}
+  .sub{color:var(--muted);font-size:14px;margin-bottom:8px}
+  .src{font-size:12px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin:14px 0 26px}
+  .legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;font-size:13px}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:99px;font-weight:700;font-size:12.5px}
+  .keep{background:rgba(121,202,69,.15);color:var(--green);border:1px solid rgba(121,202,69,.35)}
+  .cond{background:rgba(234,179,8,.12);color:var(--amber);border:1px solid rgba(234,179,8,.35)}
+  .hide{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.35)}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px}
+  .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:var(--bg);border:1px solid var(--border);font-weight:900;font-size:15px;color:var(--green)}
+  .name{font-size:17px;font-weight:800}
+  .why{color:var(--muted);font-size:13.5px;margin-top:10px;border-inline-start:3px solid var(--border);padding-inline-start:12px}
+  .act{margin-top:10px;font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+  .act b{color:var(--green)}
+  .status{margin-top:12px;display:flex;gap:8px;align-items:center}
+  .status select{background:var(--bg);color:var(--fg);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-family:inherit;font-size:13px}
+  .done-mark{display:none;color:var(--green);font-weight:800;font-size:13px}
+  .card.is-done{opacity:.55}
+  .card.is-done .done-mark{display:inline}
+  .footer{margin-top:30px;color:var(--muted);font-size:12.5px;text-align:center}
+  .counter{position:fixed;bottom:14px;inset-inline:0;margin-inline:auto;width:fit-content;background:var(--card);border:1px solid var(--border);border-radius:99px;padding:8px 20px;font-size:13.5px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+  .counter b{color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>أحكام أقسام الموبايل</h1>
+  <div class="sub">jbrseo.com/sa · الهدف: ١٨ شاشة ← ~٩ شاشات · الأسعار من الشاشة ~١٠ ← ~٥ · الديسكتوب لا يتغيّر</div>
+
+  <div class="src">
+    <b>السند البحثي (Nielsen Norman Group):</b>
+    ٥٧٪ من وقت المشاهدة في أول شاشة و٧٤٪ في أول شاشتين (Scrolling &amp; Attention) ·
+    "قاعدة الإيجاز على الموبايل قائمة" والمحتوى المعقّد أبطأ قراءةً على الموبايل (Mobile Content) ·
+    "رحّل المحتوى الثانوي لصفحات ثانوية" والأكورديون الأداة الموصى بها (Mobile Accordions) ·
+    تكرار إشارات الثقة = واجهة مزدحمة وبطء تحميل (Social Proof)
+  </div>
+
+  <div class="legend">
+    <span class="chip keep">يبقى</span>
+    <span class="chip cond">يُختصر</span>
+    <span class="chip hide">يختفي من الموبايل</span>
+    <span style="color:var(--muted)">— غيّر حالة كل بند من القائمة لما ننفّذه</span>
+  </div>
+
+  <!-- 1 -->
+  <div class="card" data-id="1">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">1</span><span class="name">Hero</span></div><span class="chip keep">يبقى</span></div>
+    <div class="why">أول شاشة تستحوذ على ٥٧٪ من الانتباه — هنا الرسالة الأساسية وزر التحويل.</div>
+    <div class="act"><b>التنفيذ:</b> لا شيء — كما هو.</div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 2 -->
+  <div class="card is-done" data-id="2">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">2</span><span class="name">قصص النجاح (٣ تبويبات)</span></div><span class="chip cond">يُختصر</span></div>
+    <div class="why">الانتباه ينهار بعد الشاشتين — قصة واحدة قوية ظاهرة تكفي، والباقي خلف التبويب دون إطالة عمودية.</div>
+    <div class="act"><b>✔ نُفّذ (2026-07-15):</b> قصة واحدة (سمايل تاون) بدون أزرار تنقّل · الرقم البطل بتسمية صادقة «ضغطة على احجز موعد» · حذف كرت التفاصيل التقنية من الموبايل (فخ القسمة ٣١÷١٦٩) · شريط إحصائيات موحّد بدل ٤ كروت · فقرة المقدمة desktop فقط · مسافات مضغوطة. <b>النتيجة: ٢.٢ شاشة ← ٠.٦٤ شاشة (-٧١٪).</b> إضافات: عناوين fluid clamp لكل الصفحة + hook الهيرو hard-coded بالعداد الحي + شعار GA في الشيبين + hero مضغوط ٦٢٥←٥٦٧px.</div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option selected>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 3 -->
+  <div class="card is-done" data-id="3">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">3</span><span class="name">الضمان (قسم مستقل)</span></div><span class="chip hide">يختفي من الموبايل</span></div>
+    <div class="why">مكرر حرفياً داخل كرت السعر ("استرداد ١٤ يوم · بدون أسئلة") — تكرار إشارة الثقة = ازدحام (NN/g Social Proof).</div>
+    <div class="act"><b>✔ نُفّذ (2026-07-15):</b> القسم صار desktop فقط (hidden md:block) — الموبايل يكتفي بشارة الهيرو + سطر الضمان داخل كرت السعر. إضافة: نظام الزيبرا (تبادل ألوان الأقسام) اتطوّر ليحسب الأقسام الظاهرة فقط على الموبايل — التبادل سليم آلياً حتى مع الأقسام المخفية. متحقق: ١٣ قسم ظاهر يتبادلون بدون جارين بنفس اللون.</div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option selected>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 4 -->
+  <div class="card is-done" data-id="4">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">4</span><span class="name">الهوية الرسمية</span></div><span class="chip cond">يُختصر</span></div>
+    <div class="why">محتوى ثقة فريد (غير مكرر) — مرة واحدة مشروعة. الشهادة صارت desktop فقط من قبل.</div>
+    <div class="act"><b>✔ نُفّذ (2026-07-15):</b> فقرة المقدمة desktop فقط · مسافات مضغوطة (py-8 موبايل) · الشهادة كانت desktop من قبل · العنوان صار سطر واحد على الموبايل: شعار خرائط جوجل الرسمي + «جدة، المملكة العربية السعودية» + نفس الرابط (الديسكتوب يحتفظ بالعنوان الكامل). <b>النتيجة: القسم = ٠.٦ شاشة.</b></div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option selected>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 5 -->
+  <div class="card is-done" data-id="5">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">5</span><span class="name">شعارات العملاء</span></div><span class="chip cond">يُختصر (حكم معدّل)</span></div>
+    <div class="why">الحكم اتعدّل بعد نقاش: الشعارات = ثقة «عرض» والشهادات = ثقة «عمق» — مش مكررين. حذفها قبل حملة لبراند غير معروف = خطأ.</div>
+    <div class="act"><b>✔ نُفّذ (2026-07-15):</b> نمط Teaser+Collapse على الموبايل: ٣ شعارات كبيرة موحّدة (سمايل تاون أولاً — صدى لقصة النجاح، صور البورتريه مؤجلة للعرض الموسّع) + المربع الرابع = زر «+23 عميل» بسهم متحرك · الفلتر يظهر بعد الفتح فقط · الشعار يملأ الكرت بنفس الانحناء · صفر نجوم في الصف (نمط Stripe الموحّد). <b>النتيجة: شاشتين ← ٠.٣٨ شاشة.</b> بونص: حذف آخر whileInView من TrustSection.</div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option selected>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 6 -->
+  <div class="card is-done" data-id="6">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">6</span><span class="name">الحسبة (فريق vs باقة)</span></div><span class="chip cond">يُختصر (حكم معدّل)</span></div>
+    <div class="why">الحكم اتعدّل: خالد أكد القسم مهم جداً — المقارنة المالية هي حجة البيع الأساسية. الحل: نضغطه بدل ما نخفيه.</div>
+    <div class="act"><b>✔ نُفّذ (2026-07-15):</b> الموبايل: كرت حكم واحد مضغوط — «توظّف الفريق بنفسك» صار كولابس native (سطر عنوان + سطر أرقام سنوي·شهري + سهم متحرك؛ الفتح يعرض الوظائف الست inline) و«اشتراك مدونتي» بنفس بنية السطرين · كل النصوص المحيطة سطر واحد · زر الحاسبة اتسمى «احسب توفيرك بنفسك». <b>النتيجة: ~٢.٥ شاشة ← ٠.٦٩ شاشة.</b> الديسكتوب بكرتيه كما هو.</div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option selected>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 7 -->
+  <div class="card is-done" data-id="7">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">7</span><span class="name">المنظومة (features)</span></div><span class="chip cond">يُختصر</span></div>
+    <div class="why">المبدأ الحرفي: "defer secondary content to secondary pages" — التفاصيل مكانها /features.</div>
+    <div class="act"><b>✔ نُفّذ (2026-07-15):</b> الخطوات الثلاث = صفوف صغيرة متناسبة (أيقونة ٧بكسل + عنوان) · القنوات صارت ٣ نقاط بسيطة بصياغة الفائدة («مقالاتك على منصة مدونتي» · «محتواك على سوشال مدونتي» — دقيقة: سوشال المنصة مو حسابات العميل · «ننشر على موقعك أنت») · لوحة التحكم انفصلت بكرت مستقل بأيقونتها (متابعة كل شي + تقارير جوجل + اعتماد بضغطة + حملات إيميل) · صفحة العمل = كولابس بأيقونة Store وعمود واحد للميزات + «+١٥ خاصية أخرى». <b>النتيجة: ~٣ شاشات ← ~١.١ شاشة.</b></div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option selected>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 8 -->
+  <div class="card is-done" data-id="8">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">8</span><span class="name">بوابة الدفع</span></div><span class="chip cond">أُعيد هيكلته (فكرة خالد)</span></div>
+    <div class="why">فكرة خالد الأقوى تحويلياً: أيقونات الدفع مكانها لحظة القرار (قسم الأسعار) مو قسم مستقل — وقسم الدفع يتخصص في قصة البوابة فقط (Baymard).</div>
+    <div class="act"><b>✔ نُفّذ (2026-07-15):</b> قسم الدفع = قصة البوابة فقط (Network International + PCI/3DS) — من ~١.٥ شاشة إلى ٠.٤٥ · صف الأيقونات انتقل <b>لبداية قسم الأسعار</b> (قبل قراءة الأسعار) · فلترة بالدولة: /sa = مدى·Visa·MC·Apple Pay (الوسائل الفعلية في الـ checkout فقط — STC Pay وTamara انحذفوا لأنهم مو مفعّلين، تمارا تُضاف يوم تتفعّل) · /eg = InstaPay·Visa·MC·SAIB (البوابة عالمية للبطاقات).</div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option selected>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 9 -->
+  <div class="card is-done" data-id="9">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">9</span><span class="name">الأسعار</span></div><span class="chip cond">حُسّن (فكرة خالد)</span></div>
+    <div class="why">أهم قسم في المشروع — اتفقنا: السعر + المزايا الرئيسية ظاهرة، والباقي كولابس (نمط Stripe/Notion/Salla · NN/g جداول المقارنة · Baymard).</div>
+    <div class="act"><b>✔ نُفّذ (2026-07-15):</b> كل كرت: ٣ مزايا مميِّزة ظاهرة + كولابس بعدّاد «كل مميزات الباقة (+N) ▾» (موبايل فقط — الديسكتوب قوائم كاملة) · رأس القسم أعيد بناؤه: هوك أخضر حر 🎁 «ادفع ١٢ شهر — واستلم ١٨» (بدون شكل زر — false affordance مرفوض) + عنوان أقوى «اختر باقتك وابدأ اليوم» + toggle نظيف شهري|سنوي متساوي + صف وسائل الدفع في البداية (بند ٨).</div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option selected>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 10 -->
+  <div class="card is-done" data-id="10">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">10</span><span class="name">الشهادات (فيديو + أصوات)</span></div><span class="chip cond">يُختصر</span></div>
+    <div class="why">إشارة ثقة واحدة قوية أفضل من اثنتين مزدحمتين (NN/g Social Proof) — والشهادتان (سعودية + مصرية) كلتاهما مهمة، تبقيان قابلتين للوصول.</div>
+    <div class="act"><b>✔ نُفّذ (2026-07-15):</b> شهادة واحدة ظاهرة + <b>نقاط تبديل</b> فقط على الموبايل (الأسهم الكبيرة desktop — الشهادتان SA+EG متاحتان) · فقرة المقدمة desktop فقط · الاقتباس ٣ أسطر كحد أقصى (line-clamp) · العنوان الطويل صار سطر واحد بخط dynamic (clamp 16px) · مسافات مضغوطة. <b>النتيجة: القسم = ٠.٧١ شاشة.</b></div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option selected>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 11 -->
+  <div class="card is-done" data-id="11">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">11</span><span class="name">الفريق</span></div><span class="chip cond">كولابس (حكم معدّل)</span></div>
+    <div class="why">الحكم اتعدّل: خالد محق — «اليوزر محتاج يشوف بني آدمين». الإخفاء يضيّع الثقة الإنسانية؛ الحل: teaser بالوجوه + كولابس.</div>
+    <div class="act"><b>✔ نُفّذ (2026-07-15):</b> المقفول على الموبايل = ٤ صور وجوه دائرية متراكبة + «فريق من ١٢ شخص يبني حضورك ▾» (الثقة البشرية تنتقل بدون فتح) · الفتح يعرض كروت الفريق كاملة · الديسكتوب كامل دائماً · العنوان اتحسّن: «مين يشتغل على حضورك؟». <b>النتيجة: ~٢ شاشة ← ٠.٢٣ شاشة مقفول.</b></div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option selected>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 12 -->
+  <div class="card" data-id="12">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">12</span><span class="name">الأسئلة الشائعة</span></div><span class="chip keep">يبقى</span></div>
+    <div class="why">الأكورديون هو الأداة الموصى بها رسمياً على الموبايل — القسم مبني كذا أصلاً.</div>
+    <div class="act"><b>التنفيذ:</b> لا شيء — كما هو.</div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <!-- 13 -->
+  <div class="card" data-id="13">
+    <div class="row"><div style="display:flex;align-items:center;gap:10px"><span class="num">13</span><span class="name">الختام (CTA الأخير)</span></div><span class="chip keep">يبقى</span></div>
+    <div class="why">آخر فرصة تحويل لمن وصل النهاية.</div>
+    <div class="act"><b>التنفيذ:</b> لا شيء — كما هو.</div>
+    <div class="status"><select><option>معلّق</option><option>موافَق</option><option>منفّذ</option></select><span class="done-mark">✔ تم</span></div>
+  </div>
+
+  <div class="footer">
+    بعد التنفيذ الكامل: مراجعة نسبة وصول الزوار لحدث pricing_view في GA4 — القرار النهائي بالقياس (توصية NN/g نفسها).<br>
+    2026-07-15 · jbrseo.com
+  </div>
+</div>
+
+<div class="counter">منفّذ: <b id="done-count">0</b> / 13</div>
+
+<script>
+  // Persist status choices in localStorage so progress survives reloads.
+  const cards = document.querySelectorAll('.card[data-id]');
+  const KEY = 'jbrseo-mobile-verdicts';
+  const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
+  const counter = document.getElementById('done-count');
+  function refresh(){
+    let done = 0;
+    cards.forEach(c => {
+      const sel = c.querySelector('select');
+      if (sel.value === 'منفّذ') { c.classList.add('is-done'); done++; }
+      else c.classList.remove('is-done');
+    });
+    counter.textContent = done;
+  }
+  cards.forEach(c => {
+    const id = c.dataset.id, sel = c.querySelector('select');
+    if (saved[id]) sel.value = saved[id];
+    sel.addEventListener('change', () => {
+      saved[id] = sel.value;
+      localStorage.setItem(KEY, JSON.stringify(saved));
+      refresh();
+    });
+  });
+  refresh();
+</script>
+</body>
+</html>
