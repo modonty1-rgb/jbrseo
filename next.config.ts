@@ -9,8 +9,30 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig: NextConfig = {
   reactCompiler: true,
   poweredByHeader: false,
+  compiler: {
+    // Strip console.* (except error/warn) from the production bundle — smaller JS,
+    // less main-thread work. Matches modonty.com.
+    removeConsole:
+      process.env.NODE_ENV === "production" ? { exclude: ["error", "warn"] } : false,
+  },
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    // Barrel-optimize the heavy UI deps we actually use (carousels, dialogs,
+    // sliders, icons) so only the used code ships — cuts First Load JS / TBT.
+    optimizePackageImports: [
+      "lucide-react",
+      "embla-carousel-react",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-slider",
+      "@radix-ui/react-collapsible",
+      "@radix-ui/react-slot",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-select",
+      "@radix-ui/react-scroll-area",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-checkbox",
+      "@radix-ui/react-label",
+      "@radix-ui/react-avatar",
+    ],
   },
   async redirects() {
     return [
