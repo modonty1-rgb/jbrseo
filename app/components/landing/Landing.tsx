@@ -8,7 +8,8 @@ import type { Plan as DBPlan } from "@prisma/client";
 import type { StaticLanding } from "@/app/content/landing/types";
 import type { ModontyTrustBundle } from "@/app/actions/modonty-client-logos";
 import type { ModontyImpactStats, ClientCaseStudyStats } from "@/lib/analytics/ga4";
-import { TrustSection } from "./TrustSection";
+import dynamic from "next/dynamic";
+import { TrustSectionSkeleton } from "./TrustSectionSkeleton";
 import { getPlanCardContent } from "@/lib/plan-card-content";
 import {
   FileText,
@@ -97,6 +98,14 @@ function ytEmbed(url?: string): string | null {
 }
 
 /** GPU-friendly count-up — animates a number when scrolled into view. */
+// TrustSection (client logos below the hero) is lazy-loaded and client-only:
+// its framer-motion + Radix Select JS is deferred off the initial bundle, and
+// an accurate skeleton reserves its exact height so there is zero layout shift.
+const TrustSection = dynamic(
+  () => import("./TrustSection").then((mod) => mod.TrustSection),
+  { ssr: false, loading: () => <TrustSectionSkeleton /> },
+);
+
 function CountUp({ to, prefix = "", suffix = "", duration = 1.6 }: { to: number; prefix?: string; suffix?: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-40px" });

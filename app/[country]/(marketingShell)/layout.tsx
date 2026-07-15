@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { AnnouncementBar } from "@/app/components/layout/AnnouncementBar";
 import { Footer } from "@/app/components/layout/footer/Footer";
 import { LandingHeader } from "@/app/components/layout/header/LandingHeader";
-import { StickyMobileCTA } from "@/app/components/layout/StickyMobileCTA";
+import { StickyMobileCTALazy } from "@/app/components/layout/StickyMobileCTALazy";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getLandingContent } from "@/lib/getLandingContent";
 import { getMeta } from "@/app/actions/pricing-meta";
@@ -57,7 +57,7 @@ export default async function MarketingShellLayout({
         country={countryCode}
         basePath={basePath}
       />
-      <StickyMobileCTA
+      <StickyMobileCTALazy
         pricingHref={pricingHref}
         whatsappLink={whatsappLink}
         ctaLabel={ctaLabel}

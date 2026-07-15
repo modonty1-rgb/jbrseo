@@ -337,7 +337,11 @@
       "Bash(curl -s -o /dev/null -w \"/sa: HTTP %{http_code}\\\\n\" \"http://localhost:3000/sa\")",
       "Bash(grep -vE \"^\\\\s*//\")",
       "Bash(curl -s -o /dev/null -w \"/eg: HTTP %{http_code}\\\\n\" \"http://localhost:3000/eg?country=eg\")",
-      "Bash(curl -s -o /dev/null -w \"/eg: HTTP %{http_code}\\\\n\" \"http://localhost:3000/eg\")"
+      "Bash(curl -s -o /dev/null -w \"/eg: HTTP %{http_code}\\\\n\" \"http://localhost:3000/eg\")",
+      "Bash(pnpm build *)",
+      "Bash(node -e \"const m=require\\('./.next/app-build-manifest.json'\\); console.log\\(Object.keys\\(m.pages\\).filter\\(k=>k.includes\\('country'\\)||k.includes\\('page'\\)\\).slice\\(0,20\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(awk '{printf \"%8d B %s\\\\n\",$1,$2}')",
+      "Bash(awk '{printf \"%9d B  %s\\\\n\",$1,$2}')"
     ],
     "deny": [
       "Bash(rm *)",
