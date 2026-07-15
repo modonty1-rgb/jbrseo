@@ -13,7 +13,6 @@ import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
 } from "@/lib/country-config";
-import { isAnnualFromBillingParam } from "@/lib/billing-search-param";
 import { getWhatsAppLink } from "@/lib/site-links";
 import { buildLandingOgMetadata } from "@/lib/landing-open-graph";
 import {
@@ -84,12 +83,18 @@ export async function generateMetadata({
 
 export const revalidate = 60;
 
+// Pre-render both country landings at build (SSG + ISR every 60s). No request-time
+// APIs are read — the billing query param is handled client-side in PricingSection —
+// so the page is fully static, served from cache; TTFB/LCP no longer pay for the
+// per-request data fetches (DB + GA4).
+export function generateStaticParams() {
+  return [{ country: "sa" }, { country: "eg" }];
+}
+
 export default async function CountryHome({
   params,
-  searchParams,
 }: {
   params: Promise<{ country: string }>;
-  searchParams: Promise<{ billing?: string }>;
 }) {
   const { country: raw } = await params;
   const slug = raw?.toLowerCase();
@@ -97,8 +102,6 @@ export default async function CountryHome({
 
   const countrySlug = slug as "sa" | "eg";
   const countryCode = getCountryCodeFromSlug(countrySlug);
-  const sp = await searchParams;
-  const annual = isAnnualFromBillingParam(sp?.billing);
 
   const [content, staticLanding, plans, meta, trustBundle, modontyImpact, caseStats] = await Promise.all([
     getLandingContent(countryCode),
@@ -132,7 +135,6 @@ export default async function CountryHome({
         plans={plans}
         announcement={meta?.announcement ?? ""}
         whatsappLink={whatsappLink}
-        initialBilling={annual ? "annual" : "monthly"}
         ctaLabel={ctaLabel}
         trustBundle={trustBundle}
         modontyImpact={modontyImpact}

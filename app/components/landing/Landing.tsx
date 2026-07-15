@@ -17,15 +17,12 @@ import { CaseStudiesSlider } from "./sections/CaseStudiesSlider";
 import { FaqSection } from "./sections/FaqSection";
 import { TrustSectionLazy } from "./TrustSectionLazy";
 
-type Billing = "monthly" | "annual";
-
 type Props = {
   countrySlug: "sa" | "eg";
   staticLanding: StaticLanding;
   plans: DBPlan[];
   announcement: string;
   whatsappLink: string;
-  initialBilling: Billing;
   ctaLabel: string;
   trustBundle: ModontyTrustBundle;
   modontyImpact: ModontyImpactStats | null;
@@ -39,7 +36,7 @@ type Props = {
  * island, so the above-the-fold hero ships with zero shell JS.
  */
 export function Landing(props: Props) {
-  const { countrySlug, staticLanding, plans, whatsappLink, initialBilling, ctaLabel, trustBundle, modontyImpact, caseStats } = props;
+  const { countrySlug, staticLanding, plans, whatsappLink, ctaLabel, trustBundle, modontyImpact, caseStats } = props;
   const checkoutHref = `/${countrySlug}/checkout`;
 
   const country = countrySlug === "eg" ? "EG" : "SA";
@@ -94,7 +91,6 @@ export function Landing(props: Props) {
         countrySlug={countrySlug}
         whatsappLink={whatsappLink}
         checkoutHref={checkoutHref}
-        initialBilling={initialBilling}
       />
 
       {voices.length > 0 && <VoicesSection voices={voices} socialProofEyebrow={socialProofEyebrow} />}

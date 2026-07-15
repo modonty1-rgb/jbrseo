@@ -8,6 +8,7 @@ import type { Plan as DBPlan } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { getPlanCardContent } from "@/lib/plan-card-content";
 import { GTMEvents } from "@/lib/gtm";
+import { isAnnualFromBillingParam } from "@/lib/billing-search-param";
 import { toArabicDigits, formatNum } from "../landing-helpers";
 
 type Billing = "monthly" | "annual";
@@ -17,13 +18,19 @@ type Props = {
   countrySlug: "sa" | "eg";
   whatsappLink: string;
   checkoutHref: string;
-  initialBilling: Billing;
 };
 
 /** Pricing plans (DB) with the billing toggle. Owns billing state + the GA4
  *  pricing_view IntersectionObserver (both pricing-only). Client component. */
-export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLink, checkoutHref, initialBilling }: Props) {
-  const [billing, setBilling] = useState<Billing>(initialBilling);
+export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLink, checkoutHref }: Props) {
+  // Default to annual (matches the prior server default). The ?billing=monthly
+  // deep-link is read client-side so the page itself stays static/cacheable.
+  const [billing, setBilling] = useState<Billing>("annual");
+
+  useEffect(() => {
+    const billingParam = new URLSearchParams(window.location.search).get("billing");
+    if (!isAnnualFromBillingParam(billingParam)) setBilling("monthly");
+  }, []);
 
   useEffect(() => {
     const pricingEl = document.getElementById("pricing");
