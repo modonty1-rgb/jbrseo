@@ -111,6 +111,7 @@ export function MobileMenuDrawer({
               <NextLink
                 key={link.href}
                 href={link.href}
+                prefetch={false}
                 onClick={() => onOpenChange(false)}
                 style={{ animationDelay: `${120 + i * 55}ms`, animationFillMode: "both" }}
                 className="group flex min-h-14 items-center gap-3 rounded-lg px-3 text-[15px] font-semibold text-white/90 transition-colors hover:bg-white/[0.04] active:bg-white/[0.06] animate-in fade-in slide-in-from-right-4 duration-400 ease-out no-underline"

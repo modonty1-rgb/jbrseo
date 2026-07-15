@@ -220,6 +220,19 @@
   outline-offset: 3px;
   border-radius: 6px;
 }
+.marketing-surface ::selection { background: var(--foreground); color: var(--card); }
+
+/* Zebra sections — landing only (scoped via :has(#pricing)). Odd/even alternate
+   between the two coordinated surfaces so a scrolling visitor feels each section
+   boundary. Mobile counts only VISIBLE sections (nth-child "of" skips .hidden
+   ones like the desktop-only guarantee). Migrated here from landing.css. */
+main:has(#pricing) > section { background: var(--background); }
+@media (min-width: 881px) {
+  main:has(#pricing) > section:nth-of-type(even) { background: var(--card); }
+}
+@media (max-width: 880px) {
+  main:has(#pricing) > section:nth-child(even of section:not(.hidden)) { background: var(--card); }
+}
 
 @theme inline {
   --color-background:           var(--background);

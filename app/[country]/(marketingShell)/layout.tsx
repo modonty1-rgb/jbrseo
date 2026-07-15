@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { AnnouncementBar } from "@/app/components/layout/AnnouncementBar";
 import { Footer } from "@/app/components/layout/footer/Footer";
 import { LandingHeader } from "@/app/components/layout/header/LandingHeader";
-import { StickyMobileCTALazy } from "@/app/components/layout/StickyMobileCTALazy";
+import { StickyMobileCTA } from "@/app/components/layout/StickyMobileCTA";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getLandingContent } from "@/lib/getLandingContent";
 import { getMeta } from "@/app/actions/pricing-meta";
@@ -40,7 +40,7 @@ export default async function MarketingShellLayout({
   const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
 
   return (
-    <div className="marketing-surface text-foreground">
+    <div className="marketing-surface text-foreground max-[880px]:pb-[calc(76px+env(safe-area-inset-bottom))]">
       <AnnouncementBar message={meta?.announcement ?? "أسعار التأسيس — أول ١٥٠ شركة."} />
       <LandingHeader
         content={content}
@@ -57,7 +57,7 @@ export default async function MarketingShellLayout({
         country={countryCode}
         basePath={basePath}
       />
-      <StickyMobileCTALazy
+      <StickyMobileCTA
         pricingHref={pricingHref}
         whatsappLink={whatsappLink}
         ctaLabel={ctaLabel}

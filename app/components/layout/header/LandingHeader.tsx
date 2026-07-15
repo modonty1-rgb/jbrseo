@@ -18,7 +18,7 @@ function DesktopNav({ navLinks }: { navLinks: NavLinkItem[] }) {
   return (
     <nav className="hidden items-center gap-1 lg:flex" aria-label="القائمة الرئيسية">
       {navLinks.map(({ href, label }) => (
-        <NextLink key={href} href={href} className={LANDING_NAV_LINK_CLASS}>
+        <NextLink key={href} href={href} prefetch={false} className={LANDING_NAV_LINK_CLASS}>
           {label}
         </NextLink>
       ))}
@@ -83,8 +83,9 @@ export function LandingHeader({
             />
           </div>
 
-          {/* Logo — center-anchor on mobile (via mx-auto), start-anchor on desktop */}
-          <div className="mx-auto lg:mx-0">
+          {/* Logo — pinned to the far side opposite the hamburger on mobile
+              (ms-auto), start-anchor on desktop */}
+          <div className="ms-auto lg:ms-0">
             <HeaderLogo logoHref={logoHref} />
           </div>
 
@@ -107,9 +108,12 @@ export function LandingHeader({
             <div className="hidden lg:block">
               <ThemeToggle />
             </div>
+            {/* Hidden ≤880px — the sticky footer bar carries this CTA there.
+                Uses the same 880px breakpoint (not lg) so 880–1024px still shows
+                it, since the footer bar only appears at ≤880px. */}
             <a
               href={pricingHref}
-              className="group inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-accent px-4 text-center text-[13px] font-black leading-tight text-accent-foreground shadow-[0_4px_16px_color-mix(in_oklch,var(--accent)_40%,transparent)] transition-all duration-200 hover:bg-accent/90 hover:scale-[1.03] sm:min-h-12 sm:px-5 sm:text-sm no-underline"
+              className="group hidden min-[881px]:inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full bg-accent px-4 text-center text-[13px] font-black leading-tight text-accent-foreground shadow-[0_4px_16px_color-mix(in_oklch,var(--accent)_40%,transparent)] transition-all duration-200 hover:bg-accent/90 hover:scale-[1.03] sm:min-h-12 sm:px-5 sm:text-sm no-underline"
             >
               <Sparkles
                 className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"

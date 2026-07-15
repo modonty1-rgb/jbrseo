@@ -13,7 +13,7 @@ Only components that currently have `"use client"` and are used on the public si
 - **Landing** — `app/components/landing/Landing.tsx` — full landing experience (hero · math · features · pricing · voices · team · FAQ · CTA · calculator)
 - **AnnouncementBar** — `app/components/landing/AnnouncementBar.tsx` — top dismissible bar
 - **Footer** — `app/components/landing/Footer.tsx` — dark footer (links · socials · WA · country switch)
-- **StickyMobileCTA** — `app/components/landing/StickyMobileCTA.tsx` — mobile floating CTA
+- **StickyMobileCTA** — `app/components/layout/StickyMobileCTA.tsx` — server component (fixed mobile CTA, no `"use client"`)
 - **Navbar** — `app/components/landing/Navbar.tsx` — server component (no `"use client"`)
 - **LandingJsonLd** — `app/components/landing/LandingJsonLd.tsx` — server component (JSON-LD only)
 

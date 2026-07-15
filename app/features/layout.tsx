@@ -32,7 +32,7 @@ export default async function FeaturesLayout({ children }: { children: ReactNode
   const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
 
   return (
-    <div dir="rtl" className="marketing-surface text-foreground overflow-x-clip" lang="ar">
+    <div dir="rtl" className="marketing-surface text-foreground overflow-x-clip max-[880px]:pb-[calc(76px+env(safe-area-inset-bottom))]" lang="ar">
       <AnnouncementBar message={meta?.announcement ?? ""} />
       <LandingHeader
         content={content}

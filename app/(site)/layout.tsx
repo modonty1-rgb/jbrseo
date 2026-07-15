@@ -61,7 +61,7 @@ async function SiteLayoutContent({ children }: { children: ReactNode }) {
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
   return (
-    <div dir="rtl" className="min-h-screen bg-background text-foreground" lang="ar">
+    <div dir="rtl" className="min-h-screen bg-background text-foreground max-[880px]:pb-[calc(76px+env(safe-area-inset-bottom))]" lang="ar">
       <Suspense fallback={<SiteLayoutFallback>{children}</SiteLayoutFallback>}>
         <SiteLayoutContent>{children}</SiteLayoutContent>
       </Suspense>

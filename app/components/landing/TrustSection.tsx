@@ -75,7 +75,7 @@ export function TrustSection({ bundle, ctaLabel }: Props): ReactElement {
           <div className="text-center mb-5 md:mb-12">
             <h2
               id="trust-section-title"
-              className="prev-h2 text-[clamp(20px,5.8vw,36px)] md:text-4xl font-black text-foreground leading-tight tracking-tight mb-2 md:mb-3"
+              className="text-balance text-[clamp(20px,5.8vw,36px)] md:text-4xl font-black text-foreground leading-tight tracking-tight mb-2 md:mb-3"
             >
               شركاء نبني حضورهم في البحث والذكاء الاصطناعي
             </h2>
