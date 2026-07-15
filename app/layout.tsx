@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { GoogleTagManager } from "@next/third-parties/google";
+import { DeferredGTM } from "@/app/components/DeferredGTM";
 import { Tajawal } from "next/font/google";
 import Link from "@/app/components/link";
 import { FAVICON_URLS } from "@/lib/constants";
@@ -89,10 +89,10 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${tajawal.className} bg-background text-foreground`}>
-        {/* Google Tag Manager — placed inside <body> per Next.js docs. The
-            @next/third-parties component internally chooses the correct
-            script strategy; nesting between <html> and <head> is HTML-invalid. */}
-        {gtmId ? <GoogleTagManager gtmId={gtmId} /> : null}
+        {/* Google Tag Manager — deferred off the critical path (mounts on first
+            interaction or browser idle) so its heavy injected tags (GA4,
+            Contentsquare) don't inflate TBT. Early events queue in dataLayer. */}
+        {gtmId ? <DeferredGTM gtmId={gtmId} /> : null}
         {gtmId && (
           <noscript>
             <iframe
