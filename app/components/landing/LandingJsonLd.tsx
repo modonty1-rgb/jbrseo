@@ -1,4 +1,5 @@
 import type { FaqItem } from "@/app/content/landing/types";
+import { MODONTY_LOGO_URL } from "@/lib/constants";
 
 type Props = {
   countrySlug: "sa" | "eg";
@@ -15,7 +16,7 @@ type Props = {
 };
 
 export function LandingJsonLd({ countrySlug, siteOrigin, faqs, socialLinks }: Props) {
-  const pageUrl = `${siteOrigin}/preview/${countrySlug}`;
+  const pageUrl = `${siteOrigin}/${countrySlug}`;
   const countryLabel = countrySlug === "eg" ? "مصر" : "السعودية";
 
   const sameAs = [
@@ -33,7 +34,7 @@ export function LandingJsonLd({ countrySlug, siteOrigin, faqs, socialLinks }: Pr
     name: "مدونتي",
     alternateName: "JBRSEO · Modonty",
     url: siteOrigin,
-    logo: `${siteOrigin}/logo.png`,
+    logo: MODONTY_LOGO_URL,
     description: "منصة المحتوى العربي — مقالات SEO جاهزة، تنشر تلقائياً، وتجيب لك عملاء من جوجل.",
     areaServed: countryLabel,
     sameAs,

@@ -18,7 +18,6 @@ import { buildLandingOgMetadata } from "@/lib/landing-open-graph";
 import {
   DEFAULT_PUBLIC_SITE_ORIGIN,
   PUBLIC_INDEX_FOLLOW_ROBOTS,
-  resolveCanonicalForMetadata,
   resolveSiteOriginFromSeoCanonical,
 } from "@/lib/seo-meta";
 
@@ -47,8 +46,11 @@ export async function generateMetadata({
     description: (content.seo.description ?? "").replace(/\{clientCount\}/g, String(trustBundle.total)),
   };
   const siteBase = resolveSiteOriginFromSeoCanonical(s.canonical, DEFAULT_PUBLIC_SITE_ORIGIN);
-  const fallbackCanonical = `${siteBase}/${slug}`;
-  const canonical = resolveCanonicalForMetadata(s.canonical, fallbackCanonical);
+  // Country landings MUST self-canonicalize (/sa→/sa, /eg→/eg) to stay consistent
+  // with the hreflang cluster. The CMS stores a single global canonical (currently
+  // /eg) that must NOT override the per-country URL — otherwise Google treats /sa
+  // as a duplicate of /eg and drops the (primary) Saudi page from the index.
+  const canonical = `${siteBase}/${slug}`;
   const baseMeta = buildLandingOgMetadata({
     seo: s,
     canonical,
