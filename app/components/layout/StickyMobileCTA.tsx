@@ -64,20 +64,20 @@ export function StickyMobileCTA({ pricingHref, whatsappLink, ctaLabel }: Props) 
       <div
         data-visible={visible}
         aria-hidden={!visible}
-        className="fixed inset-x-0 bottom-0 z-40 hidden max-[880px]:flex items-stretch gap-2 border-t border-border bg-background px-3.5 pt-2.5 pb-[calc(10px+env(safe-area-inset-bottom))] shadow-[0_-10px_24px_-16px_color-mix(in_oklch,var(--foreground)_18%,transparent)] transition-[transform,opacity] duration-200 ease-out data-[visible=false]:translate-y-[110%] data-[visible=false]:opacity-0 data-[visible=false]:pointer-events-none"
+        className="fixed inset-x-0 bottom-0 z-40 hidden max-[880px]:flex items-stretch gap-2 border-t border-border bg-background px-3.5 pt-2.5 pb-[calc(10px+env(safe-area-inset-bottom))] transition-[transform,opacity] duration-200 ease-out data-[visible=false]:translate-y-[110%] data-[visible=false]:opacity-0 data-[visible=false]:pointer-events-none"
       >
         <a
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
           aria-label="تواصل عبر واتساب"
-          className="w-[52px] h-[52px] rounded-[13px] bg-success text-success-foreground inline-flex items-center justify-center shrink-0 shadow-[0_8px_20px_-10px_color-mix(in_oklch,var(--success)_55%,transparent)] no-underline"
+          className="w-[52px] h-[52px] rounded-[13px] bg-success text-success-foreground inline-flex items-center justify-center shrink-0 no-underline"
         >
           <WhatsAppIcon className="w-[22px] h-[22px]" />
         </a>
         <NextLink
           href={pricingHref}
-          className="group flex-1 inline-flex items-center justify-center gap-2 bg-foreground text-background px-[18px] rounded-[13px] text-[15px] font-semibold no-underline shadow-[0_12px_26px_-14px_color-mix(in_oklch,var(--foreground)_50%,transparent)] min-h-[52px]"
+          className="group flex-1 inline-flex items-center justify-center gap-2 bg-foreground text-background px-[18px] rounded-[13px] text-[15px] font-semibold no-underline min-h-[52px]"
         >
           <Sparkles
             className="h-4 w-4 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"

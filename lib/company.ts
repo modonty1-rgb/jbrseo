@@ -18,6 +18,9 @@ export const COMPANY = {
   country: "المملكة العربية السعودية",
   address: "٨١٧١، علي سليمان علي حقوي، ٣١٥٦، جدة 23816",
   email: "support@jbrseo.com",
-  crCertificatePath: "/trust/jabr-cr-certificate.png",
+  // Web-optimized 1290px JPEG — the original 2573×1818 dense scan corrupted
+  // GPU raster tiles on older Android phones (verified on device 2026-07-15).
+  // Original scan kept at /trust/jabr-cr-certificate.png for records.
+  crCertificatePath: "/trust/jabr-cr-certificate-web.jpg",
   certificateIssuedAt: "13/09/2023",
 } as const;

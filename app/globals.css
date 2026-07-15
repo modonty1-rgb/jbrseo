@@ -426,21 +426,40 @@
   }
 }
 
+/* ─── MOBILE FLAT MODE ───────────────────────────
+   Kill EVERY shadow / filter / transition on mobile in one rule.
+   Old-device GPUs (verified: Android 10 + Chrome 130, 2026-07-14) corrupt
+   raster tiles under paint load on our 14k-px landing. Decorative depth
+   effects are invisible on small dark screens anyway — flat = fast = safe.
+   (CSS animations are left alone: Framer Motion animates inline/WAAPI and
+   checkout spinners must keep spinning.) */
+@media (max-width: 880px) {
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    transition: none !important;
+  }
+}
+
 /* ─── GLOBAL ─────────────────────────────────── */
 
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: 104px;
 }
 
-/* Prevent horizontal page overflow from any bleed / snap-scroll containers
-   (e.g. FAQ category chips edge-to-edge scroll on mobile). `clip` is like
-   `hidden` but does NOT create a scroll container, so it's cheaper for perf
-   and doesn't interfere with `position: sticky`. Chromium/Safari/Firefox all
-   support it. */
-html,
-body {
-  overflow-x: clip;
+/* Smooth anchor scrolling on desktop (precise pointer) ONLY. On touch devices
+   an anchor jump can span 8,000+ px — the smooth flight forces the GPU to
+   rasterize every section en route at high speed, which corrupts tiles on
+   mid-range phones (verified on real device 2026-07-14). Instant jump = zero
+   rasterization storm. */
+@media (hover: hover) and (pointer: fine) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

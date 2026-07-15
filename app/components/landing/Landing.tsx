@@ -304,7 +304,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
   return (
     <section
       id="case-study"
-      className="bg-background max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
+      className="bg-background"
     >
       <div className="max-w-[1080px] mx-auto px-7 py-20">
         <div className="text-center mb-10">
@@ -396,7 +396,7 @@ function CaseStudiesSlider({ caseStats, clientsCount }: { caseStats: Record<stri
               </div>
 
               {/* AFTER */}
-              <div className="bg-foreground text-background border border-foreground rounded-2xl p-5 md:p-7 shadow-[0_24px_50px_-22px_color-mix(in oklch, var(--foreground) 50%, transparent)] relative">
+              <div className="bg-foreground text-background border border-foreground rounded-2xl p-5 md:p-7 md:shadow-[0_24px_50px_-22px_color-mix(in oklch, var(--foreground) 50%, transparent)] relative">
                 <span className="absolute -top-[11px] right-5 md:right-7 bg-success text-success-foreground text-[10.5px] font-semibold px-2.5 py-1 rounded-full tracking-[.3px]">
                   بعد {toArabicDigits(c.daysActive)} يوم
                 </span>
@@ -613,7 +613,7 @@ export function Landing(props: Props) {
       {/* ─── MODONTY IMPACT BAR · live GA4 platform-wide numbers ─── */}
       {modontyImpact && (
         <section
-          className="bg-background max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
+          className="bg-background"
         >
           <div className="max-w-[1080px] mx-auto px-7 py-14">
             <div className="text-center mb-8">
@@ -629,7 +629,7 @@ export function Landing(props: Props) {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-gradient-to-br from-foreground to-[color-mix(in_oklch,var(--foreground)_88%,var(--success))] text-background overflow-hidden shadow-[0_30px_60px_-30px_color-mix(in_oklch,var(--foreground)_60%,transparent)]">
+            <div className="rounded-2xl border border-border bg-gradient-to-br from-foreground to-[color-mix(in_oklch,var(--foreground)_88%,var(--success))] text-background overflow-hidden md:shadow-[0_30px_60px_-30px_color-mix(in_oklch,var(--foreground)_60%,transparent)]">
               <div className="grid grid-cols-1 md:grid-cols-[1.4fr_2fr_auto] divide-y md:divide-y-0 md:divide-x md:divide-x-reverse divide-background/10">
 
                 {/* Grand total hero */}
@@ -735,7 +735,7 @@ export function Landing(props: Props) {
 
       {/* ─── GUARANTEE — activity-based (things we 100% control), no risky ranking promise ─── */}
       <section
-        className="bg-card border-t border-t-border border-b border-b-border max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
+        className="bg-card border-t border-t-border border-b border-b-border"
       >
         <div className="max-w-[920px] mx-auto px-7 py-14">
           <div className="flex flex-col md:flex-row items-start gap-6 md:gap-8">
@@ -772,7 +772,7 @@ export function Landing(props: Props) {
 
       {/* ─── SAUDI IDENTITY CARD · answers "من أنتم؟" — critical for Saudi buyer ─── */}
       <section
-        className="bg-background max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
+        className="bg-background"
       >
         <div className="max-w-[920px] mx-auto px-7 py-14">
           {/* Section title */}
@@ -864,19 +864,22 @@ export function Landing(props: Props) {
                 <span className="shrink-0 text-muted-foreground group-hover:text-success transition-colors mt-1.5">↗</span>
               </a>
 
-              {/* Full-width certificate — order-3 on mobile (bottom), order-2 on desktop (middle) */}
-              <div className="order-3 md:order-2 mt-6 bg-white rounded-xl p-3 sm:p-4 shadow-sm ring-1 ring-border/50">
+              {/* Certificate image — DESKTOP ONLY (2026-07-15 decision): even a
+                  1290px JPEG corrupted GPU raster tiles on older Android phones.
+                  Mobile identity is conveyed by the legal info + verifiable CR
+                  number; desktop gets the visual certificate. */}
+              <div className="hidden md:block order-3 md:order-2 mt-6 bg-white rounded-xl p-3 sm:p-4 shadow-sm ring-1 ring-border/50">
                 <Image
                   src={COMPANY.crCertificatePath}
                   alt={`شهادة السجل التجاري الرسمية من وزارة التجارة السعودية · الرقم الموحّد ${COMPANY.unifiedNumber} · تاريخ الإصدار ${COMPANY.certificateIssuedAt}`}
-                  width={2573}
-                  height={1818}
+                  width={1290}
+                  height={911}
                   className="block w-full h-auto rounded-lg"
-                  sizes="(max-width: 920px) 92vw, 860px"
+                  sizes="860px"
                   priority={false}
                 />
               </div>
-              <p className="order-4 md:order-3 mt-2.5 text-center text-[12px] text-muted-foreground leading-[1.6]">
+              <p className="hidden md:block order-4 md:order-3 mt-2.5 text-center text-[12px] text-muted-foreground leading-[1.6]">
                 شهادة السجل التجاري الرسمية · <span className="text-foreground font-semibold">امسح الـ QR بجوالك</span> للتحقّق المباشر من وزارة التجارة السعودية
               </p>
             </div>
@@ -892,7 +895,7 @@ export function Landing(props: Props) {
 
       {/* ─── MATH — compact side-by-side comparison for non-technical visitor ─── */}
       <section
-        className="bg-background max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
+        className="bg-background"
       >
         <div className="max-w-[1080px] mx-auto px-7 py-14">
           {/* Header */}
@@ -976,7 +979,7 @@ export function Landing(props: Props) {
             </div>
 
             {/* Card 2 — Modonty subscription */}
-            <div className="rounded-2xl border-2 border-success bg-gradient-to-br from-success/[0.10] to-success/[0.02] p-5 shadow-[0_24px_50px_-22px_color-mix(in_oklch,var(--success)_40%,transparent)] relative flex flex-col">
+            <div className="rounded-2xl border-2 border-success bg-gradient-to-br from-success/[0.10] to-success/[0.02] p-5 md:shadow-[0_24px_50px_-22px_color-mix(in_oklch,var(--success)_40%,transparent)] relative flex flex-col">
               <span className="absolute -top-3 right-5 bg-success text-success-foreground text-[10px] font-bold px-2.5 py-1 rounded-full tracking-[.5px] shadow-sm inline-flex items-center gap-1">
                 <Sparkles className="w-3 h-3" strokeWidth={2.5} aria-hidden />
                 الأذكى
@@ -1050,7 +1053,7 @@ export function Landing(props: Props) {
                 type="button"
                 onClick={() => setCalcOpen(true)}
                 aria-label="حاسبة التوفير"
-                className="inline-flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors cursor-pointer px-5 py-2.5 rounded-xl text-[14px] font-semibold shadow-[0_16px_36px_-14px_color-mix(in_oklch,var(--foreground)_50%,transparent)]"
+                className="inline-flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors cursor-pointer px-5 py-2.5 rounded-xl text-[14px] font-semibold md:shadow-[0_16px_36px_-14px_color-mix(in_oklch,var(--foreground)_50%,transparent)]"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" aria-hidden>
                   <rect x="4" y="2.5" width="16" height="19" rx="2.5" />
@@ -1072,7 +1075,7 @@ export function Landing(props: Props) {
       </section>
 
       {/* ─── FEATURES — reframed as a Saudi platform, production system (not "writing") ─── */}
-      <section id="features" className="border-t border-t-[var(--border)] bg-card max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]">
+      <section id="features" className="border-t border-t-[var(--border)] bg-card">
         <div className="max-w-[1080px] mx-auto px-7 py-14">
           <div className="text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-[12px] font-bold px-3.5 py-1.5 rounded-full mb-4">
@@ -1209,7 +1212,7 @@ export function Landing(props: Props) {
           </div>
 
           {/* Business Profile hook — "you also get a full business page on Modonty" */}
-          <div className="mt-10 mb-8 rounded-2xl border-2 border-success/40 bg-gradient-to-br from-success/[.10] to-success/[.02] p-5 md:p-6 shadow-[0_24px_50px_-30px_color-mix(in_oklch,var(--success)_50%,transparent)] relative">
+          <div className="mt-10 mb-8 rounded-2xl border-2 border-success/40 bg-gradient-to-br from-success/[.10] to-success/[.02] p-5 md:p-6 md:shadow-[0_24px_50px_-30px_color-mix(in_oklch,var(--success)_50%,transparent)] relative">
             <span className="absolute -top-3 right-5 bg-success text-success-foreground text-[10px] font-bold px-2.5 py-1 rounded-full tracking-[.5px] shadow-sm inline-flex items-center gap-1 z-10">
               <Sparkles className="w-3 h-3" strokeWidth={2.5} aria-hidden />
               بونس
@@ -1262,7 +1265,7 @@ export function Landing(props: Props) {
           <div className="text-center">
             <Link
               href="/features"
-              className="inline-flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors px-5 py-2.5 rounded-xl text-[14px] font-semibold no-underline shadow-[0_16px_36px_-14px_color-mix(in_oklch,var(--foreground)_50%,transparent)]"
+              className="inline-flex items-center gap-2 bg-foreground text-background hover:bg-foreground/90 transition-colors px-5 py-2.5 rounded-xl text-[14px] font-semibold no-underline md:shadow-[0_16px_36px_-14px_color-mix(in_oklch,var(--foreground)_50%,transparent)]"
             >
               <span>شوف كل تفاصيل المنظومة</span>
               <span aria-hidden>←</span>
@@ -1276,10 +1279,10 @@ export function Landing(props: Props) {
 
       {/* ─── PAYMENT TRUST (Network International anchor · single bar) ─── */}
       <section
-        className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
+        className="border-t border-t-[var(--border)] border-b border-b-[var(--border)] bg-card"
       >
         <div className="max-w-[1080px] mx-auto px-7 py-14">
-          <div className="rounded-2xl border border-border overflow-hidden shadow-[0_20px_50px_-30px_color-mix(in_oklch,var(--foreground)_25%,transparent)]">
+          <div className="rounded-2xl border border-border overflow-hidden md:shadow-[0_20px_50px_-30px_color-mix(in_oklch,var(--foreground)_25%,transparent)]">
             {/* Tier 1 — Gateway anchor: compact centered stack on mobile, side-by-side on desktop */}
             <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6 px-5 py-5 md:py-6 bg-success/[0.08] border-b border-b-success/20">
               <div className="inline-flex items-center justify-center bg-white rounded-lg ring-1 ring-black/10 shadow-sm w-[140px] h-11 px-3 shrink-0">
@@ -1388,7 +1391,7 @@ export function Landing(props: Props) {
       </section>
 
       {/* ─── PRICING (DB Plan model) ─── */}
-      <section id="pricing" className="max-w-[1080px] mx-auto px-7 pt-10 pb-20 scroll-mt-16 max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]">
+      <section id="pricing" className="max-w-[1080px] mx-auto px-7 pt-10 pb-20 scroll-mt-16">
         <div className="text-center mb-5">
           <h2 className="prev-h2 text-[32px] font-semibold tracking-[-1px]">باقات تنمو معك</h2>
           <div
@@ -1450,7 +1453,7 @@ export function Landing(props: Props) {
                 )}
               >
                 {featured && (
-                  <span className="absolute -top-[13px] right-[24px] bg-success text-success-foreground text-[11px] font-black px-3.5 py-1 rounded-full tracking-[.3px] inline-flex items-center gap-1.5 shadow-[0_10px_22px_-10px_color-mix(in_oklch,var(--success)_60%,transparent)]">
+                  <span className="absolute -top-[13px] right-[24px] bg-success text-success-foreground text-[11px] font-black px-3.5 py-1 rounded-full tracking-[.3px] inline-flex items-center gap-1.5 md:shadow-[0_10px_22px_-10px_color-mix(in_oklch,var(--success)_60%,transparent)]">
                     <Star className="w-3 h-3 fill-current" strokeWidth={2.5} />
                     {p.featuredBadge}
                   </span>
@@ -1596,7 +1599,7 @@ export function Landing(props: Props) {
         return (
           <section
             id="social-proof"
-            className="border-t border-t-[var(--border)] bg-background max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
+            className="border-t border-t-[var(--border)] bg-background"
           >
             <div className="max-w-[1080px] mx-auto px-7 py-14">
               <div className="text-center mb-10">
@@ -1624,7 +1627,7 @@ export function Landing(props: Props) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -12 }}
                     transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                    className="bg-card border border-border rounded-2xl overflow-hidden shadow-[0_20px_50px_-30px_color-mix(in_oklch,var(--foreground)_25%,transparent)]"
+                    className="bg-card border border-border rounded-2xl overflow-hidden md:shadow-[0_20px_50px_-30px_color-mix(in_oklch,var(--foreground)_25%,transparent)]"
                   >
                     <div className="relative aspect-video bg-foreground">
                       {embedUrl ? (
@@ -1732,7 +1735,7 @@ export function Landing(props: Props) {
       {/* ─── TEAM — "faces that guarantee your presence" (aligned with slogan + CR) ─── */}
       {(coreTeam.length > 0 || executionTeam.length > 0) && (
         <section
-          className="border-t border-t-[var(--border)] bg-card max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
+          className="border-t border-t-[var(--border)] bg-card"
         >
           <div className="max-w-[1080px] mx-auto px-7 py-14">
             <div className="text-center mb-10">
@@ -1838,7 +1841,7 @@ export function Landing(props: Props) {
         return (
           <section
             id="faq"
-            className="border-t border-t-[var(--border)] bg-card overflow-x-clip max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
+            className="border-t border-t-[var(--border)] bg-card overflow-x-clip"
           >
             <div className="max-w-[760px] mx-auto px-7 py-14">
               <div className="text-center mb-8">
@@ -1932,7 +1935,7 @@ export function Landing(props: Props) {
       {/* ─── FINAL CTA (DB) ─── */}
       <section
         id="final-cta"
-        className="max-w-[1080px] mx-auto pt-[60px] px-7 pb-[90px] max-[880px]:[content-visibility:auto] max-[880px]:[contain-intrinsic-size:auto_900px]"
+        className="max-w-[1080px] mx-auto pt-[60px] px-7 pb-[90px]"
       >
         <div className="bg-foreground rounded-[20px] md:rounded-[26px] px-5 py-10 md:px-10 md:py-[72px] text-center">
           <h2 className="prev-cta-h2 text-[26px] md:text-[44px] font-semibold text-background tracking-[-1px] md:tracking-[-1.5px] leading-[1.2] md:leading-[1.15] mb-4 [text-wrap:balance]">

@@ -57,7 +57,9 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "api.dicebear.com", pathname: "/**" },
       { protocol: "https", hostname: "api.qrserver.com", pathname: "/**" },
     ],
-    formats: ["image/avif", "image/webp"],
+    // WebP only — AVIF decode is software-path on older Android SoCs (slow,
+    // battery-heavy, and implicated in GPU raster pressure on weak devices).
+    formats: ["image/webp"],
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
