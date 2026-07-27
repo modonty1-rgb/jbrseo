@@ -3,9 +3,11 @@
 import type { ReactNode } from "react";
 import { Button } from "@/app/components/ui/button";
 
-// Sales/support channels — mirror the WhatsApp + email shown on the landing.
-// Hardcoded on purpose: an error boundary must render even when the DB or
-// network is down. Keep in sync with SiteSettings.whatsappNumber if it changes.
+// Checkout-scoped error boundary. A generic "something broke" is alarming on a
+// payment page — the visitor's first fear is "did my card get charged?". So we
+// lead with the money reassurance, then offer retry + the same sales channels
+// shown on the landing. Hardcoded on purpose: must render even if DB/network is
+// down. Keep in sync with SiteSettings.whatsappNumber if it changes.
 const SUPPORT_WHATSAPP = "966541018020";
 const SUPPORT_EMAIL = "support@jbrseo.com";
 
@@ -14,19 +16,20 @@ type Props = {
   reset: () => void;
 };
 
-export default function GlobalError({ error, reset }: Props): ReactNode {
+export default function CheckoutError({ error, reset }: Props): ReactNode {
   return (
     <main
       dir="rtl"
       lang="ar"
-      className="flex min-h-[60vh] flex-col items-center justify-center gap-6 px-4 py-10 text-center"
+      className="flex min-h-[70vh] flex-col items-center justify-center gap-6 px-4 py-10 text-center"
     >
       <div className="max-w-xl">
         <h1 className="mb-3 text-2xl font-black text-foreground">
-          صار خلل تقني مؤقت — المشكلة من عندنا، مو منك
+          لم يتم خصم أي مبلغ من بطاقتك
         </h1>
         <p className="text-sm leading-relaxed text-muted-foreground">
-          جرّب تعيد المحاولة، غالباً تنحلّ على طول. ولو تكرّرت، تواصل معنا وبنحلّها لك فوراً.
+          صار خلل مؤقت أثناء تجهيز الدفع. أعِد المحاولة بأمان — لن يُخصم منك أي مبلغ إلا بعد
+          ما تأكّد العملية وتوصلك رسالة نجاح. ولو استمرّ، كلّمنا وبنكمّل معك خطوة بخطوة.
         </p>
       </div>
 
@@ -40,7 +43,7 @@ export default function GlobalError({ error, reset }: Props): ReactNode {
       </Button>
 
       <div className="flex flex-col items-center gap-2 text-sm">
-        <span className="text-muted-foreground">تحتاج مساعدة؟ تواصل مع فريقنا:</span>
+        <span className="text-muted-foreground">فريق المبيعات جاهز يساعدك:</span>
         <div className="flex flex-wrap items-center justify-center gap-3">
           <a
             href={`https://wa.me/${SUPPORT_WHATSAPP}`}
