@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   title: { absolute: "الدفع — JBRSEO" },
   description: "أكمل بياناتك واختر باقتك.",
   robots: { index: false, follow: false },
+  // Renders <meta name="google" content="notranslate"> — stops Google Translate
+  // from re-parenting text nodes during the payment flow (removeChild crash).
+  other: { google: "notranslate" },
 };
 
 type CheckoutPageProps = {
