@@ -15,6 +15,11 @@ function copySearchParams(from: URL, to: URL) {
 function shouldSkipRateLimit(pathname: string): boolean {
   return (
     pathname.startsWith("/_next/") ||
+    // Admin is cookie-authenticated and request-heavy (dashboards, charts, RSC
+    // navigations, inline edits) — the public 30/60s landing limiter throttles
+    // legitimate admin work. Exempt it, but keep /admin/login rate-limited so
+    // the password stays protected against brute-force.
+    (pathname.startsWith("/admin") && !pathname.startsWith("/admin/login")) ||
     pathname === "/favicon.ico" ||
     pathname === "/robots.txt" ||
     pathname === "/sitemap.xml" ||
