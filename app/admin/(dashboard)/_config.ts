@@ -23,11 +23,6 @@ export const ADMIN_NAV = [
 ] as const;
 
 /** قائمة الأسعار — صفحة واحدة لكل دولة، كل شيء فيها. */
-export const PRICING_NAV_ITEMS: { href: string; label: string; icon: string }[] = [
-  { href: "/admin/pricing?country=SA", label: "السعودية (ر.س)", icon: "🇸🇦" },
-  { href: "/admin/pricing?country=EG", label: "مصر (ج.م)",       icon: "🇪🇬" },
-];
-
 /** ⚙️ الإعدادات — تأثيرها على كل الموقع (تعدّل نادراً) */
 export const SETTINGS_NAV_ITEMS: { href: string; label: string; icon: string }[] = [
   { href: "/admin/settings",              label: "بيانات الموقع",      icon: "⚙️" },

@@ -3,7 +3,7 @@
 import { type ReactElement, useRef, useState, useEffect } from "react";
 import Link from "@/app/components/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ADMIN_NAV, COUNTRIES, PRICING_NAV_ITEMS, SETTINGS_NAV_ITEMS } from "../_config";
+import { ADMIN_NAV, COUNTRIES, SETTINGS_NAV_ITEMS } from "../_config";
 import { AdminSubscribersLink } from "./AdminSubscribersLink";
 import { RefreshButton } from "./RefreshButton";
 import { AdminThemeToggle } from "./AdminThemeToggle";
@@ -149,6 +149,7 @@ export function AdminTopNavbar(): ReactElement {
   const isHome = pathname === "/admin";
   const isAnalytics = pathname === "/admin/analytics";
   const isReview = pathname === "/admin/review";
+  const isPricing = pathname.startsWith("/admin/pricing");
 
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-border bg-card/95 px-6 py-3 backdrop-blur">
@@ -231,14 +232,19 @@ export function AdminTopNavbar(): ReactElement {
           pathname={pathname}
         />
 
-        {/* 💰 الأسعار — السعودية + مصر في دروبداون واحدة */}
-        <TopNavDropdown
-          label="الأسعار"
-          flag="💰"
-          items={PRICING_NAV_ITEMS}
-          pathname={pathname}
-          activeHrefs={["/admin/pricing", "/admin/content/pricing"]}
-        />
+        {/* 💰 الأسعار — صفحة واحدة (السعودية + مصر معاً) */}
+        <Link
+          href="/admin/pricing"
+          className={cn(
+            "flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
+            isPricing
+              ? "border-primary/40 bg-primary/10 text-primary"
+              : "border-border/60 bg-muted/40 text-muted-foreground hover:border-primary/30 hover:bg-muted/70 hover:text-foreground",
+          )}
+        >
+          <span>💰</span>
+          <span className="hidden sm:inline">الأسعار</span>
+        </Link>
 
         <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />
 
