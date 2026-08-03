@@ -1,6 +1,5 @@
 import type { ReactElement } from "react";
 import { getAllPlansIncludingHidden } from "@/app/actions/pricing";
-import { getMeta } from "@/app/actions/pricing-meta";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 import { DEFAULT_TEAM_AVATAR_GRADIENT } from "@/lib/teamPresets";
@@ -25,7 +24,7 @@ const obj = (v: unknown): Record<string, unknown> =>
 const ctrl = (block: EditArrayProps): Item => ({ label: block.label, value: "", arrayBlock: block });
 
 export default async function ContentReviewPage(): Promise<ReactElement> {
-  const [heroRaw, ctaRaw, faqRaw, finalRaw, aboutRaw, privacyRaw, termsRaw, socialRaw, teamRaw, plans, meta] =
+  const [heroRaw, ctaRaw, faqRaw, finalRaw, aboutRaw, privacyRaw, termsRaw, socialRaw, teamRaw, plans] =
     await Promise.all([
       getLandingSectionOverride("hero"),
       getLandingSectionOverride("ctaLabel"),
@@ -37,7 +36,6 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
       getLandingSectionOverride("socialProof"),
       getLandingSectionOverride("team"),
       getAllPlansIncludingHidden("SA"),
-      getMeta("SA"),
     ]);
 
   // ── editable: الهيرو + الزر الموحّد ──────────────────────────────────────
@@ -251,15 +249,6 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
     }),
   };
 
-  // ── editable: شريط الإعلان العلوي (الوحيد المُستخدم فعلاً من ميتا الأسعار) ─
-  const bannerGroup: RawGroup = {
-    title: "شريط الإعلان العلوي",
-    admin: "/admin/pricing",
-    items: [
-      { label: "نص الشريط", value: str(meta.announcement), edit: { section: "pricingMeta", path: ["announcement"] } },
-    ],
-  };
-
   const groups: RawGroup[] = [
     heroGroup,
     faqGroup,
@@ -270,7 +259,6 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
     socialGroup,
     teamGroup,
     plansContentGroup,
-    bannerGroup,
   ];
 
   // stable global number for every VALUE item (control rows aren't numbered)

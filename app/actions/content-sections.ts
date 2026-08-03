@@ -6,7 +6,6 @@ import type { Prisma } from "@prisma/client";
 import { getLandingSectionOverride, upsertLandingSection } from "@/lib/landing-sections";
 import { isAdmin } from "@/app/actions/auth";
 import { updatePlan, type PlanPatch } from "@/app/actions/pricing";
-import { updateMeta, type MetaPatch } from "@/app/actions/pricing-meta";
 import { prisma } from "@/lib/prisma";
 
 const CONTENT_KEYS = [
@@ -103,15 +102,12 @@ function setAtPath(
   return obj;
 }
 
-// ── Plan content + pricing-section meta live in their own tables, but are edited
-// from the same reference page. Content is shared across countries, so a write
-// fans out to BOTH SA and EG rows. `section` routes the write:
-//   "plan:<slug>"  → Plan table (name/articles/ctaText/badge/highlights…)
-//   "pricingMeta"  → PriceSectionMeta (announcement/CTA/trustItems)
+// ── Plan content lives in the Plan table but is edited from the reference page.
+// Content is shared across countries, so a write fans out to BOTH SA + EG rows.
+// `section` = "plan:<slug>" routes the write to the Plan table.
 const PLAN_CONTENT_FIELDS = new Set([
   "name", "tagline", "articlesLabel", "ctaText", "badge", "featuredBadge", "highlights",
 ]);
-const META_FIELDS = new Set(["announcement"]); // only the top banner is rendered
 
 async function writePlanContent(slug: string, path: (string | number)[], value: unknown): Promise<InlineSaveResult> {
   const field = String(path[0] ?? "");
@@ -133,26 +129,6 @@ async function writePlanContent(slug: string, path: (string | number)[], value: 
   return { ok: true };
 }
 
-async function writePricingMeta(path: (string | number)[], value: unknown): Promise<InlineSaveResult> {
-  const field = String(path[0] ?? "");
-  if (!META_FIELDS.has(field)) return { ok: false, error: "حقل غير مسموح" };
-  let fieldValue: unknown = value;
-  if (path.length > 1) {
-    // nested (e.g. trustItems[i].label) — read current field, set at sub-path
-    const row = await prisma.priceSectionMeta.findUnique({ where: { country: "SA" } });
-    const current = (row as Record<string, unknown> | null)?.[field];
-    fieldValue = setAtPath(current, path.slice(1), value);
-  }
-  const patch = { [field]: fieldValue } as unknown as MetaPatch;
-  try {
-    await updateMeta("SA", patch);
-    await updateMeta("EG", patch);
-  } catch {
-    return { ok: false, error: "تعذّر الحفظ" };
-  }
-  return { ok: true };
-}
-
 // A field edit sends a string; an array edit sends the whole new array (JSON).
 export async function updateSectionField(
   section: string,
@@ -161,8 +137,7 @@ export async function updateSectionField(
 ): Promise<InlineSaveResult> {
   if (!(await isAdmin())) return { ok: false, error: "غير مصرّح" };
 
-  // route non-LandingSection targets (Plan content · pricing meta)
-  if (section === "pricingMeta") return writePricingMeta(path, value);
+  // route Plan-content targets (section = "plan:<slug>") to the Plan table
   if (section.startsWith("plan:")) return writePlanContent(section.slice(5), path, value);
 
   if (!INLINE_KEYS.includes(section as InlineKey)) {
