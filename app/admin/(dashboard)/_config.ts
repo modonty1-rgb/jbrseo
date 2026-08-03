@@ -28,20 +28,10 @@ export const PRICING_NAV_ITEMS: { href: string; label: string; icon: string }[] 
   { href: "/admin/pricing?country=EG", label: "مصر (ج.م)",       icon: "🇪🇬" },
 ];
 
-/** ✨ الرئيسية — كل شيء يظهر للزائر على /sa و /eg (مرتب من الأعلى للأسفل في الصفحة) */
+/** ✨ الرئيسية — أقسام الوسائط فقط (صور/فيديو). بقية النصوص تُعدّل من 📋 المرجع */
 export const SECTIONS_NAV_ITEMS: { href: string; label: string; icon: string }[] = [
-  { href: "/admin/content/hero",         label: "الهيرو + شريط العملاء", icon: "✨" },
-  { href: "/admin/content/socialProof",  label: "آراء العملاء",          icon: "⭐" },
-  { href: "/admin/content/faq",          label: "الأسئلة الشائعة",       icon: "❓" },
-  { href: "/admin/content/finalCta",     label: "الدعوة النهائية",       icon: "🚀" },
-  { href: "/admin/content/team",         label: "فريق العمل",            icon: "👥" },
-];
-
-/** 📄 الصفحات الثابتة — قانونية + معلومات الشركة */
-export const PAGES_NAV_ITEMS: { href: string; label: string; icon: string }[] = [
-  { href: "/admin/content/about",   label: "من نحن",            icon: "📖" },
-  { href: "/admin/content/privacy", label: "سياسة الخصوصية",   icon: "🔒" },
-  { href: "/admin/content/terms",   label: "شروط الاستخدام",    icon: "📄" },
+  { href: "/admin/content/socialProof",  label: "آراء العملاء",  icon: "⭐" },
+  { href: "/admin/content/team",         label: "فريق العمل",    icon: "👥" },
 ];
 
 /** ⚙️ الإعدادات — تأثيرها على كل الموقع (تعدّل نادراً) */

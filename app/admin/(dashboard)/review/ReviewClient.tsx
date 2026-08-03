@@ -5,8 +5,16 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ChevronDown, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { EditFieldButton, type EditTarget } from "./EditFieldButton";
+import { EditArrayButton, type EditArrayProps } from "./EditArrayButton";
 
-export type ReviewItem = { n: number; label: string; value: string };
+export type ReviewItem = {
+  n: number;
+  label: string;
+  value: string;
+  edit?: EditTarget;
+  arrayBlock?: EditArrayProps;
+};
 export type ReviewGroup = { title: string; admin: string; items: ReviewItem[] };
 
 export function ReviewClient({ groups, total }: { groups: ReviewGroup[]; total: number }) {
@@ -47,7 +55,7 @@ export function ReviewClient({ groups, total }: { groups: ReviewGroup[]; total: 
         </div>
       </div>
       <p className="mb-6 text-sm text-muted-foreground">
-        كل نصوص الموقع في مكان واحد ({total} عنصر). قل لي رقم أي عنصر عشان نعدّله · اضغط عنوان القسم لطيّه · «تحديث» يجيب آخر تعديلات الداتابيس.
+        كل نصوص الموقع في مكان واحد ({total} عنصر). اضغط ✏️ جنب أي عنصر لتعديله مباشرة · اضغط عنوان القسم لطيّه · «تحديث» يجيب آخر تعديلات الداتابيس.
       </p>
 
       <div className="space-y-3">
@@ -79,19 +87,32 @@ export function ReviewClient({ groups, total }: { groups: ReviewGroup[]; total: 
 
               {!isCollapsed && (
                 <div className="divide-y divide-border/60">
-                  {g.items.map((it) => (
-                    <div key={it.n} className="flex gap-3 px-4 py-2.5">
-                      <span className="mt-0.5 inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-md bg-primary/10 px-1.5 text-xs font-bold tabular-nums text-primary">
-                        {it.n}
-                      </span>
-                      <div className="min-w-0 flex-1">
-                        <div className="text-[11px] font-medium text-muted-foreground">{it.label}</div>
-                        <div className="mt-0.5 break-words whitespace-pre-wrap text-sm text-foreground">
-                          {it.value || <span className="text-muted-foreground/50">— فارغ —</span>}
-                        </div>
+                  {g.items.map((it, idx) =>
+                    it.arrayBlock ? (
+                      <div key={`arr-${idx}`} className="flex items-center justify-between gap-3 bg-primary/3 px-4 py-2">
+                        <span className="text-xs font-semibold text-muted-foreground">
+                          {it.label}{" "}
+                          <span className="text-muted-foreground/60">({it.arrayBlock.initial.length})</span>
+                        </span>
+                        <EditArrayButton {...it.arrayBlock} />
                       </div>
-                    </div>
-                  ))}
+                    ) : (
+                      <div key={it.n} className="flex items-start gap-3 px-4 py-2.5">
+                        <span className="mt-0.5 inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-md bg-primary/10 px-1.5 text-xs font-bold tabular-nums text-primary">
+                          {it.n}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[11px] font-medium text-muted-foreground">{it.label}</div>
+                          <div className="mt-0.5 break-words whitespace-pre-wrap text-sm text-foreground">
+                            {it.value || <span className="text-muted-foreground/50">— فارغ —</span>}
+                          </div>
+                        </div>
+                        {it.edit ? (
+                          <EditFieldButton target={it.edit} label={it.label} value={it.value} n={it.n} />
+                        ) : null}
+                      </div>
+                    ),
+                  )}
                 </div>
               )}
             </section>

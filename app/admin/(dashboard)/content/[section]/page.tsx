@@ -1,18 +1,11 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { StaticLanding } from "@/app/content/landing/types";
 import { getNavLinks, getFooterLinks, LEGAL_LINKS } from "@/lib/site-links";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { updateSection } from "@/app/actions/content-sections";
-import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
-import { HeroSectionForm } from "./_components/HeroSectionForm";
 import { SocialProofSectionForm } from "./_components/SocialProofSectionForm";
-import { FaqSectionForm } from "./_components/FaqSectionForm";
-import { FinalCtaSectionForm } from "./_components/FinalCtaSectionForm";
-import { PrivacySectionForm } from "./_components/PrivacySectionForm";
-import { TermsSectionForm } from "./_components/TermsSectionForm";
-import { AboutSectionForm } from "./_components/AboutSectionForm";
 import { TeamSectionForm } from "./_components/TeamSectionForm";
 import { Button } from "@/app/components/ui/button";
 import { Textarea } from "@/app/components/ui/textarea";
@@ -34,6 +27,10 @@ const CONTENT_KEYS = [
 
 type ContentKey = (typeof CONTENT_KEYS)[number];
 
+// Text sections now live in the numbered reference editor (/admin/review).
+// Only media sections (صور/فيديو) keep a dedicated form here.
+const MOVED_TO_REVIEW = new Set<string>(["hero", "faq", "finalCta", "about", "privacy", "terms"]);
+
 const SECTION_LABELS: Record<ContentKey, string> = {
   hero: "قسم الهيرو",
   socialProof: "قسم الشهادات",
@@ -49,8 +46,6 @@ const SECTION_LABELS: Record<ContentKey, string> = {
 };
 
 const PAGE_HEADING_OVERRIDES: Partial<Record<ContentKey, { h1: string }>> = {
-  privacy: { h1: "صفحة الخصوصية" },
-  terms: { h1: "صفحة الشروط" },
   team: { h1: "فريق العمل" },
 };
 
@@ -75,9 +70,11 @@ export default async function AdminContentSectionPage({
   const isLinksSection = section === "links";
   if (!isLinksSection && !isContentKey(section)) notFound();
 
+  // Text sections are edited from the reference page — send old links there.
+  if (MOVED_TO_REVIEW.has(section)) redirect(`/admin/review?country=${country}`);
+
   // DB is the single source of truth. Missing section → empty object, admin fills it.
   let sectionData: unknown;
-  let heroCtaLabel = DEFAULT_CTA_LABEL;
 
   if (isLinksSection) {
     sectionData = {
@@ -88,18 +85,6 @@ export default async function AdminContentSectionPage({
   } else {
     const override = await getLandingSectionOverride(section as ContentKey);
     sectionData = override ?? {};
-
-    if (section === "hero") {
-      const ctaLabelOverride = await getLandingSectionOverride("ctaLabel");
-      if (
-        ctaLabelOverride &&
-        typeof ctaLabelOverride === "object" &&
-        "ctaLabel" in ctaLabelOverride &&
-        typeof (ctaLabelOverride as { ctaLabel?: string }).ctaLabel === "string"
-      ) {
-        heroCtaLabel = (ctaLabelOverride as { ctaLabel: string }).ctaLabel;
-      }
-    }
   }
 
   const headingOverride = isContentKey(section) ? PAGE_HEADING_OVERRIDES[section] : undefined;
@@ -109,8 +94,7 @@ export default async function AdminContentSectionPage({
       ? "Links section"
       : SECTION_LABELS[section as ContentKey];
 
-  // Minimal, focused editor: one title, a constrained column, a single light
-  // card. No duplicated section headings, no heavy chrome.
+  // Minimal, focused editor: one title, a constrained column, a single light card.
   return (
     <div className="mx-auto max-w-3xl p-5 sm:p-6">
       <h1 className="mb-4 text-lg font-semibold text-foreground">{label}</h1>
@@ -118,51 +102,10 @@ export default async function AdminContentSectionPage({
         <AdminFormFeedback />
       </Suspense>
       <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
-        {!isLinksSection && section === "hero" && (
-          <HeroSectionForm
-            key={country}
-            hero={sectionData as StaticLanding["hero"]}
-            country={country}
-            ctaLabel={heroCtaLabel}
-          />
-        )}
         {!isLinksSection && section === "socialProof" && (
           <SocialProofSectionForm
             key={country}
             section={sectionData as StaticLanding["socialProof"]}
-            country={country}
-          />
-        )}
-        {!isLinksSection && section === "faq" && (
-          <FaqSectionForm
-            key={country}
-            section={sectionData as StaticLanding["faq"]}
-            country={country}
-          />
-        )}
-        {!isLinksSection && section === "finalCta" && (
-          <FinalCtaSectionForm
-            key={country}
-            section={sectionData as StaticLanding["finalCta"]}
-            country={country}
-          />
-        )}
-        {!isLinksSection && section === "privacy" && (
-          <PrivacySectionForm
-            key={country}
-            section={sectionData as StaticLanding["privacy"]}
-          />
-        )}
-        {!isLinksSection && section === "terms" && (
-          <TermsSectionForm
-            key={country}
-            section={sectionData as StaticLanding["terms"]}
-          />
-        )}
-        {!isLinksSection && section === "about" && (
-          <AboutSectionForm
-            key={country}
-            section={sectionData as StaticLanding["about"]}
             country={country}
           />
         )}
@@ -173,17 +116,7 @@ export default async function AdminContentSectionPage({
             country={country}
           />
         )}
-        {!isLinksSection &&
-          section !== "hero" &&
-          section !== "socialProof" &&
-          section !== "faq" &&
-          section !== "finalCta" &&
-          section !== "header" &&
-          section !== "footer" &&
-          section !== "about" &&
-          section !== "team" &&
-          section !== "privacy" &&
-          section !== "terms" && (
+        {!isLinksSection && section !== "socialProof" && section !== "team" && (
           <form key={country} action={updateSection} className="space-y-3">
             <input type="hidden" name="country" value={country} />
             <input type="hidden" name="section" value={section} />

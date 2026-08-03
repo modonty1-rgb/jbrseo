@@ -3,9 +3,8 @@
 import { redirect } from "next/navigation";
 import { revalidatePath, revalidateTag } from "next/cache";
 import type { Prisma } from "@prisma/client";
-import { upsertLandingSection } from "@/lib/landing-sections";
+import { getLandingSectionOverride, upsertLandingSection } from "@/lib/landing-sections";
 import { isAdmin } from "@/app/actions/auth";
-import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 
 const CONTENT_KEYS = [
   "hero",
@@ -71,43 +70,63 @@ export async function updateSection(formData: FormData) {
   redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
 }
 
-export async function updateHeroSection(formData: FormData) {
-  if (!(await isAdmin())) return;
-  const section = (formData.get("section") as string | null)?.trim() ?? "";
-  const redirectTo =
-    (formData.get("redirect") as string | null)?.trim() ??
-    `/admin/content/hero`;
+// ─── Content reference editor (/admin/review) ───────────────────────────────
+// Each numbered field on the reference page has an "تعديل" button → dialog →
+// this action updates that ONE field (located by its path) inside the section
+// JSON, read-modify-writes the whole section (no field loss), and revalidates.
+// Media sections (socialProof, team) keep their dedicated forms — excluded here.
+const INLINE_KEYS = ["hero", "faq", "finalCta", "about", "privacy", "terms", "ctaLabel"] as const;
+type InlineKey = (typeof INLINE_KEYS)[number];
 
-  if (section !== "hero") {
-    return redirect(redirectTo);
+export type InlineSaveResult = { ok: boolean; error?: string };
+
+/** Immutably set `value` (any JSON) at `path` inside a nested JSON object. */
+function setAtPath(
+  current: unknown,
+  path: (string | number)[],
+  value: unknown,
+): unknown {
+  if (path.length === 0) return value;
+  const [head, ...rest] = path;
+  if (typeof head === "number") {
+    const arr = Array.isArray(current) ? [...current] : [];
+    arr[head] = setAtPath(arr[head], rest, value);
+    return arr;
+  }
+  const obj = current && typeof current === "object" && !Array.isArray(current)
+    ? { ...(current as Record<string, unknown>) }
+    : {};
+  obj[head] = setAtPath(obj[head], rest, value);
+  return obj;
+}
+
+// A field edit sends a string; an array edit sends the whole new array (JSON).
+export async function updateSectionField(
+  section: string,
+  path: (string | number)[],
+  value: unknown,
+): Promise<InlineSaveResult> {
+  if (!(await isAdmin())) return { ok: false, error: "غير مصرّح" };
+  if (!INLINE_KEYS.includes(section as InlineKey)) {
+    return { ok: false, error: "قسم غير صالح" };
+  }
+  if (!Array.isArray(path) || path.length === 0) {
+    return { ok: false, error: "مسار غير صالح" };
   }
 
-  const proof = ((formData.get("proof") as string | null) ?? "").trim();
-  const h1Line1 = ((formData.get("h1Line1") as string | null) ?? "").trim();
-  const h1Line2 = ((formData.get("h1Line2") as string | null) ?? "").trim();
-  const sub = ((formData.get("sub") as string | null) ?? "").trim();
+  const current = await getLandingSectionOverride(section as InlineKey);
+  const next = setAtPath(current ?? {}, path, value) as Prisma.InputJsonValue;
 
-  const trustLines = ((formData.get("trustLines") as string | null) ?? "")
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean);
+  await upsertLandingSection(section as InlineKey, next);
 
-  const ctaLabel = ((formData.get("ctaLabel") as string | null) ?? "").trim() || DEFAULT_CTA_LABEL;
+  revalidateTag("landing", "default");
+  revalidateTag("landing-SA", "default");
+  revalidateTag("landing-EG", "default");
+  for (const p of ["/", "/sa", "/eg", "/about", "/privacy", "/terms", "/admin/review"]) {
+    revalidatePath(p);
+  }
 
-  const hero = {
-    proof,
-    h1Line1,
-    h1Line2,
-    sub,
-    trust: trustLines,
-  };
-
-  await upsertLandingSection("hero", hero);
-  await upsertLandingSection("ctaLabel", { ctaLabel });
-
-  revalidateLanding();
-
-  redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
+  return { ok: true };
 }
 
 export async function updateSocialProofSection(formData: FormData) {
@@ -176,73 +195,6 @@ export async function updateSocialProofSection(formData: FormData) {
   redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
 }
 
-export async function updateFaqSection(formData: FormData) {
-  if (!(await isAdmin())) return;
-
-  const section = (formData.get("section") as string | null)?.trim() ?? "";
-  const redirectTo =
-    (formData.get("redirect") as string | null)?.trim() ??
-    `/admin/content/faq`;
-
-  if (section !== "faq") {
-    return redirect(redirectTo);
-  }
-
-  const faqsCountRaw =
-    ((formData.get("faqsCount") as string | null) ?? "0").trim();
-  const faqsCountParsed = parseInt(faqsCountRaw || "0", 10);
-  const faqsCount = Number.isFinite(faqsCountParsed) ? faqsCountParsed : 0;
-
-  const title = ((formData.get("title") as string | null) ?? "").trim();
-
-  const faqs = [];
-  const maxFaqs = faqsCount > 0 && Number.isFinite(faqsCount) ? faqsCount : 0;
-  for (let i = 0; i < maxFaqs; i++) {
-    const q = ((formData.get(`faqs_${i}_q`) as string | null) ?? "").trim();
-    const a = ((formData.get(`faqs_${i}_a`) as string | null) ?? "").trim();
-    const tag = ((formData.get(`faqs_${i}_tag`) as string | null) ?? "").trim();
-
-    if (!q && !a && !tag) continue;
-    faqs.push({ q, a, tag });
-  }
-
-  // No FAQ-specific ctaLabel — the primary CTA (managed in Hero form) is the
-  // single source of truth used everywhere.
-  const faqSection = { title, faqs };
-
-  await upsertLandingSection("faq", faqSection);
-
-  revalidateLanding();
-
-  redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
-}
-
-export async function updateFinalCtaSection(formData: FormData) {
-  if (!(await isAdmin())) return;
-
-  const section = (formData.get("section") as string | null)?.trim() ?? "";
-  const redirectTo =
-    (formData.get("redirect") as string | null)?.trim() ??
-    `/admin/content/finalCta`;
-
-  if (section !== "finalCta") {
-    return redirect(redirectTo);
-  }
-
-  const title1 = ((formData.get("title1") as string | null) ?? "").trim();
-  const title2 = ((formData.get("title2") as string | null) ?? "").trim();
-  const subtitle = ((formData.get("subtitle") as string | null) ?? "").trim();
-  const wa = ((formData.get("wa") as string | null) ?? "").trim();
-
-  const finalCta = { title1, title2, subtitle, wa };
-
-  await upsertLandingSection("finalCta", finalCta);
-
-  revalidateLanding();
-
-  redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
-}
-
 export async function updateHeaderFooterSections(formData: FormData) {
   if (!(await isAdmin())) return;
 
@@ -263,104 +215,6 @@ export async function updateHeaderFooterSections(formData: FormData) {
   await upsertLandingSection("footer", footer);
 
   revalidateLanding();
-
-  redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
-}
-
-export async function updateAboutSection(formData: FormData) {
-  if (!(await isAdmin())) return;
-
-  const section = (formData.get("section") as string | null)?.trim() ?? "";
-  const redirectTo =
-    (formData.get("redirect") as string | null)?.trim() ??
-    `/admin/content/about`;
-
-  if (section !== "about") {
-    return redirect(redirectTo);
-  }
-
-  const heroEyebrow = ((formData.get("heroEyebrow") as string | null) ?? "").trim();
-  const heroTitle = ((formData.get("heroTitle") as string | null) ?? "").trim();
-  const heroSubtitle = ((formData.get("heroSubtitle") as string | null) ?? "").trim();
-
-  const storyBlocks = [0, 1, 2].map((index) => {
-    const label = ((formData.get(`story_${index}_label`) as string | null) ?? "").trim();
-    const title = ((formData.get(`story_${index}_title`) as string | null) ?? "").trim();
-    const body = ((formData.get(`story_${index}_body`) as string | null) ?? "").trim();
-    return { label, title, body };
-  });
-
-  const values = [0, 1, 2, 3].map((index) => {
-    const title = ((formData.get(`value_${index}_title`) as string | null) ?? "").trim();
-    const body = ((formData.get(`value_${index}_body`) as string | null) ?? "").trim();
-    return { title, body };
-  });
-
-  const fitForRaw = ((formData.get("fitFor") as string | null) ?? "")
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean);
-  const notFitForRaw = ((formData.get("notFitFor") as string | null) ?? "")
-    .split("\n")
-    .map((l) => l.trim())
-    .filter(Boolean);
-
-  const legalName = ((formData.get("legalName") as string | null) ?? "").trim();
-  const registrationCountry =
-    ((formData.get("registrationCountry") as string | null) ?? "").trim();
-  const crNumber = ((formData.get("crNumber") as string | null) ?? "").trim();
-  const foundedAt = ((formData.get("foundedAt") as string | null) ?? "").trim();
-  const address = ((formData.get("address") as string | null) ?? "").trim();
-  const email = ((formData.get("email") as string | null) ?? "").trim();
-  const phone = ((formData.get("phone") as string | null) ?? "").trim();
-  const legalNote = ((formData.get("legalNote") as string | null) ?? "").trim();
-
-  const ctaTitle = ((formData.get("ctaTitle") as string | null) ?? "").trim();
-  const ctaBody = ((formData.get("ctaBody") as string | null) ?? "").trim();
-  const ctaPrimaryLabel =
-    ((formData.get("ctaPrimaryLabel") as string | null) ?? "").trim();
-  const ctaPrimaryHref =
-    ((formData.get("ctaPrimaryHref") as string | null) ?? "").trim();
-  const ctaSecondaryLabel =
-    ((formData.get("ctaSecondaryLabel") as string | null) ?? "").trim();
-  const ctaSecondaryHref =
-    ((formData.get("ctaSecondaryHref") as string | null) ?? "").trim();
-
-  const about = {
-    hero: {
-      eyebrow: heroEyebrow || undefined,
-      title: heroTitle,
-      subtitle: heroSubtitle,
-    },
-    storyBlocks,
-    values,
-    fitFor: fitForRaw,
-    notFitFor: notFitForRaw,
-    legalInfo: {
-      legalName,
-      registrationCountry,
-      crNumber,
-      foundedAt,
-      address,
-      email,
-      phone,
-      note: legalNote || undefined,
-    },
-    cta: {
-      title: ctaTitle,
-      body: ctaBody,
-      primaryLabel: ctaPrimaryLabel,
-      primaryHref: ctaPrimaryHref || "/checkout",
-      secondaryLabel: ctaSecondaryLabel,
-      secondaryHref: ctaSecondaryHref || "/#pricing",
-    },
-  };
-
-  await upsertLandingSection("about", about as Prisma.InputJsonValue);
-
-  revalidateTag("landing", "default");
-  revalidatePath("/");
-  revalidatePath("/about");
 
   redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
 }
