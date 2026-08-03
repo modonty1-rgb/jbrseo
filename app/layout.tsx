@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { DeferredGTM } from "@/app/components/DeferredGTM";
+import { ClarityAnalytics } from "@/app/components/ClarityAnalytics";
 import { Tajawal } from "next/font/google";
 import Link from "@/app/components/link";
 import { FAVICON_URLS } from "@/lib/constants";
@@ -103,6 +104,9 @@ export default async function RootLayout({
             />
           </noscript>
         )}
+        {/* Microsoft Clarity — deferred like GTM, excluded from /admin. Loads
+            only when NEXT_PUBLIC_CLARITY_ID is set (Vercel Production only). */}
+        <ClarityAnalytics />
         <Link
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:right-4 focus:z-9999 focus:bg-accent focus:text-accent-foreground focus:px-4 focus:py-2 focus:rounded focus:shadow-lg"

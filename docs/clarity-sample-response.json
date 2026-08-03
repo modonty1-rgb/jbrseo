@@ -1,0 +1,23 @@
+{
+  "_README": "PLACEHOLDER — replace with a REAL response captured once CLARITY_API_TOKEN is set. Run: curl 'https://www.clarity.ms/export-data/api/v1/project-live-insights?numOfDays=1&dimension1=URL' -H 'Authorization: Bearer <TOKEN>'. Then read the exact metricName values + inner field names for the friction metrics and lock them in lib/clarity/constants.ts (METRIC_NAME_MAP) + verify lib/clarity/normalizeResponse.ts. Only the 'Traffic' shape below is confirmed by the official docs.",
+  "_confirmedShape": [
+    {
+      "metricName": "Traffic",
+      "information": [
+        {
+          "totalSessionCount": "9554",
+          "totalBotSessionCount": "8369",
+          "distantUserCount": "189733",
+          "PagesPerSessionPercentage": 1.0931,
+          "URL": "/sa/pricing"
+        }
+      ]
+    }
+  ],
+  "_unverifiedFrictionMetricsExample": [
+    {
+      "metricName": "RageClickCount",
+      "information": [{ "URL": "/sa/pricing", "<countFieldName>": "12" }]
+    }
+  ]
+}

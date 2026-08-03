@@ -9,6 +9,7 @@ export const ADMIN_NAV = [
   { href: "/admin/analytics", label: "لوحة التحليلات" },
   { href: "/admin/subscribers", label: "المشتركون" },
   { href: "/admin/payment-failures", label: "رفوضات الدفع" },
+  { href: "/admin/ux-insights", label: "تحليل تجربة المستخدم" },
   { href: "/admin/content/hero", label: "الهيرو + شريط العملاء" },
   { href: "/admin/content/socialProof", label: "آراء العملاء" },
   { href: "/admin/content/faq", label: "الأسئلة الشائعة" },

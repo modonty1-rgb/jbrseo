@@ -250,3 +250,59 @@ model ModontyIndustry {
 
   @@map("industries")
 }
+
+// ─────────────────────────────────────────────────────────────────
+// UX Insights — Microsoft Clarity daily snapshot (Data Export API).
+// One row per (date, dimension, value): e.g. (2026-08-03, "URL", "/sa/pricing").
+// A daily Vercel cron pulls the last 24h from Clarity's project-live-insights
+// endpoint (3 calls, different dimensions), normalizes, and upserts here. The
+// admin UX-Insights page reads ONLY from this table — never calls Clarity live.
+// `raw` keeps the untouched API payload so a new metric can be surfaced later
+// without a re-fetch. frictionScore is computed at write time, not on render.
+// ─────────────────────────────────────────────────────────────────
+model ClarityDaily {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  date      DateTime // normalized to the start of the Riyadh day (UTC+3)
+  dimension String // "URL" | "Device" | "Browser" | "OS" | "Source" | "Country"
+  value     String // the dimension bucket, e.g. "/sa/pricing" or "Android"
+
+  sessions        Int   @default(0)
+  botSessions     Int   @default(0)
+  distinctUsers   Int   @default(0)
+  pagesPerSession Float @default(0)
+  engagementTime  Float @default(0)
+  scrollDepth     Float @default(0)
+
+  rageClicks      Int @default(0)
+  deadClicks      Int @default(0)
+  quickBacks      Int @default(0)
+  excessiveScroll Int @default(0)
+  scriptErrors    Int @default(0)
+
+  frictionScore Float    @default(0) // computed at write time from the signals above
+  raw           Json // untouched Clarity payload for this (date, dimension, value)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @default(now()) @updatedAt
+
+  @@unique([date, dimension, value]) // idempotent re-runs of the same day
+  @@index([date, dimension])
+  @@index([dimension, frictionScore])
+  @@map("clarity_daily")
+}
+
+// One row per cron run — the observability trail for the daily sync. Surfaces
+// "data is stale" / "sync failed" banners on the dashboard and records whether
+// Clarity truncated the response at its 1000-row export cap.
+model ClaritySyncLog {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  runAt      DateTime @default(now())
+  targetDate DateTime
+  status     String // "success" | "partial" | "failed"
+  callsUsed  Int      @default(0)
+  rowsSaved  Int      @default(0)
+  truncated  Boolean  @default(false) // true if any call hit Clarity's 1000-row cap
+  error      String?
+
+  @@index([runAt])
+  @@map("clarity_sync_log")
+}
