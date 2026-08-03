@@ -1,9 +1,7 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { isAdmin } from "@/app/actions/auth";
-import { AdminCountrySync } from "./_components/AdminCountrySync";
 import { AdminTopNavbar } from "./_components/AdminTopNavbar";
-import { AdminCountryBanner } from "./_components/AdminCountryBanner";
 import { AdminToaster } from "./_components/AdminToaster";
 import { AdminThemeProvider } from "./_components/AdminThemeProvider";
 
@@ -17,9 +15,6 @@ export default async function AdminDashboardLayout({
   return (
     <AdminThemeProvider>
       <AdminToaster />
-      <Suspense fallback={null}>
-        <AdminCountrySync />
-      </Suspense>
       <Suspense
         fallback={
           <header className="sticky top-0 z-20 flex min-h-13 items-center justify-between border-b border-border bg-card/95 px-6 py-3 backdrop-blur">
@@ -29,9 +24,6 @@ export default async function AdminDashboardLayout({
         }
       >
         <AdminTopNavbar />
-      </Suspense>
-      <Suspense fallback={null}>
-        <AdminCountryBanner />
       </Suspense>
       <main id="main-content" className="min-w-0 flex-1">{children}</main>
     </AdminThemeProvider>

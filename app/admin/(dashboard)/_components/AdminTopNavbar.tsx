@@ -2,17 +2,13 @@
 
 import { type ReactElement, useRef, useState, useEffect } from "react";
 import Link from "@/app/components/link";
-import { usePathname, useSearchParams } from "next/navigation";
-import { ADMIN_NAV, COUNTRIES, SETTINGS_NAV_ITEMS } from "../_config";
+import { usePathname } from "next/navigation";
+import { ADMIN_NAV, SETTINGS_NAV_ITEMS } from "../_config";
 import { AdminSubscribersLink } from "./AdminSubscribersLink";
 import { RefreshButton } from "./RefreshButton";
 import { AdminThemeToggle } from "./AdminThemeToggle";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-function withCountry(href: string, country: string): string {
-  return href + (href.includes("?") ? "&" : "?") + "country=" + country;
-}
 
 function resolvePageTitle(pathname: string): string {
   const sorted = [...ADMIN_NAV].sort((a, b) => b.href.length - a.href.length);
@@ -34,14 +30,8 @@ type TopNavDropdownProps = {
   flag: string;
   items: NavItem[];
   pathname: string;
-  /** Append ?country=XX to every link when set */
-  country?: string;
   /** Highlight button when active */
   activeHrefs?: string[];
-  /** If set, button is only active when currentCountry matches this value */
-  countryKey?: string;
-  /** Current ?country= value from URL */
-  currentCountry?: string;
 };
 
 function TopNavDropdown({
@@ -49,10 +39,7 @@ function TopNavDropdown({
   flag,
   items,
   pathname,
-  country,
   activeHrefs,
-  countryKey,
-  currentCountry,
 }: TopNavDropdownProps): ReactElement {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -69,8 +56,7 @@ function TopNavDropdown({
   useEffect(() => { setOpen(false); }, [pathname]);
 
   const hrefs = (activeHrefs ?? items.map((i) => i.href)).filter(Boolean);
-  const pathMatches = hrefs.some((h) => pathname === h || pathname.startsWith(`${h}/`));
-  const isActive = pathMatches && (countryKey === undefined || currentCountry === countryKey);
+  const isActive = hrefs.some((h) => pathname === h || pathname.startsWith(`${h}/`));
 
   return (
     <div ref={ref} className="relative">
@@ -108,13 +94,11 @@ function TopNavDropdown({
                 </div>
               );
             }
-            const href = country ? withCountry(item.href, country) : item.href;
-            const isItemActive = (pathname === item.href || pathname.startsWith(`${item.href}/`))
-              && (countryKey === undefined || currentCountry === countryKey);
+            const isItemActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}
-                href={href}
+                href={item.href}
                 onClick={() => setOpen(false)}
                 className={cn(
                   "flex items-center gap-2 px-3 py-2 text-sm transition-colors",
@@ -139,11 +123,6 @@ function TopNavDropdown({
 export function AdminTopNavbar(): ReactElement {
   const pathnameRaw = usePathname();
   const pathname = pathnameRaw && pathnameRaw.length > 0 ? pathnameRaw : "/admin";
-  const searchParams = useSearchParams();
-  const country =
-    searchParams.get("country") === "EG"
-      ? COUNTRIES[1].value
-      : COUNTRIES[0].value;
 
   const pageTitle = resolvePageTitle(pathname);
   const isHome = pathname === "/admin";
@@ -156,7 +135,7 @@ export function AdminTopNavbar(): ReactElement {
       {/* ── Left: Logo + Breadcrumb ── */}
       <div className="flex min-w-0 flex-1 items-center gap-3">
         <Link
-          href={withCountry("/admin", country)}
+          href={"/admin"}
           className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80"
           aria-label="الرئيسية"
         >
@@ -177,7 +156,7 @@ export function AdminTopNavbar(): ReactElement {
               aria-label="مسار الصفحة"
             >
               <Link
-                href={withCountry("/admin", country)}
+                href={"/admin"}
                 className="shrink-0 hover:text-foreground"
               >
                 الرئيسية
@@ -196,7 +175,7 @@ export function AdminTopNavbar(): ReactElement {
 
         {/* 📊 التحليلات — analytics dashboard (moved off the home route) */}
         <Link
-          href={withCountry("/admin/analytics", country)}
+          href="/admin/analytics"
           className={cn(
             "flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
             isAnalytics
@@ -210,7 +189,7 @@ export function AdminTopNavbar(): ReactElement {
 
         {/* 📋 إدارة المحتوى — تحرير كل نصوص الموقع من مكان واحد */}
         <Link
-          href={withCountry("/admin/review", country)}
+          href="/admin/review"
           className={cn(
             "flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
             isReview

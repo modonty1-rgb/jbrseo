@@ -90,7 +90,7 @@ export default async function AdminDashboardPage(): Promise<ReactElement> {
       icon: null,
       color: "text-green-500",
       bgIcon: "bg-green-500/10",
-      href: "/admin/subscribers?country=SA",
+      href: "/admin/subscribers",
     },
     {
       label: "مصر 🇪🇬",
@@ -98,7 +98,7 @@ export default async function AdminDashboardPage(): Promise<ReactElement> {
       icon: null,
       color: "text-blue-500",
       bgIcon: "bg-blue-500/10",
-      href: "/admin/subscribers?country=EG",
+      href: "/admin/subscribers",
     },
     {
       label: "آخر ٧ أيام",
@@ -129,7 +129,7 @@ export default async function AdminDashboardPage(): Promise<ReactElement> {
 
   const quickLinks: { label: string; href: string; icon: string }[] = [
     { label: "الهيرو", href: "/admin/content/hero", icon: "🏠" },
-    { label: "التسعير", href: "/admin/pricing?country=SA", icon: "💰" },
+    { label: "التسعير", href: "/admin/pricing", icon: "💰" },
     { label: "الأسئلة الشائعة", href: "/admin/content/faq", icon: "❓" },
     { label: "الإثبات الاجتماعي", href: "/admin/content/socialProof", icon: "⭐" },
     { label: "SEO", href: "/admin/settings/seo", icon: "🔍" },
