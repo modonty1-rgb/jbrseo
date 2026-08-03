@@ -5,7 +5,6 @@ import { Landing } from "@/app/components/landing/Landing";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getLandingContent } from "@/lib/getLandingContent";
 import { getAllPlans } from "@/app/actions/pricing";
-import { getMeta } from "@/app/actions/pricing-meta";
 import { getModontyTrustBundle } from "@/app/actions/modonty-client-logos";
 import { getModontyImpactStats, getCaseStudiesStats } from "@/lib/analytics/ga4";
 import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
@@ -105,11 +104,10 @@ export default async function CountryHome({
   const countrySlug = slug as "sa" | "eg";
   const countryCode = getCountryCodeFromSlug(countrySlug);
 
-  const [content, staticLanding, plans, meta, trustBundle, modontyImpact, caseStats] = await Promise.all([
+  const [content, staticLanding, plans, trustBundle, modontyImpact, caseStats] = await Promise.all([
     getLandingContent(countryCode),
     getStaticLandingWithOverrides(),
     getAllPlans(countryCode),
-    getMeta(countryCode),
     getModontyTrustBundle(),
     getModontyImpactStats(),
     getCaseStudiesStats(),
@@ -135,7 +133,6 @@ export default async function CountryHome({
         countrySlug={countrySlug}
         staticLanding={interpolatedStaticLanding}
         plans={plans}
-        announcement={meta?.announcement ?? ""}
         whatsappLink={whatsappLink}
         ctaLabel={ctaLabel}
         trustBundle={trustBundle}

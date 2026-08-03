@@ -1,10 +1,8 @@
 import type { ReactNode } from "react";
 import { headers } from "next/headers";
-import { AnnouncementBar } from "@/app/components/layout/AnnouncementBar";
 import { Footer } from "@/app/components/layout/footer/Footer";
 import { LandingHeader } from "@/app/components/layout/header/LandingHeader";
 import { StickyMobileCTA } from "@/app/components/layout/StickyMobileCTA";
-import { getMeta } from "@/app/actions/pricing-meta";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getLandingContent } from "@/lib/getLandingContent";
@@ -20,10 +18,9 @@ export default async function FeaturesLayout({ children }: { children: ReactNode
   const country = getCountryFromHeaders(h);
   const countrySlug = country === "EG" ? "eg" : "sa";
 
-  const [content, staticLanding, meta] = await Promise.all([
+  const [content, staticLanding] = await Promise.all([
     getLandingContent(country),
     getStaticLandingWithOverrides(),
-    getMeta(country),
   ]);
 
   const basePath = `/${countrySlug}`;
@@ -33,7 +30,6 @@ export default async function FeaturesLayout({ children }: { children: ReactNode
 
   return (
     <div dir="rtl" className="marketing-surface text-foreground overflow-x-clip max-[880px]:pb-[calc(76px+env(safe-area-inset-bottom))]" lang="ar">
-      <AnnouncementBar message={meta?.announcement ?? ""} />
       <LandingHeader
         content={content}
         staticLanding={staticLanding}

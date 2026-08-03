@@ -1,12 +1,10 @@
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { AnnouncementBar } from "@/app/components/layout/AnnouncementBar";
 import { Footer } from "@/app/components/layout/footer/Footer";
 import { LandingHeader } from "@/app/components/layout/header/LandingHeader";
 import { StickyMobileCTA } from "@/app/components/layout/StickyMobileCTA";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getLandingContent } from "@/lib/getLandingContent";
-import { getMeta } from "@/app/actions/pricing-meta";
 import { getWhatsAppLink } from "@/lib/site-links";
 import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 import {
@@ -28,10 +26,9 @@ export default async function MarketingShellLayout({
   const countrySlug = slug as "sa" | "eg";
   const countryCode = getCountryCodeFromSlug(countrySlug);
 
-  const [content, staticLanding, meta] = await Promise.all([
+  const [content, staticLanding] = await Promise.all([
     getLandingContent(countryCode),
     getStaticLandingWithOverrides(),
-    getMeta(countryCode),
   ]);
 
   const basePath = `/${countrySlug}`;
@@ -41,7 +38,6 @@ export default async function MarketingShellLayout({
 
   return (
     <div className="marketing-surface text-foreground max-[880px]:pb-[calc(76px+env(safe-area-inset-bottom))]">
-      <AnnouncementBar message={meta?.announcement ?? "أسعار التأسيس — أول ١٥٠ شركة."} />
       <LandingHeader
         content={content}
         staticLanding={staticLanding}

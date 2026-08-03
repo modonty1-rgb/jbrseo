@@ -21,7 +21,6 @@ type Props = {
   countrySlug: "sa" | "eg";
   staticLanding: StaticLanding;
   plans: DBPlan[];
-  announcement: string;
   whatsappLink: string;
   ctaLabel: string;
   trustBundle: ModontyTrustBundle;
