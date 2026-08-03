@@ -22,15 +22,6 @@ export const ADMIN_NAV = [
   { href: "/admin/settings/social", label: "روابط السوشال" },
 ] as const;
 
-/** قائمة الأسعار — صفحة واحدة لكل دولة، كل شيء فيها. */
-/** ⚙️ الإعدادات — تأثيرها على كل الموقع (تعدّل نادراً) */
-export const SETTINGS_NAV_ITEMS: { href: string; label: string; icon: string }[] = [
-  { href: "/admin/settings",              label: "بيانات الموقع",      icon: "⚙️" },
-  { href: "/admin/content/header-footer", label: "الهيدر والفوتر",     icon: "🔗" },
-  { href: "/admin/settings/social",       label: "روابط السوشال",      icon: "📱" },
-  { href: "/admin/settings/seo",          label: "ظهور البحث (SEO)",   icon: "🔍" },
-];
-
 export const COUNTRIES: { value: SupportedCountry; label: string }[] = [
   { value: "SA", label: "السعودية" },
   { value: "EG", label: "مصر" },
