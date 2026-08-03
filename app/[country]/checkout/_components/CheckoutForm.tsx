@@ -221,6 +221,18 @@ export function CheckoutForm({
     email.trim().length > 0 &&
     phone.trim().length > 0;
 
+  // Why is the pay button disabled? Surfaced under the button so it's NEVER a
+  // silent grey button the user can't diagnose (esp. a missing Turnstile token).
+  const disabledReason = submitting
+    ? null
+    : name.trim().length === 0 || email.trim().length === 0 || phone.trim().length === 0
+      ? "أكمل بياناتك (الاسم · البريد · الجوال) للمتابعة"
+      : !termsAccepted
+        ? "وافق على الشروط والأحكام للمتابعة"
+        : !turnstileToken
+          ? "أكمل التحقق الأمني بالأعلى قبل الدفع"
+          : null;
+
   return (
     <form noValidate onSubmit={handleSubmit} className="space-y-5">
       {paymentError && (
@@ -368,26 +380,30 @@ export function CheckoutForm({
         <p className="text-xs text-destructive">{errors.card}</p>
       )}
 
-      {/* Cloudflare Turnstile — invisible mode. Runs silently in the background,
-          no widget, no branding banner, no user friction. Escalates to a
-          challenge only if the request looks bot-like. Token is verified
-          server-side in /api/checkout/create-payment via lib/turnstile.ts. */}
-      <Turnstile
-        ref={turnstileRef}
-        siteKey={turnstileSiteKey}
-        options={{
-          theme: "auto",
-          language: "ar",
-          size: "invisible",
-          action: "checkout",
-        }}
-        onSuccess={(token) => {
-          setTurnstileToken(token);
-          setErrors((prev) => ({ ...prev, turnstile: undefined }));
-        }}
-        onExpire={() => setTurnstileToken(null)}
-        onError={() => setTurnstileToken(null)}
-      />
+      {/* Cloudflare Turnstile — MANAGED (visible) mode. Invisible mode failed
+          silently on some devices/networks (iPad Safari + certain ISPs): no
+          token was ever issued, so the pay button stayed permanently disabled
+          with no way for the user to complete the check. A managed widget
+          renders a real, completable challenge so every user can get a token.
+          Verified server-side in /api/checkout/create-payment via turnstile.ts. */}
+      <div className="flex justify-center">
+        <Turnstile
+          ref={turnstileRef}
+          siteKey={turnstileSiteKey}
+          options={{
+            theme: "auto",
+            language: "ar",
+            size: "flexible",
+            action: "checkout",
+          }}
+          onSuccess={(token) => {
+            setTurnstileToken(token);
+            setErrors((prev) => ({ ...prev, turnstile: undefined }));
+          }}
+          onExpire={() => setTurnstileToken(null)}
+          onError={() => setTurnstileToken(null)}
+        />
+      </div>
       {errors.turnstile && (
         <p className="text-center text-xs text-destructive">{errors.turnstile}</p>
       )}
@@ -412,14 +428,18 @@ export function CheckoutForm({
         </span>
       </label>
 
+      {/* Baymard best practice: never a silently-disabled submit button — it
+          leaves the user unable to tell what's wrong. The button stays clickable
+          (disabled only while processing); a click always runs validation and
+          surfaces a specific inline error (missing field / security check / card). */}
       <button
         type="submit"
-        disabled={!canSubmit}
+        disabled={submitting}
         className={cn(
           "flex h-14 w-full items-center justify-center gap-2 rounded-xl text-[15px] font-black transition-all",
-          canSubmit
-            ? "bg-foreground text-background shadow-[0_14px_30px_-14px_color-mix(in_oklch,var(--foreground)_45%,transparent)] hover:bg-foreground/90"
-            : "cursor-not-allowed bg-muted text-muted-foreground"
+          submitting
+            ? "cursor-wait bg-muted text-muted-foreground"
+            : "bg-foreground text-background shadow-[0_14px_30px_-14px_color-mix(in_oklch,var(--foreground)_45%,transparent)] hover:bg-foreground/90"
         )}
       >
         {submitting ? (
@@ -434,6 +454,12 @@ export function CheckoutForm({
           </>
         )}
       </button>
+
+      {!canSubmit && disabledReason && (
+        <p className="text-center text-xs text-muted-foreground" aria-live="polite">
+          {disabledReason}
+        </p>
+      )}
 
       {errors.submit && (
         <p className="rounded-lg border border-destructive/30 bg-destructive/8 px-3 py-2 text-xs text-destructive text-center">
