@@ -8,6 +8,7 @@ import {
 } from "@/lib/country-config";
 import { getWhatsAppLink } from "@/lib/site-links";
 import { resolveReason } from "@/lib/checkout-reasons";
+import { parseDuration } from "@/lib/pricing-durations";
 import { WhatsAppIcon } from "@/app/components/icons/WhatsAppIcon";
 import { CheckoutHeader } from "../_components/CheckoutHeader";
 
@@ -20,7 +21,7 @@ const prisma = new PrismaClient();
 
 type Props = {
   params: Promise<{ country: string }>;
-  searchParams: Promise<{ order?: string; reason?: string; plan?: string; billing?: string }>;
+  searchParams: Promise<{ order?: string; reason?: string; plan?: string; duration?: string }>;
 };
 
 export default async function CheckoutFailedPage({ params, searchParams }: Props) {
@@ -31,7 +32,7 @@ export default async function CheckoutFailedPage({ params, searchParams }: Props
   const countrySlug = slug as "sa" | "eg";
   if (countrySlug === "eg") notFound();
 
-  const { order, reason, plan: planParam, billing: billingParam } = await searchParams;
+  const { order, reason, plan: planParam, duration: durationParam } = await searchParams;
   const country = getCountryCodeFromSlug(countrySlug);
 
   // Two modes:
@@ -51,12 +52,12 @@ export default async function CheckoutFailedPage({ params, searchParams }: Props
   const reasonKey = reason || subscriber?.failReason;
   const resolved = resolveReason(reasonKey);
 
-  // Retry URL: prefer subscriber's plan+billing, fall back to URL params
+  // Retry URL: prefer subscriber's plan+duration, fall back to URL params
   const retryPlan = subscriber?.plan || planParam;
-  const retryBilling = subscriber?.billing || billingParam;
+  const retryDuration = subscriber?.billing || durationParam; // billing column stores the duration ("6m")
   const retryQuery = new URLSearchParams();
   if (retryPlan) retryQuery.set("plan", retryPlan);
-  if (retryBilling) retryQuery.set("billing", retryBilling);
+  if (retryDuration) retryQuery.set("duration", String(parseDuration(retryDuration)));
   const canRetry = retryQuery.toString().length > 0;
   const retryHref = canRetry
     ? `/${countrySlug}/checkout?${retryQuery.toString()}`

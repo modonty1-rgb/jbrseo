@@ -6,10 +6,8 @@ import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
 } from "@/lib/country-config";
-import {
-  displayMainTotalFromMoYr,
-  formatPlanTotalDisplay,
-} from "@/lib/pricing-plan-amounts";
+import { formatPlanTotalDisplay } from "@/lib/pricing-plan-amounts";
+import { priceForDuration, parseDuration } from "@/lib/pricing-durations";
 import { CheckoutHeader } from "../_components/CheckoutHeader";
 
 export const metadata: Metadata = {
@@ -73,10 +71,10 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Prop
     redirect(`/${countrySlug}#pricing`);
   }
 
-  const annual = subscriber.billing === "annual";
-  const totalNumber = displayMainTotalFromMoYr(plan.priceMonthly, plan.priceYearly, annual);
+  const duration = parseDuration(subscriber.billing);
+  const totalNumber = priceForDuration(plan.priceMonthly, duration).total;
   const totalDisplay = formatPlanTotalDisplay(totalNumber, country);
-  const billingLabel = annual ? "سنوي" : "شهري";
+  const billingLabel = duration === 12 ? "١٢ شهر" : duration === 6 ? "٦ شهور" : "٣ شهور";
   // Invoice ref: paymentRef (from N-Genius) if set, else short subscriber id
   const invoiceRef = subscriber.paymentRef || `JBR-${subscriber.id.slice(-8).toUpperCase()}`;
 

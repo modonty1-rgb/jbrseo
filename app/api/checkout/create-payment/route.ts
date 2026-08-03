@@ -8,7 +8,7 @@ import {
   buildMerchantOrderReference,
   toMinorUnits,
 } from "@/lib/ngenius/orders";
-import { displayMainTotalFromMoYr } from "@/lib/pricing-plan-amounts";
+import { priceForDuration, type PlanDuration } from "@/lib/pricing-durations";
 import type { CreateOrderPayload } from "@/lib/ngenius/types";
 
 export const dynamic = "force-dynamic";
@@ -27,7 +27,9 @@ const Body = z.object({
   email: z.string().trim().email().max(254),
   phone: z.string().trim().min(6).max(20),
   plan: z.enum(["starter", "growth", "scale"]),
-  billing: z.enum(["monthly", "annual"]),
+  duration: z.coerce
+    .number()
+    .refine((n): n is PlanDuration => n === 3 || n === 6 || n === 12, "invalid duration"),
   country: z.enum(["SA"]),               // EG has no payment surface (Decision #4)
 });
 
@@ -75,19 +77,22 @@ export async function POST(req: Request) {
   if (!plan) {
     return NextResponse.json({ error: "plan-not-found" }, { status: 400 });
   }
-  const annual = body.billing === "annual";
-  const totalMajor = displayMainTotalFromMoYr(plan.priceMonthly, plan.priceYearly, annual);
+  // Amount = monthly base × duration (single upfront charge for the whole term).
+  // Free service months are a fulfillment bonus — they do NOT reduce the charge.
+  const totalMajor = priceForDuration(plan.priceMonthly, body.duration).total;
   const totalMinor = toMinorUnits(totalMajor);
   if (totalMinor <= 0) {
     return NextResponse.json({ error: "invalid-total" }, { status: 400 });
   }
+  // Stored in the existing `billing` string column — no schema change.
+  const billingKey = `${body.duration}m`;
 
   // 5. Upsert Subscriber (Idempotency layer 1 — Decision #2)
   // @@unique([email, plan, billing]) means retries for same combo update the
   // existing row rather than creating a duplicate.
   const subscriber = await prisma.subscriber.upsert({
     where: {
-      email_plan_billing: { email: body.email, plan: body.plan, billing: body.billing },
+      email_plan_billing: { email: body.email, plan: body.plan, billing: billingKey },
     },
     update: {
       contactName: body.name,
@@ -102,9 +107,9 @@ export async function POST(req: Request) {
       phone: body.phone,
       planName: plan.name,
       plan: body.plan,
-      billing: body.billing,
+      billing: billingKey,
       country: body.country,
-      isAnnual: annual,
+      isAnnual: body.duration === 12,
       paymentStatus: "pending",
     },
   });
@@ -121,14 +126,14 @@ export async function POST(req: Request) {
     merchantDefinedData: {
       subscriberId: subscriber.id,
       plan: body.plan,
-      billing: body.billing,
+      billing: billingKey,
     },
     emailAddress: body.email,
     merchantAttributes: {
       // Populated for post-3DS return + user-cancel flow; SDK also handles
       // in-page state via handlePaymentResponse, so these are fallbacks.
       redirectUrl: `${siteUrl}/${country}/checkout/processing?order=${subscriber.id}`,
-      cancelUrl: `${siteUrl}/${country}/checkout?plan=${body.plan}&billing=${body.billing}&error=cancelled_by_user&order=${subscriber.id}`,
+      cancelUrl: `${siteUrl}/${country}/checkout?plan=${body.plan}&duration=${body.duration}&error=cancelled_by_user&order=${subscriber.id}`,
     },
   };
 

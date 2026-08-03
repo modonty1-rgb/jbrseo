@@ -7,13 +7,14 @@ import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { cn } from "@/lib/utils";
 import type { SupportedCountry } from "@/lib/landing-content.types";
 import type { FailureReason } from "@/lib/checkout-reasons";
+import type { PlanDuration } from "@/lib/pricing-durations";
 import { NGeniusMount, type NGeniusHandle } from "./NGeniusMount";
 
 type Props = {
   country: SupportedCountry;
   planSlug: string;
   planName: string;
-  billing: "monthly" | "annual";
+  duration: PlanDuration;
   totalDisplay: string;
   /** Set when redirected back from a failed payment attempt — shows inline banner. */
   paymentError?: FailureReason | null;
@@ -29,7 +30,7 @@ type Props = {
 type Errors = Partial<Record<"name" | "email" | "phone" | "turnstile" | "card" | "submit", string>>;
 
 export function CheckoutForm({
-  country, planSlug, planName, billing, totalDisplay,
+  country, planSlug, planName, duration, totalDisplay,
   paymentError, attemptNumber, turnstileSiteKey,
   ngeniusHostedSessionKey, ngeniusOutletRef,
 }: Props) {
@@ -108,7 +109,7 @@ export function CheckoutForm({
         body: JSON.stringify({
           sessionId, turnstileToken,
           name, email, phone: phone.replace(/[\s-]/g, ""),
-          plan: planSlug, billing, country,
+          plan: planSlug, duration, country,
         }),
       });
 
@@ -121,7 +122,7 @@ export function CheckoutForm({
           code === "ngenius-failed" ? "system_error" :
           "system_error";
         const nextAttempt = (attemptNumber ?? 0) + 1;
-        router.replace(`/${country.toLowerCase()}/checkout?plan=${planSlug}&billing=${billing}&error=${reasonSlug}&attempt=${nextAttempt}`);
+        router.replace(`/${country.toLowerCase()}/checkout?plan=${planSlug}&duration=${duration}&error=${reasonSlug}&attempt=${nextAttempt}`);
         return;
       }
 
@@ -137,7 +138,7 @@ export function CheckoutForm({
       } else {
         const reason = result.is3DsFailure ? "authentication_failed" : "card_declined";
         const nextAttempt = (attemptNumber ?? 0) + 1;
-        router.replace(`/${country.toLowerCase()}/checkout?plan=${planSlug}&billing=${billing}&error=${reason}&attempt=${nextAttempt}&order=${subscriberId}`);
+        router.replace(`/${country.toLowerCase()}/checkout?plan=${planSlug}&duration=${duration}&error=${reason}&attempt=${nextAttempt}&order=${subscriberId}`);
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "خطأ غير معروف";

@@ -90,6 +90,7 @@ export type SubscriberListItem = {
   paymentStatus: string;
   country: string;
   isAnnual: boolean;
+  billing: string; // duration term stored as "3m" | "6m" | "12m" (or legacy "monthly"/"annual")
   createdAt: Date;
 };
 
@@ -159,6 +160,7 @@ export async function getSubscribers(options?: {
       paymentStatus: true,
       country: true,
       isAnnual: true,
+      billing: true,
       createdAt: true,
     },
   });
@@ -175,6 +177,7 @@ export async function getSubscribers(options?: {
     paymentStatus: r.paymentStatus,
     country: r.country,
     isAnnual: r.isAnnual,
+    billing: r.billing,
     createdAt: r.createdAt,
   }));
 }

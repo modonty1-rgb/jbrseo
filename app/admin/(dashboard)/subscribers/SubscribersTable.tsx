@@ -43,7 +43,7 @@ import { planBadgeClass } from "@/lib/planStyles";
 import { cn } from "@/lib/utils";
 import { fieldClass, labelClass } from "../_components/AdminFormShared";
 import type { SubscriberListItem } from "@/app/actions/subscribers";
-import { displayMainTotalFromMoYr } from "@/lib/pricing-plan-amounts";
+import { priceForDuration, parseDuration } from "@/lib/pricing-durations";
 
 /** Active plan info (Saudi) — name + slug + prices, used for the plan toggles
  *  and the revenue amount shown on each. */
@@ -258,7 +258,7 @@ export function SubscribersTable(props: SubscribersTableProps): ReactElement {
       if (row.country !== "SA" || row.paymentStatus !== "paid") continue;
       const plan = bySlug.get(row.plan) ?? byName.get(row.planName?.trim());
       if (!plan) continue;
-      const amount = displayMainTotalFromMoYr(plan.priceMonthly, plan.priceYearly, row.isAnnual);
+      const amount = priceForDuration(plan.priceMonthly, parseDuration(row.billing)).total;
       acc[plan.name] = (acc[plan.name] ?? 0) + amount;
       total += amount;
     }

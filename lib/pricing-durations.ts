@@ -68,8 +68,8 @@ export function isPlanDuration(v: unknown): v is PlanDuration {
   return typeof v === "number" && PLAN_DURATIONS.includes(v as PlanDuration);
 }
 
-/** Parse a query/string duration, falling back to the recommended one. */
+/** Parse a duration from a query/string/stored value ("6", "6m", 6) → 3|6|12. */
 export function parseDuration(v: unknown): PlanDuration {
-  const n = typeof v === "string" ? Number(v) : v;
+  const n = typeof v === "string" ? Number(v.replace(/[^0-9]/g, "")) : v;
   return isPlanDuration(n) ? n : RECOMMENDED_DURATION;
 }

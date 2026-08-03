@@ -5,11 +5,8 @@ import {
   getCountryCodeFromSlug,
   isSupportedCountrySlug,
 } from "@/lib/country-config";
-import { isAnnualFromBillingParam } from "@/lib/billing-search-param";
-import {
-  displayMainTotalFromMoYr,
-  formatPlanTotalDisplay,
-} from "@/lib/pricing-plan-amounts";
+import { priceForDuration, parseDuration } from "@/lib/pricing-durations";
+import { formatPlanTotalDisplay } from "@/lib/pricing-plan-amounts";
 import { resolveReason, MAX_INLINE_RETRIES } from "@/lib/checkout-reasons";
 import { getTurnstileSiteKey } from "@/lib/turnstile";
 import { CheckoutHeader } from "./_components/CheckoutHeader";
@@ -30,7 +27,7 @@ export const metadata: Metadata = {
 
 type CheckoutPageProps = {
   params: Promise<{ country: string }>;
-  searchParams: Promise<{ plan?: string; billing?: string; error?: string; attempt?: string; order?: string }>;
+  searchParams: Promise<{ plan?: string; duration?: string; error?: string; attempt?: string; order?: string }>;
 };
 
 export default async function CheckoutPage({ params, searchParams }: CheckoutPageProps) {
@@ -44,7 +41,8 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
   if (countrySlug === "eg") notFound();
 
   const country = getCountryCodeFromSlug(countrySlug);
-  const { plan: planParam, billing: billingParam, error: errorParam, attempt: attemptParam, order: orderParam } = await searchParams;
+  const { plan: planParam, duration: durationParam, error: errorParam, attempt: attemptParam, order: orderParam } = await searchParams;
+  const duration = parseDuration(durationParam);
 
   // Q2.1: no ?plan= → redirect to pricing selector.
   if (!planParam || !planParam.trim()) {
@@ -59,7 +57,7 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
 
   // If unrecoverable OR too many attempts → hand off to /failed
   if (paymentError && (!paymentError.recoverable || attemptNumber >= MAX_INLINE_RETRIES)) {
-    const q = new URLSearchParams({ reason: errorParam!, plan: planParam.trim(), billing: billingParam ?? "annual" });
+    const q = new URLSearchParams({ reason: errorParam!, plan: planParam.trim(), duration: String(duration) });
     if (orderParam) q.set("order", orderParam);
     redirect(`/${countrySlug}/checkout/failed?${q.toString()}`);
   }
@@ -72,11 +70,9 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
     redirect(`/${countrySlug}#pricing`);
   }
 
-  const annual = isAnnualFromBillingParam(billingParam ?? null);
-  const billing: "monthly" | "annual" = annual ? "annual" : "monthly";
-  const totalNumber = displayMainTotalFromMoYr(plan.priceMonthly, plan.priceYearly, annual);
+  const totalNumber = priceForDuration(plan.priceMonthly, duration).total;
   const totalDisplay = formatPlanTotalDisplay(totalNumber, country);
-  const billingLabel = annual ? "سنوي" : "شهري";
+  const billingLabel = duration === 12 ? "١٢ شهر" : duration === 6 ? "٦ شهور" : "٣ شهور";
 
   return (
     <>
@@ -108,7 +104,7 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
             country={country}
             planSlug={plan.slug}
             planName={plan.name}
-            billing={billing}
+            duration={duration}
             totalDisplay={totalDisplay}
             paymentError={paymentError}
             attemptNumber={paymentError ? attemptNumber : undefined}
