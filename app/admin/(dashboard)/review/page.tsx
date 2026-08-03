@@ -13,7 +13,7 @@ import type { EditArrayProps } from "./EditArrayButton";
 // URL fields with a thumbnail). Pricing stays read-only (own page).
 export const dynamic = "force-dynamic";
 
-type Item = { label: string; value: string; edit?: EditTarget; arrayBlock?: EditArrayProps };
+type Item = { label: string; value: string; edit?: EditTarget; arrayBlock?: EditArrayProps; thumb?: string };
 type RawGroup = { title: string; admin: string; items: Item[] };
 
 const str = (v: unknown): string => (typeof v === "string" ? v : "");
@@ -195,12 +195,11 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
         blank: { name: "", role: "", company: "", quote: "", metric: "", avatarImg: "", videoUrl: "" }, itemNoun: "شهادة",
       }),
       ...testimonials.flatMap((t, i) => [
-        { label: `شهادة ${i + 1} — الاسم`, value: str(t.name), edit: { section: "socialProof", path: ["testimonials", i, "name"] } as EditTarget },
+        { label: `شهادة ${i + 1} — الاسم`, value: str(t.name), edit: { section: "socialProof", path: ["testimonials", i, "name"] } as EditTarget, thumb: str(t.avatarImg) },
         { label: `شهادة ${i + 1} — المنصب`, value: str(t.role), edit: { section: "socialProof", path: ["testimonials", i, "role"] } as EditTarget },
         { label: `شهادة ${i + 1} — الشركة`, value: str(t.company), edit: { section: "socialProof", path: ["testimonials", i, "company"] } as EditTarget },
         { label: `شهادة ${i + 1} — النتيجة`, value: str(t.metric), edit: { section: "socialProof", path: ["testimonials", i, "metric"] } as EditTarget },
         { label: `شهادة ${i + 1} — الاقتباس`, value: str(t.quote), edit: { section: "socialProof", path: ["testimonials", i, "quote"] } as EditTarget },
-        { label: `شهادة ${i + 1} — الصورة (رابط)`, value: str(t.avatarImg) },
       ]),
     ],
   };
@@ -215,10 +214,9 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
   ];
   const memberBlank = { name: "", role: "", bio: "", avatarColor: DEFAULT_TEAM_AVATAR_GRADIENT, avatarUrl: "" };
   const memberRows = (m: Record<string, unknown>, i: number, key: "coreTeam" | "executionTeam", noun: string): Item[] => [
-    { label: `${noun} ${i + 1} — الاسم`, value: str(m.name), edit: { section: "team", path: [key, i, "name"] } as EditTarget },
+    { label: `${noun} ${i + 1} — الاسم`, value: str(m.name), edit: { section: "team", path: [key, i, "name"] } as EditTarget, thumb: str(m.avatarUrl) },
     { label: `${noun} ${i + 1} — الدور`, value: str(m.role), edit: { section: "team", path: [key, i, "role"] } as EditTarget },
     { label: `${noun} ${i + 1} — النبذة`, value: str(m.bio), edit: { section: "team", path: [key, i, "bio"] } as EditTarget },
-    { label: `${noun} ${i + 1} — الصورة (رابط)`, value: str(m.avatarUrl) },
   ];
   const teamGroup: RawGroup = {
     title: "فريق العمل",

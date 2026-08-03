@@ -207,7 +207,7 @@ export function AdminTopNavbar(): ReactElement {
           <span className="hidden sm:inline">التحليلات</span>
         </Link>
 
-        {/* 📋 مرجع المحتوى — كل نصوص اللاندنق في صفحة واحدة مرقّمة */}
+        {/* 📋 إدارة المحتوى — تحرير كل نصوص الموقع من مكان واحد */}
         <Link
           href={withCountry("/admin/review", country)}
           className={cn(
@@ -218,7 +218,7 @@ export function AdminTopNavbar(): ReactElement {
           )}
         >
           <span>📋</span>
-          <span className="hidden sm:inline">المرجع</span>
+          <span className="hidden sm:inline">إدارة المحتوى</span>
         </Link>
 
         <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />

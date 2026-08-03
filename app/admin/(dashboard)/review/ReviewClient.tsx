@@ -14,6 +14,8 @@ export type ReviewItem = {
   value: string;
   edit?: EditTarget;
   arrayBlock?: EditArrayProps;
+  /** small avatar preview shown next to the value (e.g. team member photo) */
+  thumb?: string;
 };
 export type ReviewGroup = { title: string; admin: string; items: ReviewItem[] };
 
@@ -35,7 +37,7 @@ export function ReviewClient({ groups, total }: { groups: ReviewGroup[]; total: 
   return (
     <div className="mx-auto max-w-4xl p-5 sm:p-6">
       <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-xl font-bold text-foreground">مرجع محتوى اللاندنق</h1>
+        <h1 className="text-xl font-bold text-foreground">إدارة المحتوى</h1>
         <div className="flex items-center gap-2">
           <button
             type="button"
@@ -77,12 +79,14 @@ export function ReviewClient({ groups, total }: { groups: ReviewGroup[]; total: 
                   <h2 className="text-sm font-bold text-foreground">{g.title}</h2>
                   <span className="text-[11px] text-muted-foreground">({g.items.length})</span>
                 </button>
-                <Link
-                  href={`${g.admin}?country=SA`}
-                  className="shrink-0 text-xs font-medium text-primary hover:underline"
-                >
-                  تعديل ←
-                </Link>
+                {g.admin !== "/admin/review" ? (
+                  <Link
+                    href={`${g.admin}?country=SA`}
+                    className="shrink-0 text-xs font-medium text-primary hover:underline"
+                  >
+                    تعديل ←
+                  </Link>
+                ) : null}
               </div>
 
               {!isCollapsed && (
@@ -101,6 +105,10 @@ export function ReviewClient({ groups, total }: { groups: ReviewGroup[]; total: 
                         <span className="mt-0.5 inline-flex h-6 min-w-6 shrink-0 items-center justify-center rounded-md bg-primary/10 px-1.5 text-xs font-bold tabular-nums text-primary">
                           {it.n}
                         </span>
+                        {it.thumb ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={it.thumb} alt="" className="size-9 shrink-0 rounded-full border border-border object-cover" />
+                        ) : null}
                         <div className="min-w-0 flex-1">
                           <div className="text-[11px] font-medium text-muted-foreground">{it.label}</div>
                           <div className="mt-0.5 break-words whitespace-pre-wrap text-sm text-foreground">
