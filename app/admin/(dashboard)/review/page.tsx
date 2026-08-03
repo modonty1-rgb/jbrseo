@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
-import { getAllPlans } from "@/app/actions/pricing";
+import { getAllPlansIncludingHidden } from "@/app/actions/pricing";
+import { getMeta } from "@/app/actions/pricing-meta";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 import { DEFAULT_TEAM_AVATAR_GRADIENT } from "@/lib/teamPresets";
@@ -24,7 +25,7 @@ const obj = (v: unknown): Record<string, unknown> =>
 const ctrl = (block: EditArrayProps): Item => ({ label: block.label, value: "", arrayBlock: block });
 
 export default async function ContentReviewPage(): Promise<ReactElement> {
-  const [heroRaw, ctaRaw, faqRaw, finalRaw, aboutRaw, privacyRaw, termsRaw, socialRaw, teamRaw, plans] =
+  const [heroRaw, ctaRaw, faqRaw, finalRaw, aboutRaw, privacyRaw, termsRaw, socialRaw, teamRaw, plans, meta] =
     await Promise.all([
       getLandingSectionOverride("hero"),
       getLandingSectionOverride("ctaLabel"),
@@ -35,7 +36,8 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
       getLandingSectionOverride("terms"),
       getLandingSectionOverride("socialProof"),
       getLandingSectionOverride("team"),
-      getAllPlans("SA"),
+      getAllPlansIncludingHidden("SA"),
+      getMeta("SA"),
     ]);
 
   // ── editable: الهيرو + الزر الموحّد ──────────────────────────────────────
@@ -229,18 +231,42 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
     ],
   };
 
-  // ── read-only reference (pricing keeps its own page) ─────────────────────
-  const pricingGroup: RawGroup = {
-    title: "الباقات (تُعدّل من صفحتها)",
+  // ── editable: محتوى الباقات (السعر يُعدّل من صفحة الأسعار) ────────────────
+  const plansContentGroup: RawGroup = {
+    title: "الباقات — المحتوى (السعر في صفحة الأسعار)",
     admin: "/admin/pricing",
-    items: plans.flatMap((p) => [
-      { label: `باقة «${p.name}» — الاسم`, value: p.name },
-      { label: `باقة «${p.name}» — الوصف`, value: p.tagline ?? "" },
-      { label: `باقة «${p.name}» — سعر شهري`, value: String(p.priceMonthly) },
-      { label: `باقة «${p.name}» — سعر سنوي`, value: String(p.priceYearly) },
-      { label: `باقة «${p.name}» — عدد المقالات`, value: p.articlesLabel ?? "" },
-      ...(p.highlights ?? []).map((h, i) => ({ label: `باقة «${p.name}» — ميزة ${i + 1}`, value: h })),
-    ]),
+    items: plans.flatMap((p) => {
+      const s = `plan:${p.slug}`;
+      const hls = p.highlights ?? [];
+      return [
+        { label: `«${p.name}» — الاسم`, value: p.name, edit: { section: s, path: ["name"] } as EditTarget },
+        { label: `«${p.name}» — الوصف`, value: p.tagline ?? "", edit: { section: s, path: ["tagline"] } as EditTarget },
+        { label: `«${p.name}» — عدد المقالات`, value: p.articlesLabel ?? "", edit: { section: s, path: ["articlesLabel"] } as EditTarget },
+        { label: `«${p.name}» — نص الزر`, value: p.ctaText ?? "", edit: { section: s, path: ["ctaText"] } as EditTarget },
+        { label: `«${p.name}» — شارة`, value: p.badge ?? "", edit: { section: s, path: ["badge"] } as EditTarget },
+        { label: `«${p.name}» — شارة مميّزة`, value: p.featuredBadge ?? "", edit: { section: s, path: ["featuredBadge"] } as EditTarget },
+        ctrl({ section: s, path: ["highlights"], label: `مميزات «${p.name}»`, initial: hls, itemKind: "string", blank: "", itemNoun: "ميزة" }),
+        ...hls.map((h, i) => ({ label: `«${p.name}» — ميزة ${i + 1}`, value: h, edit: { section: s, path: ["highlights", i] } as EditTarget })),
+      ];
+    }),
+  };
+
+  // ── editable: قسم الأسعار — إعلان + دعوة + عناصر ثقة ─────────────────────
+  const trustItems = arr<Record<string, unknown>>(meta.trustItems);
+  const pricingMetaGroup: RawGroup = {
+    title: "قسم الأسعار — إعلان ودعوة",
+    admin: "/admin/pricing",
+    items: [
+      { label: "شريط الإعلان", value: str(meta.announcement), edit: { section: "pricingMeta", path: ["announcement"] } },
+      { label: "عنوان الدعوة", value: str(meta.ctaHeadline), edit: { section: "pricingMeta", path: ["ctaHeadline"] } },
+      { label: "نص الدعوة الفرعي", value: str(meta.ctaSubheadline), edit: { section: "pricingMeta", path: ["ctaSubheadline"] } },
+      ctrl({
+        section: "pricingMeta", path: ["trustItems"], label: "عناصر الثقة", initial: trustItems, itemKind: "object",
+        fields: [{ key: "icon", label: "الأيقونة" }, { key: "label", label: "النص" }],
+        blank: { icon: "", label: "" }, itemNoun: "عنصر",
+      }),
+      ...trustItems.map((t, i) => ({ label: `عنصر ثقة ${i + 1}`, value: str(t.label) })),
+    ],
   };
 
   const groups: RawGroup[] = [
@@ -252,7 +278,8 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
     legalGroup(termsRaw, "شروط الاستخدام (صفحة)", "terms"),
     socialGroup,
     teamGroup,
-    pricingGroup,
+    plansContentGroup,
+    pricingMetaGroup,
   ];
 
   // stable global number for every VALUE item (control rows aren't numbered)
