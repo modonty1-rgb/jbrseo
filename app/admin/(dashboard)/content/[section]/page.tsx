@@ -1,12 +1,9 @@
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import type { SupportedCountry } from "@/lib/landing-content.types";
-import type { StaticLanding } from "@/app/content/landing/types";
 import { getNavLinks, getFooterLinks, LEGAL_LINKS } from "@/lib/site-links";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { updateSection } from "@/app/actions/content-sections";
-import { SocialProofSectionForm } from "./_components/SocialProofSectionForm";
-import { TeamSectionForm } from "./_components/TeamSectionForm";
 import { Button } from "@/app/components/ui/button";
 import { Textarea } from "@/app/components/ui/textarea";
 import { AdminFormFeedback } from "../../_components/AdminFormFeedback";
@@ -27,9 +24,11 @@ const CONTENT_KEYS = [
 
 type ContentKey = (typeof CONTENT_KEYS)[number];
 
-// Text sections now live in the numbered reference editor (/admin/review).
-// Only media sections (صور/فيديو) keep a dedicated form here.
-const MOVED_TO_REVIEW = new Set<string>(["hero", "faq", "finalCta", "about", "privacy", "terms"]);
+// All landing/page content is now edited from the numbered reference editor
+// (/admin/review) — including media sections (صور/فيديو عبر الرابط).
+const MOVED_TO_REVIEW = new Set<string>([
+  "hero", "faq", "finalCta", "about", "privacy", "terms", "socialProof", "team",
+]);
 
 const SECTION_LABELS: Record<ContentKey, string> = {
   hero: "قسم الهيرو",
@@ -43,10 +42,6 @@ const SECTION_LABELS: Record<ContentKey, string> = {
   terms: "Terms page",
   about: "About page",
   team: "Team page",
-};
-
-const PAGE_HEADING_OVERRIDES: Partial<Record<ContentKey, { h1: string }>> = {
-  team: { h1: "فريق العمل" },
 };
 
 function isContentKey(s: string): s is ContentKey {
@@ -70,12 +65,11 @@ export default async function AdminContentSectionPage({
   const isLinksSection = section === "links";
   if (!isLinksSection && !isContentKey(section)) notFound();
 
-  // Text sections are edited from the reference page — send old links there.
+  // Content sections are edited from the reference page — send old links there.
   if (MOVED_TO_REVIEW.has(section)) redirect(`/admin/review?country=${country}`);
 
-  // DB is the single source of truth. Missing section → empty object, admin fills it.
+  // Remaining keys (header/footer/pricingPage/links) → raw-JSON editor.
   let sectionData: unknown;
-
   if (isLinksSection) {
     sectionData = {
       navLinks: getNavLinks(country as SupportedCountry),
@@ -87,14 +81,8 @@ export default async function AdminContentSectionPage({
     sectionData = override ?? {};
   }
 
-  const headingOverride = isContentKey(section) ? PAGE_HEADING_OVERRIDES[section] : undefined;
-  const label = headingOverride
-    ? headingOverride.h1
-    : isLinksSection
-      ? "Links section"
-      : SECTION_LABELS[section as ContentKey];
+  const label = isLinksSection ? "Links section" : SECTION_LABELS[section as ContentKey];
 
-  // Minimal, focused editor: one title, a constrained column, a single light card.
   return (
     <div className="mx-auto max-w-3xl p-5 sm:p-6">
       <h1 className="mb-4 text-lg font-semibold text-foreground">{label}</h1>
@@ -102,42 +90,26 @@ export default async function AdminContentSectionPage({
         <AdminFormFeedback />
       </Suspense>
       <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
-        {!isLinksSection && section === "socialProof" && (
-          <SocialProofSectionForm
-            key={country}
-            section={sectionData as StaticLanding["socialProof"]}
-            country={country}
+        <form key={country} action={updateSection} className="space-y-3">
+          <input type="hidden" name="country" value={country} />
+          <input type="hidden" name="section" value={section} />
+          <input
+            type="hidden"
+            name="redirect"
+            value={`/admin/content/${section}?country=${country}`}
           />
-        )}
-        {!isLinksSection && section === "team" && (
-          <TeamSectionForm
-            key={country}
-            section={sectionData as StaticLanding["team"]}
-            country={country}
+          <h2 className="text-sm font-semibold text-muted-foreground">
+            Edit raw JSON for this section
+          </h2>
+          <Textarea
+            name="data"
+            defaultValue={JSON.stringify(sectionData, null, 2)}
+            className="min-h-[260px] w-full font-mono text-xs focus-visible:ring-primary"
           />
-        )}
-        {!isLinksSection && section !== "socialProof" && section !== "team" && (
-          <form key={country} action={updateSection} className="space-y-3">
-            <input type="hidden" name="country" value={country} />
-            <input type="hidden" name="section" value={section} />
-            <input
-              type="hidden"
-              name="redirect"
-              value={`/admin/content/${section}?country=${country}`}
-            />
-            <h2 className="text-sm font-semibold text-muted-foreground">
-              Edit raw JSON for this section
-            </h2>
-            <Textarea
-              name="data"
-              defaultValue={JSON.stringify(sectionData, null, 2)}
-              className="min-h-[260px] w-full font-mono text-xs focus-visible:ring-primary"
-            />
-            <Button type="submit" size="sm">
-              Save section
-            </Button>
-          </form>
-        )}
+          <Button type="submit" size="sm">
+            Save section
+          </Button>
+        </form>
       </div>
     </div>
   );

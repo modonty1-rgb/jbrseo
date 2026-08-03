@@ -3,7 +3,7 @@
 import { type ReactElement, useRef, useState, useEffect } from "react";
 import Link from "@/app/components/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ADMIN_NAV, COUNTRIES, PRICING_NAV_ITEMS, SECTIONS_NAV_ITEMS, SETTINGS_NAV_ITEMS } from "../_config";
+import { ADMIN_NAV, COUNTRIES, PRICING_NAV_ITEMS, SETTINGS_NAV_ITEMS } from "../_config";
 import { AdminSubscribersLink } from "./AdminSubscribersLink";
 import { RefreshButton } from "./RefreshButton";
 import { AdminThemeToggle } from "./AdminThemeToggle";
@@ -222,14 +222,6 @@ export function AdminTopNavbar(): ReactElement {
         </Link>
 
         <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />
-
-        {/* ⭐ أقسام الوسائط — آراء العملاء + فريق العمل (صور/فيديو) */}
-        <TopNavDropdown
-          label="أقسام الوسائط"
-          flag="⭐"
-          items={SECTIONS_NAV_ITEMS}
-          pathname={pathname}
-        />
 
         {/* ⚙️ إعدادات — تطبق على كل الموقع */}
         <TopNavDropdown

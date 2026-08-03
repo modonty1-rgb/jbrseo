@@ -71,11 +71,11 @@ export async function updateSection(formData: FormData) {
 }
 
 // ─── Content reference editor (/admin/review) ───────────────────────────────
-// Each numbered field on the reference page has an "تعديل" button → dialog →
-// this action updates that ONE field (located by its path) inside the section
-// JSON, read-modify-writes the whole section (no field loss), and revalidates.
-// Media sections (socialProof, team) keep their dedicated forms — excluded here.
-const INLINE_KEYS = ["hero", "faq", "finalCta", "about", "privacy", "terms", "ctaLabel"] as const;
+// The reference page edits every content section: scalar fields via a dialog,
+// arrays via a manage dialog (add/remove/reorder, incl. image-URL fields). This
+// action updates one field (by its path) or replaces a whole array inside the
+// section JSON, read-modify-writes the whole section (no field loss), revalidates.
+const INLINE_KEYS = ["hero", "faq", "finalCta", "about", "privacy", "terms", "ctaLabel", "socialProof", "team"] as const;
 type InlineKey = (typeof INLINE_KEYS)[number];
 
 export type InlineSaveResult = { ok: boolean; error?: string };
@@ -122,77 +122,11 @@ export async function updateSectionField(
   revalidateTag("landing", "default");
   revalidateTag("landing-SA", "default");
   revalidateTag("landing-EG", "default");
-  for (const p of ["/", "/sa", "/eg", "/about", "/privacy", "/terms", "/admin/review"]) {
+  for (const p of ["/", "/sa", "/eg", "/about", "/privacy", "/terms", "/team", "/admin/review"]) {
     revalidatePath(p);
   }
 
   return { ok: true };
-}
-
-export async function updateSocialProofSection(formData: FormData) {
-  if (!(await isAdmin())) return;
-
-  const section = (formData.get("section") as string | null)?.trim() ?? "";
-  const redirectTo =
-    (formData.get("redirect") as string | null)?.trim() ??
-    `/admin/content/socialProof`;
-
-  if (section !== "socialProof") {
-    return redirect(redirectTo);
-  }
-
-  const testimonialsCountRaw =
-    ((formData.get("testimonialsCount") as string | null) ?? "0").trim();
-  const testimonialsCountParsed = parseInt(testimonialsCountRaw || "0", 10);
-  const testimonialsCount = Number.isFinite(testimonialsCountParsed)
-    ? testimonialsCountParsed
-    : 0;
-
-  const eyebrow = ((formData.get("eyebrow") as string | null) ?? "").trim();
-  const title = ((formData.get("title") as string | null) ?? "").trim();
-  const subtitle = ((formData.get("subtitle") as string | null) ?? "").trim();
-
-  const testimonials = [];
-  const maxTestimonials =
-    testimonialsCount > 0 && Number.isFinite(testimonialsCount)
-      ? testimonialsCount
-      : 0;
-
-  for (let i = 0; i < maxTestimonials; i++) {
-    const name = ((formData.get(`testimonials_${i}_name`) as string | null) ?? "").trim();
-    const role = ((formData.get(`testimonials_${i}_role`) as string | null) ?? "").trim();
-    const company = ((formData.get(`testimonials_${i}_company`) as string | null) ?? "").trim();
-    const quote = ((formData.get(`testimonials_${i}_quote`) as string | null) ?? "").trim();
-    const metric = ((formData.get(`testimonials_${i}_metric`) as string | null) ?? "").trim();
-    const avatarImg = ((formData.get(`testimonials_${i}_avatarImg`) as string | null) ?? "").trim();
-    const videoUrl = ((formData.get(`testimonials_${i}_videoUrl`) as string | null) ?? "").trim();
-    const mediaImage = ((formData.get(`testimonials_${i}_mediaImage`) as string | null) ?? "").trim();
-
-    if (!name && !role && !company && !quote && !metric && !avatarImg && !videoUrl && !mediaImage) {
-      continue;
-    }
-
-    testimonials.push({
-      name,
-      role,
-      company,
-      quote,
-      metric,
-      avatarImg,
-      videoUrl: videoUrl || undefined,
-      mediaImage: mediaImage || undefined,
-    });
-  }
-
-  const socialProof = { eyebrow, title, subtitle, testimonials };
-
-  await upsertLandingSection("socialProof", socialProof);
-
-  revalidateTag("landing", "default");
-  revalidatePath("/");
-  revalidatePath("/admin/content/socialProof");
-
-  redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
 }
 
 export async function updateHeaderFooterSections(formData: FormData) {
@@ -219,61 +153,3 @@ export async function updateHeaderFooterSections(formData: FormData) {
   redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
 }
 
-export async function updateTeamSection(formData: FormData) {
-  if (!(await isAdmin())) return;
-
-  const section = (formData.get("section") as string | null)?.trim() ?? "";
-  const redirectTo =
-    (formData.get("redirect") as string | null)?.trim() ??
-    `/admin/content/team`;
-
-  if (section !== "team") {
-    return redirect(redirectTo);
-  }
-
-  const coreCountRaw = ((formData.get("coreCount") as string | null) ?? "0").trim();
-  const coreCountParsed = parseInt(coreCountRaw || "0", 10);
-  const coreCount = Number.isFinite(coreCountParsed) && coreCountParsed > 0 ? coreCountParsed : 0;
-
-  const execCountRaw = ((formData.get("execCount") as string | null) ?? "0").trim();
-  const execCountParsed = parseInt(execCountRaw || "0", 10);
-  const execCount = Number.isFinite(execCountParsed) && execCountParsed > 0 ? execCountParsed : 0;
-
-  const coreTeam = [];
-  for (let i = 0; i < coreCount; i++) {
-    const name = ((formData.get(`core_${i}_name`) as string | null) ?? "").trim();
-    const role = ((formData.get(`core_${i}_role`) as string | null) ?? "").trim();
-    const bio = ((formData.get(`core_${i}_bio`) as string | null) ?? "").trim();
-    const avatarUrl = ((formData.get(`core_${i}_avatarUrl`) as string | null) ?? "").trim();
-    const avatarColor =
-      ((formData.get(`core_${i}_avatarColor`) as string | null) ?? "").trim() ||
-      "from-primary/70 to-primary";
-
-    if (!name && !role && !bio) continue;
-    coreTeam.push({ name, role, bio, avatarColor, ...(avatarUrl ? { avatarUrl } : {}) });
-  }
-
-  const executionTeam = [];
-  for (let i = 0; i < execCount; i++) {
-    const name = ((formData.get(`exec_${i}_name`) as string | null) ?? "").trim();
-    const role = ((formData.get(`exec_${i}_role`) as string | null) ?? "").trim();
-    const bio = ((formData.get(`exec_${i}_bio`) as string | null) ?? "").trim();
-    const avatarUrl = ((formData.get(`exec_${i}_avatarUrl`) as string | null) ?? "").trim();
-    const avatarColor =
-      ((formData.get(`exec_${i}_avatarColor`) as string | null) ?? "").trim() ||
-      "from-primary/70 to-primary";
-
-    if (!name && !role && !bio) continue;
-    executionTeam.push({ name, role, bio, avatarColor, ...(avatarUrl ? { avatarUrl } : {}) });
-  }
-
-  const team = { coreTeam, executionTeam };
-
-  await upsertLandingSection("team", team as Prisma.InputJsonValue);
-
-  revalidateTag("landing", "default");
-  revalidatePath("/");
-  revalidatePath("/team");
-
-  redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
-}

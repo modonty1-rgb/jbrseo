@@ -15,7 +15,7 @@ import {
 import { Button } from "@/app/components/ui/button";
 import { Textarea } from "@/app/components/ui/textarea";
 
-export type ArrayFieldDef = { key: string; label: string; long?: boolean };
+export type ArrayFieldDef = { key: string; label: string; long?: boolean; type?: "text" | "image" };
 
 /** Fully serializable — built in the server component, spread into the client button. */
 export type EditArrayProps = {
@@ -147,18 +147,40 @@ export function EditArrayButton({
                 />
               ) : (
                 <div className="space-y-2">
-                  {fields.map((f) => (
-                    <div key={f.key}>
-                      <label className="mb-0.5 block text-[11px] font-medium text-muted-foreground">{f.label}</label>
-                      <Textarea
-                        value={s((it as Rec)[f.key])}
-                        onChange={(e) => setObjField(i, f.key, e.target.value)}
-                        rows={f.long ? 4 : 1}
-                        dir="rtl"
-                        className="text-sm leading-7"
-                      />
-                    </div>
-                  ))}
+                  {fields.map((f) => {
+                    const val = s((it as Rec)[f.key]);
+                    return (
+                      <div key={f.key}>
+                        <label className="mb-0.5 block text-[11px] font-medium text-muted-foreground">{f.label}</label>
+                        {f.type === "image" ? (
+                          <div className="flex items-start gap-2">
+                            {val ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={val} alt="" className="size-14 shrink-0 rounded-md border border-border object-cover" />
+                            ) : (
+                              <div className="flex size-14 shrink-0 items-center justify-center rounded-md border border-dashed border-border text-[10px] text-muted-foreground">لا صورة</div>
+                            )}
+                            <Textarea
+                              value={val}
+                              onChange={(e) => setObjField(i, f.key, e.target.value)}
+                              rows={2}
+                              dir="ltr"
+                              placeholder="الصق رابط الصورة (Cloudinary مُفضّل)"
+                              className="flex-1 text-xs leading-6"
+                            />
+                          </div>
+                        ) : (
+                          <Textarea
+                            value={val}
+                            onChange={(e) => setObjField(i, f.key, e.target.value)}
+                            rows={f.long ? 4 : 1}
+                            dir="rtl"
+                            className="text-sm leading-7"
+                          />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

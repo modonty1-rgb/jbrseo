@@ -28,12 +28,6 @@ export const PRICING_NAV_ITEMS: { href: string; label: string; icon: string }[] 
   { href: "/admin/pricing?country=EG", label: "مصر (ج.م)",       icon: "🇪🇬" },
 ];
 
-/** ✨ الرئيسية — أقسام الوسائط فقط (صور/فيديو). بقية النصوص تُعدّل من 📋 المرجع */
-export const SECTIONS_NAV_ITEMS: { href: string; label: string; icon: string }[] = [
-  { href: "/admin/content/socialProof",  label: "آراء العملاء",  icon: "⭐" },
-  { href: "/admin/content/team",         label: "فريق العمل",    icon: "👥" },
-];
-
 /** ⚙️ الإعدادات — تأثيرها على كل الموقع (تعدّل نادراً) */
 export const SETTINGS_NAV_ITEMS: { href: string; label: string; icon: string }[] = [
   { href: "/admin/settings",              label: "بيانات الموقع",      icon: "⚙️" },

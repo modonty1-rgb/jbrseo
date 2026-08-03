@@ -1,17 +1,16 @@
 import type { ReactElement } from "react";
-import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getAllPlans } from "@/app/actions/pricing";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
+import { DEFAULT_TEAM_AVATAR_GRADIENT } from "@/lib/teamPresets";
 import { ReviewClient, type ReviewGroup } from "./ReviewClient";
 import type { EditTarget } from "./EditFieldButton";
 import type { EditArrayProps } from "./EditArrayButton";
 
 // Reference + editor: every editable landing/site text in one numbered place.
-// Scalar fields carry an edit target (section + JSON path) → pencil → dialog.
-// Arrays carry an `arrayBlock` control row (رendered just above their items) →
-// manage dialog (edit · add · remove · reorder). Media sections (آراء · فريق)
-// and pricing stay read-only here and keep their dedicated forms.
+// Scalar fields → pencil dialog. Arrays → an `arrayBlock` control row (rendered
+// above their items) → manage dialog (edit · add · remove · reorder, incl. image
+// URL fields with a thumbnail). Pricing stays read-only (own page).
 export const dynamic = "force-dynamic";
 
 type Item = { label: string; value: string; edit?: EditTarget; arrayBlock?: EditArrayProps };
@@ -22,11 +21,10 @@ const arr = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
 const obj = (v: unknown): Record<string, unknown> =>
   v && typeof v === "object" && !Array.isArray(v) ? (v as Record<string, unknown>) : {};
 
-// control row that renders the array-management button in place, above its items
 const ctrl = (block: EditArrayProps): Item => ({ label: block.label, value: "", arrayBlock: block });
 
 export default async function ContentReviewPage(): Promise<ReactElement> {
-  const [heroRaw, ctaRaw, faqRaw, finalRaw, aboutRaw, privacyRaw, termsRaw, sl, plans] =
+  const [heroRaw, ctaRaw, faqRaw, finalRaw, aboutRaw, privacyRaw, termsRaw, socialRaw, teamRaw, plans] =
     await Promise.all([
       getLandingSectionOverride("hero"),
       getLandingSectionOverride("ctaLabel"),
@@ -35,7 +33,8 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
       getLandingSectionOverride("about"),
       getLandingSectionOverride("privacy"),
       getLandingSectionOverride("terms"),
-      getStaticLandingWithOverrides(),
+      getLandingSectionOverride("socialProof"),
+      getLandingSectionOverride("team"),
       getAllPlans("SA"),
     ]);
 
@@ -176,39 +175,63 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
     };
   };
 
-  // ── read-only reference (media / pricing keep dedicated forms) ───────────
+  // ── editable: آراء العملاء (صورة/فيديو عبر الرابط) ───────────────────────
+  const sp = obj(socialRaw);
+  const testimonials = arr<Record<string, unknown>>(sp.testimonials);
   const socialGroup: RawGroup = {
-    title: "آراء العملاء (صور/فيديو — تُعدّل من صفحتها)",
-    admin: "/admin/content/socialProof",
+    title: "آراء العملاء",
+    admin: "/admin/review",
     items: [
-      { label: "اسم القسم", value: str(sl.socialProof.eyebrow) },
-      ...(sl.socialProof.testimonials ?? []).flatMap((t, i) => [
-        { label: `شهادة ${i + 1} — الاسم`, value: t.name ?? "" },
-        { label: `شهادة ${i + 1} — المنصب`, value: t.role ?? "" },
-        { label: `شهادة ${i + 1} — الشركة`, value: t.company ?? "" },
-        { label: `شهادة ${i + 1} — النتيجة`, value: t.metric ?? "" },
-        { label: `شهادة ${i + 1} — الاقتباس`, value: t.quote ?? "" },
+      { label: "اسم القسم", value: str(sp.eyebrow), edit: { section: "socialProof", path: ["eyebrow"] } },
+      { label: "العنوان", value: str(sp.title), edit: { section: "socialProof", path: ["title"] } },
+      { label: "النص الفرعي", value: str(sp.subtitle), edit: { section: "socialProof", path: ["subtitle"] } },
+      ctrl({
+        section: "socialProof", path: ["testimonials"], label: "الشهادات", initial: testimonials, itemKind: "object",
+        fields: [
+          { key: "name", label: "الاسم" }, { key: "role", label: "المنصب" }, { key: "company", label: "الشركة" },
+          { key: "quote", label: "الاقتباس", long: true }, { key: "metric", label: "النتيجة" },
+          { key: "avatarImg", label: "صورة (رابط)", type: "image" }, { key: "videoUrl", label: "رابط فيديو" },
+        ],
+        blank: { name: "", role: "", company: "", quote: "", metric: "", avatarImg: "", videoUrl: "" }, itemNoun: "شهادة",
+      }),
+      ...testimonials.flatMap((t, i) => [
+        { label: `شهادة ${i + 1} — الاسم`, value: str(t.name), edit: { section: "socialProof", path: ["testimonials", i, "name"] } as EditTarget },
+        { label: `شهادة ${i + 1} — المنصب`, value: str(t.role), edit: { section: "socialProof", path: ["testimonials", i, "role"] } as EditTarget },
+        { label: `شهادة ${i + 1} — الشركة`, value: str(t.company), edit: { section: "socialProof", path: ["testimonials", i, "company"] } as EditTarget },
+        { label: `شهادة ${i + 1} — النتيجة`, value: str(t.metric), edit: { section: "socialProof", path: ["testimonials", i, "metric"] } as EditTarget },
+        { label: `شهادة ${i + 1} — الاقتباس`, value: str(t.quote), edit: { section: "socialProof", path: ["testimonials", i, "quote"] } as EditTarget },
+        { label: `شهادة ${i + 1} — الصورة (رابط)`, value: str(t.avatarImg) },
       ]),
     ],
   };
 
+  // ── editable: فريق العمل (صورة عبر الرابط) ───────────────────────────────
+  const tm = obj(teamRaw);
+  const core = arr<Record<string, unknown>>(tm.coreTeam);
+  const exec = arr<Record<string, unknown>>(tm.executionTeam);
+  const memberFields = [
+    { key: "name", label: "الاسم" }, { key: "role", label: "الدور" }, { key: "bio", label: "النبذة", long: true },
+    { key: "avatarColor", label: "لون الأفاتار (تدرّج)" }, { key: "avatarUrl", label: "صورة (رابط)", type: "image" as const },
+  ];
+  const memberBlank = { name: "", role: "", bio: "", avatarColor: DEFAULT_TEAM_AVATAR_GRADIENT, avatarUrl: "" };
+  const memberRows = (m: Record<string, unknown>, i: number, key: "coreTeam" | "executionTeam", noun: string): Item[] => [
+    { label: `${noun} ${i + 1} — الاسم`, value: str(m.name), edit: { section: "team", path: [key, i, "name"] } as EditTarget },
+    { label: `${noun} ${i + 1} — الدور`, value: str(m.role), edit: { section: "team", path: [key, i, "role"] } as EditTarget },
+    { label: `${noun} ${i + 1} — النبذة`, value: str(m.bio), edit: { section: "team", path: [key, i, "bio"] } as EditTarget },
+    { label: `${noun} ${i + 1} — الصورة (رابط)`, value: str(m.avatarUrl) },
+  ];
   const teamGroup: RawGroup = {
-    title: "فريق العمل (صور — تُعدّل من صفحتها)",
-    admin: "/admin/content/team",
+    title: "فريق العمل",
+    admin: "/admin/review",
     items: [
-      ...(sl.team?.coreTeam ?? []).flatMap((m, i) => [
-        { label: `فريق أساسي ${i + 1} — الاسم`, value: m.name ?? "" },
-        { label: `فريق أساسي ${i + 1} — الدور`, value: m.role ?? "" },
-        { label: `فريق أساسي ${i + 1} — نبذة`, value: m.bio ?? "" },
-      ]),
-      ...(sl.team?.executionTeam ?? []).flatMap((m, i) => [
-        { label: `فريق تنفيذ ${i + 1} — الاسم`, value: m.name ?? "" },
-        { label: `فريق تنفيذ ${i + 1} — الدور`, value: m.role ?? "" },
-        { label: `فريق تنفيذ ${i + 1} — نبذة`, value: m.bio ?? "" },
-      ]),
+      ctrl({ section: "team", path: ["coreTeam"], label: "الفريق الأساسي", initial: core, itemKind: "object", fields: memberFields, blank: memberBlank, itemNoun: "عضو" }),
+      ...core.flatMap((m, i) => memberRows(m, i, "coreTeam", "أساسي")),
+      ctrl({ section: "team", path: ["executionTeam"], label: "فريق التنفيذ", initial: exec, itemKind: "object", fields: memberFields, blank: memberBlank, itemNoun: "عضو" }),
+      ...exec.flatMap((m, i) => memberRows(m, i, "executionTeam", "تنفيذ")),
     ],
   };
 
+  // ── read-only reference (pricing keeps its own page) ─────────────────────
   const pricingGroup: RawGroup = {
     title: "الباقات (تُعدّل من صفحتها)",
     admin: "/admin/pricing",
