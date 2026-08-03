@@ -214,15 +214,25 @@ export function CheckoutForm({
       if (result.success) {
         router.replace(`/${country.toLowerCase()}/checkout/processing?order=${subscriberId}`);
       } else {
-        const reason = result.is3DsFailure ? "authentication_failed" : "card_declined";
+        // The SDK collapses a user-CANCEL into status:"ERROR" (verified in the
+        // N-Genius SDK source: `includes("CANCELED") ? {status: ERROR}`), so the
+        // client CANNOT tell cancel from decline. Only 3DS failure is certain
+        // here; everything else gets an HONEST neutral message (never a false
+        // "your bank declined the card"). The AUTHORITATIVE reason is fetched
+        // from the server below and shown in the admin failures dashboard.
+        const reason = result.is3DsFailure ? "authentication_failed" : "payment_incomplete";
         logCheckoutFailure({
           ...logCtx,
           stage: result.is3DsFailure ? "3ds" : "auth",
-          outcome: "declined",
+          outcome: result.is3DsFailure ? "3ds_failure" : "incomplete",
           code: result.status || reason,
           state: result.status,
           subscriberId,
         });
+        // Reconcile the real reason from N-Genius (findOrder → DECLINED / state +
+        // resultCode) into the dashboard — the ambiguous client "ERROR" can't,
+        // the server can. Fire-and-forget; logs a stage="poll" attempt if failed.
+        fetch(`/api/checkout/status?order=${encodeURIComponent(subscriberId)}`, { keepalive: true }).catch(() => { /* best-effort */ });
         const nextAttempt = (attemptNumber ?? 0) + 1;
         router.replace(`/${country.toLowerCase()}/checkout?plan=${planSlug}&duration=${duration}&error=${reason}&attempt=${nextAttempt}&order=${subscriberId}`);
       }
