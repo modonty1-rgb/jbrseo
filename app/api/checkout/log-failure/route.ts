@@ -16,7 +16,7 @@ const Body = z.object({
   stage: z.string().trim().min(1).max(40),
   outcome: z.string().trim().max(20).optional(),
   code: z.string().trim().max(120).optional(),
-  message: z.string().trim().max(400).optional(),
+  message: z.string().trim().max(600).optional(),
   state: z.string().trim().max(40).optional(),
   plan: z.string().trim().max(40).optional(),
   duration: z.string().trim().max(10).optional(),

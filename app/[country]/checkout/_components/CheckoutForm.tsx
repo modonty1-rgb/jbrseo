@@ -37,6 +37,27 @@ function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
   });
 }
 
+/** Extract a granular code + message from whatever the N-Genius SDK throws.
+ *  The SDK rejects with a rich object (nested `errors`, `code`, HTTP body) — a
+ *  bare `.message` loses all of it and reads as just "Error". We dig common
+ *  fields AND serialize the whole object (incl. non-enumerable Error props) so
+ *  the admin log shows the REAL tokenization/decline reason, not "Error". */
+function describeError(e: unknown): { code: string; message: string } {
+  if (e && typeof e === "object") {
+    const o = e as Record<string, unknown>;
+    const nested = (o.errors as unknown[] | undefined)?.[0] as Record<string, unknown> | undefined;
+    const rawCode =
+      o.code ?? o.errorCode ?? o.status ?? nested?.code ?? nested?.errorCode ?? (o as { name?: string }).name ?? "sdk_error";
+    let message = String(o.message ?? nested?.message ?? "");
+    try {
+      const full = JSON.stringify(e, Object.getOwnPropertyNames(e as object));
+      if (full && full !== "{}") message = (message ? message + " | " : "") + full;
+    } catch { /* circular / non-serialisable — keep message as-is */ }
+    return { code: String(rawCode).slice(0, 120), message: message.slice(0, 600) };
+  }
+  return { code: "sdk_error", message: String(e).slice(0, 600) };
+}
+
 type Props = {
   country: SupportedCountry;
   planSlug: string;
@@ -140,12 +161,13 @@ export function CheckoutForm({
         sessionId = await withTimeout(ngeniusRef.current!.generateSessionId(), 8000);
       } catch (sErr) {
         const timedOut = sErr instanceof Error && sErr.message === "__timeout__";
+        const desc = timedOut ? { code: "session_timeout", message: "8s timeout — SDK never responded" } : describeError(sErr);
         logCheckoutFailure({
           ...logCtx,
           stage: "session",
           outcome: timedOut ? "timeout" : "error",
-          code: timedOut ? "session_timeout" : (sErr instanceof Error ? sErr.name : "session_error"),
-          message: sErr instanceof Error ? sErr.message.slice(0, 300) : String(sErr),
+          code: desc.code,
+          message: desc.message,
         });
         setErrors((prev) => ({
           ...prev,
@@ -205,8 +227,9 @@ export function CheckoutForm({
         router.replace(`/${country.toLowerCase()}/checkout?plan=${planSlug}&duration=${duration}&error=${reason}&attempt=${nextAttempt}&order=${subscriberId}`);
       }
     } catch (err) {
+      const desc = describeError(err);
+      logCheckoutFailure({ ...logCtx, stage: "submit", outcome: "error", code: desc.code, message: desc.message });
       const msg = err instanceof Error ? err.message : "خطأ غير معروف";
-      logCheckoutFailure({ ...logCtx, stage: "submit", outcome: "error", code: err instanceof Error ? err.name : "unknown", message: msg.slice(0, 300) });
       setErrors((prev) => ({ ...prev, submit: msg }));
     } finally {
       setSubmitting(false);
