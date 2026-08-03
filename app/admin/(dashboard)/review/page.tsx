@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 import { getAllPlansIncludingHidden } from "@/app/actions/pricing";
+import { getGlobalSiteSettings } from "@/app/actions/landing";
 import { getLandingSectionOverride } from "@/lib/landing-sections";
 import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 import { DEFAULT_TEAM_AVATAR_GRADIENT } from "@/lib/teamPresets";
@@ -24,7 +25,8 @@ const obj = (v: unknown): Record<string, unknown> =>
 const ctrl = (block: EditArrayProps): Item => ({ label: block.label, value: "", arrayBlock: block });
 
 export default async function ContentReviewPage(): Promise<ReactElement> {
-  const [heroRaw, ctaRaw, faqRaw, finalRaw, aboutRaw, privacyRaw, termsRaw, socialRaw, teamRaw, plans] =
+  const [heroRaw, ctaRaw, faqRaw, finalRaw, aboutRaw, privacyRaw, termsRaw, socialRaw, teamRaw, plans,
+    seoRaw, socialLinksRaw, headerRaw, footerRaw, site] =
     await Promise.all([
       getLandingSectionOverride("hero"),
       getLandingSectionOverride("ctaLabel"),
@@ -36,6 +38,11 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
       getLandingSectionOverride("socialProof"),
       getLandingSectionOverride("team"),
       getAllPlansIncludingHidden("SA"),
+      getLandingSectionOverride("seo"),
+      getLandingSectionOverride("socialLinks"),
+      getLandingSectionOverride("header"),
+      getLandingSectionOverride("footer"),
+      getGlobalSiteSettings(),
     ]);
 
   // ── editable: الهيرو + الزر الموحّد ──────────────────────────────────────
@@ -249,6 +256,53 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
     }),
   };
 
+  // ── editable: الإعدادات (موحّدة هنا بدل دروبداون منفصل) ───────────────────
+  const seo = obj(seoRaw);
+  const seoGroup: RawGroup = {
+    title: "ظهور البحث (SEO)",
+    admin: "/admin/review",
+    items: [
+      { label: "عنوان الصفحة", value: str(seo.title), edit: { section: "seo", path: ["title"] } },
+      { label: "الوصف", value: str(seo.description), edit: { section: "seo", path: ["description"] } },
+      { label: "الرابط الأساسي (canonical)", value: str(seo.canonical), edit: { section: "seo", path: ["canonical"] } },
+      { label: "صورة المشاركة (og:image)", value: str(seo.ogImage), edit: { section: "seo", path: ["ogImage"] } },
+      { label: "لغة/منطقة (og:locale)", value: str(seo.ogLocale), edit: { section: "seo", path: ["ogLocale"] } },
+    ],
+  };
+
+  const slnk = obj(socialLinksRaw);
+  const socialLinksGroup: RawGroup = {
+    title: "روابط السوشيال",
+    admin: "/admin/review",
+    items: [
+      { label: "فيسبوك", value: str(slnk.facebook), edit: { section: "socialLinks", path: ["facebook"] } },
+      { label: "إنستقرام", value: str(slnk.instagram), edit: { section: "socialLinks", path: ["instagram"] } },
+      { label: "تيك توك", value: str(slnk.tiktok), edit: { section: "socialLinks", path: ["tiktok"] } },
+    ],
+  };
+
+  const hdr = obj(headerRaw);
+  const ftr = obj(footerRaw);
+  const headerFooterGroup: RawGroup = {
+    title: "الهيدر والفوتر",
+    admin: "/admin/review",
+    items: [
+      { label: "نص الشريط (الهيدر)", value: str(hdr.bannerText), edit: { section: "header", path: ["bannerText"] } },
+      { label: "الفوتر — الشعار", value: str(ftr.tagline), edit: { section: "footer", path: ["tagline"] } },
+      { label: "الفوتر — الوصف", value: str(ftr.desc), edit: { section: "footer", path: ["desc"] } },
+    ],
+  };
+
+  const st = obj(site);
+  const siteGroup: RawGroup = {
+    title: "بيانات الموقع",
+    admin: "/admin/review",
+    items: [
+      { label: "رقم واتساب", value: str(st.whatsappNumber), edit: { section: "siteSettings", path: ["whatsappNumber"] } },
+      { label: "معرّف Google Tag Manager", value: str(st.gtmId), edit: { section: "siteSettings", path: ["gtmId"] } },
+    ],
+  };
+
   const groups: RawGroup[] = [
     heroGroup,
     faqGroup,
@@ -259,6 +313,10 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
     socialGroup,
     teamGroup,
     plansContentGroup,
+    seoGroup,
+    socialLinksGroup,
+    headerFooterGroup,
+    siteGroup,
   ];
 
   // stable global number for every VALUE item (control rows aren't numbered)

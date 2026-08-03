@@ -77,7 +77,7 @@ export async function updateSection(formData: FormData) {
 // arrays via a manage dialog (add/remove/reorder, incl. image-URL fields). This
 // action updates one field (by its path) or replaces a whole array inside the
 // section JSON, read-modify-writes the whole section (no field loss), revalidates.
-const INLINE_KEYS = ["hero", "faq", "finalCta", "about", "privacy", "terms", "ctaLabel", "socialProof", "team"] as const;
+const INLINE_KEYS = ["hero", "faq", "finalCta", "about", "privacy", "terms", "ctaLabel", "socialProof", "team", "seo", "socialLinks", "header", "footer"] as const;
 type InlineKey = (typeof INLINE_KEYS)[number];
 
 export type InlineSaveResult = { ok: boolean; error?: string };
@@ -108,6 +108,29 @@ function setAtPath(
 const PLAN_CONTENT_FIELDS = new Set([
   "name", "tagline", "articlesLabel", "ctaText", "badge", "featuredBadge", "highlights",
 ]);
+const SITE_SETTINGS_FIELDS = new Set(["whatsappNumber", "gtmId"]);
+
+async function writeSiteSettings(path: (string | number)[], value: unknown): Promise<InlineSaveResult> {
+  const field = String(path[0] ?? "");
+  if (!SITE_SETTINGS_FIELDS.has(field)) return { ok: false, error: "حقل غير مسموح" };
+  const v = String(value ?? "");
+  try {
+    const existing = await prisma.siteSettings.findFirst();
+    if (existing) {
+      await prisma.siteSettings.update({ where: { id: existing.id }, data: { [field]: v } });
+    } else {
+      await prisma.siteSettings.create({ data: { gtmId: "", whatsappNumber: "", [field]: v } });
+    }
+  } catch {
+    return { ok: false, error: "تعذّر الحفظ" };
+  }
+  revalidateTag("landing", "default");
+  revalidatePath("/");
+  revalidatePath("/sa");
+  revalidatePath("/eg");
+  revalidatePath("/admin/review");
+  return { ok: true };
+}
 
 async function writePlanContent(slug: string, path: (string | number)[], value: unknown): Promise<InlineSaveResult> {
   const field = String(path[0] ?? "");
@@ -139,6 +162,8 @@ export async function updateSectionField(
 
   // route Plan-content targets (section = "plan:<slug>") to the Plan table
   if (section.startsWith("plan:")) return writePlanContent(section.slice(5), path, value);
+  // route site config (whatsapp / GTM) to the SiteSettings table
+  if (section === "siteSettings") return writeSiteSettings(path, value);
 
   if (!INLINE_KEYS.includes(section as InlineKey)) {
     return { ok: false, error: "قسم غير صالح" };
