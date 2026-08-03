@@ -251,21 +251,12 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
     }),
   };
 
-  // ── editable: قسم الأسعار — إعلان + دعوة + عناصر ثقة ─────────────────────
-  const trustItems = arr<Record<string, unknown>>(meta.trustItems);
-  const pricingMetaGroup: RawGroup = {
-    title: "قسم الأسعار — إعلان ودعوة",
+  // ── editable: شريط الإعلان العلوي (الوحيد المُستخدم فعلاً من ميتا الأسعار) ─
+  const bannerGroup: RawGroup = {
+    title: "شريط الإعلان العلوي",
     admin: "/admin/pricing",
     items: [
-      { label: "شريط الإعلان", value: str(meta.announcement), edit: { section: "pricingMeta", path: ["announcement"] } },
-      { label: "عنوان الدعوة", value: str(meta.ctaHeadline), edit: { section: "pricingMeta", path: ["ctaHeadline"] } },
-      { label: "نص الدعوة الفرعي", value: str(meta.ctaSubheadline), edit: { section: "pricingMeta", path: ["ctaSubheadline"] } },
-      ctrl({
-        section: "pricingMeta", path: ["trustItems"], label: "عناصر الثقة", initial: trustItems, itemKind: "object",
-        fields: [{ key: "icon", label: "الأيقونة" }, { key: "label", label: "النص" }],
-        blank: { icon: "", label: "" }, itemNoun: "عنصر",
-      }),
-      ...trustItems.map((t, i) => ({ label: `عنصر ثقة ${i + 1}`, value: str(t.label) })),
+      { label: "نص الشريط", value: str(meta.announcement), edit: { section: "pricingMeta", path: ["announcement"] } },
     ],
   };
 
@@ -279,7 +270,7 @@ export default async function ContentReviewPage(): Promise<ReactElement> {
     socialGroup,
     teamGroup,
     plansContentGroup,
-    pricingMetaGroup,
+    bannerGroup,
   ];
 
   // stable global number for every VALUE item (control rows aren't numbered)

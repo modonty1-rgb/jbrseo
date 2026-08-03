@@ -111,7 +111,7 @@ function setAtPath(
 const PLAN_CONTENT_FIELDS = new Set([
   "name", "tagline", "articlesLabel", "ctaText", "badge", "featuredBadge", "highlights",
 ]);
-const META_FIELDS = new Set(["announcement", "ctaHeadline", "ctaSubheadline", "trustItems"]);
+const META_FIELDS = new Set(["announcement"]); // only the top banner is rendered
 
 async function writePlanContent(slug: string, path: (string | number)[], value: unknown): Promise<InlineSaveResult> {
   const field = String(path[0] ?? "");
