@@ -48,7 +48,10 @@ export function VoicesSection({ voices, socialProofEyebrow }: Props) {
                 return (
                   <CarouselItem key={i}>
                     <div className="bg-card border border-border rounded-2xl overflow-hidden md:shadow-[0_20px_50px_-30px_color-mix(in_oklch,var(--foreground)_25%,transparent)]">
-                      <div className="relative aspect-video bg-foreground">
+                      {/* bg-muted (not bg-foreground) so the lazy iframe's pre-load
+                          state is a subtle dark block, not a jarring white flash
+                          on the dark theme. */}
+                      <div className="relative aspect-video bg-muted">
                         {embedUrl ? (
                           <iframe
                             src={embedUrl}

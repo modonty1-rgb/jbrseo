@@ -25,6 +25,7 @@ import {
   Timer,
   CalendarRange,
   Flame,
+  Flag,
 } from "lucide-react";
 
 export type PlanCardBullet = {
@@ -53,6 +54,23 @@ export type PlanCardContent = {
 };
 
 const PLAN_CARD_CONTENT: Record<string, PlanCardContent> = {
+  // الباقة الرابعة (المدخل) — تبقى محت التحكم (تُشغَّل/تُوقَف من الأدمن). محتواها
+  // الفعلي (الاسم/المميزات) في قاعدة البيانات؛ هنا هويتها البصرية فقط، مثل البقية.
+  presence: {
+    persona: "لصاحب النشاط اللي يبي يبدأ حضوره على جوجل بأقل تكلفة",
+    personaIcon: Flag,
+    heroCaption: "مقال واحد شهري — بداية حضورك على جوجل",
+    bulletsLabel: "اللي بتحصل عليه:",
+    bullets: [
+      { icon: LayoutTemplate, text: "صفحة تعريفية لنشاطك محسّنة لجوجل", highlight: true },
+      { icon: Share2, text: "مقالك ينتشر تلقائياً على منصتين" },
+      { icon: Link2, text: "رابط خاص فيك تشاركه مع عملائك" },
+      { icon: LineChart, text: "تشوف كم واحد قرأ مقالك" },
+      { icon: MessageCircle, text: "فريق الدعم يجاوب على أسئلتك" },
+    ],
+    // No trustChip — entry tier stays a baseline, like الانطلاقة.
+  },
+
   starter: {
     persona: "للنشاط الجديد الحابس على أول عملاء من قوقل",
     personaIcon: Sparkles,

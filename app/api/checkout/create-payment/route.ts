@@ -26,7 +26,7 @@ const Body = z.object({
   name: z.string().trim().min(1).max(100),
   email: z.string().trim().email().max(254),
   phone: z.string().trim().min(6).max(20),
-  plan: z.enum(["starter", "growth", "scale"]),
+  plan: z.enum(["presence", "starter", "growth", "scale"]),
   duration: z.coerce
     .number()
     .refine((n): n is PlanDuration => n === 3 || n === 6 || n === 12, "invalid duration"),

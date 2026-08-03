@@ -58,9 +58,20 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
   return (
     <section id="pricing" className="max-w-270 mx-auto px-7 pt-8 pb-12 md:pt-10 md:pb-20 scroll-mt-16">
         <div className="text-center mb-5">
+          {/* Founding-offer badge — the free-months incentive is a launch
+              concession, not a permanent price. Labelling it "limited" keeps
+              the sticker price intact so it can be retracted later without a
+              price drop (Khalid 2026-08-03). */}
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-1 text-[11.5px] font-bold text-amber-600 dark:text-amber-400 mb-3">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-500 opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-500" />
+            </span>
+            <span>عرض تأسيسي — لفترة محدودة</span>
+          </div>
           {/* Hook — plain green text + icon, no container at all (Khalid:
               any pill shape reads as a button). */}
-          <div className="inline-flex items-center gap-1.5 text-success text-[13px] font-bold mb-2">
+          <div className="flex items-center justify-center gap-1.5 text-success text-[13px] font-bold mb-2">
             <Gift className="w-4 h-4" strokeWidth={2.5} aria-hidden />
             <span>ادفع ١٢ شهر — واستلم ١٨</span>
           </div>

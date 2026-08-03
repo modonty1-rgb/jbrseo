@@ -28,7 +28,7 @@ export function HeroSection({ hero, clientsTotal, countrySlug, ctaLabel, whatsap
         {" شركة سعودية وعربية تبني حضورها على جوجل معنا — "}
         <span className="text-success font-bold">{countrySlug === "eg" ? "إمتى دورك؟" : "متى دورك؟"}</span>
       </div>
-      <h1 className="text-[length:var(--font-5xl)] leading-[1.08] font-semibold tracking-[-2px] [text-wrap:balance] max-sm:text-[clamp(24px,8vw,32px)] max-sm:leading-[1.15] max-sm:tracking-[-1px]">
+      <h1 className="text-[length:var(--font-5xl)] leading-[1.22] font-semibold tracking-[-2px] [text-wrap:balance] max-sm:text-[clamp(24px,8vw,32px)] max-sm:leading-[1.4] max-sm:tracking-[-1px]">
         {hero?.h1Line1 ?? "ابنِ حضورك على جوجل"}<br />
         <span
           className="relative inline-block text-success px-1 py-0 bg-[linear-gradient(180deg,transparent_0%,transparent_78%,color-mix(in oklch, var(--success) 16%, transparent)_78%,color-mix(in oklch, var(--success) 16%, transparent)_100%)]"
