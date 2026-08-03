@@ -187,27 +187,3 @@ export async function updateSectionField(
   return { ok: true };
 }
 
-export async function updateHeaderFooterSections(formData: FormData) {
-  if (!(await isAdmin())) return;
-
-  const redirectTo =
-    (formData.get("redirect") as string | null)?.trim() ??
-    `/admin/content/header-footer`;
-
-  const bannerText =
-    ((formData.get("bannerText") as string | null) ?? "").trim();
-  const header = { bannerText };
-
-  const tagline = ((formData.get("tagline") as string | null) ?? "").trim();
-  const desc = ((formData.get("desc") as string | null) ?? "").trim();
-
-  const footer = { tagline, desc };
-
-  await upsertLandingSection("header", header);
-  await upsertLandingSection("footer", footer);
-
-  revalidateLanding();
-
-  redirect(redirectTo + (redirectTo.includes("?") ? "&" : "?") + "saved=1");
-}
-
