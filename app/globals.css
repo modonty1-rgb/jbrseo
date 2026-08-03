@@ -282,6 +282,7 @@ main:has(#pricing) > section { background: var(--background); }
   --animate-glow-pulse:    glow-pulse 4s ease-in-out infinite;
   --animate-shimmer:       shimmer 0.6s ease;
   --animate-marquee:       marquee 28s linear infinite;
+  --animate-gift-glow:     gift-glow 2.6s ease-in-out infinite;
 }
 
 /* ─── ANIMATIONS ─────────────────────────────── */
@@ -324,6 +325,13 @@ main:has(#pricing) > section { background: var(--background); }
 @keyframes shimmer {
   from { transform: translateX(110%);  }
   to   { transform: translateX(-110%); }
+}
+
+/* Gift badge — a breathing amber halo + a gentle size pulse. Clearly visible
+   (a soft glowing reward), still tasteful. Draws the eye to the free months. */
+@keyframes gift-glow {
+  0%, 100% { box-shadow: 0 0 5px 0 rgba(251, 191, 36, 0.25);  transform: scale(1);    }
+  50%      { box-shadow: 0 0 15px 3px rgba(251, 191, 36, 0.65); transform: scale(1.06); }
 }
 
 /* ─── Landing / WhyNow ─────────────────────── */

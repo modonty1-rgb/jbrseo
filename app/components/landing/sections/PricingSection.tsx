@@ -12,6 +12,7 @@ import { toArabicDigits, formatNum } from "../landing-helpers";
 import {
   PLAN_DURATIONS,
   RECOMMENDED_DURATION,
+  FREE_MONTHS,
   priceForDuration,
   parseDuration,
   type PlanDuration,
@@ -98,6 +99,11 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
                 {d === RECOMMENDED_DURATION && (
                   <span className="absolute -top-2.5 right-1/2 translate-x-1/2 text-[9px] font-bold text-success-foreground bg-success rounded-full px-1.5 py-px whitespace-nowrap">
                     الأنسب
+                  </span>
+                )}
+                {d === 12 && FREE_MONTHS[12] > 0 && (
+                  <span className="absolute -top-2.5 right-1/2 translate-x-1/2 rounded-full bg-amber-400 px-1.5 py-px text-[9px] font-bold text-amber-950 whitespace-nowrap">
+                    🎁 {toArabicDigits(FREE_MONTHS[12])} شهور هدية
                   </span>
                 )}
               </button>
@@ -201,9 +207,17 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
                   <span>{content.persona}</span>
                 </div>
 
-                {/* Plan name */}
-                <div className="text-[20px] font-extrabold text-foreground mb-5 tracking-[-0.3px]">
-                  {p.name}
+                {/* Plan name + free-months GIFT badge on the opposite side —
+                    catchy but simple, right at the card's top focal point where
+                    the eye first lands (Khalid 2026-08-03). */}
+                <div className="flex items-center justify-between gap-2 mb-5">
+                  <span className="text-[20px] font-extrabold text-foreground tracking-[-0.3px]">{p.name}</span>
+                  {dp.freeMonths > 0 && (
+                    <span className="animate-gift-glow inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-400/40 bg-amber-400/15 px-2 py-1 text-[11px] font-extrabold text-amber-600 dark:text-amber-400">
+                      <Gift className="w-3 h-3 shrink-0" strokeWidth={2.5} aria-hidden />
+                      {toArabicDigits(dp.freeMonths)} {dp.freeMonths >= 3 ? "شهور" : "شهر"} مجاناً
+                    </span>
+                  )}
                 </div>
 
                 {/* Hero metric — articles/month */}
@@ -233,13 +247,15 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
                   <span className="font-mono text-4xl font-semibold tracking-[-1.5px] text-foreground">{formatNum(dp.total)}</span>
                   <span className="text-xs text-muted-foreground">{currency} · {toArabicDigits(dp.serviceMonths)} شهر</span>
                 </div>
-                <div className={cn(
-                  "text-[12.5px] mt-2 min-h-5 font-mono font-bold text-success items-center gap-1.5 w-fit",
-                  dp.freeMonths > 0 ? "inline-flex" : "hidden",
-                  featured && "bg-success/15 px-2.5 py-1 rounded-md",
-                )}>
-                  {dp.freeMonths > 0 ? `يصير ${formatNum(dp.effectiveMonthly)} ${currency}/شهر · ${toArabicDigits(dp.freeMonths)} ${dp.freeMonths >= 3 ? "شهور" : "شهر"} هدية` : " "}
-                </div>
+                {/* Effective per-month after the free months — a small value cue
+                    under the price; the gift badge itself lives up by the name. */}
+                {dp.freeMonths > 0 ? (
+                  <div className="mt-1 font-mono text-[11.5px] font-bold text-success/90">
+                    = {formatNum(dp.effectiveMonthly)} {currency}/شهر فعلياً
+                  </div>
+                ) : (
+                  <div className="mt-1 min-h-5" aria-hidden />
+                )}
                 <Link
                   href={isExternalCta ? whatsappLink : `${checkoutHref}?plan=${p.slug}&duration=${duration}`}
                   prefetch={false}

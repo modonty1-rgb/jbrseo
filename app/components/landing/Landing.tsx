@@ -7,7 +7,6 @@ import { ModontyImpactBar } from "./sections/ModontyImpactBar";
 import { GuaranteeSection } from "./sections/GuaranteeSection";
 import { SaudiIdentity } from "./sections/SaudiIdentity";
 import { FeaturesSection } from "./sections/FeaturesSection";
-import { PaymentTrust } from "./sections/PaymentTrust";
 import { FinalCtaSection } from "./sections/FinalCtaSection";
 import { TeamSection } from "./sections/TeamSection";
 import { VoicesSection } from "./sections/VoicesSection";
@@ -81,8 +80,6 @@ export function Landing(props: Props) {
       <MathCompare visiblePlans={visiblePlans} currency={currency} />
 
       <FeaturesSection />
-
-      <PaymentTrust />
 
       <PricingSection
         visiblePlans={visiblePlans}
