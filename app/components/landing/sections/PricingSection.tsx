@@ -8,10 +8,15 @@ import type { Plan as DBPlan } from "@prisma/client";
 import { cn } from "@/lib/utils";
 import { getPlanCardContent } from "@/lib/plan-card-content";
 import { GTMEvents } from "@/lib/gtm";
-import { isAnnualFromBillingParam } from "@/lib/billing-search-param";
 import { toArabicDigits, formatNum } from "../landing-helpers";
+import {
+  PLAN_DURATIONS,
+  RECOMMENDED_DURATION,
+  priceForDuration,
+  parseDuration,
+  type PlanDuration,
+} from "@/lib/pricing-durations";
 
-type Billing = "monthly" | "annual";
 type Props = {
   visiblePlans: DBPlan[];
   currency: string;
@@ -20,16 +25,16 @@ type Props = {
   checkoutHref: string;
 };
 
-/** Pricing plans (DB) with the billing toggle. Owns billing state + the GA4
- *  pricing_view IntersectionObserver (both pricing-only). Client component. */
+/** Pricing plans (DB) with the 3/6/12-month duration toggle. Owns duration state
+ *  + the GA4 pricing_view IntersectionObserver (both pricing-only). Client component. */
 export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLink, checkoutHref }: Props) {
-  // Default to annual (matches the prior server default). The ?billing=monthly
-  // deep-link is read client-side so the page itself stays static/cacheable.
-  const [billing, setBilling] = useState<Billing>("annual");
+  // Default to the recommended duration (6 months). The ?duration= deep-link is
+  // read client-side so the page itself stays static/cacheable.
+  const [duration, setDuration] = useState<PlanDuration>(RECOMMENDED_DURATION);
 
   useEffect(() => {
-    const billingParam = new URLSearchParams(window.location.search).get("billing");
-    if (!isAnnualFromBillingParam(billingParam)) setBilling("monthly");
+    const d = new URLSearchParams(window.location.search).get("duration");
+    if (d) setDuration(parseDuration(d));
   }, []);
 
   useEffect(() => {
@@ -60,36 +65,32 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
             <span>ادفع ١٢ شهر — واستلم ١٨</span>
           </div>
           <h2 className="text-balance text-[clamp(20px,5.8vw,32px)] font-semibold tracking-[-1px]">اختر باقتك وابدأ اليوم</h2>
-          {/* Segmented control — two clean equal halves */}
+          {/* Segmented control — 3 durations (6 months = الأنسب) */}
           <div
-            className="grid grid-cols-2 w-full max-w-65 mx-auto bg-muted rounded-[13px] p-1 mt-5 text-sm font-medium"
+            className="grid grid-cols-3 w-full max-w-80 mx-auto bg-muted rounded-[13px] p-1 mt-6 text-sm font-medium"
             role="tablist"
-            aria-label="طريقة الفوترة"
+            aria-label="مدة الاشتراك"
           >
-            <button
-              type="button"
-              role="tab"
-              aria-selected={billing === "monthly"}
-              onClick={() => setBilling("monthly")}
-              className={cn(
-                "rounded-[10px] py-2.5 px-[18px] min-h-[var(--tap)] text-[14px] font-semibold",
-                billing === "monthly" ? "bg-card text-foreground shadow-[0_1px_3px_color-mix(in oklch, var(--foreground) 8%, transparent)]" : "bg-transparent text-muted-foreground",
-              )}
-            >
-              شهري
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={billing === "annual"}
-              onClick={() => setBilling("annual")}
-              className={cn(
-                "rounded-[10px] py-2.5 px-[18px] min-h-[var(--tap)] text-[14px] font-semibold",
-                billing === "annual" ? "bg-card text-foreground shadow-[0_1px_3px_color-mix(in oklch, var(--foreground) 8%, transparent)]" : "bg-transparent text-muted-foreground",
-              )}
-            >
-              سنوي
-            </button>
+            {PLAN_DURATIONS.map((d) => (
+              <button
+                key={d}
+                type="button"
+                role="tab"
+                aria-selected={duration === d}
+                onClick={() => setDuration(d)}
+                className={cn(
+                  "relative rounded-[10px] py-2.5 px-2 min-h-[var(--tap)] text-[13.5px] font-semibold",
+                  duration === d ? "bg-card text-foreground shadow-[0_1px_3px_color-mix(in oklch, var(--foreground) 8%, transparent)]" : "bg-transparent text-muted-foreground",
+                )}
+              >
+                {d === 12 ? "١٢ شهر" : d === 6 ? "٦ شهور" : "٣ شهور"}
+                {d === RECOMMENDED_DURATION && (
+                  <span className="absolute -top-2.5 right-1/2 translate-x-1/2 text-[9px] font-bold text-success-foreground bg-success rounded-full px-1.5 py-px whitespace-nowrap">
+                    الأنسب
+                  </span>
+                )}
+              </button>
+            ))}
           </div>
         </div>
 
@@ -158,9 +159,7 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
         >
           {visiblePlans.map((p) => {
             const featured = !!p.featuredBadge && p.featuredBadge.trim() !== "";
-            const price = billing === "annual" ? p.priceYearly : p.priceMonthly;
-            const annualTotal = p.priceYearly * 12;
-            const effectiveMonthly = Math.round(annualTotal / 18);
+            const dp = priceForDuration(p.priceMonthly, duration);
             const content = getPlanCardContent(p.slug);
             if (!content) return null;
             const PersonaIcon = content.personaIcon;
@@ -220,18 +219,18 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
                   </div>
                 </div>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="font-mono text-4xl font-semibold tracking-[-1.5px] text-foreground">{billing === "annual" ? formatNum(annualTotal) : price}</span>
-                  <span className="text-xs text-muted-foreground">{currency}/{billing === "annual" ? "سنوياً" : "شهر"}</span>
+                  <span className="font-mono text-4xl font-semibold tracking-[-1.5px] text-foreground">{formatNum(dp.total)}</span>
+                  <span className="text-xs text-muted-foreground">{currency} · {toArabicDigits(dp.serviceMonths)} شهر</span>
                 </div>
                 <div className={cn(
                   "text-[12.5px] mt-2 min-h-5 font-mono font-bold text-success items-center gap-1.5 w-fit",
-                  billing === "annual" && p.priceYearly > 0 ? "inline-flex" : "hidden",
+                  dp.freeMonths > 0 ? "inline-flex" : "hidden",
                   featured && "bg-success/15 px-2.5 py-1 rounded-md",
                 )}>
-                  {billing === "annual" && p.priceYearly > 0 ? `يصير ${formatNum(effectiveMonthly)} ${currency}/شهر · ٦ شهور هدية` : " "}
+                  {dp.freeMonths > 0 ? `يصير ${formatNum(dp.effectiveMonthly)} ${currency}/شهر · ${toArabicDigits(dp.freeMonths)} ${dp.freeMonths >= 3 ? "شهور" : "شهر"} هدية` : " "}
                 </div>
                 <Link
-                  href={isExternalCta ? whatsappLink : `${checkoutHref}?plan=${p.slug}&billing=${billing}`}
+                  href={isExternalCta ? whatsappLink : `${checkoutHref}?plan=${p.slug}&duration=${duration}`}
                   prefetch={false}
                   target={isExternalCta ? "_blank" : undefined}
                   rel={isExternalCta ? "noopener noreferrer" : undefined}
@@ -240,8 +239,8 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
                     else
                       GTMEvents.planClick({
                         plan: p.slug,
-                        price: billing === "annual" ? p.priceYearly * 12 : p.priceMonthly,
-                        billing,
+                        price: dp.total,
+                        billing: `${duration}m`,
                         country: countrySlug,
                       });
                   }}
