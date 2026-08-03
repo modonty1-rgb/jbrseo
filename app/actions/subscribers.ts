@@ -86,6 +86,8 @@ export type SubscriberListItem = {
   businessType: string | null;
   planName: string;
   planIndex: number | null;
+  plan: string;
+  paymentStatus: string;
   country: string;
   isAnnual: boolean;
   createdAt: Date;
@@ -135,11 +137,30 @@ export async function getSubscribers(options?: {
       }
     : undefined;
 
+  // Select ONLY the fields the list needs. Besides being cheaper, this makes
+  // the read resilient to legacy Mongo documents that predate a non-nullable
+  // column (e.g. `updatedAt` missing on old rows → Prisma would throw on a
+  // full-row read even though the list never uses that field).
   const rows = await prisma.subscriber.findMany({
     where,
     orderBy: { createdAt: "desc" },
     take: limit,
     skip: offset,
+    select: {
+      id: true,
+      contactName: true,
+      email: true,
+      phone: true,
+      businessName: true,
+      businessType: true,
+      planName: true,
+      planIndex: true,
+      plan: true,
+      paymentStatus: true,
+      country: true,
+      isAnnual: true,
+      createdAt: true,
+    },
   });
   return rows.map((r) => ({
     id: r.id,
@@ -150,6 +171,8 @@ export async function getSubscribers(options?: {
     businessType: r.businessType,
     planName: r.planName,
     planIndex: r.planIndex,
+    plan: r.plan,
+    paymentStatus: r.paymentStatus,
     country: r.country,
     isAnnual: r.isAnnual,
     createdAt: r.createdAt,

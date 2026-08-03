@@ -10,7 +10,6 @@ import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../../../_components/ConfirmSaveDialog";
 import { FaqTagSelector } from "../../../_components/FaqTagSelector";
-import { UnsavedChangesBar } from "../../../_components/UnsavedChangesBar";
 
 const FAQ_FORM_ID = "faq-form";
 
@@ -55,17 +54,6 @@ export function FaqSectionForm({ section, country }: FaqSectionFormProps): React
         />
         <input type="hidden" name="faqsCount" value={faqsCount} />
 
-        {/* Section title — the FAQ CTA button uses the site-wide primary CTA
-            managed on the Hero form (one CTA, one place). */}
-        <div className={FIELD}>
-          <label className={LABEL} htmlFor={`${FAQ_FORM_ID}-title`}>العنوان الرئيسي</label>
-          <Input
-            id={`${FAQ_FORM_ID}-title`}
-            name="title"
-            defaultValue={section.title}
-            className={INPUT}
-          />
-        </div>
 
         {/* FAQ list — each row: question + tag side by side, answer below */}
         <div className="border-t border-border/60 pt-4">
@@ -124,8 +112,6 @@ export function FaqSectionForm({ section, country }: FaqSectionFormProps): React
           triggerLabel="حفظ"
           description="سيتم حفظ التغييرات على قسم الأسئلة الشائعة."
         />
-      </form>
-      <UnsavedChangesBar formId={FAQ_FORM_ID} />
-    </>
+      </form>    </>
   );
 }

@@ -7,7 +7,6 @@ import { updateFinalCtaSection } from "@/app/actions/content-sections";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { ConfirmSaveDialog } from "../../../_components/ConfirmSaveDialog";
-import { UnsavedChangesBar } from "../../../_components/UnsavedChangesBar";
 
 const FINAL_CTA_FORM_ID = "final-cta-form";
 
@@ -93,8 +92,6 @@ export function FinalCtaSectionForm({ section, country }: FinalCtaSectionFormPro
           triggerLabel="حفظ"
           description="سيتم حفظ التغييرات على قسم الدعوة النهائية."
         />
-      </form>
-      <UnsavedChangesBar formId={FINAL_CTA_FORM_ID} />
-    </>
+      </form>    </>
   );
 }

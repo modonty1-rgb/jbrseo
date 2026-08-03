@@ -7,7 +7,6 @@ import { DEFAULT_TEAM_AVATAR_GRADIENT } from "@/lib/teamPresets";
 import { updateTeamSection } from "@/app/actions/content-sections";
 import { Button } from "@/app/components/ui/button";
 import { TeamSectionEditor } from "../../../_components/TeamSectionEditor";
-import { UnsavedChangesBar } from "../../../_components/UnsavedChangesBar";
 import type { MemberCardMember } from "../../../_components/MemberCard";
 
 const TEAM_FORM_ID = "team-form";
@@ -181,11 +180,6 @@ export function TeamSectionForm({
           حفظ
         </Button>
       </form>
-
-      <UnsavedChangesBar
-        formId={TEAM_FORM_ID}
-        message="تغييرات غير محفوظة في فريق العمل"
-      />
     </>
   );
 }

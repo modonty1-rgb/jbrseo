@@ -3,7 +3,7 @@
 import { type ReactElement, useRef, useState, useEffect } from "react";
 import Link from "@/app/components/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ADMIN_NAV, COUNTRIES, MARKETING_TOP_NAV, PAGES_NAV_ITEMS, PRICING_NAV_ITEMS, SECTIONS_NAV_ITEMS, SETTINGS_NAV_ITEMS } from "../_config";
+import { ADMIN_NAV, COUNTRIES, PAGES_NAV_ITEMS, PRICING_NAV_ITEMS, SECTIONS_NAV_ITEMS, SETTINGS_NAV_ITEMS } from "../_config";
 import { AdminSubscribersLink } from "./AdminSubscribersLink";
 import { RefreshButton } from "./RefreshButton";
 import { AdminThemeToggle } from "./AdminThemeToggle";
@@ -146,7 +146,9 @@ export function AdminTopNavbar(): ReactElement {
       : COUNTRIES[0].value;
 
   const pageTitle = resolvePageTitle(pathname);
-  const isDashboard = pathname === "/admin";
+  const isHome = pathname === "/admin";
+  const isAnalytics = pathname === "/admin/analytics";
+  const isReview = pathname === "/admin/review";
 
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-border bg-card/95 px-6 py-3 backdrop-blur">
@@ -155,7 +157,7 @@ export function AdminTopNavbar(): ReactElement {
         <Link
           href={withCountry("/admin", country)}
           className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-80"
-          aria-label="لوحة التحكم"
+          aria-label="الرئيسية"
         >
           <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary text-xs font-bold text-primary-foreground">
             J
@@ -168,7 +170,7 @@ export function AdminTopNavbar(): ReactElement {
         <span className="hidden h-6 w-px shrink-0 bg-border sm:block" aria-hidden />
 
         <div className="min-w-0 flex-1">
-          {!isDashboard ? (
+          {!isHome ? (
             <nav
               className="mb-0.5 flex flex-wrap items-center gap-1 text-[11px] text-muted-foreground"
               aria-label="مسار الصفحة"
@@ -177,7 +179,7 @@ export function AdminTopNavbar(): ReactElement {
                 href={withCountry("/admin", country)}
                 className="shrink-0 hover:text-foreground"
               >
-                لوحة التحكم
+                الرئيسية
               </Link>
               <span className="text-muted-foreground/60" aria-hidden>›</span>
             </nav>
@@ -191,29 +193,33 @@ export function AdminTopNavbar(): ReactElement {
       {/* ── Right: Three menus + tools ── */}
       <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 sm:gap-2">
 
-        {/* 🏠 لوحة التحكم — admin overview */}
+        {/* 📊 التحليلات — analytics dashboard (moved off the home route) */}
         <Link
-          href={withCountry("/admin", country)}
+          href={withCountry("/admin/analytics", country)}
           className={cn(
             "flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
-            isDashboard
+            isAnalytics
               ? "border-primary/40 bg-primary/10 text-primary"
               : "border-border/60 bg-muted/40 text-muted-foreground hover:border-primary/30 hover:bg-muted/70 hover:text-foreground",
           )}
         >
-          <span>🏠</span>
-          <span className="hidden sm:inline">لوحة التحكم</span>
+          <span>📊</span>
+          <span className="hidden sm:inline">التحليلات</span>
         </Link>
 
-        <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />
-
-        {/* 📊 خطة التسويق */}
-        <TopNavDropdown
-          label="التسويق"
-          flag="📊"
-          items={MARKETING_TOP_NAV}
-          pathname={pathname}
-        />
+        {/* 📋 مرجع المحتوى — كل نصوص اللاندنق في صفحة واحدة مرقّمة */}
+        <Link
+          href={withCountry("/admin/review", country)}
+          className={cn(
+            "flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
+            isReview
+              ? "border-primary/40 bg-primary/10 text-primary"
+              : "border-border/60 bg-muted/40 text-muted-foreground hover:border-primary/30 hover:bg-muted/70 hover:text-foreground",
+          )}
+        >
+          <span>📋</span>
+          <span className="hidden sm:inline">المرجع</span>
+        </Link>
 
         <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />
 

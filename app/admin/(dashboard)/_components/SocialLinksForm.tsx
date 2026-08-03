@@ -5,7 +5,6 @@ import { updateSocialLinksFormData } from "@/app/actions/landing";
 import type { SocialLinks } from "@/lib/landing-content.types";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { UnsavedChangesBar } from "./UnsavedChangesBar";
 
 const SOCIAL_FORM_ID = "social-links-form";
 
@@ -80,12 +79,6 @@ export function SocialLinksForm({
           حفظ
         </Button>
       </form>
-
-      <UnsavedChangesBar
-        formId={SOCIAL_FORM_ID}
-        message="تغييرات غير محفوظة في روابط السوشال"
-        className="bottom-20"
-      />
     </>
   );
 }

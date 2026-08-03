@@ -7,7 +7,6 @@ import type { SiteSettingsJson } from "@/lib/site-settings.types";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
-import { UnsavedChangesBar } from "./UnsavedChangesBar";
 
 const SEO_FORM_ID = "seo-form";
 
@@ -97,8 +96,6 @@ export function SeoForm({
         <Button type="button" onClick={handleSaveClick}>
           حفظ
         </Button>
-      </form>
-      <UnsavedChangesBar formId={SEO_FORM_ID} />
-    </>
+      </form>    </>
   );
 }

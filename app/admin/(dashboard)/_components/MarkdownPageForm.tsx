@@ -12,7 +12,6 @@ import { autoResize } from "@/lib/autoResize";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
-import { UnsavedChangesBar } from "./UnsavedChangesBar";
 
 export type MarkdownPageFormProps = {
   formId: string;
@@ -176,11 +175,6 @@ export function MarkdownPageForm({
           حفظ
         </Button>
       </form>
-
-      <UnsavedChangesBar
-        formId={formId}
-        message={`تغييرات غير محفوظة — ${sectionHeading}`}
-      />
     </>
   );
 }

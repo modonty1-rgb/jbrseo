@@ -14,7 +14,6 @@ import { autoResize } from "@/lib/autoResize";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
-import { UnsavedChangesBar } from "../../../_components/UnsavedChangesBar";
 
 const FORM_ID = "header-footer-form";
 
@@ -127,11 +126,6 @@ export function HeaderFooterForm({
           حفظ
         </Button>
       </form>
-
-      <UnsavedChangesBar
-        formId={FORM_ID}
-        message="تغييرات غير محفوظة في الهيدر والشعار"
-      />
     </>
   );
 }

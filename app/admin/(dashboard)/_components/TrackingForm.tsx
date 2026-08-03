@@ -5,7 +5,6 @@ import { updateTrackingFormData } from "@/app/actions/landing";
 import type { SiteSettingsJson } from "@/lib/site-settings.types";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
-import { UnsavedChangesBar } from "./UnsavedChangesBar";
 
 const TRACKING_FORM_ID = "tracking-form";
 
@@ -49,12 +48,6 @@ export function TrackingForm({
           حفظ
         </Button>
       </form>
-
-      <UnsavedChangesBar
-        formId={TRACKING_FORM_ID}
-        message="تغييرات غير محفوظة في إعدادات التتبع"
-        className="bottom-20"
-      />
     </>
   );
 }

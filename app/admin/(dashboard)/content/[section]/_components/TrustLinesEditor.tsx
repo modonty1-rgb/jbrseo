@@ -28,7 +28,9 @@ export function TrustLinesEditor({
   };
 
   return (
-    <div className="space-y-2">
+    // Trust items are short phrases → lay them out inline (wrapping) instead of
+    // stacked, so they read as a compact row.
+    <div className="flex flex-wrap items-center gap-2">
       <textarea
         ref={hiddenRef}
         name={fieldName}
@@ -39,17 +41,10 @@ export function TrustLinesEditor({
         className="hidden"
       />
       {lines.map((line, i) => (
-        <div key={`trust-line-${i}`} className="flex items-center gap-2">
-          <input
-            type="text"
-            value={line}
-            onChange={(e) => {
-              const updated = [...lines];
-              updated[i] = e.target.value;
-              sync(updated);
-            }}
-            className="flex-1 rounded-md border border-border bg-background px-2 py-1 text-xs text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-          />
+        <div
+          key={`trust-line-${i}`}
+          className="flex items-center gap-1 rounded-md border border-border bg-background ps-1 pe-2"
+        >
           <button
             type="button"
             onClick={() => sync(lines.filter((_, j) => j !== i))}
@@ -58,14 +53,24 @@ export function TrustLinesEditor({
           >
             ×
           </button>
+          <input
+            type="text"
+            value={line}
+            onChange={(e) => {
+              const updated = [...lines];
+              updated[i] = e.target.value;
+              sync(updated);
+            }}
+            className="w-40 bg-transparent py-1 text-xs text-foreground focus-visible:outline-none"
+          />
         </div>
       ))}
       <button
         type="button"
         onClick={() => sync([...lines, ""])}
-        className="text-xs text-primary hover:underline"
+        className="rounded-md border border-dashed border-primary/40 px-2.5 py-1 text-xs font-medium text-primary hover:bg-primary/5"
       >
-        + إضافة عنصر
+        + إضافة
       </button>
     </div>
   );

@@ -8,7 +8,6 @@ import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
 import { autoResize } from "@/lib/autoResize";
 import { ConfirmSaveDialog } from "../../../_components/ConfirmSaveDialog";
-import { UnsavedChangesBar } from "../../../_components/UnsavedChangesBar";
 import { TrustLinesEditor } from "./TrustLinesEditor";
 
 const HERO_FORM_ID = "hero-section-form";
@@ -54,12 +53,6 @@ export function HeroSectionForm({ hero, country, ctaLabel }: HeroSectionFormProp
         <input type="hidden" name="section" value="hero" />
         <input type="hidden" name="redirect" value={`/admin/content/hero?country=${country}`} />
 
-        {/* Row 1: announcement (full) */}
-        <div className={FIELD}>
-          <label className={LABEL} htmlFor="hero-proof">شريط الإعلان العلوي</label>
-          <Input id="hero-proof" name="proof" defaultValue={hero.proof} className={INPUT} />
-        </div>
-
         {/* Row 2: h1 line 1 + line 2 — paired */}
         <div className={ROW_2}>
           <div className={FIELD}>
@@ -72,30 +65,40 @@ export function HeroSectionForm({ hero, country, ctaLabel }: HeroSectionFormProp
           </div>
         </div>
 
-        {/* Row 3: subtitle (textarea) + CTA label */}
-        <div className={ROW_2}>
-          <div className={FIELD}>
-            <label className={LABEL} htmlFor="hero-sub">النص الفرعي</label>
-            <Textarea
-              id="hero-sub"
-              name="sub"
-              rows={4}
-              defaultValue={hero.sub}
-              className="min-h-0 resize-none overflow-hidden rounded-md border border-border bg-background px-3 py-2 text-sm"
-              onInput={autoResize}
-            />
+        {/* Subtitle — full width */}
+        <div className={FIELD}>
+          <label className={LABEL} htmlFor="hero-sub">النص الفرعي</label>
+          <Textarea
+            id="hero-sub"
+            name="sub"
+            rows={4}
+            defaultValue={hero.sub}
+            className="min-h-0 resize-none overflow-hidden rounded-md border border-border bg-background px-3 py-2 text-sm"
+            onInput={autoResize}
+          />
+        </div>
+
+        {/* Unified primary CTA — highlighted so it's recognizable. This single
+            field drives EVERY CTA button across the site (navbar · hero · final
+            CTA · sticky mobile · header). */}
+        <div className="rounded-xl border-2 border-primary/40 bg-primary/5 p-4">
+          <div className="mb-1 flex items-center gap-2">
+            <span aria-hidden>🎯</span>
+            <label className="text-sm font-bold text-primary" htmlFor="hero-ctaLabel">
+              نص زر الدعوة الرئيسي — موحّد
+            </label>
           </div>
-          <div className={FIELD}>
-            <label className={LABEL} htmlFor="hero-ctaLabel">نص زر الدعوة الرئيسي</label>
-            <Input
-              id="hero-ctaLabel"
-              name="ctaLabel"
-              value={ctaVal}
-              onChange={(e) => setCtaVal(e.target.value)}
-              dir="rtl"
-              className={INPUT}
-            />
-          </div>
+          <p className="mb-2.5 text-xs text-muted-foreground">
+            يظهر في كل أزرار الموقع: النافبار · الهيرو · الدعوة النهائية · الزر العائم في الموبايل.
+          </p>
+          <Input
+            id="hero-ctaLabel"
+            name="ctaLabel"
+            value={ctaVal}
+            onChange={(e) => setCtaVal(e.target.value)}
+            dir="rtl"
+            className="rounded-md border border-primary/40 bg-background px-3 py-2 text-sm font-semibold"
+          />
         </div>
 
         {/* Row 4: trust lines (list) — full width */}
@@ -110,8 +113,6 @@ export function HeroSectionForm({ hero, country, ctaLabel }: HeroSectionFormProp
           triggerLabel="حفظ"
           description="سيتم حفظ التغييرات على قسم الهيرو."
         />
-      </form>
-      <UnsavedChangesBar formId={HERO_FORM_ID} />
-    </>
+      </form>    </>
   );
 }

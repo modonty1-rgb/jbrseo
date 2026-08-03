@@ -1,10 +1,8 @@
-import { SubscribersPageClient } from "./SubscribersPageClient";
+import { redirect } from "next/navigation";
 
+// Subscribers now live at the admin home (/admin). This route stays as a
+// redirect so old links and bookmarks keep working (the subscribers view
+// ignores ?country, so nothing to preserve).
 export default function AdminSubscribersPage() {
-  return (
-    <div className="p-6">
-      <h1 className="mb-4 text-xl font-bold text-foreground">المشتركون</h1>
-      <SubscribersPageClient />
-    </div>
-  );
+  redirect("/admin");
 }

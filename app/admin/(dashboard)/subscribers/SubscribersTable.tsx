@@ -43,17 +43,27 @@ import { planBadgeClass } from "@/lib/planStyles";
 import { cn } from "@/lib/utils";
 import { fieldClass, labelClass } from "../_components/AdminFormShared";
 import type { SubscriberListItem } from "@/app/actions/subscribers";
+import { displayMainTotalFromMoYr } from "@/lib/pricing-plan-amounts";
+
+/** Active plan info (Saudi) — name + slug + prices, used for the plan toggles
+ *  and the revenue amount shown on each. */
+export type PlanInfo = {
+  name: string;
+  slug: string;
+  priceMonthly: number;
+  priceYearly: number;
+};
 
 const COUNTRIES = [
   { value: "SA", label: "SA" },
   { value: "EG", label: "EG" },
 ] as const;
 
-const PLAN_FILTERS = ["الكل", "الانطلاقة", "مجاني تجربة", "المجانية"] as const;
+// Plan filter toggles come from the active pricing plans (passed in) — no
+// hardcoded plan list that drifts from the real plans.
+const ALL_FILTER = "الكل";
 
 const PAGE_SIZE = 10;
-
-type PlanFilter = (typeof PLAN_FILTERS)[number];
 
 type SortKey =
   | "contactName"
@@ -164,6 +174,9 @@ function AnnualField(props: {
 
 export type SubscribersTableProps = {
   list: SubscriberListItem[];
+  /** Active plans (from pricing) → rendered as filter toggles even at 0, each
+   *  with its subscriber count and paid revenue amount. */
+  activePlans: PlanInfo[];
   loading: boolean;
   searchInput: string;
   setSearchInput: (v: string) => void;
@@ -189,6 +202,7 @@ export type SubscribersTableProps = {
 export function SubscribersTable(props: SubscribersTableProps): ReactElement {
   const {
     list,
+    activePlans,
     loading,
     searchInput,
     setSearchInput,
@@ -211,28 +225,48 @@ export function SubscribersTable(props: SubscribersTableProps): ReactElement {
     onDelete,
   } = props;
 
-  const [activePlan, setActivePlan] = useState<PlanFilter>("الكل");
+  const [activePlan, setActivePlan] = useState<string>(ALL_FILTER);
   const [sort, setSort] = useState<SortState>({ key: "createdAt", dir: "desc" });
   const [page, setPage] = useState(1);
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
 
   const totalCount = list.length;
 
+  // Toggles = the active plans (from pricing) — shown even at 0 subscribers.
+  const planNames = useMemo(() => activePlans.map((p) => p.name), [activePlans]);
+  const planFilters = useMemo(() => [ALL_FILTER, ...planNames], [planNames]);
+
+  // Subscriber count per plan name (all statuses / countries).
   const planCounts = useMemo(() => {
-    const acc: Record<string, number> = {
-      الانطلاقة: 0,
-      "مجاني تجربة": 0,
-      المجانية: 0,
-    };
+    const acc: Record<string, number> = {};
     for (const row of list) {
-      const p = row.planName.trim();
-      if (p in acc) acc[p] += 1;
+      const p = row.planName?.trim();
+      if (p) acc[p] = (acc[p] ?? 0) + 1;
     }
     return acc;
   }, [list]);
 
+  // Paid revenue per plan — Saudi only (payment is SA-only; EG are WhatsApp
+  // leads). Amount uses the current plan price at the subscriber's billing
+  // (annual = full yearly total).
+  const planRevenue = useMemo(() => {
+    const bySlug = new Map(activePlans.map((p) => [p.slug, p]));
+    const byName = new Map(activePlans.map((p) => [p.name, p]));
+    const acc: Record<string, number> = {};
+    let total = 0;
+    for (const row of list) {
+      if (row.country !== "SA" || row.paymentStatus !== "paid") continue;
+      const plan = bySlug.get(row.plan) ?? byName.get(row.planName?.trim());
+      if (!plan) continue;
+      const amount = displayMainTotalFromMoYr(plan.priceMonthly, plan.priceYearly, row.isAnnual);
+      acc[plan.name] = (acc[plan.name] ?? 0) + amount;
+      total += amount;
+    }
+    return { byPlan: acc, total };
+  }, [list, activePlans]);
+
   const filtered = useMemo(() => {
-    if (activePlan === "الكل") return list;
+    if (activePlan === ALL_FILTER) return list;
     return list.filter((r) => r.planName.trim() === activePlan);
   }, [list, activePlan]);
 
@@ -253,12 +287,6 @@ export function SubscribersTable(props: SubscribersTableProps): ReactElement {
     return sorted.slice(start, start + PAGE_SIZE);
   }, [sorted, page]);
 
-  const stats = [
-    { label: "إجمالي المشتركين", value: totalCount, color: "text-foreground" },
-    { label: "الانطلاقة", value: planCounts["الانطلاقة"] ?? 0, color: "text-primary" },
-    { label: "مجاني تجربة", value: planCounts["مجاني تجربة"] ?? 0, color: "text-yellow-500" },
-    { label: "المجانية", value: planCounts["المجانية"] ?? 0, color: "text-muted-foreground" },
-  ];
 
   const handleSortClick = (key: SortKey): void => {
     setSort((s) => nextSort(s, key));
@@ -276,18 +304,6 @@ export function SubscribersTable(props: SubscribersTableProps): ReactElement {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {stats.map((stat) => (
-          <div
-            key={stat.label}
-            className="rounded-lg border border-border bg-card px-3 py-2 shadow-sm"
-          >
-            <p className="text-[11px] text-muted-foreground">{stat.label}</p>
-            <p className={cn("text-xl font-bold", stat.color)}>{stat.value}</p>
-          </div>
-        ))}
-      </div>
-
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative">
@@ -315,21 +331,39 @@ export function SubscribersTable(props: SubscribersTableProps): ReactElement {
             بحث
           </Button>
           <div className="flex flex-wrap gap-1">
-            {PLAN_FILTERS.map((plan) => (
-              <button
-                key={plan}
-                type="button"
-                onClick={() => setActivePlan(plan)}
-                className={cn(
-                  "rounded-full px-3 py-1 text-xs font-medium transition-colors",
-                  activePlan === plan
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:text-foreground",
-                )}
-              >
-                {plan}
-              </button>
-            ))}
+            {planFilters.map((plan) => {
+              const isAll = plan === ALL_FILTER;
+              const count = isAll ? totalCount : (planCounts[plan] ?? 0);
+              const revenue = isAll ? planRevenue.total : (planRevenue.byPlan[plan] ?? 0);
+              const active = activePlan === plan;
+              return (
+                <button
+                  key={plan}
+                  type="button"
+                  onClick={() => setActivePlan(plan)}
+                  title={`${plan} · ${count} مشترك · ${revenue.toLocaleString("en-US")} ر.س مدفوعة`}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-xs transition-colors",
+                    active
+                      ? "border-primary bg-primary/10 text-foreground"
+                      : "border-border bg-card text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  <span className="font-semibold">{plan}</span>
+                  <span
+                    className={cn(
+                      "rounded-full px-1.5 py-0.5 text-[10px] font-bold tabular-nums",
+                      active ? "bg-primary/20 text-primary" : "bg-foreground/10 text-foreground",
+                    )}
+                  >
+                    {count}
+                  </span>
+                  <span className="text-[11px] font-bold tabular-nums text-success">
+                    {revenue.toLocaleString("en-US")} ر.س
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -360,7 +394,7 @@ export function SubscribersTable(props: SubscribersTableProps): ReactElement {
                 </div>
                 <div className="space-y-1">
                   <Label className={labelClass}>اسم الخطة</Label>
-                  <Input name="planName" placeholder="المجانية" />
+                  <Input name="planName" placeholder="الانطلاقة" />
                 </div>
                 <div className="space-y-1">
                   <Label className={labelClass}>ترتيب الخطة</Label>

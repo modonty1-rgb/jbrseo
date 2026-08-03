@@ -5,7 +5,6 @@ import { updateSiteSettingsFormData } from "@/app/actions/landing";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { cn } from "@/lib/utils";
-import { UnsavedChangesBar } from "./UnsavedChangesBar";
 
 const GENERAL_FORM_ID = "general-settings-form";
 
@@ -62,11 +61,6 @@ export function GeneralSettingsForm({
           حفظ
         </Button>
       </form>
-
-      <UnsavedChangesBar
-        formId={GENERAL_FORM_ID}
-        message="تغييرات غير محفوظة في الإعدادات العامة"
-      />
     </>
   );
 }

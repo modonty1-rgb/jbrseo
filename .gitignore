@@ -56,3 +56,4 @@ dev.log
 # GA4 / secrets scratch
 scripts/.ga4-secrets.json
 scripts/.*-secrets.json
+.env*

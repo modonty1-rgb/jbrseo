@@ -9,7 +9,6 @@ import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Textarea } from "@/app/components/ui/textarea";
 import { ConfirmSaveDialog } from "../../../_components/ConfirmSaveDialog";
-import { UnsavedChangesBar } from "../../../_components/UnsavedChangesBar";
 
 const SOCIAL_PROOF_FORM_ID = "social-proof-form";
 
@@ -70,24 +69,6 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
               id={`${SOCIAL_PROOF_FORM_ID}-eyebrow`}
               name="eyebrow"
               defaultValue={section.eyebrow}
-              className={INPUT}
-            />
-          </div>
-          <div className={FIELD}>
-            <label className={LABEL} htmlFor={`${SOCIAL_PROOF_FORM_ID}-title`}>العنوان الرئيسي</label>
-            <Input
-              id={`${SOCIAL_PROOF_FORM_ID}-title`}
-              name="title"
-              defaultValue={section.title}
-              className={INPUT}
-            />
-          </div>
-          <div className={FIELD}>
-            <label className={LABEL} htmlFor={`${SOCIAL_PROOF_FORM_ID}-subtitle`}>العنوان الفرعي</label>
-            <Input
-              id={`${SOCIAL_PROOF_FORM_ID}-subtitle`}
-              name="subtitle"
-              defaultValue={section.subtitle}
               className={INPUT}
             />
           </div>
@@ -191,8 +172,6 @@ export function SocialProofSectionForm({ section, country }: SocialProofSectionF
           triggerLabel="حفظ"
           description="سيتم حفظ التغييرات على قسم الشهادات."
         />
-      </form>
-      <UnsavedChangesBar formId={SOCIAL_PROOF_FORM_ID} />
-    </>
+      </form>    </>
   );
 }

@@ -6,7 +6,8 @@ import { useSearchParams } from "next/navigation";
 export function AdminSubscribersLink() {
   const searchParams = useSearchParams();
   const country = searchParams.get("country") === "EG" ? "EG" : "SA";
-  const href = `/admin/subscribers?country=${country}`;
+  // Subscribers now live at the admin home (/admin).
+  const href = `/admin?country=${country}`;
   return (
     <Link
       href={href}

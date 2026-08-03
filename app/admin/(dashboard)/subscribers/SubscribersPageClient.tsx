@@ -10,9 +10,9 @@ import {
   deleteSubscriber,
   type SubscriberListItem,
 } from "@/app/actions/subscribers";
-import { SubscribersTable } from "./SubscribersTable";
+import { SubscribersTable, type PlanInfo } from "./SubscribersTable";
 
-export function SubscribersPageClient(): ReactElement {
+export function SubscribersPageClient({ plans }: { plans: PlanInfo[] }): ReactElement {
   const router = useRouter();
   const [list, setList] = useState<SubscriberListItem[]>([]);
   const [search, setSearch] = useState("");
@@ -108,6 +108,7 @@ export function SubscribersPageClient(): ReactElement {
   return (
     <SubscribersTable
       list={list}
+      activePlans={plans}
       loading={loading}
       searchInput={searchInput}
       setSearchInput={setSearchInput}

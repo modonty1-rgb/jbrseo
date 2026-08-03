@@ -5,7 +5,8 @@ import type { SupportedCountry } from "@/lib/landing-content.types";
  * to map any URL to a human-readable page title.
  */
 export const ADMIN_NAV = [
-  { href: "/admin", label: "لوحة التحكم" },
+  { href: "/admin", label: "المشتركون" },
+  { href: "/admin/analytics", label: "لوحة التحليلات" },
   { href: "/admin/subscribers", label: "المشتركون" },
   { href: "/admin/content/hero", label: "الهيرو + شريط العملاء" },
   { href: "/admin/content/socialProof", label: "آراء العملاء" },
@@ -25,13 +26,6 @@ export const ADMIN_NAV = [
 export const PRICING_NAV_ITEMS: { href: string; label: string; icon: string }[] = [
   { href: "/admin/pricing?country=SA", label: "السعودية (ر.س)", icon: "🇸🇦" },
   { href: "/admin/pricing?country=EG", label: "مصر (ج.م)",       icon: "🇪🇬" },
-];
-
-/** خطط التسويق — تظهر في قائمة 📊 في الـ top bar */
-export const MARKETING_TOP_NAV: { href: string; label: string; icon: string; disabled?: boolean }[] = [
-  { href: "/admin/marketing/jbrseo-plan", label: "خطة JBRSEO",  icon: "📊" },
-  { href: "/admin/marketing/modony-plan", label: "خطة Modonty", icon: "🗒️" },
-  { href: "",                             label: "تشغيل Modonty", icon: "⚙️", disabled: true },
 ];
 
 /** ✨ الرئيسية — كل شيء يظهر للزائر على /sa و /eg (مرتب من الأعلى للأسفل في الصفحة) */
