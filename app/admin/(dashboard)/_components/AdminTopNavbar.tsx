@@ -31,6 +31,7 @@ export function AdminTopNavbar(): ReactElement {
   const isAnalytics = pathname === "/admin/analytics";
   const isReview = pathname === "/admin/review";
   const isPricing = pathname.startsWith("/admin/pricing");
+  const isFailures = pathname.startsWith("/admin/payment-failures");
 
   return (
     <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-border bg-card/95 px-6 py-3 backdrop-blur">
@@ -117,6 +118,20 @@ export function AdminTopNavbar(): ReactElement {
         >
           <span>💰</span>
           <span className="hidden sm:inline">الأسعار</span>
+        </Link>
+
+        {/* ⚠️ رفوضات الدفع — سبب كل رفض (داخلي) */}
+        <Link
+          href="/admin/payment-failures"
+          className={cn(
+            "flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium transition-colors",
+            isFailures
+              ? "border-primary/40 bg-primary/10 text-primary"
+              : "border-border/60 bg-muted/40 text-muted-foreground hover:border-primary/30 hover:bg-muted/70 hover:text-foreground",
+          )}
+        >
+          <span>⚠️</span>
+          <span className="hidden sm:inline">الرفوضات</span>
         </Link>
 
         <span className="hidden h-6 w-px bg-border sm:block" aria-hidden />

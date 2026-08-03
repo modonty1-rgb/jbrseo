@@ -10,6 +10,33 @@ import type { FailureReason } from "@/lib/checkout-reasons";
 import type { PlanDuration } from "@/lib/pricing-durations";
 import { NGeniusMount, type NGeniusHandle } from "./NGeniusMount";
 
+/** Fire-and-forget failure log → /api/checkout/log-failure (stored in DB,
+ *  never shown to the customer). `keepalive` so it still sends if the page
+ *  navigates immediately after. Never throws. */
+function logCheckoutFailure(payload: Record<string, unknown>): void {
+  try {
+    fetch("/api/checkout/log-failure", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true,
+    }).catch(() => { /* logging must never disrupt checkout */ });
+  } catch { /* ignore */ }
+}
+
+/** Reject with a sentinel after `ms` so a silently-hung SDK promise (observed
+ *  with some foreign/unsupported cards at tokenization) surfaces as an error
+ *  instead of an eternal spinner. */
+function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const t = setTimeout(() => reject(new Error("__timeout__")), ms);
+    p.then(
+      (v) => { clearTimeout(t); resolve(v); },
+      (e) => { clearTimeout(t); reject(e); },
+    );
+  });
+}
+
 type Props = {
   country: SupportedCountry;
   planSlug: string;
@@ -86,11 +113,17 @@ export function CheckoutForm({
     e.preventDefault();
     if (submitting) return;
 
+    // Shared context for every failure log this attempt (never shown to user).
+    const logCtx = { plan: planSlug, duration: `${duration}m`, country, email: email || undefined };
+
     const next = validate();
     if (!turnstileToken) next.turnstile = "يرجى إكمال التحقق الأمني قبل الدفع";
     if (!ngeniusRef.current?.isCardValid()) next.card = "أدخل بيانات البطاقة كاملة قبل الدفع";
     setErrors(next);
     if (Object.keys(next).length > 0) {
+      // A press that does nothing visible is usually this branch (e.g. card
+      // fields incomplete — card validity is NOT part of the enable-gate).
+      logCheckoutFailure({ ...logCtx, stage: "validate", outcome: "invalid", code: Object.keys(next).join(",") });
       const firstField = Object.keys(next).find((k) => !["turnstile", "card", "submit"].includes(k));
       if (firstField) document.getElementById(`checkout-${firstField}`)?.focus();
       return;
@@ -98,8 +131,30 @@ export function CheckoutForm({
 
     setSubmitting(true);
     try {
-      // 1. Generate session ID client-side (SDK talks directly to N-Genius)
-      const sessionId = await ngeniusRef.current!.generateSessionId();
+      // 1. Generate session ID client-side (SDK talks directly to N-Genius).
+      //    Wrapped in an 8s timeout: some foreign/unsupported cards make the
+      //    SDK hang here with no callback — the timeout turns that silent hang
+      //    into a logged failure + a real message instead of a dead button.
+      let sessionId: string;
+      try {
+        sessionId = await withTimeout(ngeniusRef.current!.generateSessionId(), 8000);
+      } catch (sErr) {
+        const timedOut = sErr instanceof Error && sErr.message === "__timeout__";
+        logCheckoutFailure({
+          ...logCtx,
+          stage: "session",
+          outcome: timedOut ? "timeout" : "error",
+          code: timedOut ? "session_timeout" : (sErr instanceof Error ? sErr.name : "session_error"),
+          message: sErr instanceof Error ? sErr.message.slice(0, 300) : String(sErr),
+        });
+        setErrors((prev) => ({
+          ...prev,
+          submit: timedOut
+            ? "تعذّر بدء الدفع — قد لا تدعم بطاقتك الدفع الدولي بعملة الموقع. جرّب بطاقة أخرى."
+            : "تعذّر بدء الدفع. تأكد من بيانات البطاقة أو جرّب بطاقة أخرى.",
+        }));
+        return;
+      }
 
       // 2. Ship everything to our backend — server verifies Turnstile,
       //    validates, upserts Subscriber, and calls N-Genius complete-payment.
@@ -116,6 +171,7 @@ export function CheckoutForm({
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         const code = (body?.error as string) || `HTTP ${res.status}`;
+        logCheckoutFailure({ ...logCtx, stage: "create-payment", outcome: "error", code, message: `create-payment ${res.status}` });
         const reasonSlug =
           code === "bot-check-failed" ? "authentication_failed" :
           code === "rate-limited" ? "timeout" :
@@ -137,11 +193,20 @@ export function CheckoutForm({
         router.replace(`/${country.toLowerCase()}/checkout/processing?order=${subscriberId}`);
       } else {
         const reason = result.is3DsFailure ? "authentication_failed" : "card_declined";
+        logCheckoutFailure({
+          ...logCtx,
+          stage: result.is3DsFailure ? "3ds" : "auth",
+          outcome: "declined",
+          code: result.status || reason,
+          state: result.status,
+          subscriberId,
+        });
         const nextAttempt = (attemptNumber ?? 0) + 1;
         router.replace(`/${country.toLowerCase()}/checkout?plan=${planSlug}&duration=${duration}&error=${reason}&attempt=${nextAttempt}&order=${subscriberId}`);
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : "خطأ غير معروف";
+      logCheckoutFailure({ ...logCtx, stage: "submit", outcome: "error", code: err instanceof Error ? err.name : "unknown", message: msg.slice(0, 300) });
       setErrors((prev) => ({ ...prev, submit: msg }));
     } finally {
       setSubmitting(false);

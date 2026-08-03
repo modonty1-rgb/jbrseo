@@ -94,12 +94,20 @@ export async function POST(req: Request) {
   // Secondary verify — never trust webhook body alone.
   let trueState: string | undefined;
   let failReason: string | undefined;
+  let failCode: string | undefined;
+  let failMessage: string | undefined;
+  let cardScheme: string | undefined;
+  let cardBin: string | undefined;
   try {
     const trueOrder = await findNGeniusOrder(orderRef);
     const payment = primaryPayment(trueOrder);
     trueState = payment?.state;
+    cardScheme = payment?.savedCard?.scheme;
+    cardBin = payment?.savedCard?.maskedPan?.replace(/\D/g, "").slice(0, 6);
     if (isPaymentFailed(trueState)) {
-      failReason = payment?.authResponse?.resultCode ?? trueState ?? "unknown";
+      failCode = payment?.authResponse?.resultCode;
+      failMessage = payment?.authResponse?.resultMessage;
+      failReason = [failCode, failMessage].filter(Boolean).join(" ") || trueState || "unknown";
     }
   } catch (e) {
     // If N-Genius API is unreachable, we can't verify. Log + bail cleanly —
@@ -128,9 +136,22 @@ export async function POST(req: Request) {
         where: { id: subscriberId },
         data: {
           paymentStatus: PaymentStatus.failed,
-          failReason: failReason ?? "unknown",
+          failReason: (failReason ?? "unknown").slice(0, 200),
         },
       });
+      await prisma.paymentAttempt.create({
+        data: {
+          stage: "webhook",
+          outcome: "declined",
+          code: failCode ?? trueState ?? null,
+          message: failMessage ?? null,
+          state: trueState ?? null,
+          cardScheme: cardScheme ?? null,
+          cardBin: cardBin ?? null,
+          subscriberId,
+          paymentRef: orderRef,
+        },
+      }).catch(() => { /* logging must never break webhook processing */ });
     }
     // Any other state (STARTED, AUTHORISED-pending-capture) — leave subscriber pending.
   } catch (e) {

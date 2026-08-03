@@ -102,6 +102,41 @@ model ExitReason {
 }
 
 // ─────────────────────────────────────────────────────────────────
+// PaymentAttempt — a failure-intelligence log. Captures EVERY declined
+// or failed checkout attempt (Saudi or foreign) with its literal reason,
+// so we can answer "why do payments fail?" — server-side declines carry
+// the N-Genius authResponse.resultCode/message; client-side failures
+// (e.g. an Egyptian/foreign card rejected at SDK tokenization, before any
+// order exists) are POSTed from the browser to /api/checkout/log-failure.
+// Never shown to the customer — internal analytics only.
+// `stage`: session | create-payment | 3ds | auth | poll | webhook
+// ─────────────────────────────────────────────────────────────────
+model PaymentAttempt {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  stage        String                                  // where it failed (see above)
+  outcome      String   @default("failed")             // failed | declined | timeout | error
+  code         String?                                 // N-Genius resultCode (ISO 8583) OR client error name
+  message      String?                                 // resultMessage OR client error message
+  state        String?                                 // N-Genius payment state (DECLINED/FAILED/…)
+  plan         String?
+  duration     String?                                 // "3m" | "6m" | "12m"
+  country      String?                                 // page country (SA)
+  cardScheme   String?                                 // visa | mastercard | mada
+  cardBin      String?                                 // first 6 of maskedPan — reveals issuing country
+  email        String?
+  ip           String?
+  userAgent    String?
+  subscriberId String?                                 // set only if an order row was created
+  paymentRef   String?                                 // N-Genius orderReference (if any)
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([stage])
+  @@index([code])
+  @@index([country])
+}
+
+// ─────────────────────────────────────────────────────────────────
 // Pricing — split per-plan rows + section-level meta. Replaces the
 // old `LandingSection { section: "pricing" }` JSON blob. See
 // docs/PRICING-REFACTOR-PLAN.md.

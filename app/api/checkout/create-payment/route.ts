@@ -8,8 +8,9 @@ import {
   buildMerchantOrderReference,
   toMinorUnits,
 } from "@/lib/ngenius/orders";
+import { primaryPayment, isPaymentFailed } from "@/lib/ngenius/find-order";
 import { priceForDuration, type PlanDuration } from "@/lib/pricing-durations";
-import type { CreateOrderPayload } from "@/lib/ngenius/types";
+import type { CreateOrderPayload, NGeniusOrderResponse } from "@/lib/ngenius/types";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -153,6 +154,22 @@ export async function POST(req: Request) {
       },
     }).catch(() => { /* ignore secondary error */ });
 
+    // Failure-intelligence log (internal; never shown to the customer).
+    await prisma.paymentAttempt.create({
+      data: {
+        stage: "create-payment",
+        outcome: "error",
+        code: err instanceof Error ? err.name : "ngenius-error",
+        message: err instanceof Error ? err.message.slice(0, 300) : "unknown",
+        plan: body.plan,
+        duration: billingKey,
+        country: body.country,
+        email: body.email,
+        ip,
+        subscriberId: subscriber.id,
+      },
+    }).catch(() => { /* logging must never break the flow */ });
+
     return NextResponse.json(
       { error: "ngenius-failed", detail: err instanceof Error ? err.message : "unknown" },
       { status: 502 },
@@ -169,6 +186,40 @@ export async function POST(req: Request) {
       where: { id: subscriber.id },
       data: { paymentRef: orderReference },
     }).catch(() => { /* non-fatal — status polling will still find pending */ });
+  }
+
+  // 8.5 Immediate decline (no 3DS) — e.g. a risk-rule / Country-BIN-blacklist
+  //     refusal of a foreign card comes back DECLINED right here. Capture the
+  //     literal N-Genius reason (authResponse.resultCode/message) into our
+  //     failure log and mark the subscriber failed. (3DS-stage declines resolve
+  //     later via /status poll + webhook, which capture the reason there.)
+  const declinePayment = primaryPayment(paymentResponse as NGeniusOrderResponse);
+  if (isPaymentFailed(declinePayment?.state)) {
+    const rc = declinePayment?.authResponse?.resultCode;
+    const rm = declinePayment?.authResponse?.resultMessage;
+    const reason = [rc, rm].filter(Boolean).join(" ") || declinePayment?.state || "declined";
+    await prisma.subscriber.update({
+      where: { id: subscriber.id },
+      data: { paymentStatus: "failed", failReason: reason.slice(0, 200) },
+    }).catch(() => { /* non-fatal */ });
+    await prisma.paymentAttempt.create({
+      data: {
+        stage: "auth",
+        outcome: "declined",
+        code: rc ?? declinePayment?.state ?? null,
+        message: rm ?? null,
+        state: declinePayment?.state ?? null,
+        plan: body.plan,
+        duration: billingKey,
+        country: body.country,
+        cardScheme: declinePayment?.savedCard?.scheme ?? null,
+        cardBin: declinePayment?.savedCard?.maskedPan?.replace(/\D/g, "").slice(0, 6) ?? null,
+        email: body.email,
+        ip,
+        subscriberId: subscriber.id,
+        paymentRef: orderReference ?? null,
+      },
+    }).catch(() => { /* logging must never break the flow */ });
   }
 
   // 9. Return SDK-shaped response + our subscriberId for the frontend redirects

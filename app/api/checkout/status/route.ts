@@ -45,6 +45,10 @@ export async function GET(request: Request) {
       paymentRef: true,
       failReason: true,
       paidAt: true,
+      plan: true,
+      billing: true,
+      country: true,
+      email: true,
     },
   }).catch(() => null);
 
@@ -93,14 +97,33 @@ export async function GET(request: Request) {
       }
 
       if (isPaymentFailed(state)) {
-        const failReason = payment?.authResponse?.resultCode ?? state ?? "unknown";
+        const rc = payment?.authResponse?.resultCode;
+        const rm = payment?.authResponse?.resultMessage;
+        const failReason = [rc, rm].filter(Boolean).join(" ") || state || "unknown";
         await prisma.subscriber.update({
           where: { id: subscriber.id },
           data: {
             paymentStatus: PaymentStatus.failed,
-            failReason,
+            failReason: failReason.slice(0, 200),
           },
         });
+        await prisma.paymentAttempt.create({
+          data: {
+            stage: "poll",
+            outcome: "declined",
+            code: rc ?? state ?? null,
+            message: rm ?? null,
+            state: state ?? null,
+            plan: subscriber.plan || null,
+            duration: subscriber.billing || null,
+            country: subscriber.country || null,
+            cardScheme: payment?.savedCard?.scheme ?? null,
+            cardBin: payment?.savedCard?.maskedPan?.replace(/\D/g, "").slice(0, 6) ?? null,
+            email: subscriber.email || null,
+            subscriberId: subscriber.id,
+            paymentRef: subscriber.paymentRef,
+          },
+        }).catch(() => { /* logging must never break status polling */ });
         return NextResponse.json({
           order: subscriber.id,
           status: "failed",
