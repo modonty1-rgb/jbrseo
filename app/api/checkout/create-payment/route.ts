@@ -220,6 +220,17 @@ export async function POST(req: Request) {
         paymentRef: orderReference ?? null,
       },
     }).catch(() => { /* logging must never break the flow */ });
+
+    // Terminal decline — DO NOT hand this dead order to the browser SDK's
+    // handlePaymentResponse. With no 3DS action to perform, the SDK leaves the
+    // card iframe stuck on "قيد المعالجة" and never resolves its promise — the
+    // retry-loop an N-Genius support engineer reproduced. Return an explicit
+    // decline flag so the client skips the SDK and goes straight to retry.
+    return NextResponse.json({
+      declined: true,
+      reason: "card_declined",
+      subscriberId: subscriber.id,
+    });
   }
 
   // 9. Return SDK-shaped response + our subscriberId for the frontend redirects

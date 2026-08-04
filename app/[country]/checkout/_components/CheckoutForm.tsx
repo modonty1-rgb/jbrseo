@@ -207,8 +207,34 @@ export function CheckoutForm({
       const paymentResponse = await res.json();
       const subscriberId = paymentResponse.subscriberId as string;
 
-      // 3. Let the SDK handle the payment response (triggers 3DS iframe if needed)
-      const result = await ngeniusRef.current!.handlePaymentResponse(paymentResponse);
+      // 2b. Server-confirmed immediate decline (no 3DS). The order is already
+      //     dead — handing it to the SDK's handlePaymentResponse leaves the card
+      //     iframe stuck on "قيد المعالجة" forever (it never resolves). Skip the
+      //     SDK entirely and send the user back to a fresh card form to retry.
+      if (paymentResponse.declined) {
+        logCheckoutFailure({ ...logCtx, stage: "auth", outcome: "declined", code: paymentResponse.reason || "declined", subscriberId });
+        const nextAttempt = (attemptNumber ?? 0) + 1;
+        router.replace(`/${country.toLowerCase()}/checkout?plan=${planSlug}&duration=${duration}&error=${paymentResponse.reason || "card_declined"}&attempt=${nextAttempt}&order=${subscriberId}`);
+        return;
+      }
+
+      // 3. Let the SDK handle the payment response (triggers 3DS iframe if
+      //    needed). Wrapped in a generous safety timeout: if the SDK ever hangs
+      //    without resolving, fall back to /processing where the SERVER
+      //    reconciles the real outcome — the user is never stuck on an eternal
+      //    spinner. 5min is well beyond any real OTP entry (bank OTPs expire
+      //    first), so it never interrupts a legitimate 3DS challenge.
+      let result: Awaited<ReturnType<NGeniusHandle["handlePaymentResponse"]>>;
+      try {
+        result = await withTimeout(ngeniusRef.current!.handlePaymentResponse(paymentResponse), 300_000);
+      } catch (hErr) {
+        const timedOut = hErr instanceof Error && hErr.message === "__timeout__";
+        const desc = timedOut ? { code: "3ds_timeout", message: "5min timeout — SDK never resolved" } : describeError(hErr);
+        logCheckoutFailure({ ...logCtx, stage: "3ds", outcome: timedOut ? "timeout" : "error", code: desc.code, message: desc.message, subscriberId });
+        // Don't guess the outcome — the server is the source of truth.
+        router.replace(`/${country.toLowerCase()}/checkout/processing?order=${encodeURIComponent(subscriberId)}`);
+        return;
+      }
 
       // 4. Route based on final SDK status
       if (result.success) {
