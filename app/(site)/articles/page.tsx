@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { PenLine } from "lucide-react";
 
+import { Button } from "@/app/components/ui/button";
 import { getArticles } from "@/lib/modonty-articles";
 import { siteOgImages } from "@/lib/getGlobalSeo";
 import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS, SHARED_OPEN_GRAPH } from "@/lib/seo-meta";
@@ -13,12 +15,21 @@ const DESCRIPTION =
   "مقالات عن السيو وتسويق المحتوى ونمو الأعمال — يكتبها فريق المحتوى وتُنشر هنا لجمهور السعودية ومصر.";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const images = await siteOgImages();
+  // The same call the page body makes. Once the endpoint answers 200 the two share one
+  // cached response and this is free; while it is failing nothing is cached, so the
+  // build logs the extra attempt. That is the cheap half of the trade — the alternative
+  // is a page whose <meta robots> cannot know whether the page has anything on it.
+  const [images, articles] = await Promise.all([siteOgImages(), getArticles()]);
+
   return {
     // No "| JBRSEO" — the root layout's template appends it.
     title: "المقالات",
     description: DESCRIPTION,
-    robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
+    // An empty listing is a thin page. Asking Google to index a panel that says "nothing
+    // here yet" spends crawl budget to earn a low-quality URL, and the impression it
+    // leaves outlives the emptiness. `follow` stays on so the links out still count, and
+    // the moment the first article lands this flips back to index on its own.
+    robots: articles.length === 0 ? { index: false, follow: true } : PUBLIC_INDEX_FOLLOW_ROBOTS,
     alternates: { canonical: CANONICAL },
     openGraph: {
       ...SHARED_OPEN_GRAPH,
@@ -57,16 +68,20 @@ export default async function ArticlesPage() {
         name: "المقالات",
         description: DESCRIPTION,
         inLanguage: "ar",
-        mainEntity: {
-          "@type": "ItemList",
-          numberOfItems: articles.length,
-          itemListElement: articles.map((article, index) => ({
-            "@type": "ListItem",
-            position: index + 1,
-            url: `${CANONICAL}/${article.slug}`,
-            name: article.title,
-          })),
-        },
+        // No ItemList while the page is empty — an ItemList of zero items describes
+        // nothing, and it would contradict the page a reader actually sees.
+        ...(articles.length > 0 && {
+          mainEntity: {
+            "@type": "ItemList",
+            numberOfItems: articles.length,
+            itemListElement: articles.map((article, index) => ({
+              "@type": "ListItem",
+              position: index + 1,
+              url: `${CANONICAL}/${article.slug}`,
+              name: article.title,
+            })),
+          },
+        }),
       },
       {
         "@type": "BreadcrumbList",
@@ -94,9 +109,7 @@ export default async function ArticlesPage() {
       </header>
 
       {articles.length === 0 ? (
-        <p className="mt-10 rounded-lg border border-border bg-muted/30 p-6 text-center text-sm text-muted-foreground">
-          ما نزلت مقالات بعد. قريباً.
-        </p>
+        <ComingSoon />
       ) : (
         <div className="mt-8 space-y-8">
           {main && <ArticleCard article={main} featured />}
@@ -113,6 +126,45 @@ export default async function ArticlesPage() {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * What the page shows before the first article exists.
+ *
+ * The dashed edge is the whole idea: a solid card reads as finished content that happens
+ * to be blank, which looks broken. A dashed one reads as a place kept open — the same
+ * language a reader already knows from an empty slot anywhere else.
+ *
+ * It offers two ways out rather than none. A reader who came here for proof we can write
+ * should not hit a wall; both links go to pages that exist on every country's site, so
+ * neither guesses whether the reader is in Saudi Arabia or Egypt.
+ */
+function ComingSoon() {
+  return (
+    <section className="mt-10 rounded-2xl border border-dashed border-border bg-muted/20 px-6 py-14 text-center">
+      <div
+        aria-hidden="true"
+        className="mx-auto flex size-14 items-center justify-center rounded-full border border-border bg-background text-muted-foreground"
+      >
+        <PenLine className="size-6" />
+      </div>
+
+      <h2 className="mt-5 text-lg font-semibold md:text-xl">أول مقال في الطريق</h2>
+
+      <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
+        فريق المحتوى يجهّز أول دفعة — تجارب وأرقام من شغلنا، مو كلام عام. أول ما تنزل بتلقاها هنا.
+      </p>
+
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+        <Button asChild>
+          <Link href="/features">شوف اللي نقدمه</Link>
+        </Button>
+        <Button asChild variant="outline">
+          <Link href="/about">مين إحنا</Link>
+        </Button>
+      </div>
+    </section>
   );
 }
 
