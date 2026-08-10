@@ -15,6 +15,7 @@ import { MathCompare } from "./sections/MathCompare";
 import { CaseStudiesSlider } from "./sections/CaseStudiesSlider";
 import { FaqSection } from "./sections/FaqSection";
 import { TrustSectionLazy } from "./TrustSectionLazy";
+import { tamaraIsConfigured } from "@/lib/tamara/client";
 
 type Props = {
   countrySlug: "sa" | "eg";
@@ -36,6 +37,17 @@ type Props = {
 export function Landing(props: Props) {
   const { countrySlug, staticLanding, plans, whatsappLink, ctaLabel, trustBundle, modontyImpact, caseStats } = props;
   const checkoutHref = `/${countrySlug}/checkout`;
+
+  /**
+   * Tamara is offered only where it can actually complete.
+   *
+   * Two conditions, both checked here on the server: Saudi Arabia, because Tamara answers
+   * an Egyptian order with `400 not_supported_delivery_country`; and configured keys,
+   * because a button that leads to a 503 is worse than no button. The section receives a
+   * URL or nothing — it never learns why.
+   */
+  const tamaraHref =
+    countrySlug === "sa" && tamaraIsConfigured() ? `/${countrySlug}/checkout/tamara` : undefined;
 
   const country = countrySlug === "eg" ? "EG" : "SA";
   const currency = country === "EG" ? "ج.م" : "ر.س";
@@ -87,6 +99,7 @@ export function Landing(props: Props) {
         countrySlug={countrySlug}
         whatsappLink={whatsappLink}
         checkoutHref={checkoutHref}
+        tamaraHref={tamaraHref}
       />
 
       {voices.length > 0 && <VoicesSection voices={voices} socialProofEyebrow={socialProofEyebrow} />}

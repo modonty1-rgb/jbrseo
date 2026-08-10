@@ -11,7 +11,12 @@
   color-scheme: light;
   --radius: 0.65rem;
 
-  --background:           oklch(0.97 0.003 285);
+  /* Light mode carried a 3% lightness gap between the page and the cards on it
+     (0.97 vs 1.0), which is under what the eye reliably reads as an edge — the cards
+     dissolved into the page and the pricing grid lost its shape. Widened to ~5.5%:
+     enough for a card to sit on the page rather than in it, while staying a light
+     surface. The dark theme already had this separation (0.141 vs 0.21). */
+  --background:           oklch(0.945 0.004 285);
   --foreground:           oklch(0.141 0.005 285.823);
   --card:                 oklch(1 0 0);
   --card-foreground:      oklch(0.141 0.005 285.823);

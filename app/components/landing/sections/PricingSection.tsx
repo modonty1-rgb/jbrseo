@@ -24,11 +24,131 @@ type Props = {
   countrySlug: "sa" | "eg";
   whatsappLink: string;
   checkoutHref: string;
+  /**
+   * Where the Tamara route starts, or nothing at all.
+   *
+   * Absent means "do not offer Tamara here", and the server is the only thing that can
+   * decide that: it knows the country and whether the keys exist. Passing a boolean
+   * instead would put that decision in the browser, where a stale build could show a
+   * button for a market Tamara rejects.
+   */
+  tamaraHref?: string;
 };
 
 /** Pricing plans (DB) with the 3/6/12-month duration toggle. Owns duration state
  *  + the GA4 pricing_view IntersectionObserver (both pricing-only). Client component. */
-export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLink, checkoutHref }: Props) {
+/**
+ * The brand marks that ride inside a payment button.
+ *
+ * They sit in the button rather than in a row above it because there are now two ways to
+ * pay and a shared row cannot say which logo belongs to which. A customer scanning the
+ * card should be able to tell the two buttons apart without reading either — the mark is
+ * doing the work the label would otherwise have to.
+ *
+ * `aria-hidden`: the button's own text already names the payment method, so announcing
+ * "mada Visa Mastercard" again would only lengthen what a screen reader has to sit
+ * through before the actual action.
+ */
+const CARD_MARKS = [
+  { src: "/logos/mada.svg", alt: "مدى" },
+  { src: "/logos/visa.svg", alt: "Visa" },
+  { src: "/logos/mastercard.svg", alt: "Mastercard" },
+] as const;
+
+/**
+ * The Tamara call to action, or the exact space it would have taken.
+ *
+ * A pricing table earns its keep by letting the eye compare one row against the next, and
+ * that only works while the three cards stay in step. The consultation plan has no Tamara
+ * route, so without this its feature list started 107px above its neighbours' and the
+ * comparison broke — a cost introduced by adding the button to two cards out of three.
+ *
+ * The placeholder is the same element rendered `invisible` rather than a hardcoded height,
+ * so it cannot drift: change the padding, the logo size or the label, and the reserved
+ * space follows on its own. It is removed from the accessibility tree and from the tab
+ * order, so a keyboard or screen-reader user never meets a button that is not there.
+ */
+function TamaraCta({
+  href,
+  onClick,
+  placeholder = false,
+}: {
+  href: string;
+  onClick?: () => void;
+  placeholder?: boolean;
+}) {
+  const className = cn(
+    "flex items-center justify-center gap-2 p-[13px] rounded-[11px] text-[14px]",
+    "no-underline mb-2 border font-bold bg-background text-foreground border-border",
+    placeholder && "invisible",
+  );
+
+  const inner = (
+    <>
+      <span>قسّطها على دفعات</span>
+      {/* Deliberately larger than the card badges on the button above. Those are
+          reassurance — you already knew you were paying by card. This one is the offer
+          itself, and it only works if the brand is read rather than merely present.
+
+          The mark sits on a white plate rather than swapping between Tamara's black and
+          white files by theme: `dark:` cannot be trusted here — Tailwind 4 resolves it
+          from the OS setting unless a `@custom-variant dark` is declared, and this project
+          toggles a `.dark` class instead. The plate is also exactly what the payment row
+          above does with every other mark, so the two read as one system.
+
+          `alt` is set, unlike the card badges: those repeat a method the label already
+          names, while here the brand is the missing half of the sentence. */}
+      <span className="rounded-md bg-white ring-1 ring-black/5 flex items-center justify-center px-2 h-8">
+        <Image
+          src="/logos/tamara.svg"
+          alt={placeholder ? "" : "تمارا"}
+          width={97}
+          height={29}
+          unoptimized
+          style={{ height: 22, width: "auto" }}
+        />
+      </span>
+    </>
+  );
+
+  if (placeholder) {
+    return (
+      <div className={className} aria-hidden="true">
+        {inner}
+      </div>
+    );
+  }
+
+  return (
+    <Link href={href} prefetch={false} onClick={onClick} className={className}>
+      {inner}
+    </Link>
+  );
+}
+
+function PayMarks({ logos }: { logos: readonly { src: string; alt: string }[] }) {
+  return (
+    <span className="flex items-center gap-1" aria-hidden="true">
+      {logos.map((logo) => (
+        <span
+          key={logo.alt}
+          className="h-5 w-8 rounded bg-white ring-1 ring-black/5 flex items-center justify-center px-1"
+        >
+          <Image
+            src={logo.src}
+            alt=""
+            width={200}
+            height={44}
+            unoptimized
+            style={{ height: 10, width: "auto", maxWidth: "100%", objectFit: "contain" }}
+          />
+        </span>
+      ))}
+    </span>
+  );
+}
+
+export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLink, checkoutHref, tamaraHref }: Props) {
   // Default to the recommended duration (6 months). The ?duration= deep-link is
   // read client-side so the page itself stays static/cacheable.
   const [duration, setDuration] = useState<PlanDuration>(RECOMMENDED_DURATION);
@@ -114,30 +234,54 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
         {/* Payment methods at the TOP of pricing (Khalid 2026-07-15): the
             client sees how they can pay BEFORE reading prices. Only methods
             the checkout actually offers; SA only (EG has no checkout).
-            Tamara joins the day it goes live in the gateway. */}
+            Tamara joined the row the day it became one of them. */}
         {countrySlug === "sa" && (
           <div className="mb-6 md:mb-8 flex flex-col items-center gap-2">
             <div className="flex items-center justify-center gap-2">
               {[
-                { src: "/logos/mada.svg", alt: "مدى" },
-                { src: "/logos/visa.svg", alt: "Visa" },
-                { src: "/logos/mastercard.svg", alt: "Mastercard" },
-                { src: "/logos/apple-pay.svg", alt: "Apple Pay" },
+                { src: "/logos/mada.svg", alt: "مدى", wide: false },
+                { src: "/logos/visa.svg", alt: "Visa", wide: false },
+                { src: "/logos/mastercard.svg", alt: "Mastercard", wide: false },
+                // Tamara belongs in this row now that it is a way to pay. A visitor
+                // scanning for "can I split this?" looks here, before any price. Its chip
+                // is wider because a wordmark is not a square card badge.
+                ...(tamaraHref ? [{ src: "/logos/tamara.svg", alt: "تمارا", wide: true }] : []),
               ].map((logo) => (
-                <div key={logo.alt} className="h-7 w-12 bg-white rounded-md ring-1 ring-black/5 flex items-center justify-center px-1.5">
+                <div
+                  key={logo.alt}
+                  className={cn(
+                    "h-7 bg-white rounded-md ring-1 ring-black/5 flex items-center justify-center px-1.5",
+                    logo.wide ? "w-[70px]" : "w-12",
+                  )}
+                >
                   <Image
                     src={logo.src}
                     alt={logo.alt}
                     width={200}
                     height={44}
                     unoptimized
-                    style={{ height: 14, width: "auto", maxWidth: "100%", objectFit: "contain" }}
+                    style={{ height: logo.wide ? 17 : 14, width: "auto", maxWidth: "100%", objectFit: "contain" }}
                   />
                 </div>
-              ))}
+              )).flatMap((chip, i, all) =>
+                // A hairline before the last chip when Tamara is present: the cards are
+                // one provider and Tamara is another, and a flat row of five marks reads
+                // as one accredited set. The rule is what the caption below is saying,
+                // said visually.
+                tamaraHref && i === all.length - 1
+                  ? [<span key="sep" className="mx-1 h-5 w-px bg-border" aria-hidden />, chip]
+                  : [chip],
+              )}
             </div>
-            <div className="text-[11px] text-muted-foreground font-mono">
-              دفع آمن عبر Network International · PCI DSS
+            {/* One caption used to sit under all four marks and say "Network
+                International · PCI DSS". With Tamara in the row that sentence became
+                false: Network International is our card gateway, while Tamara is a
+                separate company we contract with directly. Naming each next to what it
+                actually covers costs one line and avoids implying an accreditation that
+                does not extend to the instalment route. */}
+            <div className="text-[11px] text-muted-foreground font-mono text-center">
+              البطاقات عبر Network International · PCI DSS
+              {tamaraHref && <> · التقسيط عبر تمارا</>}
             </div>
           </div>
         )}
@@ -277,16 +421,63 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
                   )}
                 >
                   <span>{isConsultation ? "احجز جلسة استشارة" : countrySlug === "eg" ? "تواصل عبر واتساب" : (p.ctaText || `ابدأ بـ${p.name}`)}</span>
-                  <ArrowLeft className="w-4 h-4" />
+                  {tamaraHref && !isExternalCta && !isConsultation ? (
+                    <PayMarks logos={CARD_MARKS} />
+                  ) : (
+                    <ArrowLeft className="w-4 h-4" />
+                  )}
                 </Link>
-                {/* Refund guarantee — only for Saudi + featured, matches project_refund_policy.md */}
-                {featured && countrySlug === "sa" && !isConsultation && (
-                  <div className="flex items-center justify-center gap-1.5 mb-4 text-[11px] text-success/90 font-medium">
+
+                {/* Tamara — a second, equal-weight route to the same plan.
+                    It sits here rather than inside checkout because instalments
+                    answer the sticker price, and the price is on this card. The
+                    href arrives only when the server decided Tamara applies:
+                    Saudi Arabia, and configured — Tamara refuses Egypt with
+                    `400 not_supported_delivery_country`, so an Egyptian visitor
+                    is never shown a button that cannot work. */}
+                {tamaraHref && (
+                  <TamaraCta
+                    href={`${tamaraHref}?plan=${p.slug}&duration=${duration}`}
+                    placeholder={isExternalCta || isConsultation}
+                    onClick={() =>
+                      GTMEvents.planClick({
+                        plan: p.slug,
+                        price: dp.total,
+                        billing: `${duration}m`,
+                        country: countrySlug,
+                      })
+                    }
+                  />
+                )}
+                {/* Refund guarantee — only for Saudi + featured, matches project_refund_policy.md.
+                    It follows BOTH buttons on purpose: the fourteen days belong to the
+                    subscription, not to how it was paid for, and sitting under one of the
+                    two would read as a promise that applies to that button alone. */}
+                {/* Same reservation trick as the Tamara button, and for the same reason:
+                    `mb-4` used to stand in for this line on the other cards, but a margin
+                    is not the height of a row of text plus an icon, so the three feature
+                    lists still started at different heights. Rendering the real line
+                    invisibly keeps them locked together whatever the copy becomes. */}
+                {/* Shown on every plan that is actually bought, not just the featured one.
+                    The fourteen days come from the refund policy, which is written against
+                    the subscription — nothing in it singles out one plan. Printing it on
+                    one card and withholding it from the next reads as if the others are
+                    not covered, which would be the opposite of true, and it withholds the
+                    strongest reassurance at the exact moment it is needed. The consultation
+                    plan is excluded because nothing is bought there. */}
+                {countrySlug === "sa" && (
+                  <div
+                    className={cn(
+                      "flex items-center justify-center gap-1.5 mb-4 text-[11px] text-success/90 font-medium",
+                      isConsultation && "invisible",
+                    )}
+                    aria-hidden={isConsultation || undefined}
+                  >
                     <ShieldCheck className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden />
                     <span>استرداد ١٤ يوم · بدون أسئلة</span>
                   </div>
                 )}
-                {!featured && <div className="mb-4" />}
+                {countrySlug !== "sa" && <div className="mb-4" />}
                 {/* Bullets label */}
                 <div className="text-[11.5px] text-muted-foreground mb-3 font-semibold pb-3 border-b border-border">
                   {content.bulletsLabel}

@@ -7,11 +7,14 @@ import { cn } from "@/lib/utils";
 
 // Accepted payment brands — real logos live in /public/logos.
 // Order chosen to lead with locally-familiar Mada for the SA visitor.
+//
+// Apple Pay is absent: this form is a card-input field, and Apple Pay never runs
+// through it — showing its mark here promises a button that does not exist on the
+// page, which a customer only discovers after deciding to use it.
 const BRANDS = [
   { name: "Mada", src: "/logos/mada.svg" },
   { name: "Visa", src: "/logos/visa.svg" },
   { name: "Mastercard", src: "/logos/mastercard.svg" },
-  { name: "Apple Pay", src: "/logos/apple-pay.svg" },
 ];
 
 /**
