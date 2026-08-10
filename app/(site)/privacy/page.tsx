@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import { LegalMarkdownArticle } from "@/app/(site)/_components/LegalMarkdownArticle";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
-import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
+import { siteOgImages } from "@/lib/getGlobalSeo";
+import {
+  buildPageJsonLd,
+  DEFAULT_PUBLIC_SITE_ORIGIN,
+  SHARED_OPEN_GRAPH,
+  PUBLIC_INDEX_FOLLOW_ROBOTS,
+  sharedLanguages,
+} from "@/lib/seo-meta";
 import type { LegalSectionBlock } from "@/app/content/landing/types";
 import {
   Shield,
@@ -22,9 +29,9 @@ import {
 } from "lucide-react";
 
 const privacyTitleAbsolute =
-  "سياسة الخصوصية وحماية بياناتك الشخصية — مدونتي | JBRSEO";
+  "سياسة الخصوصية وحماية بياناتك الشخصية | JBRSEO";
 const privacyDescription =
-  "سياسة خصوصية شاملة متوافقة مع نظام حماية البيانات الشخصية السعودي (PDPL) لمنصة مدونتي — بيانات نجمعها، حقوقك، وكيف نحميك.";
+  "سياسة خصوصية شاملة متوافقة مع نظام حماية البيانات الشخصية السعودي (PDPL) — بيانات نجمعها، حقوقك، وكيف نحميك.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const canonical = `${DEFAULT_PUBLIC_SITE_ORIGIN}/privacy`;
@@ -33,18 +40,25 @@ export async function generateMetadata(): Promise<Metadata> {
     description: privacyDescription,
     alternates: {
       canonical,
-      languages: {
-        "ar-SA": canonical,
-        "ar-EG": canonical,
-      },
+      languages: sharedLanguages(canonical),
     },
     robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
     openGraph: {
+      ...SHARED_OPEN_GRAPH,
       title: privacyTitleAbsolute,
       description: privacyDescription,
       url: canonical,
+      images: await siteOgImages(),
     },
-    twitter: { title: privacyTitleAbsolute, description: privacyDescription },
+    // `card` is explicit: Next picks the card type before it back-fills the image from
+    // openGraph, so a twitter block without its own images resolves to the small
+    // `summary` — the share then renders a thumbnail beside the text, not a banner.
+    twitter: {
+      card: "summary_large_image",
+      title: privacyTitleAbsolute,
+      description: privacyDescription,
+      images: await siteOgImages(),
+    },
   };
 }
 
@@ -85,6 +99,19 @@ export default async function PrivacyPage() {
 
   return (
     <main className="bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            buildPageJsonLd({
+              url: `${DEFAULT_PUBLIC_SITE_ORIGIN}/privacy`,
+              name: privacyTitleAbsolute,
+              description: privacyDescription,
+              breadcrumbName: "سياسة الخصوصية",
+            }),
+          ),
+        }}
+      />
       <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
         {/* HERO */}
         <section className="text-center mb-12">

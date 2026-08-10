@@ -58,7 +58,10 @@ export function LandingHeader({
   staticLanding,
   country,
   basePath = "",
-  pricingHref = "/#pricing",
+  // Follows basePath like every other link here. The fixed "/#pricing" default meant the
+  // header's own CTA button — the loudest one on the page — kept pointing at "/", which
+  // redirects to the country landing and drops the fragment on the way.
+  pricingHref = basePath ? `${basePath}#pricing` : "/#pricing",
   navPrimaryCtaLabel,
   navLinks: navLinksProp,
   whatsappNumber,

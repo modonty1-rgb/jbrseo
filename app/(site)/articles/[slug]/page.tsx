@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getArticle, getArticles } from "@/lib/modonty-articles";
+import { SHARED_OPEN_GRAPH } from "@/lib/seo-meta";
 
 export const revalidate = 3600;
 
@@ -27,7 +28,17 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticle(slug);
-  if (!article) return { title: "المقال غير موجود | JBRSEO" };
+  // A named title, not notFound(), on purpose — measured 2026-08-09.
+  //
+  // Next's rule is that notFound() must run "before any await that may suspend, as
+  // response headers are set at this point". It cannot here: `app/(site)/layout.tsx`
+  // wraps the whole group in its own <Suspense> so the header and footer stream
+  // immediately, which locks the status at 200 before this file runs at all. Moving the
+  // call into generateMetadata was tried and measured: still 200, and it cost the page
+  // its title. So the response stays 200 with the noindex Next injects — which is the
+  // remedy Google documents by name: "Add a <meta name="robots" content="noindex"> to
+  // error pages". `absolute` skips the layout template, which would append "| JBRSEO" twice.
+  if (!article) return { title: { absolute: "المقال غير موجود | JBRSEO" } };
 
   return {
     title: article.seo.title ?? article.title,
@@ -39,6 +50,8 @@ export async function generateMetadata({
     // page that silently omits it leaves Google to guess.
     robots: article.seo.robots ?? undefined,
     openGraph: {
+      ...SHARED_OPEN_GRAPH,
+      // `type` overrides the shared "website" — this one really is an article.
       type: "article",
       title: article.seo.title ?? article.title,
       description: article.seo.description ?? article.excerpt ?? undefined,

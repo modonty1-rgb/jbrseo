@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import { LegalMarkdownArticle } from "@/app/(site)/_components/LegalMarkdownArticle";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
-import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
+import { siteOgImages } from "@/lib/getGlobalSeo";
+import {
+  buildPageJsonLd,
+  DEFAULT_PUBLIC_SITE_ORIGIN,
+  SHARED_OPEN_GRAPH,
+  PUBLIC_INDEX_FOLLOW_ROBOTS,
+  sharedLanguages,
+} from "@/lib/seo-meta";
 import type { LegalSectionBlock } from "@/app/content/landing/types";
 import {
   FileText,
@@ -28,14 +35,20 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = landing.terms?.title ?? "شروط الاستخدام";
   const siteUrl = DEFAULT_PUBLIC_SITE_ORIGIN;
   const description =
-    "شروط استخدام منصة مدونتي كاملة — الاشتراك، الفوترة، الإلغاء، ملكية المحتوى، وحدود المسؤولية. مكتوبة بلغة واضحة وصريحة.";
+    "شروط استخدام اشتراك جبر سيو كاملة — الاشتراك، الفوترة، الإلغاء، ملكية المحتوى، وحدود المسؤولية. مكتوبة بلغة واضحة وصريحة.";
   return {
     title,
     description,
     robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
-    alternates: { canonical: `${siteUrl}/terms` },
-    openGraph: { title, description, url: `${siteUrl}/terms` },
-    twitter: { title, description },
+    alternates: {
+      canonical: `${siteUrl}/terms`,
+      languages: sharedLanguages(`${siteUrl}/terms`),
+    },
+    openGraph: { ...SHARED_OPEN_GRAPH, title, description, url: `${siteUrl}/terms`, images: await siteOgImages() },
+    // `card` is explicit: Next picks the card type before it back-fills the image from
+    // openGraph, so a twitter block without its own images resolves to the small
+    // `summary` — the share then renders a thumbnail beside the text, not a banner.
+    twitter: { card: "summary_large_image", title, description, images: await siteOgImages() },
   };
 }
 
@@ -74,6 +87,19 @@ export default async function TermsPage() {
 
   return (
     <main className="bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            buildPageJsonLd({
+              url: `${DEFAULT_PUBLIC_SITE_ORIGIN}/terms`,
+              name: title ?? "شروط الاستخدام",
+              description: intro ?? "شروط استخدام منصة JBRSEO.",
+              breadcrumbName: "شروط الاستخدام",
+            }),
+          ),
+        }}
+      />
       <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
         {/* HERO */}
         <section className="text-center mb-12">

@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 import { ShieldCheck, Clock, XCircle, MessageCircle, CheckCircle } from "lucide-react";
-import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
+import { siteOgImages } from "@/lib/getGlobalSeo";
+import {
+  buildPageJsonLd,
+  DEFAULT_PUBLIC_SITE_ORIGIN,
+  SHARED_OPEN_GRAPH,
+  PUBLIC_INDEX_FOLLOW_ROBOTS,
+  sharedLanguages,
+} from "@/lib/seo-meta";
 import { getWhatsAppLink } from "@/lib/site-links";
 import { WhatsAppIcon } from "@/app/components/icons/WhatsAppIcon";
 
@@ -9,14 +16,26 @@ const TITLE = "سياسة الفوترة والتسليم";
 const DESCRIPTION =
   "التزامنا بإعداد حسابك من ٧٢ ساعة إلى ١٤ يوم كحد أقصى. لو تأخّرنا عن ذلك، نمدّد اشتراكك مجاناً — لا رعب استرداد، لا مماطلة.";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
-  alternates: { canonical: `${SITE_URL}/billing-policy` },
-  openGraph: { title: TITLE, description: DESCRIPTION, url: `${SITE_URL}/billing-policy` },
-  twitter: { title: TITLE, description: DESCRIPTION },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const images = await siteOgImages();
+  return {
+    title: TITLE,
+    description: DESCRIPTION,
+    robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
+    alternates: {
+      canonical: `${SITE_URL}/billing-policy`,
+      languages: sharedLanguages(`${SITE_URL}/billing-policy`),
+    },
+    openGraph: {
+      ...SHARED_OPEN_GRAPH,
+      title: TITLE,
+      description: DESCRIPTION,
+      url: `${SITE_URL}/billing-policy`,
+      images,
+    },
+    twitter: { title: TITLE, description: DESCRIPTION, images },
+  };
+}
 
 // Deep-link message pre-fills the WhatsApp text so the user only sends.
 function buildRefundRequestLink(waHref: string): string {
@@ -37,6 +56,19 @@ export default function BillingPolicyPage() {
 
   return (
     <main className="bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            buildPageJsonLd({
+              url: `${SITE_URL}/billing-policy`,
+              name: TITLE,
+              description: DESCRIPTION,
+              breadcrumbName: "سياسة الفوترة",
+            }),
+          ),
+        }}
+      />
       <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
         {/* HERO */}
         <section className="text-center mb-12">

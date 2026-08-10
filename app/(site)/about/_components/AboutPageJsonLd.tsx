@@ -5,10 +5,10 @@ export function AboutPageJsonLd(): React.JSX.Element {
   const data = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
-    name: "من نحن — مدونتي",
+    name: "من نحن — جبر سيو",
     url: `${base}/about`,
     inLanguage: "ar",
-    description: "تعرف على مدونتي — منصة المحتوى العربي لجذب العملاء عبر محركات البحث",
+    description: "تعرف على جبر سيو — صناعة المحتوى العربي وجذب العملاء عبر محركات البحث",
     breadcrumb: {
       "@type": "BreadcrumbList",
       itemListElement: [

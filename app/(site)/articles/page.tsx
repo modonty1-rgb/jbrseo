@@ -3,15 +3,33 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { getArticles } from "@/lib/modonty-articles";
+import { siteOgImages } from "@/lib/getGlobalSeo";
+import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS, SHARED_OPEN_GRAPH } from "@/lib/seo-meta";
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: "المقالات | JBRSEO",
-  description:
-    "مقالات عن السيو وتسويق المحتوى ونمو الأعمال — يكتبها فريق المحتوى وتُنشر هنا لجمهور السعودية ومصر.",
-  alternates: { canonical: "/articles" },
-};
+const CANONICAL = `${DEFAULT_PUBLIC_SITE_ORIGIN}/articles`;
+const DESCRIPTION =
+  "مقالات عن السيو وتسويق المحتوى ونمو الأعمال — يكتبها فريق المحتوى وتُنشر هنا لجمهور السعودية ومصر.";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const images = await siteOgImages();
+  return {
+    // No "| JBRSEO" — the root layout's template appends it.
+    title: "المقالات",
+    description: DESCRIPTION,
+    robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
+    alternates: { canonical: CANONICAL },
+    openGraph: {
+      ...SHARED_OPEN_GRAPH,
+      title: "المقالات",
+      description: DESCRIPTION,
+      url: CANONICAL,
+      images,
+    },
+    twitter: { card: "summary_large_image", title: "المقالات", description: DESCRIPTION, images },
+  };
+}
 
 function formatDate(value: string | null): string {
   if (!value) return "";
@@ -26,8 +44,48 @@ export default async function ArticlesPage() {
   const main = articles.find((a) => a.isMainArticle) ?? null;
   const rest = main ? articles.filter((a) => a.id !== main.id) : articles;
 
+  // Two nodes, both about THIS page: the list of what is on it, and where it sits in the
+  // site. The articles themselves carry their own card, baked by Modonty on this domain —
+  // nothing here repeats or contradicts it.
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": CANONICAL,
+        url: CANONICAL,
+        name: "المقالات",
+        description: DESCRIPTION,
+        inLanguage: "ar",
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: articles.length,
+          itemListElement: articles.map((article, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: `${CANONICAL}/${article.slug}`,
+            name: article.title,
+          })),
+        },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${CANONICAL}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "الرئيسية", item: DEFAULT_PUBLIC_SITE_ORIGIN },
+          { "@type": "ListItem", position: 2, name: "المقالات", item: CANONICAL },
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-10 md:py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <header className="space-y-3">
         <h1 className="text-2xl font-bold md:text-3xl">المقالات</h1>
         <p className="max-w-2xl text-sm text-muted-foreground md:text-base">

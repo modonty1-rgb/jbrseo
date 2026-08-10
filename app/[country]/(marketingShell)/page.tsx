@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LandingJsonLd } from "@/app/components/landing/LandingJsonLd";
+import { ScrollToHash } from "@/app/components/landing/ScrollToHash";
 import { Landing } from "@/app/components/landing/Landing";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { getLandingContent } from "@/lib/getLandingContent";
@@ -139,11 +140,13 @@ export default async function CountryHome({
         modontyImpact={modontyImpact}
         caseStats={caseStats}
       />
+      <ScrollToHash />
       <LandingJsonLd
         countrySlug={countrySlug}
         siteOrigin={DEFAULT_PUBLIC_SITE_ORIGIN}
         faqs={staticLanding.faq?.faqs ?? []}
         socialLinks={socialLinks}
+        whatsappNumber={content.siteSettings?.whatsappNumber}
       />
     </>
   );

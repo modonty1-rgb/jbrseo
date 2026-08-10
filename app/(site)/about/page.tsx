@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import Link from "@/app/components/link";
 import Image from "next/image";
 import { AboutPageJsonLd } from "@/app/(site)/about/_components/AboutPageJsonLd";
+import { headers } from "next/headers";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
-import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
+import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
+import { getLandingContent } from "@/lib/getLandingContent";
+import { getWhatsAppLink } from "@/lib/site-links";
+import { siteOgImages } from "@/lib/getGlobalSeo";
+import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS, SHARED_OPEN_GRAPH } from "@/lib/seo-meta";
 import {
   Compass,
   Target,
@@ -28,28 +33,33 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-const aboutTitle = "من نحن — مدونتي منصة المحتوى العربي لجذب العملاء";
+const aboutTitle = "من نحن — جبر سيو لصناعة المحتوى العربي وجذب العملاء";
 const aboutDescription =
   "تعرف على قصة منصة JBRSEO ومهمتنا لمساعدة المتاجر في السعودية ومصر على النمو بالمحتوى والسيو بعيداً عن الاعتماد الكامل على الإعلانات.";
 
-export const metadata: Metadata = {
-  title: aboutTitle,
-  description: aboutDescription,
-  alternates: {
-    canonical: `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
-    languages: {
-      "ar-SA": `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
-      "ar-EG": `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
-    },
-  },
-  robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
-  openGraph: {
+export async function generateMetadata(): Promise<Metadata> {
+  const images = await siteOgImages();
+  return {
     title: aboutTitle,
     description: aboutDescription,
-    url: `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
-  },
-  twitter: { title: aboutTitle, description: aboutDescription },
-};
+    alternates: {
+      canonical: `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
+      languages: {
+        "ar-SA": `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
+        "ar-EG": `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
+      },
+    },
+    robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
+    openGraph: {
+      ...SHARED_OPEN_GRAPH,
+      title: aboutTitle,
+      description: aboutDescription,
+      url: `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
+      images,
+    },
+    twitter: { title: aboutTitle, description: aboutDescription, images },
+  };
+}
 
 // Story labels → Lucide icons (parallels the mockup)
 const STORY_LABEL_ICONS: Record<string, LucideIcon> = {
@@ -71,7 +81,12 @@ function pickIcon(map: Record<string, LucideIcon>, key: string, fallback: Lucide
 }
 
 export default async function AboutPage() {
-  const staticLanding = await getStaticLandingWithOverrides();
+  const h = await headers();
+  const country = getCountryFromHeaders(h);
+  const [staticLanding, content] = await Promise.all([
+    getStaticLandingWithOverrides(),
+    getLandingContent(country),
+  ]);
   const about = staticLanding.about;
   if (!about) {
     return (
@@ -84,6 +99,22 @@ export default async function AboutPage() {
     );
   }
   const { hero, mission, storyBlocks, values, fitFor, notFitFor, legalInfo, cta } = about;
+
+  /**
+   * Both destinations are computed, not read from `cta.primaryHref` / `cta.secondaryHref`.
+   *
+   * What was stored took the reader nowhere: "/signup" is not a route on this site, so the
+   * primary button — the one that says "book an intro call" — answered a convinced visitor
+   * by redirecting them to the home page. And "/#pricing" redirects to /sa, and a redirect
+   * drops the "#pricing" fragment, so the second button landed at the top of the landing.
+   *
+   * Neither address can be a fixed string anyway: the contact channel is a WhatsApp number
+   * kept in settings, and the pricing section lives under whichever country the reader is
+   * browsing. The CMS still owns the words; the code owns where they lead.
+   */
+  const countrySlug = country === "EG" ? "eg" : "sa";
+  const primaryHref = getWhatsAppLink(country, content.siteSettings?.whatsappNumber);
+  const secondaryHref = `/${countrySlug}#pricing`;
   const coreTeam = staticLanding.team?.coreTeam ?? [];
   const executionTeam = staticLanding.team?.executionTeam ?? [];
   const teamPreview = coreTeam.slice(0, 2);
@@ -409,14 +440,14 @@ export default async function AboutPage() {
         </p>
         <div className="flex flex-wrap gap-3 justify-center">
           <Link
-            href={cta.primaryHref}
+            href={primaryHref}
             className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-success px-6 py-3 text-sm font-bold text-success-foreground hover:opacity-90 transition no-underline"
           >
             <span>{cta.primaryLabel}</span>
             <ArrowLeft className="w-4 h-4" />
           </Link>
           <Link
-            href={cta.secondaryHref}
+            href={secondaryHref}
             className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-border bg-background px-6 py-3 text-sm font-bold text-foreground hover:bg-card transition no-underline"
           >
             <span>{cta.secondaryLabel}</span>

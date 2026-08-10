@@ -2,7 +2,191 @@
 
 > Append-only. Newest session at top.
 > Weekly rotation: active file = last 7 days only. Older sessions archived monthly →
-> `SESSION-LOG-2026-07.md` (8 sessions), `SESSION-LOG-2026-06.md` (7 sessions).
+> `SESSION-LOG-2026-07.md` (9 sessions), `SESSION-LOG-2026-06.md` (7 sessions).
+
+---
+## Session: 2026-08-09 → 08-10 — 🔍 مراجعة السيو الكاملة + رحلة مقالات العملاء E2E (٢٨ بنداً · ١٩ هدفاً مثبَتاً)
+
+### 🎯 أين وقفت
+- **آخر حالة:** مودونتي **دُمجت ونُشرت على الإنتاج** (`1a1262e..42b450b`) والمسارات حيّة ومتحقَّقة. جبر سيو **٣٤ ملفاً غير مثبَّتة** على فرع `feat/inline-content-review` (مطابق لـ`origin/main`، آخر كوميت `a54dd8c`).
+- **الخطوة التالية بالضبط:** تبديل معرّف العميل في `lib/modonty-articles.ts:65` من معرّف التطوير `69d5ec61e2087dee91fe99a1` إلى **معرّف الإنتاج** — وكان يجب التحقّق منه من قاعدة الإنتاج قبل الكتابة (المرشّح `69d78a637307a53e597efb33` باسم «شركة جبر الجنوبية للمقاولات»، **لم يُؤكَّد أنه سجلّ جبر سيو الصحيح**).
+- **العائق الذي كان يمنع الدفع زال:** `app/robots.ts` يشير إلى `api.modonty.com/v1/sites/<id>/sitemap.xml`، وهذا المسار **صار حيّاً على الإنتاج** بعد نشر مودونتي.
+
+### ✅ ما أُنجز — السيو
+لوحة `documents/tasks/JBRSEO-SEO-TASK.html` (٢٨ بنداً، الفتح على `jbrseo-seo-task-done-v24`):
+- **T1** عنوان ووصف مستقلّان للسعودية ومصر (`seoByCountry` في `app/content/landing.ts`).
+- **T2** خريطة المقالات تُستضاف عند مودونتي + سطر `Sitemap:` ثانٍ في `robots.ts` · رُفع حجب `/_next/*`.
+- **T3–T9** تكرار اسم الموقع · «مدونتي» في الوسوم · وسم robots · بطاقات مهيكلة لستّ صفحات · صورة المشاركة · عنقود اللغات · `og:url`.
+- **T10** دعم زواحف الذكاء (٩ رموز رسمية ٢٠٠ بمتن وبطاقة).
+- **T11** صورة المشاركة كانت **١٤٣×٤٦** (لا مشكلة صيغة) → `f_png,w_1200,h_630,c_pad,b_white`.
+- **T12** `/features` كانت تعلن نفسها نسخة لغوية من الرئيسية.
+- **T13** بطاقة تويتر `summary` في `/privacy` و`/terms`.
+- **T14** `lastModified` كان `new Date()` → تواريخ حقيقية من `LandingSection.updatedAt` + `revalidate = 3600`.
+- **T15** «مدونتي» في وصف `/terms` وبطاقة `/about` والنصّ الاحتياطي.
+- **T16** حذف `app/components/shared/LandingJsonLd.tsx` (ميت، ١٨٩ سطراً).
+- **T19** `/sa` كانت تعلن `og:locale = ar_EG` → `COUNTRY_OG_LOCALE`.
+- **T20** `SHARED_OPEN_GRAPH` — ستّ صفحات كانت بلا `og:site_name`/`type`/`locale`.
+- **T21** زرّا «من نحن» (`/signup` ميت و`/#pricing` يفقد المرساة) → واتساب + `/{country}#pricing`.
+- **T22** «مدونتي» في المتن: **قرار خالد — تبقى** (جبر سيو بوّابة بيع مودونتي).
+- **T23** المقال المفقود يردّ ٢٠٠ لا ٤٠٤: **مقبول** — قوقل توثّق `noindex` كحلّ، والسبب `layout.tsx:71` (Suspense).
+- **T24** بطاقة الشركة كانت باسم «مدونتي» وشعارها → جبر سيو + `contactPoint`.
+- **T25** عقدة `WebSite` على صفحتَي الهبوط (اسم الموقع في نتائج قوقل كان مُخمَّناً).
+- **T26** 🔴 **قائمة التنقّل مكسورة في ست صفحات** — `basePath` كان يصل الشريط السفلي فقط.
+- **T27** الضغط لا ينزل للمرساة (`loading.tsx` يبثّ أولاً) → `app/components/landing/ScrollToHash.tsx`.
+- **T42** 🔴 **السلَق العربي = صفحة ٤٠٤ عند العميل** — ترميز مزدوج → `encodeSlugOnce()` في `lib/modonty-articles.ts`.
+
+### ✅ ما أُنجز — رحلة مقالات العملاء (على قاعدة التطوير)
+- مقال جديد من الصفر مرّ الرحلة كاملة: `WRITING → DRAFT → AWAITING_APPROVAL → (موافقة العميل في الكونسول) → SCHEDULED → PUBLISHED_ON_CLIENT_SITE` — المعرّف `6a78d5c7bbfdd41f23035688`.
+- **١٩ هدفاً من ٢١ مثبَتاً بدليل خام.** الباقيان (١٩ و٢٠) يخصّان تهيئة الإنتاج والنشر.
+- بوّابة الجودة ٢١/٢١ · العزل ٤٠٣/٤٠٤/ETag · الخريطة · لوحة العميل · حارس الروابط الداخلية · تتبّع آخر سحب · زرّ الطوارئ (`canPublishToOwnSite` → ٤٠٣ فوراً).
+
+### 📝 قرارات مأخوذة
+- **`isPartOf` تبقى تشير لمودونتي** — خالد: «العميل بالفعل جزء من مدونتي»، وschema.org تقول «(in some sense)»، وقوقل لا تستعملها لأي نتيجة ثرية.
+- **`BreadcrumbList` تُحذف من مقال العميل** — قوقل: «Don't add structured data about information that is not visible to the user, even if the information is accurate»، ولا نضمن قالب العميل.
+- **لا حذف في مودونتي، أرشفة فقط** — وزرّ سحب المقال من موقع العميل **مرحلة ثانية**.
+- **«مدونتي» تبقى في المتن** لا في الوسوم.
+
+### 🚧 معلّق / محجوب
+- **تبديل معرّف العميل** في `lib/modonty-articles.ts:65` — يحتاج تأكيد معرّف الإنتاج من القاعدة.
+- **تهيئة الإنتاج (T35):** `canPublishToOwnSite` = `false` و`articlesBaseUrl` = `null` على الإنتاج ⇒ لو دُفع جبر سيو الآن، صفحة المقالات تطلع **فاضية** بلا رسالة خطأ.
+- **T41 لم يُصلح:** نجوم الإلزام في نموذج المقال لا تطابق التحقّق (`Slug` و`Content` إلزاميان بلا نجمة) والحفظ يفشل صامتاً — يخصّ مودونتي.
+- **أثر غير محسوب (T39):** لو سقط `articlesBaseUrl`، تُعاد بطاقات مقالات **منشورة** على مودونتي بينما `canonicalUrl` يبقى عند العميل.
+- **لا مسار تحديث فوري:** وسوم الجلب موجودة ولا شيء يطلقها ⇒ أي تصحيح ينتظر ساعة.
+
+### 📂 ملفات لُمست (جبر سيو)
+`app/(site)/{about,team,privacy,terms,billing-policy,articles}/page.tsx` · `app/(site)/articles/[slug]/page.tsx` · `app/(site)/about/_components/AboutPageJsonLd.tsx` · `app/(site)/layout.tsx` · `app/[country]/(marketingShell)/page.tsx` · `app/components/landing/LandingJsonLd.tsx` · `app/components/landing/ScrollToHash.tsx` (جديد) · `app/components/layout/header/LandingHeader.tsx` · `app/components/shared/LandingJsonLd.tsx` (محذوف) · `app/content/landing.ts` · `app/features/page.tsx` · `app/robots.ts` · `app/sitemap.ts` · `lib/{constants,getGlobalSeo,getLandingContent,landing-open-graph,modonty-articles,seo-meta}.ts` · `documents/tasks/JBRSEO-SEO-TASK.html`
+
+### 🔁 حالة git والنشر
+- **جبر سيو:** فرع `feat/inline-content-review` · آخر كوميت `a54dd8c` · **٣٤ ملفاً غير مثبَّتة** · لم يُدفع · `tsc` صفر أخطاء.
+- **مودونتي:** `main` = `42b450b` · **مدفوع ومنشور** · بناء ثلاثة تطبيقات نجح · تست ٩/٩ على البناء الإنتاجي · نسخة احتياطية للإنتاج (٩٥ مجموعة · ٥٠ ميغا) · الإصدارات `admin 1.14.0` و`console 0.26.0`.
+- **الإنتاج متحقَّق:** `api.modonty.com/v1/sites/<id>/articles` → ٤٠٣ لعميل مقفول · ٤٠٤ لمعرّف مشوّه · `www.modonty.com` ٢٠٠.
+
+### 🚀 كيف تكمل في ٣٠ ثانية
+1. أكّد معرّف جبر سيو في **قاعدة الإنتاج** (قراءة فقط) قبل أي تبديل.
+2. بدّله في `lib/modonty-articles.ts:65`، ثم `pnpm tsc --noEmit` و`pnpm build`.
+3. في أدمن الإنتاج: فعّل «النشر على موقعه» + `articlesBaseUrl = https://www.jbrseo.com/articles`، وانشر مقالاً واحداً — وإلا القائمة فاضية.
+4. ثبّت الـ٣٤ ملفاً وادفع جبر سيو، ثم تحقّق حيّاً: `/articles` · صفحة المقال · `robots.txt` · خريطة العميل.
+5. اللوحة المرجعية: `documents/tasks/JBRSEO-SEO-TASK.html` — مفتوح فيها `T35` و`T36` و`T41`.
+
+---
+
+## Session: 2026-08-04 10:30 — 💳 Fix payment retry-loop (N-Genius stuck "قيد المعالجة" on failed payment) — root-caused, fixed, happy-path E2E verified, deployed
+
+### 🎯 Where I stopped
+- **Last state:** Payment retry-loop bug **fixed + pushed** (`cbe03c2`, v1.5.1). Happy-path **E2E verified live on sandbox** (localhost:3006 → /success with invoice). Waiting on Khalid to test on production with his own card («push, I will test with mine») + on N-Genius engineer **Jakeem Barkley** to re-run his failed scenario.
+- **Next concrete action:** After Vercel deploys `cbe03c2`, hard-refresh prod checkout + test. To close the decline-path proof, get the exact sandbox **decline card** Jakeem used and run before/after on 3006.
+
+### ✅ Done this session
+- **Fixed the payment retry-loop bug** (N-Genius support engineer Jakeem reported via email: "failed scenario loops on «قيد المعالجة», never shows the retry box"). **Root cause (evidence):** `create-payment` detected an immediate decline (`isPaymentFailed`) but still returned the dead N-Genius response; `CheckoutForm` then called the SDK's `handlePaymentResponse` on it with **NO timeout** (unlike `generateSessionId`) → the SDK's card iframe stuck on «قيد المعالجة» and the promise **never resolved** → eternal hang, no retry. The stuck text is the SDK's own iframe (confirmed not in our code).
+- **Consulted official N-Genius docs** (web-sdk-integration-guide): `handlePaymentResponse` SHOULD resolve `FAILED` on decline + recommends unmount/remount to retry — so we must NOT hand it a server-known-dead order.
+- **Fix (2 files):** `create-payment` returns `{ declined:true, reason:"card_declined", subscriberId }` on immediate decline instead of the dead response; `CheckoutForm` detects the flag → **skips the SDK** → redirects to `/checkout?error` (retry box); PLUS wraps `handlePaymentResponse` in a **5-min safety `withTimeout`** → on any hang, routes to `/processing` for server reconciliation.
+- **Happy-path E2E verified LIVE on sandbox (localhost:3006):** filled form → card `4111…/12-30/123` → fake-3DS OTP `1234` → `/processing` → **`/success`** with invoice (الزخم ٦ شهور، ٧٬٧٩٤ شامل VAT). Proves the fix does NOT break successful payments (declined-branch skipped, timeout transparent). Screenshot `.playwright-mcp/success-e2e-after-fix.png`. Deleted the test subscriber from `modonty_dev`.
+- **Safe-by-construction:** the new code runs ONLY on the failure branch — the successful-payment path is byte-for-byte unchanged.
+- **TSC: 0 errors** (2×). **Build:** not run. **Live test:** happy-path E2E on sandbox PASSED; decline-path pending Jakeem's card.
+
+### 📝 Decisions taken (with reasoning)
+- **Server is the source of truth for decline detection** → `create-payment` already knows it's declined, so return an explicit flag rather than let the client SDK re-derive a dead order's fate. Rejected: client-side inspection of the raw paymentResponse (fragile).
+- **5-min timeout on `handlePaymentResponse`** (not shorter) → must exceed real 3DS OTP entry (bank OTPs expire first) so it never interrupts a legit challenge; it's a hang backstop, not a decline detector.
+- **Pushed on happy-path-verified + safe-by-construction** (Khalid: «push, I will test with mine») → unblocks N-Genius certification fastest; the decline reproduction (needs Jakeem's card) is the final confirmation on the deployed build.
+
+### 🚧 Pending / blocked
+- **🚧 Decline-path E2E (before/after)** — needs the exact sandbox DECLINE card Jakeem used (N-Genius test-cards docs 404'd; won't guess a PAN). Ask Jakeem.
+- **🚧 Clarity prod-readiness (from the 22:34 block, unchanged):** set 3 Vercel Production env vars (`NEXT_PUBLIC_CLARITY_ID=xwgijh5i7f`, `CLARITY_API_TOKEN` [value in local `.env.local`], `CRON_SECRET`) + `prisma db push` against prod (confirm target) + clean dev seed (84 rows in `modonty_dev`) + run the «مريم» Clarity-Funnels prompt.
+- **Carryover:** `NGENIUS_ENV` "sandbox" label, FAQ Latin jargon, N-Genius webhook whitelist.
+  - ~~EG SEO title «في السعودية»~~ → **أُنجز ٩ أغسطس** (T1): `seoByCountry` في `app/content/landing.ts` — عنوان ووصف مستقلّان لكل دولة، والسعر يتفرّع (٣٩٩ ريالاً / ١١٩٩ جنيهاً). قِيس بستّة عشر فحصاً صفر فشل.
+- **Local dev server on 3006** (bg task `bnxt5465v`, `modonty_dev`) — may still run; stop if not needed.
+
+### 📂 Files touched
+- `app/api/checkout/create-payment/route.ts` — return explicit decline flag on immediate decline (skip the dead-order SDK handoff)
+- `app/[country]/checkout/_components/CheckoutForm.tsx` — skip SDK on the declined flag + 5-min safety timeout on `handlePaymentResponse` → `/processing` fallback
+- `package.json` — 1.5.0 → 1.5.1
+- `~/.claude/projects/…/memory/project_local_dev_port.md` — NEW memory: local dev = port **3006** (3000 reserved)
+- `documents/context/SESSION-LOG.md` + `SESSION-LOG-2026-07.md` — this update + weekly rotation (moved the 2026-07-27 block to July archive)
+
+### 🔁 Git / deploy state
+- Branch: `feat/inline-content-review`
+- Uncommitted (INTENTIONAL): `.claude/settings.local.json`, landing `.jpeg`s, this SESSION-LOG update, `.env.local` (holds `CLARITY_API_TOKEN` — gitignored, never pushed).
+- Commits pushed to `main` across this session: `d626b20` (Clarity), `cbe03c2` (payment fix). **HEAD = origin/main = `cbe03c2` (in sync, ls-remote verified).**
+- Pushed: **yes.** Vercel: building from `cbe03c2`.
+
+### 🚀 How to resume in 30 seconds
+1. Confirm Vercel deployed `cbe03c2` (Ready) → hard-refresh prod checkout → test: a successful card still works; a **declined** card now shows the retry box, NOT the stuck «قيد المعالجة».
+2. Ask Jakeem for his failed-scenario card → run before/after on `localhost:3006` to close the decline-path proof.
+3. Clarity go-live: set the 3 Vercel env vars + `prisma db push` (confirm prod target) + clean dev seed.
+
+---
+
+## Session: 2026-08-03 22:34 — 📈 UX-Insights: Microsoft Clarity tracking + Data Export pipeline + admin friction dashboard → built, verified live-read, deployed to main
+
+### 🎯 Where I stopped
+- **Last state:** Clarity UX-Insights feature **fully built + pushed to `main`** (commit `d626b20`, v1.5.0). **Verified real read from Clarity** (curl to project `xwgijh5i7f` → HTTP 200, real metric names match our parser 100%). Dashboard **renders fully** on local with dev seed data (Playwright-verified). Gave Khalid a browser-agent («مريم» = Claude-in-Chrome) prompt to build Clarity **Funnels** manually in the UI. Also pushed a landing tweak earlier (commit `b36447b`).
+- **Next concrete action when resuming:** Set the **3 Clarity env vars on Vercel Production** — `NEXT_PUBLIC_CLARITY_ID=xwgijh5i7f`, `CLARITY_API_TOKEN=<value in local .env.local>`, `CRON_SECRET=<random>`. Then run **`prisma db push` against PROD** (⚠️ Prisma CLI reads `.env` = modonty **prod** — confirm target first) to create the `clarity_daily` / `clarity_sync_log` indexes. Then real data flows in ~1 day once the script is live.
+
+### ✅ Done this session
+- **Landing polish (commit `b36447b`, v1.4.4):** gift-months badge moved **next to the plan name** (amber + `animate-gift-glow`), founding-offer badge, **removed the PaymentTrust (Network International) section** (deleted `PaymentTrust.tsx`).
+- **Clarity UX-Insights feature (commit `d626b20`, v1.5.0, 28 files)** — mapped to the REAL stack (no tRPC, no `[locale]`, no cacheComponents; the BRD assumed a different stack):
+  - **Phase 0 — tracking:** `app/components/ClarityAnalytics.tsx` — deferred like `DeferredGTM` (mounts on first interaction/idle), **excluded from `/admin`** via `usePathname`, loads only when `NEXT_PUBLIC_CLARITY_ID` set.
+  - **Phase 1 — models:** `ClarityDaily` + `ClaritySyncLog` in `schema.prisma`; Prisma client regenerated (killed node first — Golden Rule). `db push` DEFERRED.
+  - **Phase 2 — pipeline:** `lib/clarity/` (fetch with 3× backoff + 401/403/400/429 mapping, Zod schema, structure-driven normalizer, friction score, Riyadh-date helper, syncDaily) + `app/api/cron/clarity/route.ts` (CRON_SECRET-guarded) + `vercel.json` (daily `0 0 * * *` = 03:00 Riyadh).
+  - **Phase 3 — data layer:** `lib/clarity/queries.ts` — **direct DB reads** (dropped unstable_cache/revalidateTag).
+  - **Phase 4 — dashboard:** `app/admin/(dashboard)/ux-insights/` — metric cards, recharts trend, worst-pages friction table, device/browser breakdown, sync banner, loading/error + nav link 📈.
+- **Verified REAL Clarity Data Export API** (curl, project `xwgijh5i7f`, numOfDays=3): **HTTP 200**; real metricNames = `Traffic, EngagementTime, ScrollDepth, RageClickCount, DeadClickCount, QuickbackClick, ExcessiveScroll, ScriptErrorCount, ErrorClickCount` — **all match our normalizer** (guessed names were correct). `information: []` (no traffic yet — script not live). Auth + shape proven.
+- **Dev-only seed:** 84 rows into `modonty_dev` (guarded script refuses non-dev URL) → dashboard renders fully; Playwright screenshot confirms cards/trend/table/breakdown. Trend lines render after client mount (not a bug).
+- **«مريم» funnel prompt** delivered (in chat) — instructs a browser agent to build Clarity Funnels in the UI: `SA — Client Journey` (landing `/sa` → `/sa/checkout` → `/checkout/processing` → `/checkout/success`), clone `EG`, plus `SA — Payment Failed`. (API **cannot** create funnels — verified: `Data.Export` scope is read-only, funnels are a no-code dashboard feature; real conversion funnel is better in GA4.)
+- **Verified Hotjar 100% gone + zero bundle impact** (exhaustive grep): **zero** Hotjar in code/env/scripts (only stale docs mention it — `docs/GTM-GA4-AUDIT.md`, `TODO.md`, etc.). New Clarity tracking = ~1KB client component (deferred, prod-only, lib loads from external CDN); recharts is **admin-route-only** (`ux-insights` + `DashboardCharts`) → **zero weight added to public landing/checkout**. ⚠️ Unverifiable from code: whether a Hotjar tag still lives in the **GTM container** (`GTM-TT25M3GX`, managed in GTM dashboard) — Khalid to check GTM → Tags.
+- **TSC: 0 errors** (multiple runs, incl. final pre-push). **Build:** not run. **Live test:** dashboard verified populated on local (Playwright); real Clarity read verified via curl.
+
+### 📝 Decisions taken (with reasoning)
+- **Map BRD to real stack, not build it literally** → the BRD (`BRD-ux-dashboard-jbrseo.md`) assumed tRPC + next-intl `[locale]` + `cacheComponents`/`'use cache'`; the repo has NONE (verified). Built with Server Components + direct Prisma + `app/admin/(dashboard)/ux-insights/` + Arabic-only. Rejected building against a phantom stack.
+- **Dropped caching (unstable_cache + revalidateTag)** → Next 16.1 made `revalidateTag(tag, profile)` require 2 args (tied to the `'use cache'` system, which needs cacheComponents = OFF here); `unstable_cache` is deprecated. Direct DB reads for an internal, daily-updated, low-traffic admin page = simpler + always fresh. Rejected fighting a deprecated API.
+- **Friction metric names verified against a REAL response, not guessed** → curled the live API; the substring-matching normalizer handles every real name; `ErrorClickCount` is preserved in `raw` (unmapped, not in the friction weights).
+- **Clarity script deferred + `/admin`-excluded; ID only on Vercel Production** → protects TBT (matches DeferredGTM discipline), keeps staff sessions out of friction data, and keeps localhost/preview traffic out of the live Clarity project.
+- **`prisma db push` DEFERRED** → Prisma CLI loads `.env` (= modonty **prod**), not `.env.local`; must run only with a confirmed target. Safe to defer — no writes happen without the token.
+- **Funnels via browser agent, not API** → verified the only API is read-only Data Export with no funnel-creation endpoint; funnels are a dashboard no-code feature. GA4 (already wired) is the better tool for a true session-level conversion funnel.
+
+### 🚧 Pending / blocked
+- **🚧 Vercel env (3 vars)** — needs Khalid: `NEXT_PUBLIC_CLARITY_ID`, `CLARITY_API_TOKEN`, `CRON_SECRET` on **Production**. Without `NEXT_PUBLIC_CLARITY_ID` the script never loads → no data collected.
+- **🚧 `prisma db push` on PROD** — run jointly, confirm `DATABASE_URL` = modonty prod first (creates `clarity_daily`/`clarity_sync_log` indexes).
+- **🚧 Dev seed still in `modonty_dev`** — 84 fake `ClarityDaily` rows + 1 `ClaritySyncLog`; offer to clean (collections are Clarity-only, safe to wipe).
+- **🚧 Clarity Funnels** — Khalid to run the «مريم» prompt against the Clarity UI.
+- **🚧 Real data** — needs the script live in prod + ~1 day of traffic before the dashboard/cron shows real numbers.
+- **Carryover (prior session, unchanged):** retry-UX bug #2 (N-Genius iframe stuck after failed payment), `NGENIUS_ENV` "sandbox" label, EG SEO title «في السعودية», FAQ Latin jargon, N-Genius webhook whitelist.
+- **Local dev server** bg task `bma7lqpxl` (`next dev` :3000, **modonty_dev**) — may still be running; stop if not needed.
+
+### 📂 Files touched
+**Landing (commit `b36447b`):**
+- `app/components/landing/sections/PricingSection.tsx` — gift badge next to plan name + founding badge
+- `app/globals.css` — `gift-glow` keyframe + `--animate-gift-glow`
+- `app/components/landing/Landing.tsx` — removed `<PaymentTrust />` + import
+- `app/components/landing/sections/PaymentTrust.tsx` — **deleted**
+- `package.json` — 1.4.3 → 1.4.4
+
+**Clarity (commit `d626b20`):**
+- `app/components/ClarityAnalytics.tsx` — deferred Clarity tag, `/admin`-excluded (new)
+- `app/layout.tsx` — mount `<ClarityAnalytics />`
+- `.env.example` — Clarity vars documented
+- `prisma/schema.prisma` — `ClarityDaily` + `ClaritySyncLog` models
+- `lib/clarity/{constants,schema,types,fetchClarityData,frictionScore,normalizeResponse,date,syncDaily,queries}.ts` — pipeline + reads (new)
+- `app/api/cron/clarity/route.ts` — daily cron handler (new)
+- `vercel.json` — cron schedule (new)
+- `docs/clarity-sample-response.json` — placeholder sample (new)
+- `app/admin/(dashboard)/ux-insights/{page,loading,error}.tsx` + `_components/{RangeSwitcher,TrendChart,UxMetricCards,SyncStatusBanner,WorstPagesTable,DeviceBreakdown}.tsx` + `_helpers/format.ts` — dashboard (new)
+- `app/admin/(dashboard)/_config.ts` + `_components/AdminTopNavbar.tsx` — nav link 📈
+- `package.json` — 1.4.4 → 1.5.0
+
+### 🔁 Git / deploy state
+- Branch: `feat/inline-content-review`
+- Uncommitted (INTENTIONAL, not pushed): `.claude/settings.local.json`; landing screenshot `.jpeg`s (untracked); **`.env.local`** (now holds `CLARITY_API_TOKEN` — **gitignored, never pushed**).
+- Commits pushed to `main` this session: `b36447b` (landing gift badge + founding + remove Network International), `d626b20` (Clarity UX-Insights feature).
+- Last commit: `d626b20`. **HEAD = origin/main = `d626b20` (in sync, verified via ls-remote).**
+- Pushed: **yes.**
+- Vercel: building from `d626b20`. **Clarity env vars NOT set yet → feature dormant** (script off, cron will fail "CLARITY_API_TOKEN not set" until configured).
+- **Secret:** `CLARITY_API_TOKEN` (Data.Export JWT, ~non-expiring) lives ONLY in local `.env.local` + scratchpad token file — **not on Vercel yet**. Project ID `xwgijh5i7f` is public.
+
+### 🚀 How to resume in 30 seconds
+1. **Vercel → jbrseo → Settings → Environment Variables (Production):** add `NEXT_PUBLIC_CLARITY_ID=xwgijh5i7f`, `CLARITY_API_TOKEN=<copy from local .env.local>`, `CRON_SECRET=<generate random>`. Redeploy.
+2. **`prisma db push`** — FIRST confirm target: `grep DATABASE_URL .env` (must be modonty **prod**); then run to create the Clarity indexes on prod.
+3. **Optional cleanup:** wipe the dev seed — `modonty_dev` → `clarityDaily.deleteMany({})` + `claritySyncLog.deleteMany({})`. And give Khalid's «مريم» agent the Clarity-Funnels prompt.
 
 ---
 
@@ -62,59 +246,3 @@
 2. Open `app/[country]/checkout/_components/NGeniusMount.tsx` + `CheckoutForm.tsx` — fix the stuck card iframe (remount `NGeniusMount` after a failed attempt so retry needs no refresh).
 3. Then decide order: retry-UX fix + flip Vercel `NGENIUS_ENV`→live, then #2/#4 content edits via إدارة المحتوى.
 
----
-
-## Session: 2026-07-27 13:46 — Google-Translate checkout crash: diagnosed + fixed + verified live · error pages rewrite · N-Genius emails
-
-### 🎯 Where I stopped
-- **Last action:** Delivered the N-Genius webhook-whitelist email (plain text). Before that: translate-crash fix + error-page rewrite both pushed and **verified live on production**.
-- **Next concrete action when resuming:** Nothing blocking. Optional: (a) stop the local dev server (bg task `bg2zvf50f`, `next dev` on :3000); (b) clean the test sandbox orders from prod DB (`6a672c92…`, `6a672dfc…` — sandbox, no real charge); (c) send the two emails (translate = user said "sent"; webhook = ready to send).
-
-### ✅ Done this session
-- **🔥 Diagnosed the N-Genius live-test crash with 100% certainty:** the `NotFoundError: Failed to execute 'removeChild' on 'Node'` + "An unexpected error occurred" screen N-Genius hit was caused by **browser auto-translation (Google Translate)**, NOT payment code. Google Translate wraps bare text nodes in `<font>` + runs a MutationObserver; during the submit→3DS→status text toggles React removes a bare text node whose parent Translate reparented → throw → crash to `app/error.tsx` (React issue #11538).
-- **Reproduced BOTH ways, live in Playwright (production):** WITH real Google Translate engine injected → crash reproduced exactly (h1 became English "Complete your subscription", 72 `<font>` tags, removeChild throw → error screen). WITHOUT translate → full flow success. Same data, same actions — only difference = translation.
-- **Fix shipped (2 layers, checkout only):** `app/[country]/checkout/layout.tsx` → `translate="no" className="notranslate"` on container (covers all checkout sub-routes); `app/[country]/checkout/page.tsx` metadata → `other: { google: "notranslate" }` → renders `<meta name="google" content="notranslate">`. Rest of site still translates normally.
-- **Verified fix live on production** (`dpl_5ArGpG…`): injected real Google Translate → `translated-ltr` active but **0 `<font>` inside checkout**, h1 stayed Arabic, full E2E (card `4111…/12-30/123`, OTP `1234`) → **success**, zero removeChild. Screenshots in `.playwright-mcp/` (crash-reproduced…, fix-success…, live-success-with-translate).
-- **Error pages rewritten + previewed live:** `app/error.tsx` (global) → clearer/warmer copy «صار خلل تقني مؤقت — المشكلة من عندنا، مو منك» + WhatsApp + email. NEW `app/[country]/checkout/error.tsx` → payment reassurance «لم يتم خصم أي مبلغ من بطاقتك» + contacts. Both previewed via temp `boom` throw routes (deleted after).
-- **Sales contacts pulled from live landing:** WhatsApp `966541018020` (+966 54 101 8020) · email `support@jbrseo.com`.
-- **Two emails drafted (plain text):** (1) translate issue → N-Genius "ready for re-test" (user said sent); (2) webhook whitelist request.
-- **TSC:** 0 errors (run 3×). **Build:** not run. **Live test:** production E2E payment with translate active = PASSED.
-- **Global memory (`~/.claude/CLAUDE.md`) updated** with 3 cross-project rules (see Decisions).
-
-### 📝 Decisions taken (with reasoning)
-- **Disable translation on checkout only (not whole site)** → the crash needs bare-text toggles in a hot flow; marketing pages should still translate for foreign visitors. Rejected: site-wide notranslate (kills legit translation), or hardening every removeChild (fragile, endless).
-- **Two-layer notranslate (meta + attribute)** → defense in depth; meta is page-authoritative, attribute covers all checkout sub-routes. 
-- **Separate checkout error boundary with money reassurance** → a generic error on the payment page scares customers ("did I get charged?"); global boundary can't promise payment specifics.
-- **Hardcode contacts in error.tsx** → error boundary must render even if DB/network down; can't fetch `SiteSettings.whatsappNumber`. Comment says keep in sync.
-- **Global rules saved to `~/.claude/CLAUDE.md`:** (1) browser-translate crashes React on payment/dynamic pages → notranslate the money flow; (2) Windows 11 — delete via PowerShell `Remove-Item`, never `rm` (blocked); use `-LiteralPath` for `[slug]`/`[country]` paths (brackets = wildcards, silent false "removed"); (3) corrupt `.next`/Turbopack panic = environmental, clear `.next` + restart.
-
-### 🚧 Pending / blocked
-- **🚨 N-Genius webhook whitelist** — email ready (this session). Must add prod webhook URL in prod portal + request manual whitelist before go-live (see `project_ngenius_webhook_whitelist` memory + `documents/context/NGENIUS-GO-LIVE-EMAIL.md`). Polling backup covers meanwhile.
-- **🚨 N-Genius go-live** — production still on SANDBOX. Real cards won't work until live-env swap + webhook whitelist.
-- **Perf 84 → 93-94** — paused by user (render-blocking CSS 310ms + first-party JS/TBT ~1MB).
-- Test sandbox orders on prod DB (`6a672c92…`, `6a672dfc…`) — no real charge; optional cleanup.
-- Local dev server may still be running (bg `bg2zvf50f`, :3000) — stop it.
-- Older pending (unchanged): false-claims review, GA4 events review, landing enhancements.
-
-### 📂 Files touched
-- `app/[country]/checkout/layout.tsx` — `translate="no"` + `notranslate` on container (crash fix)
-- `app/[country]/checkout/page.tsx` — metadata `other: { google: "notranslate" }`
-- `app/error.tsx` — rewritten global error copy + WhatsApp/email contacts
-- `app/[country]/checkout/error.tsx` — NEW checkout error boundary (payment reassurance)
-- `package.json` — version 1.4.0 → 1.4.1 → 1.4.2
-- `~/.claude/CLAUDE.md` (global, outside repo) — 3 cross-project rules
-- Temp `boom` preview routes — created then deleted (not committed)
-- `documents/context/SESSION-LOG-2026-07.md` + `SESSION-LOG-2026-06.md` — NEW archives (weekly rotation)
-
-### 🔁 Git / deploy state
-- Branch: `main`
-- Uncommitted: `.claude/settings.local.json` (M, ignore), `documents/context/SESSION-LOG*.md` (this update), untracked `app/api/ua/` + `app/plain/` (pre-existing, not mine)
-- Commits this session: `ebd49b3` (translate fix) + `0fb2555` (error pages). **Both pushed.**
-- Vercel: **READY (production)** — live deploy `dpl_5ArGpG…` verified with the fix.
-
-### 🚀 How to resume in 30 seconds
-1. `git log --oneline -3` — confirm `0fb2555` is top + pushed.
-2. Open `documents/context/NGENIUS-GO-LIVE-EMAIL.md` + `project_ngenius_webhook_whitelist` memory — the webhook whitelist is the live blocker for go-live.
-3. Decide: send the webhook email + add URL in prod portal, or move to perf 84→93-94.
-
----

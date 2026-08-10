@@ -1,21 +1,43 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
-import { DEFAULT_PUBLIC_SITE_ORIGIN } from "@/lib/seo-meta";
+import { siteOgImages } from "@/lib/getGlobalSeo";
+import {
+  buildPageJsonLd,
+  DEFAULT_PUBLIC_SITE_ORIGIN,
+  SHARED_OPEN_GRAPH,
+  PUBLIC_INDEX_FOLLOW_ROBOTS,
+  sharedLanguages,
+} from "@/lib/seo-meta";
 import { Users, Crown, ArrowLeft } from "lucide-react";
 
 const siteUrl = DEFAULT_PUBLIC_SITE_ORIGIN;
-const teamTitle = "فريق JBRSEO | الأشخاص وراء المنصة";
+// The site name arrives from the layout's title template — spelling it here too printed
+// "فريق JBRSEO … | JBRSEO".
+const teamTitle = "الفريق — الأشخاص وراء المنصة";
 const teamDescription =
   "تعرّف على الفريق الذي يقف وراء منصة JBRSEO، خبرات في المتاجر الإلكترونية، السيو والمحتوى، يعملون معاً لبناء نمو مستدام لمشروعك.";
 
-export const metadata: Metadata = {
-  title: teamTitle,
-  description: teamDescription,
-  alternates: { canonical: `${siteUrl}/team` },
-  openGraph: { title: teamTitle, description: teamDescription, url: `${siteUrl}/team` },
-  twitter: { title: teamTitle, description: teamDescription },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const images = await siteOgImages();
+  return {
+    title: teamTitle,
+    description: teamDescription,
+    robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
+    alternates: {
+      canonical: `${siteUrl}/team`,
+      languages: sharedLanguages(`${siteUrl}/team`),
+    },
+    openGraph: {
+      ...SHARED_OPEN_GRAPH,
+      title: teamTitle,
+      description: teamDescription,
+      url: `${siteUrl}/team`,
+      images,
+    },
+    twitter: { title: teamTitle, description: teamDescription, images },
+  };
+}
 
 export default async function TeamPage() {
   const staticLanding = await getStaticLandingWithOverrides();
@@ -24,6 +46,19 @@ export default async function TeamPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 lg:px-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            buildPageJsonLd({
+              url: `${siteUrl}/team`,
+              name: teamTitle,
+              description: teamDescription,
+              breadcrumbName: "الفريق",
+            }),
+          ),
+        }}
+      />
       {/* HERO */}
       <section className="text-center mb-16">
         <div className="inline-flex items-center gap-1.5 rounded-full bg-success/12 px-4 py-1.5 text-xs font-bold text-success mb-4">

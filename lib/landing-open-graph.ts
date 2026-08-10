@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import type { LandingContent } from "@/lib/landing-content.types";
 import { DEFAULT_OG_IMAGE_URL } from "@/lib/constants";
 
+// Last-resort text if the CMS description is ever emptied. It names this site, not
+// Modonty: a searcher looking for جبر سيو must not read another company's name in the
+// result. Country-specific copy lives in `seoByCountry` and normally wins over this.
 const DEFAULT_DESCRIPTION =
-  "مدونتي — منصة المحتوى العربي. مقالات تتصدر جوجل، صفحة شركتك في الشبكة، وقاعدة Leads مصنّفة — بدون كتابة حرف واحد.";
+  "جبر سيو — محتوى عربي يجلب عملاء. مقالات تتصدر جوجل، صفحة شركتك على الشبكة، وقاعدة عملاء مصنّفة — بدون ما تكتب حرفاً واحداً.";
 
 function trimStr(value: string | undefined | null): string {
   return typeof value === "string" ? value.trim() : "";

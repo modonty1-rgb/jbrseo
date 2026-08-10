@@ -39,17 +39,23 @@ async function SiteLayoutContent({ children }: { children: ReactNode }) {
     getLandingContent(country),
     getStaticLandingWithOverrides(),
   ]);
-  // Sticky CTA needs country-scoped links so /privacy visitors from an ad get
-  // routed back to /sa#pricing (or /eg#pricing) — not just /#pricing.
+  // Country-scoped links so a /privacy visitor from an ad gets routed back to
+  // /sa#pricing (or /eg#pricing) — not just /#pricing.
+  //
+  // `basePath` was reaching the sticky CTA only. Without it the header and footer kept
+  // the raw "/#pricing", and "/" redirects to "/sa" — a redirect drops the fragment, so
+  // "الأسعار" in the main navigation landed the reader at the top of the home page
+  // instead of the prices. Same for قصص نجاح · الشهادات · الأسئلة, on all six pages.
   const countrySlug = country.toLowerCase();
-  const pricingHref = `/${countrySlug}#pricing`;
+  const basePath = `/${countrySlug}`;
+  const pricingHref = `${basePath}#pricing`;
   const whatsappLink = getWhatsAppLink(country, content.siteSettings?.whatsappNumber);
   const ctaLabel = content.siteSettings?.ctaLabel?.trim() || DEFAULT_CTA_LABEL;
   return (
     <>
-      <LandingHeader content={content} staticLanding={staticLanding} country={country} />
+      <LandingHeader content={content} staticLanding={staticLanding} country={country} basePath={basePath} />
       <main id="main-content">{children}</main>
-      <Footer content={content} staticLanding={staticLanding} country={country} />
+      <Footer content={content} staticLanding={staticLanding} country={country} basePath={basePath} />
       <StickyMobileCTA
         pricingHref={pricingHref}
         whatsappLink={whatsappLink}

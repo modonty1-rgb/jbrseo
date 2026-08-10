@@ -1,6 +1,7 @@
 import "server-only";
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
+import { seoByCountry as staticSeoByCountry } from "@/app/content/landing";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { cl } from "@/helpers/cloudinary";
 import type { LandingContent, PricingPlan, SocialLinks, SupportedCountry } from "./landing-content.types";
@@ -69,9 +70,43 @@ export async function getSiteGtmId(): Promise<string> {
   return row?.gtmId?.trim() ?? "";
 }
 
+/**
+ * The key a country's SEO override is stored under — the URL slug, so what the admin
+ * reads in the address bar is what they look for in the field label.
+ */
+const COUNTRY_SEO_KEY: Record<SupportedCountry, string> = { SA: "sa", EG: "eg" };
+
+/**
+ * The locale a country's page declares to social platforms.
+ *
+ * Derived, never stored: the CMS `seo` row is one row for two countries, so whatever
+ * was typed in it printed on both — the Saudi landing was announcing itself as ar_EG.
+ * A locale follows mechanically from the market, so there is nothing here to edit.
+ */
+const COUNTRY_OG_LOCALE: Record<SupportedCountry, string> = { SA: "ar_SA", EG: "ar_EG" };
+
+/**
+ * Merges the CMS `seo` row over the packaged defaults, then lets one country override
+ * the shared title and description.
+ *
+ * Saudi Arabia and Egypt run the same Arabic page with different prices. Google supports
+ * that exactly as it stands — "Localized versions of a page are only considered
+ * duplicates if the main content of the page remains untranslated" — so the body stays
+ * shared and the canonical stays self-referencing.
+ *
+ * What must NOT stay shared is the sentence a searcher reads in the results. One row for
+ * two countries printed "…لعملائك في السعودية" on the Egyptian page: not a duplicate-content
+ * problem, a promise made to the wrong reader. `byCountry` fixes that without splitting
+ * the row — a country with nothing written falls back to the shared text, so adding a
+ * third market later costs nothing.
+ *
+ * Title, description and ogLocale branch. Canonical is decided by the page (each
+ * country points at itself) and ogImage stays shared on purpose.
+ */
 function mergeLandingSeo(
   base: LandingContent["seo"],
   override: unknown,
+  country?: SupportedCountry,
 ): LandingContent["seo"] {
   if (!override || typeof override !== "object" || Array.isArray(override)) {
     return base;
@@ -83,7 +118,43 @@ function mergeLandingSeo(
     if (v === undefined || v === null) continue;
     merged[key] = typeof v === "string" ? v : String(v);
   }
+
+  if (!country) return merged;
+
+  merged.ogLocale = COUNTRY_OG_LOCALE[country];
+
+  const slug = COUNTRY_SEO_KEY[country];
+
+  // Packaged copy first — it ships with the code, so a fresh database is never the
+  // reason a country page promises the wrong market.
+  const packaged = staticSeoByCountry[slug as keyof typeof staticSeoByCountry] as
+    | { title?: string; description?: string }
+    | undefined;
+  applyCountrySeo(merged, packaged);
+
+  // Then the admin's override, if one was ever written for this country.
+  const byCountry = o.byCountry;
+  if (byCountry && typeof byCountry === "object" && !Array.isArray(byCountry)) {
+    const forCountry = (byCountry as Record<string, unknown>)[slug];
+    if (forCountry && typeof forCountry === "object" && !Array.isArray(forCountry)) {
+      applyCountrySeo(merged, forCountry as Record<string, unknown>);
+    }
+  }
+
   return merged;
+}
+
+/** Title and description only — nothing else may differ between country versions. */
+function applyCountrySeo(
+  target: LandingContent["seo"],
+  source: Record<string, unknown> | { title?: string; description?: string } | undefined,
+): void {
+  if (!source) return;
+  const s = source as Record<string, unknown>;
+  for (const key of ["title", "description"] as const) {
+    const v = s[key];
+    if (typeof v === "string" && v.trim()) target[key] = v.trim();
+  }
 }
 
 function normalizeSocialLinks(input: unknown): SocialLinks {
@@ -225,7 +296,7 @@ async function fetchLandingContent(country: SupportedCountry): Promise<LandingCo
   const whatsappNumber = settingsRow?.whatsappNumber?.trim() ?? "";
   const socialLinks = normalizeSocialLinks(socialLinksOverride);
 
-  const seo = mergeLandingSeo(base.seo, seoOverride);
+  const seo = mergeLandingSeo(base.seo, seoOverride, country);
 
   const rawPricingHeadings =
     pricingTeaserOverride &&

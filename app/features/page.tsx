@@ -35,35 +35,49 @@ import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getLandingContent } from "@/lib/getLandingContent";
 import { featuresCatalog } from "@/lib/features-catalog.mjs";
 import { getWhatsAppLink } from "@/lib/site-links";
-import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS } from "@/lib/seo-meta";
+import { siteOgImages } from "@/lib/getGlobalSeo";
+import {
+  buildPageJsonLd,
+  DEFAULT_PUBLIC_SITE_ORIGIN,
+  PUBLIC_INDEX_FOLLOW_ROBOTS,
+  sharedLanguages,
+} from "@/lib/seo-meta";
 import { DEFAULT_CTA_LABEL } from "@/lib/site-settings.types";
 import { WhatsAppIcon } from "@/app/components/icons/WhatsAppIcon";
 
-const TITLE = "مزايا اشتراك مدونتي — منظومة كاملة | JBRSEO";
+// No "| JBRSEO" here — the root layout's title template appends it, and writing it twice
+// pushes the useful words past Google's cut-off.
+const TITLE = "مزايا اشتراك جبر سيو — منظومة كاملة";
 const DESCRIPTION =
-  "لوحة تحكم كاملة · صفحة عميل احترافية · مقالات تبيع · حماية YMYL · تنبيهات فورية. كل شي في اشتراك واحد على مدونتي.";
+  "لوحة تحكم كاملة · صفحة عميل احترافية · مقالات تبيع · حماية YMYL · تنبيهات فورية. كل شي في اشتراك واحد مع جبر سيو.";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
-  alternates: {
-    canonical: `${DEFAULT_PUBLIC_SITE_ORIGIN}/features`,
-    languages: {
-      "ar-SA": `${DEFAULT_PUBLIC_SITE_ORIGIN}/sa`,
-      "ar-EG": `${DEFAULT_PUBLIC_SITE_ORIGIN}/eg`,
-    },
-  },
-  openGraph: {
+// Async so the share image comes from the same admin field the country pages read —
+// one image edited in one place, every page follows.
+export async function generateMetadata(): Promise<Metadata> {
+  const images = await siteOgImages();
+  return {
     title: TITLE,
     description: DESCRIPTION,
-    url: `${DEFAULT_PUBLIC_SITE_ORIGIN}/features`,
-    siteName: "JBRSEO",
-    locale: "ar_SA",
-    type: "website",
-  },
-  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
-};
+    robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
+    // Both entries point here, not at /sa and /eg. This page is not a language variant
+    // of the country landings: they never point back, and Google drops a cluster whose
+    // members don't reference each other — and may read the page as their duplicate.
+    alternates: {
+      canonical: `${DEFAULT_PUBLIC_SITE_ORIGIN}/features`,
+      languages: sharedLanguages(`${DEFAULT_PUBLIC_SITE_ORIGIN}/features`),
+    },
+    openGraph: {
+      title: TITLE,
+      description: DESCRIPTION,
+      url: `${DEFAULT_PUBLIC_SITE_ORIGIN}/features`,
+      siteName: "JBRSEO",
+      locale: "ar_SA",
+      type: "website",
+      images,
+    },
+    twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION, images },
+  };
+}
 
 export default async function FeaturesPage() {
   const h = await headers();
@@ -92,6 +106,19 @@ export default async function FeaturesPage() {
 
   return (
     <div className="bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            buildPageJsonLd({
+              url: `${DEFAULT_PUBLIC_SITE_ORIGIN}/features`,
+              name: TITLE,
+              description: DESCRIPTION,
+              breadcrumbName: "المزايا",
+            }),
+          ),
+        }}
+      />
       {/* HERO */}
       <section className="relative overflow-hidden border-b border-border py-14 sm:py-20 text-center">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklch,var(--success)_18%,transparent),transparent_60%)]" />
