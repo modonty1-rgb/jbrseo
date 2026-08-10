@@ -87,6 +87,44 @@ export interface TamaraPaymentType {
   supported_instalments?: { instalments: number }[];
 }
 
+/**
+ * Asks Tamara whether it wants this customer at all, before we send them anywhere.
+ *
+ * Tamara holds decline records per person. Without this call a customer they have already
+ * refused fills in our form, is handed to their pages, and is turned away there — and
+ * usually leaves rather than coming back to pay by card. The decision is entirely
+ * Tamara's; this only asks.
+ *
+ * Their documented placement is exact: "before creating the order to determine whether
+ * Tamara should be available as a payment option."
+ *
+ * The 200ms timeout and the fail-open are theirs too: "If Tamara API does not respond
+ * within 200ms, default to showing Tamara as normal — this prevents any eligibility check
+ * latency from impacting the checkout experience." So every failure here — timeout,
+ * network, a bad response — answers `true`. A slow gateway must never cost us a customer
+ * Tamara would have accepted.
+ */
+export async function isCustomerEligible(input: {
+  amount: number;
+  currency: string;
+  email: string;
+  phoneNumber?: string;
+}): Promise<boolean> {
+  try {
+    const res = await tamaraRequest<{ is_eligible?: boolean }>("/pre-checkout/v1/eligibility", {
+      method: "POST",
+      timeoutMs: 200,
+      body: {
+        order: { amount: input.amount, currency: input.currency },
+        customer: { email: input.email, ...(input.phoneNumber ? { phone_number: input.phoneNumber } : {}) },
+      },
+    });
+    return res.is_eligible !== false;
+  } catch {
+    return true;
+  }
+}
+
 export async function getPaymentTypes(
   countryCode: string,
   currency: string,

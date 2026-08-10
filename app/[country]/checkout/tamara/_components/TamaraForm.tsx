@@ -99,7 +99,13 @@ export function TamaraForm({
               ? "محاولات كثيرة بسرعة. انتظر دقيقة وجرّب."
               : body?.error === "bot-check-failed"
                 ? "التحقق الأمني ما نجح. حدّث الصفحة وجرّب."
-                : "تعذّر فتح تمارا الآن. جرّب بعد شوي أو ادفع بالبطاقة.",
+                : // Tamara refused this customer before we created anything. The wording
+                  // says whose decision it was and points at the door that is still open,
+                  // because the alternative — a vague failure — reads as our system
+                  // breaking and sends the customer away instead of to the card form.
+                  body?.error === "tamara-not-eligible"
+                  ? "تمارا ما وافقت على التقسيط لهذا الطلب. تقدر تكمّل بالبطاقة من الرابط تحت."
+                  : "تعذّر فتح تمارا الآن. جرّب بعد شوي أو ادفع بالبطاقة.",
         });
         setSubmitting(false);
         return;

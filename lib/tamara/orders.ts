@@ -48,6 +48,19 @@ export async function authoriseOrder(orderId: string): Promise<TamaraAuthoriseRe
   );
 }
 
+/**
+ * There is deliberately no `cancelOrder` or `refundOrder` here.
+ *
+ * Both exist in Tamara's API (`POST /orders/{id}/cancel` while authorised, and
+ * `POST /payments/simplified-refund/{id}` once captured), and both are already available
+ * as buttons in the Tamara Partners Portal. Refunds are issued from there.
+ *
+ * Wrapping them in code nothing calls would leave two functions that look like a working
+ * refund path and are not — the same trap as a webhook handler with no registered URL.
+ * If refunds ever need to start from our own admin, the endpoints above are the whole
+ * job; until then the portal is the honest answer.
+ */
+
 export interface TamaraCaptureResponse {
   capture_id: string;
   order_id: string;

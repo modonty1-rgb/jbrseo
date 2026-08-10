@@ -8,6 +8,7 @@ import { TamaraError, tamaraIsConfigured } from "@/lib/tamara/client";
 import {
   createCheckoutSession,
   digitalShippingAddress,
+  isCustomerEligible,
   splitName,
 } from "@/lib/tamara/checkout";
 
@@ -90,6 +91,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid-total" }, { status: 400 });
   }
   const billingKey = `${body.duration}m`;
+
+  // Asked here — before the order, and before a Subscriber row exists — because a
+  // customer Tamara will refuse should never be sent to Tamara at all. This fails open:
+  // any timeout or error answers eligible, per their own guidance.
+  const eligible = await isCustomerEligible({
+    amount: totalMajor,
+    currency: "SAR",
+    email: body.email,
+    phoneNumber: body.phone,
+  });
+  if (!eligible) {
+    return NextResponse.json({ error: "tamara-not-eligible" }, { status: 409 });
+  }
 
   const subscriber = await prisma.subscriber.upsert({
     where: { email_plan_billing: { email: body.email, plan: body.plan, billing: billingKey } },

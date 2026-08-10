@@ -36,6 +36,20 @@ type Props = {
  */
 export function Landing(props: Props) {
   const { countrySlug, staticLanding, plans, whatsappLink, ctaLabel, trustBundle, modontyImpact, caseStats } = props;
+
+  /**
+   * The refund guarantee, read from the hero's trust chips rather than from a field of
+   * its own.
+   *
+   * One sentence, one place to edit it. A second field would drift the day someone
+   * changed the policy in one and not the other, and the two would sit on the same page
+   * contradicting each other — which is worse than either wording alone.
+   *
+   * It is the FIRST chip by convention: the hero row reads guarantee → registration →
+   * support, and the pricing card shows only the guarantee. Reorder the chips in the
+   * admin and the card follows the new first one, so keep the refund chip first.
+   */
+  const refundNote = staticLanding.hero.trust?.[0];
   const checkoutHref = `/${countrySlug}/checkout`;
 
   /**
@@ -100,6 +114,7 @@ export function Landing(props: Props) {
         whatsappLink={whatsappLink}
         checkoutHref={checkoutHref}
         tamaraHref={tamaraHref}
+        refundNote={refundNote}
       />
 
       {voices.length > 0 && <VoicesSection voices={voices} socialProofEyebrow={socialProofEyebrow} />}

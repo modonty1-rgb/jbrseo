@@ -33,6 +33,15 @@ type Props = {
    * button for a market Tamara rejects.
    */
   tamaraHref?: string;
+  /**
+   * The guarantee line under the buttons, straight from the content the admin edits.
+   *
+   * Optional on purpose: absent means the section renders no promise at all. A default
+   * string here would be a guarantee written by this file rather than by whoever owns
+   * the refund policy, and that is how a page ends up promising something the business
+   * never agreed to.
+   */
+  refundNote?: string;
 };
 
 /** Pricing plans (DB) with the 3/6/12-month duration toggle. Owns duration state
@@ -148,7 +157,7 @@ function PayMarks({ logos }: { logos: readonly { src: string; alt: string }[] })
   );
 }
 
-export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLink, checkoutHref, tamaraHref }: Props) {
+export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLink, checkoutHref, tamaraHref, refundNote }: Props) {
   // Default to the recommended duration (6 months). The ?duration= deep-link is
   // read client-side so the page itself stays static/cacheable.
   const [duration, setDuration] = useState<PlanDuration>(RECOMMENDED_DURATION);
@@ -465,7 +474,7 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
                     not covered, which would be the opposite of true, and it withholds the
                     strongest reassurance at the exact moment it is needed. The consultation
                     plan is excluded because nothing is bought there. */}
-                {countrySlug === "sa" && (
+                {countrySlug === "sa" && refundNote ? (
                   <div
                     className={cn(
                       "flex items-center justify-center gap-1.5 mb-4 text-[11px] text-success/90 font-medium",
@@ -474,10 +483,11 @@ export function PricingSection({ visiblePlans, currency, countrySlug, whatsappLi
                     aria-hidden={isConsultation || undefined}
                   >
                     <ShieldCheck className="w-3.5 h-3.5" strokeWidth={2.5} aria-hidden />
-                    <span>استرداد ١٤ يوم · بدون أسئلة</span>
+                    <span>{refundNote}</span>
                   </div>
+                ) : (
+                  <div className="mb-4" />
                 )}
-                {countrySlug !== "sa" && <div className="mb-4" />}
                 {/* Bullets label */}
                 <div className="text-[11.5px] text-muted-foreground mb-3 font-semibold pb-3 border-b border-border">
                   {content.bulletsLabel}
