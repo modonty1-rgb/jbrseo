@@ -91,7 +91,7 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Prop
               <CheckCircle2 className="h-11 w-11 text-success" strokeWidth={2.5} />
             </div>
           </div>
-          <h1 className="mt-6 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+          <h1 className="mt-6 text-2xl font-black text-foreground sm:text-3xl">
             تم الدفع بنجاح
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground max-w-md mx-auto">
@@ -101,7 +101,7 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Prop
 
         {/* Invoice block */}
         <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 mb-6">
-          <p className="mb-4 font-mono text-[11px] font-semibold uppercase tracking-[2px] text-muted-foreground">
+          <p className="mb-4 text-xs font-semibold text-muted-foreground">
             تفاصيل الفاتورة
           </p>
           <dl className="space-y-3">
@@ -115,7 +115,7 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Prop
             </div>
             <div className="flex items-baseline justify-between gap-3 pt-3 border-t border-border text-[15px]">
               <dt className="font-semibold text-foreground">الإجمالي المدفوع</dt>
-              <dd className="font-mono text-lg font-black text-success" dir="ltr">{totalDisplay}</dd>
+              <dd className="text-lg font-black text-success" dir="ltr">{totalDisplay}</dd>
             </div>
             <p className="text-xs text-muted-foreground/80 mt-0.5">
               السعر شامل ضريبة القيمة المضافة ١٥٪

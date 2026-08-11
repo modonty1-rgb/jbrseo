@@ -42,7 +42,10 @@ export function MobileMenu({ navLinks, whatsappHref, phoneDisplay }: Props) {
         onFocus={warm}
         aria-label="فتح القائمة"
         aria-expanded={open}
-        className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-white/85 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-white/40 lg:hidden"
+        // No `lg:hidden` here. The header already wraps this component in a `lg:hidden`
+        // div, so the class decided nothing — it only split one breakpoint across two
+        // files, where changing the header's would silently leave this one behind.
+        className="inline-flex h-11 w-11 items-center justify-center rounded-lg text-white/85 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-white/40"
       >
         <Menu className="h-5 w-5" strokeWidth={2.5} />
       </button>

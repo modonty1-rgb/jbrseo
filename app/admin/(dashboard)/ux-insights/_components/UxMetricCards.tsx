@@ -32,7 +32,7 @@ function Card({
 }) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+      <div className="mb-2 text-[11px] font-semibold uppercase text-muted-foreground">
         {label}
       </div>
       <div className="flex items-end justify-between gap-2">

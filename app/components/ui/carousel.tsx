@@ -216,7 +216,11 @@ const CarouselPrevious = React.forwardRef<
       onClick={scrollPrev}
       {...props}
     >
-      <ArrowLeft className="h-4 w-4" />
+      {/* Flipped by rule for RTL, not swapped by hand.
+          Forward is leftward in Arabic, so an unflipped "previous" arrow points the way
+          the carousel actually advances — the two buttons told the reader the opposite of
+          what they do. `rtl:rotate-180` keeps one component correct in both directions. */}
+      <ArrowLeft className="h-4 w-4 rtl:rotate-180" />
       <span className="sr-only">Previous slide</span>
     </Button>
   )
@@ -245,7 +249,7 @@ const CarouselNext = React.forwardRef<
       onClick={scrollNext}
       {...props}
     >
-      <ArrowRight className="h-4 w-4" />
+      <ArrowRight className="h-4 w-4 rtl:rotate-180" />
       <span className="sr-only">Next slide</span>
     </Button>
   )

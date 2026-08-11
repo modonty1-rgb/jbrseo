@@ -78,6 +78,13 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "res.cloudinary.com", pathname: "/**" },
       { protocol: "https", hostname: "api.dicebear.com", pathname: "/**" },
       { protocol: "https", hostname: "api.qrserver.com", pathname: "/**" },
+      // Modonty's article images (Bunny CDN). Optimised rather than `unoptimized`
+      // like the other remote hosts here: the article grid draws its covers at 512px
+      // and the featured card at 1024px, so passing the full-size source straight
+      // through would ship several times the bytes on the one page built to list
+      // dozens of them. The other hosts serve logos and avatars already at their
+      // final size, which is why they skip the optimiser.
+      { protocol: "https", hostname: "modonty-clients.b-cdn.net", pathname: "/**" },
     ],
     // WebP only — AVIF decode is software-path on older Android SoCs (slow,
     // battery-heavy, and implicated in GPU raster pressure on weak devices).

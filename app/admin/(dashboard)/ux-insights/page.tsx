@@ -65,7 +65,7 @@ export default async function UxInsightsPage({
           <UxMetricCards summary={summary} />
 
           <div className="rounded-xl border border-border bg-card p-4">
-            <div className="mb-3 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+            <div className="mb-3 text-[11px] font-semibold uppercase text-muted-foreground">
               اتجاه إشارات الإحباط عبر الزمن
             </div>
             <TrendChart data={trend} />

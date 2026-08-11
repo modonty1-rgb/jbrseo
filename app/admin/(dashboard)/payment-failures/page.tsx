@@ -61,7 +61,7 @@ export default async function PaymentFailuresPage(): Promise<ReactElement> {
       {/* Summary chips */}
       <div className="mb-6 grid gap-3 sm:grid-cols-3">
         <div className="rounded-xl border border-border bg-card p-4">
-          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">حسب المرحلة</div>
+          <div className="mb-2 text-[11px] font-semibold uppercase text-muted-foreground">حسب المرحلة</div>
           <div className="flex flex-wrap gap-1.5">
             {[...byStage.entries()].sort((a, b) => b[1] - a[1]).map(([s, n]) => (
               <span key={s} className="rounded-md bg-muted/50 px-2 py-1 text-xs text-foreground">
@@ -72,7 +72,7 @@ export default async function PaymentFailuresPage(): Promise<ReactElement> {
           </div>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">أكثر الأكواد</div>
+          <div className="mb-2 text-[11px] font-semibold uppercase text-muted-foreground">أكثر الأكواد</div>
           <div className="flex flex-wrap gap-1.5">
             {topCodes.map(([c, n]) => (
               <span key={c} className="rounded-md bg-destructive/10 px-2 py-1 text-xs text-destructive" dir="ltr">
@@ -83,7 +83,7 @@ export default async function PaymentFailuresPage(): Promise<ReactElement> {
           </div>
         </div>
         <div className="rounded-xl border border-border bg-card p-4">
-          <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">حسب الدولة / البطاقة</div>
+          <div className="mb-2 text-[11px] font-semibold uppercase text-muted-foreground">حسب الدولة / البطاقة</div>
           <div className="flex flex-wrap gap-1.5">
             {[...byCountry.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([c, n]) => (
               <span key={c} className="rounded-md bg-muted/50 px-2 py-1 text-xs text-foreground" dir="ltr">

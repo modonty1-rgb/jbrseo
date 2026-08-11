@@ -49,7 +49,13 @@ export function buildLandingOgMetadata(args: BuildLandingOgArgs): Pick<
   return {
     title,
     description,
-    alternates: { canonical, languages: { ar: canonical } },
+    // `canonical` only — the hreflang cluster belongs to the caller.
+    // This used to add `languages: { ar: canonical }`, a bare `ar` key pointing every
+    // language at one country's URL. The landing page overwrites `alternates` wholesale
+    // so it never shipped, but any future caller that spread this object would have
+    // published a language cluster that contradicts the ar-SA/ar-EG/x-default set the
+    // rest of the site declares.
+    alternates: { canonical },
     openGraph: {
       title,
       description,

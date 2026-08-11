@@ -16,11 +16,11 @@ type Props = {
  */
 export function HeroSection({ hero, clientsTotal, countrySlug, ctaLabel, whatsappLink }: Props) {
   return (
-    <section className="max-w-190 mx-auto pt-18 md:pt-22 px-7 pb-5 md:pb-7 text-center">
+    <section className="max-w-190 mx-auto pt-18 md:pt-22 px-5 md:px-7 pb-5 md:pb-7 text-center">
       {/* Hard-coded hook (Khalid 2026-07-15) with the LIVE client count from
           trustBundle.total (real paying clients) — falls back to ٢٦ if the
           live count is unavailable. Dialect varies per country. */}
-      <div className="inline-block text-center pt-[5px] px-3.5 pb-[5px] rounded-full border border-border bg-card font-mono text-[11.5px] text-muted-foreground tracking-[.3px] leading-[1.9] mb-4 md:mb-6.5">
+      <div className="inline-block text-center pt-[5px] px-3.5 pb-[5px] rounded-full border border-border bg-card text-[11.5px] text-muted-foreground leading-[1.9] mb-4 md:mb-6.5">
         <span
           className="inline-block w-[7px] h-[7px] rounded-full bg-success me-2 align-middle shadow-[0_0_0_3px_color-mix(in oklch, var(--success) 16%, transparent)]"
         />
@@ -28,7 +28,7 @@ export function HeroSection({ hero, clientsTotal, countrySlug, ctaLabel, whatsap
         {" شركة سعودية وعربية تبني حضورها على جوجل معنا — "}
         <span className="text-success font-bold">{countrySlug === "eg" ? "إمتى دورك؟" : "متى دورك؟"}</span>
       </div>
-      <h1 className="text-[length:var(--font-5xl)] leading-[1.22] font-semibold tracking-[-2px] [text-wrap:balance] max-sm:text-[clamp(24px,8vw,32px)] max-sm:leading-[1.4] max-sm:tracking-[-1px]">
+      <h1 className="text-[length:var(--font-5xl)] leading-[1.22] font-semibold [text-wrap:balance] max-sm:text-[clamp(24px,8vw,32px)] max-sm:leading-[1.4]">
         {hero?.h1Line1 ?? "ابنِ حضورك على جوجل"}<br />
         <span
           className="relative inline-block text-success px-1 py-0 bg-[linear-gradient(180deg,transparent_0%,transparent_78%,color-mix(in oklch, var(--success) 16%, transparent)_78%,color-mix(in oklch, var(--success) 16%, transparent)_100%)]"
@@ -47,7 +47,9 @@ export function HeroSection({ hero, clientsTotal, countrySlug, ctaLabel, whatsap
           href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-muted-foreground hover:text-foreground text-[15px] font-medium no-underline inline-flex items-center gap-1.5 px-1 py-2 border-b border-b-transparent hover:border-b-foreground transition-[border-color,color] duration-150"
+          // `min-h-11`: at `py-2` this measured 39px, five short of the threshold, on the
+          // above-the-fold secondary action.
+          className="text-muted-foreground hover:text-foreground text-[15px] font-medium no-underline inline-flex min-h-11 items-center gap-1.5 px-1 border-b border-b-transparent hover:border-b-foreground transition-[border-color,color] duration-150"
         >
           تواصل واتساب
           <span className="text-[18px] leading-none">←</span>

@@ -2,13 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { siteOgImages } from "@/lib/getGlobalSeo";
-import {
-  buildPageJsonLd,
-  DEFAULT_PUBLIC_SITE_ORIGIN,
-  SHARED_OPEN_GRAPH,
-  PUBLIC_INDEX_FOLLOW_ROBOTS,
-  sharedLanguages,
-} from "@/lib/seo-meta";
+import { buildPageJsonLd, DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS, safeJsonLd, SHARED_OPEN_GRAPH, sharedLanguages } from "@/lib/seo-meta";
 import { Users, Crown, ArrowLeft } from "lucide-react";
 
 const siteUrl = DEFAULT_PUBLIC_SITE_ORIGIN;
@@ -49,7 +43,7 @@ export default async function TeamPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
+          __html: safeJsonLd(
             buildPageJsonLd({
               url: `${siteUrl}/team`,
               name: teamTitle,
@@ -65,7 +59,7 @@ export default async function TeamPage() {
           <Users className="w-4 h-4" />
           <span>{totalCount} شخص يعمل عليك</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight tracking-tight text-foreground mb-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight text-foreground mb-4">
           الأشخاص الذين يعملون معك في كواليس النمو
         </h1>
         <p className="mx-auto max-w-2xl text-sm sm:text-base leading-relaxed text-muted-foreground">
@@ -81,7 +75,7 @@ export default async function TeamPage() {
               <Crown className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
                 القيادة
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -105,11 +99,11 @@ export default async function TeamPage() {
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
                 فريق التنفيذ
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
-                محتوى · تصميم · SEO · تطوير · ميديا — كل تخصّص وله شخص متفرّغ
+                محتوى · تصميم · سيو · تطوير · ميديا — كل تخصّص وله شخص متفرّغ
               </p>
             </div>
           </div>
@@ -167,8 +161,8 @@ function MemberCardSmall({ member }: { member: Member }) {
     <div className="rounded-2xl border border-border bg-card p-5 flex flex-col items-center text-center">
       <MemberAvatar member={member} size={80} sizeClass="w-20 h-20" ringClass="ring-1 ring-border" />
       <div className="text-[13px] font-bold text-foreground mt-3 leading-tight">{member.name}</div>
-      <div className="text-[11px] text-success font-semibold mt-1">{member.role}</div>
-      <p className="text-[11px] text-muted-foreground mt-2 leading-relaxed line-clamp-3">
+      <div className="text-xs text-success font-semibold mt-1">{member.role}</div>
+      <p className="text-xs text-muted-foreground mt-2 leading-relaxed line-clamp-3">
         {member.bio}
       </p>
     </div>

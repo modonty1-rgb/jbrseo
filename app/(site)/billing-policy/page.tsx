@@ -1,13 +1,7 @@
 import type { Metadata } from "next";
 import { ShieldCheck, Clock, XCircle, MessageCircle, CheckCircle } from "lucide-react";
 import { siteOgImages } from "@/lib/getGlobalSeo";
-import {
-  buildPageJsonLd,
-  DEFAULT_PUBLIC_SITE_ORIGIN,
-  SHARED_OPEN_GRAPH,
-  PUBLIC_INDEX_FOLLOW_ROBOTS,
-  sharedLanguages,
-} from "@/lib/seo-meta";
+import { buildPageJsonLd, DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS, safeJsonLd, SHARED_OPEN_GRAPH, sharedLanguages } from "@/lib/seo-meta";
 import { getWhatsAppLink } from "@/lib/site-links";
 import { WhatsAppIcon } from "@/app/components/icons/WhatsAppIcon";
 
@@ -59,7 +53,7 @@ export default function BillingPolicyPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
+          __html: safeJsonLd(
             buildPageJsonLd({
               url: `${SITE_URL}/billing-policy`,
               name: TITLE,
@@ -76,7 +70,7 @@ export default function BillingPolicyPage() {
             <ShieldCheck className="h-4 w-4" />
             <span>التزام موثّق · قابل للتحقق</span>
           </div>
-          <h1 className="text-3xl font-black tracking-tight text-foreground sm:text-4xl mb-4">
+          <h1 className="text-3xl font-black text-foreground sm:text-4xl mb-4">
             {TITLE}
           </h1>
           <p className="text-[15px] text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -168,7 +162,7 @@ export default function BillingPolicyPage() {
             </li>
             <li>
               <span className="font-semibold text-foreground">انخفاض حركة الزوار لأسباب خارجة عن تأثيرنا.</span>
-              {" "}تحديثات خوارزمية Google، دخول منافسين جدد، تغيّرات موسمية، أو توقّف حملات إعلانية قد تُقلّص الزيارات.
+              {" "}تحديثات خوارزمية جوجل، دخول منافسين جدد، تغيّرات موسمية، أو توقّف حملات إعلانية قد تُقلّص الزيارات.
             </li>
             <li>
               <span className="font-semibold text-foreground">انسحاب العميل بعد اكتمال التسليم.</span>

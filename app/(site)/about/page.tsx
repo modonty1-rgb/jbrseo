@@ -8,7 +8,8 @@ import { getCountryFromHeaders } from "@/lib/getCountryFromHeaders";
 import { getLandingContent } from "@/lib/getLandingContent";
 import { getWhatsAppLink } from "@/lib/site-links";
 import { siteOgImages } from "@/lib/getGlobalSeo";
-import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS, SHARED_OPEN_GRAPH } from "@/lib/seo-meta";
+import { COMPANY } from "@/lib/company";
+import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS, SHARED_OPEN_GRAPH, sharedLanguages } from "@/lib/seo-meta";
 import {
   Compass,
   Target,
@@ -42,12 +43,13 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: aboutTitle,
     description: aboutDescription,
+    // `sharedLanguages`, not a hand-written pair. This page inlined its own cluster and
+    // so was the one page on the site missing `x-default` — measured: 2 hreflang tags
+    // here against 3 everywhere else. Using the helper also means the next change to the
+    // cluster reaches this page instead of leaving it behind again.
     alternates: {
       canonical: `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
-      languages: {
-        "ar-SA": `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
-        "ar-EG": `${DEFAULT_PUBLIC_SITE_ORIGIN}/about`,
-      },
+      languages: sharedLanguages(`${DEFAULT_PUBLIC_SITE_ORIGIN}/about`),
     },
     robots: PUBLIC_INDEX_FOLLOW_ROBOTS,
     openGraph: {
@@ -131,7 +133,7 @@ export default async function AboutPage() {
           <Compass className="w-4 h-4" />
           <span>{hero.eyebrow || "عن منصة JBRSEO"}</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight tracking-tight text-foreground mb-4">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-[1.35] text-foreground mb-4">
           {hero.title}
         </h1>
         <p className="mx-auto max-w-2xl text-sm sm:text-base leading-relaxed text-muted-foreground">
@@ -154,12 +156,12 @@ export default async function AboutPage() {
           {(mission.taglineOne || mission.taglineTwo) && (
             <div className="flex flex-wrap gap-2 mt-4">
               {mission.taglineOne && (
-                <span className="text-[11px] font-bold tracking-wide text-success bg-success/12 px-2.5 py-1 rounded-md">
+                <span className="text-xs font-bold text-success bg-success/12 px-2.5 py-1 rounded-md">
                   {mission.taglineOne}
                 </span>
               )}
               {mission.taglineTwo && (
-                <span className="text-[11px] font-bold tracking-wide text-success bg-success/12 px-2.5 py-1 rounded-md">
+                <span className="text-xs font-bold text-success bg-success/12 px-2.5 py-1 rounded-md">
                   {mission.taglineTwo}
                 </span>
               )}
@@ -175,7 +177,7 @@ export default async function AboutPage() {
             <Scroll className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
               قصتنا باختصار
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -191,11 +193,11 @@ export default async function AboutPage() {
                 key={block.label}
                 className="rounded-2xl border border-border bg-card p-5"
               >
-                <div className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-wide text-success bg-success/12 px-2.5 py-1 rounded-md mb-3">
+                <div className="inline-flex items-center gap-1.5 text-xs font-extrabold text-success bg-success/12 px-2.5 py-1 rounded-md mb-3">
                   <Icon className="w-4 h-4" />
                   <span>{block.label}</span>
                 </div>
-                <h3 className="text-sm font-bold text-foreground mb-2 leading-snug">
+                <h3 className="text-sm font-bold text-foreground mb-2 leading-relaxed">
                   {block.title}
                 </h3>
                 <p className="text-[13px] leading-relaxed text-muted-foreground">
@@ -214,7 +216,7 @@ export default async function AboutPage() {
             <Heart className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
               ما الذي يميّز طريقة عملنا؟
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -255,7 +257,7 @@ export default async function AboutPage() {
               <Users className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
                 الفريق وراء JBRSEO
               </h2>
               <p className="text-xs text-muted-foreground mt-0.5">
@@ -327,7 +329,7 @@ export default async function AboutPage() {
                   {`+${extraCount} عضو متخصّص`}
                 </div>
                 <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
-                  ميديا · محتوى · تصميم · تطوير · SEO — كل تخصّص وله شخص متفرّغ.
+                  ميديا · محتوى · تصميم · تطوير · سيو — كل تخصّص وله شخص متفرّغ.
                 </p>
                 <div className="inline-flex items-center gap-1.5 text-[13px] font-bold text-success mt-4 group-hover:gap-2 transition-all">
                   <span>شاهد الفريق كامل</span>
@@ -346,8 +348,8 @@ export default async function AboutPage() {
             <Briefcase className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
-              هل JBRSEO مناسبة لمشروعك؟
+            <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
+              هل المنصة مناسبة لمشروعك؟
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
               صادقين معك من أول لقاء
@@ -386,14 +388,15 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* LEGAL */}
-      <section className="mb-16">
+      {/* LEGAL — the anchor the landing's trust line points at. `scroll-mt` keeps the
+          heading clear of the sticky header when arriving from /sa#legal. */}
+      <section id="legal" className="mb-16 scroll-mt-24">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-11 h-11 rounded-xl bg-success/12 text-success flex items-center justify-center">
             <Shield className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-foreground">
               معلومات قانونية عن الشركة
             </h2>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -410,21 +413,50 @@ export default async function AboutPage() {
           <div className="rounded-xl border border-border bg-card p-4 flex gap-3 items-start">
             <Mail className="w-4 h-4 text-muted-foreground mt-1 shrink-0" />
             <div className="min-w-0 flex-1">
-              <div className="text-[11px] font-bold text-muted-foreground/80 tracking-wide mb-1">
+              <div className="text-xs font-bold text-muted-foreground/80 mb-1">
                 قنوات التواصل الرسمية
               </div>
-              <div className="text-sm text-foreground font-medium break-all">
+              {/* `dir="ltr"`: an address is a Latin run inside an RTL block, and without
+                  its own direction the trailing dot or any punctuation beside it reorders.
+                  `break-words`, not `break-all` — the latter splits at an arbitrary
+                  character, so a wrapped address becomes unreadable and uncopyable. */}
+              <div dir="ltr" className="text-sm text-foreground font-medium break-words">
                 {legalInfo.email}
               </div>
               {legalInfo.phone && (
                 <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1.5">
                   <Phone className="w-3.5 h-3.5" />
-                  <span>{legalInfo.phone}</span>
+                  <bdi dir="ltr">{legalInfo.phone}</bdi>
                 </div>
               )}
             </div>
           </div>
         </div>
+        {/* The certificate itself — moved here from the landing page, where it cost
+            1,212px of scroll before anyone reached the prices. It belongs on the page
+            a reader opens *because* they want to verify us, not in the path of a reader
+            who is still deciding whether to care.
+
+            Desktop only, and not for layout reasons: even the 1290px JPEG corrupted GPU
+            raster tiles on older Android phones (verified on device, 2026-07-15). Mobile
+            gets the same proof in a form that always renders — the CR number above, which
+            is what the ministry portal actually checks. */}
+        <div className="hidden md:block mt-8">
+          <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-border/50">
+            <Image
+              src={COMPANY.crCertificatePath}
+              alt={`شهادة السجل التجاري الرسمية من وزارة التجارة السعودية · الرقم الموحّد ${COMPANY.unifiedNumber} · تاريخ الإصدار ${COMPANY.certificateIssuedAt}`}
+              width={1290}
+              height={911}
+              className="block w-full h-auto rounded-lg"
+              sizes="(max-width: 1024px) 90vw, 860px"
+            />
+          </div>
+          <p className="mt-2.5 text-center text-[12px] leading-[1.6] text-muted-foreground">
+            شهادة السجل التجاري الرسمية · <span className="font-semibold text-foreground">امسح الـ QR بجوالك</span> للتحقّق المباشر من وزارة التجارة السعودية
+          </p>
+        </div>
+
         {legalInfo.note && (
           <p className="mt-4 text-[12px] italic leading-relaxed text-muted-foreground">
             {legalInfo.note}
@@ -463,10 +495,14 @@ function LegalItem({ icon: Icon, label, value }: { icon: LucideIcon; label: stri
     <div className="rounded-xl border border-border bg-card p-4 flex gap-3 items-start">
       <Icon className="w-4 h-4 text-muted-foreground mt-1 shrink-0" />
       <div className="min-w-0">
-        <div className="text-xs font-bold text-muted-foreground/80 tracking-wide mb-1">
+        <div className="text-xs font-bold text-muted-foreground/80 mb-1">
           {label}
         </div>
-        <div className="text-sm text-foreground font-medium">{value}</div>
+        {/* `bdi`: these values are registration numbers, dates and addresses — Latin runs
+            inside an Arabic block. A bare number is usually fine, but the moment one
+            carries a `+`, a slash or a trailing dot the bidi algorithm reorders it, and a
+            registration number that reads back wrong is worse than one that is missing. */}
+        <bdi className="block text-sm text-foreground font-medium">{value}</bdi>
       </div>
     </div>
   );

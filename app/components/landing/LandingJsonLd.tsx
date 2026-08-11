@@ -1,11 +1,22 @@
+import { safeJsonLd } from "@/lib/seo-meta";
 import type { FaqItem } from "@/app/content/landing/types";
+import type { Plan as DBPlan } from "@prisma/client";
 import { COMPANY } from "@/lib/company";
-import { SITE_LOGO_URL } from "@/lib/constants";
+import { ORGANIZATION_LOGO_URL } from "@/lib/constants";
 
 type Props = {
   countrySlug: "sa" | "eg";
   siteOrigin: string;
   faqs: FaqItem[];
+  /**
+   * The same array the pricing cards render.
+   *
+   * Passed in rather than fetched here on purpose: a second query is a second source, and
+   * a Service/Offer graph that disagrees with the price on the page is worse than no
+   * graph at all — Google reads the markup, the buyer reads the card, and the gap is the
+   * kind that gets a rich result suppressed.
+   */
+  plans: DBPlan[];
   whatsappNumber?: string;
   socialLinks?: {
     facebook?: string;
@@ -17,9 +28,52 @@ type Props = {
   };
 };
 
-export function LandingJsonLd({ countrySlug, siteOrigin, faqs, socialLinks, whatsappNumber }: Props) {
+export function LandingJsonLd({ countrySlug, siteOrigin, faqs, plans, socialLinks, whatsappNumber }: Props) {
   const pageUrl = `${siteOrigin}/${countrySlug}`;
   const countryLabel = countrySlug === "eg" ? "مصر" : "السعودية";
+
+  /**
+   * The subscription itself, as an offer catalogue.
+   *
+   * The site published prices to readers and declared nothing about them — the one
+   * high-value node it was missing. Every field is read from the same `plans` array the
+   * cards render, so the two cannot drift: no literals, no second query.
+   *
+   * `priceCurrency` follows the country because the amounts do. Free tiers are dropped:
+   * an Offer at 0 describes a purchase nobody makes and dilutes the set.
+   *
+   * These prices are VAT-inclusive, which `priceSpecification.valueAddedTaxIncluded`
+   * states rather than leaves a crawler to assume.
+   */
+  const paidPlans = plans.filter((p) => p.priceMonthly > 0);
+  const priceCurrency = countrySlug === "eg" ? "EGP" : "SAR";
+  const service = paidPlans.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "@id": `${pageUrl}#service`,
+        name: "اشتراك محتوى وسيو — جبر سيو",
+        serviceType: "تحسين الظهور في محركات البحث وصناعة المحتوى",
+        provider: { "@id": `${siteOrigin}/#organization` },
+        areaServed: countrySlug === "eg" ? "EG" : "SA",
+        inLanguage: "ar",
+        offers: paidPlans.map((p) => ({
+          "@type": "Offer",
+          name: p.name,
+          url: `${pageUrl}#pricing`,
+          price: String(p.priceMonthly),
+          priceCurrency,
+          availability: "https://schema.org/InStock",
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            price: String(p.priceMonthly),
+            priceCurrency,
+            valueAddedTaxIncluded: true,
+            unitCode: "MON",
+          },
+        })),
+      }
+    : null;
 
   const sameAs = [
     socialLinks?.facebook,
@@ -48,14 +102,37 @@ export function LandingJsonLd({ countrySlug, siteOrigin, faqs, socialLinks, what
   const organization = {
     "@context": "https://schema.org",
     "@type": "Organization",
+    // A stable `@id`, so this is ONE entity across the site.
+    // Three nodes described this company with three names and no shared identifier —
+    // here as «جبر سيو» with no `@id`, on /about as «شركة جبر الجنوبية» with
+    // `#organization`, and inside the article payload as «شركة جبر سيو». Google merges
+    // entities by `@id`; without one it had three companies claiming the same url.
+    "@id": `${siteOrigin}/#organization`,
     name: "جبر سيو",
     alternateName: ["JBRSEO", COMPANY.marketingName],
     legalName: COMPANY.legalName,
     url: siteOrigin,
-    logo: SITE_LOGO_URL,
+    // The 143×46 wordmark is below Google's 112px minimum height for an Organization
+    // logo — the same reason `DEFAULT_OG_IMAGE_URL` exists. This uses the padded raster
+    // variant so the property is actually eligible.
+    logo: {
+      "@type": "ImageObject",
+      url: ORGANIZATION_LOGO_URL,
+      width: 1200,
+      height: 630,
+    },
     description:
       "جبر سيو — محتوى عربي يجلب عملاء من جوجل: مقالات تُكتب وتُنشر وتُقاس شهرياً، لأصحاب الأعمال في السعودية ومصر.",
-    areaServed: countryLabel,
+    // Both markets on both landings. `countryLabel` made /sa and /eg publish two
+    // contradictory descriptions of one company — now that they share an `@id`, the
+    // contradiction would be between two copies of the same entity.
+    areaServed: ["SA", "EG"],
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: COMPANY.address,
+      addressLocality: COMPANY.city,
+      addressCountry: "SA",
+    },
     email: COMPANY.email,
     ...(phone && { telephone: phone }),
     contactPoint: {
@@ -88,9 +165,13 @@ export function LandingJsonLd({ countrySlug, siteOrigin, faqs, socialLinks, what
   const website = {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${siteOrigin}/#website`,
     name: "جبر سيو",
     alternateName: "JBRSEO",
     url: `${siteOrigin}/`,
+    inLanguage: "ar",
+    // Points at the Organization by id rather than restating it — one entity, referenced.
+    publisher: { "@id": `${siteOrigin}/#organization` },
   };
 
   const breadcrumb = {
@@ -101,7 +182,9 @@ export function LandingJsonLd({ countrySlug, siteOrigin, faqs, socialLinks, what
         "@type": "ListItem",
         position: 1,
         name: "الرئيسية",
-        item: siteOrigin,
+        // `/sa`, not the bare origin: "/" 307-redirects, and a breadcrumb item should be
+        // a URL that resolves. Matches `buildPageJsonLd` and /about.
+        item: `${siteOrigin}/sa`,
       },
       {
         "@type": "ListItem",
@@ -112,40 +195,43 @@ export function LandingJsonLd({ countrySlug, siteOrigin, faqs, socialLinks, what
     ],
   };
 
-  const validFaqs = (faqs ?? []).filter((f) => f.q?.trim() && f.a?.trim());
-  const faqPage = validFaqs.length > 0
-    ? {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: validFaqs.map((f) => ({
-          "@type": "Question",
-          name: f.q.trim(),
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: f.a.trim(),
-          },
-        })),
-      }
-    : null;
+  /**
+   * The FAQ card moved to `/faq` and is deliberately not emitted here.
+   *
+   * Google grants FAQ rich results to a page whose main content is the FAQ, and the
+   * marked-up answers have to be the answers the visitor can see. The landing now shows
+   * three questions; claiming eighteen in its structured data would describe a page that
+   * does not exist and put two URLs forward for the same card.
+   *
+   * It also removes the largest JSON payload the landing was shipping — eighteen full
+   * answers inlined in the HTML of the page whose speed matters most.
+   */
+  const faqPage = null;
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(website) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organization) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(organization) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumb) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(breadcrumb) }}
       />
+      {service && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(service) }}
+        />
+      )}
       {faqPage && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPage) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(faqPage) }}
         />
       )}
     </>

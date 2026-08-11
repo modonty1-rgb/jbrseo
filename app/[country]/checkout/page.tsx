@@ -9,6 +9,7 @@ import { priceForDuration, parseDuration } from "@/lib/pricing-durations";
 import { formatPlanTotalDisplay } from "@/lib/pricing-plan-amounts";
 import { resolveReason, MAX_INLINE_RETRIES } from "@/lib/checkout-reasons";
 import { getTurnstileSiteKey } from "@/lib/turnstile";
+import { toArabicDigits } from "@/app/components/landing/landing-helpers";
 import { CheckoutHeader } from "./_components/CheckoutHeader";
 
 const NGENIUS_HOSTED_KEY = process.env.NEXT_PUBLIC_NGENIUS_HOSTED_SESSION_API_KEY ?? "";
@@ -70,9 +71,20 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
     redirect(`/${countrySlug}#pricing`);
   }
 
-  const totalNumber = priceForDuration(plan.priceMonthly, duration).total;
+  // The whole breakdown, not just the total: the free months are part of what was
+  // agreed on the plan card, and this page has to carry them through rather than
+  // reduce the purchase to an amount and a paid term.
+  const dp = priceForDuration(plan.priceMonthly, duration);
+  const totalNumber = dp.total;
   const totalDisplay = formatPlanTotalDisplay(totalNumber, country);
-  const billingLabel = duration === 12 ? "١٢ شهر" : duration === 6 ? "٦ شهور" : "٣ شهور";
+  // Service months, not paid months — the same figure the plan card shows.
+  // The card priced 17,994 as "٧ شهور" (six paid, one free) and this page called the same
+  // purchase "٦ شهور", so a buyer who clicked on seven months arrived at six with their
+  // card in hand and a month apparently missing. Both numbers were true and the mismatch
+  // was ours to explain; stating the term the customer receives, with the free month named
+  // under it, is the version that matches what they agreed to.
+  const serviceMonths = dp.serviceMonths;
+  const billingLabel = `${toArabicDigits(serviceMonths)} ${serviceMonths >= 3 && serviceMonths <= 10 ? "شهور" : "شهر"}`;
 
   return (
     <>
@@ -84,7 +96,7 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
           comfortable for reading + touch targets natural on mobile. */}
       <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
         <div className="mb-6 text-center sm:mb-8">
-          <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+          <h1 className="text-2xl font-black text-foreground sm:text-3xl">
             أكمل اشتراكك
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -98,6 +110,7 @@ export default async function CheckoutPage({ params, searchParams }: CheckoutPag
             planTagline={plan.tagline}
             totalDisplay={totalDisplay}
             billingLabel={billingLabel}
+            freeMonths={dp.freeMonths}
           />
 
           <CheckoutForm

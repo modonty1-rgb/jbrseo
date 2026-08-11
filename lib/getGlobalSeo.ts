@@ -40,8 +40,13 @@ export async function siteOgImages() {
 export async function getGlobalSeo() {
   return {
     title: "JBRSEO | خبراء السيو لنمو أعمالك",
+    // Rewritten in JBRSEO's voice. It opened with «مدونتي — منصة المحتوى العربي» and
+    // named another brand's Leads database, and this is the description every page
+    // without its own inherits — including the five checkout pages, whose link previews
+    // therefore introduced the reader to a company they had not chosen to pay.
+    // «Leads» also sat as a Latin run inside an Arabic sentence.
     description:
-      "مدونتي — منصة المحتوى العربي. مقالات تتصدر جوجل، صفحة شركتك في الشبكة، وقاعدة Leads مصنّفة — بدون كتابة حرف واحد.",
+      "جبر سيو — محتوى عربي يجيب لك عملاء من جوجل: مقالات تُكتب وتُنشر وتُقاس شهرياً، وتقارير أرقامها من جوجل نفسه. لأصحاب الأعمال في السعودية ومصر.",
     ogImage: await getSiteOgImageUrl(),
     canonical: "",
   };

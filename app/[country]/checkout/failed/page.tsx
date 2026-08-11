@@ -77,7 +77,7 @@ export default async function CheckoutFailedPage({ params, searchParams }: Props
           <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-destructive/12 border-2 border-destructive/40 shadow-lg shadow-destructive/20">
             <XCircle className="h-11 w-11 text-destructive" strokeWidth={2.5} />
           </div>
-          <h1 className="mt-6 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+          <h1 className="mt-6 text-2xl font-black text-foreground sm:text-3xl">
             الدفع لم يكتمل
           </h1>
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground max-w-md mx-auto">
@@ -90,7 +90,7 @@ export default async function CheckoutFailedPage({ params, searchParams }: Props
 
         {/* Reason block */}
         <div className="rounded-2xl border border-destructive/25 bg-destructive/5 p-5 sm:p-6 mb-6">
-          <p className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-[2px] text-destructive/80">
+          <p className="mb-3 text-xs font-semibold text-destructive/80">
             سبب الفشل
           </p>
           <p className="text-[15px] font-semibold text-destructive mb-2">

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
-import Image from "next/image";
 import { CreditCard, AlertCircle, ShieldCheck, Lock, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -395,13 +394,21 @@ export const NGeniusMount = forwardRef<NGeniusHandle, Props>(function NGeniusMou
               title={brand.name}
               aria-label={brand.name}
             >
-              <Image
+              {/* A plain `img`, not `next/image`.
+                  These are three local SVGs already passed `unoptimized`, so the component
+                  was doing nothing for them but warning: it compares the declared 32×20
+                  against what actually renders — mada is 60×20 — and logs "width or height
+                  modified" once per brand on every checkout load. Adding `width: auto` did
+                  not settle it, because the height is constrained too.
+                  An SVG has no layout shift to prevent and no format to negotiate, so the
+                  element that draws it plainly is the right one. Verified: three warnings
+                  on every load, now none. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={brand.src}
                 alt={brand.name}
-                width={32}
-                height={20}
-                className="h-5 w-auto object-contain"
-                unoptimized
+                className="object-contain"
+                style={{ height: 20, width: "auto" }}
               />
             </span>
           ))}

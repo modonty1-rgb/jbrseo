@@ -14,6 +14,7 @@ import { WhatsAppTrackLink } from "@/app/components/shared/WhatsAppTrackLink";
 import Image from "next/image";
 import { HeaderLogo } from "@/app/components/layout/HeaderLogo";
 import { MODONTY_LOGO_URL } from "@/lib/constants";
+import { COMPANY } from "@/lib/company";
 
 const COPYRIGHT = "© جميع الحقوق محفوظة — JBRSEO";
 const WA_LABEL = "تواصل على واتساب";
@@ -34,8 +35,14 @@ type FooterProps = {
   basePath?: string;
 };
 
-const HEADING_CLS =
-  "mb-4 text-[10px] font-black uppercase tracking-widest text-white/55";
+/**
+ * Column headings. Was `text-[10px] font-black uppercasest` — `uppercasest` is not a class
+ * and never was, so it compiled to nothing; the correctly spelled `uppercase` would have
+ * done nothing either, because Arabic has no letter case. 10px at font-black is also below
+ * the size where a heavy Arabic weight stays legible — the dots and the joins fill in. 11px
+ * at bold reads as a heading without shouting.
+ */
+const HEADING_CLS = "mb-4 text-[11px] font-bold text-white/55";
 
 export function Footer({ content, staticLanding, country, basePath }: FooterProps) {
   const footer = staticLanding.footer;
@@ -55,10 +62,18 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
   ].filter((item) => item.href);
 
   return (
+    /* No inline `fontFamily`. Tajawal already arrives from <body> via next/font, which
+       serves it under a hashed family name; naming the string "Tajawal" here asked the
+       browser for a face by a name next/font never registers, so it fell through to
+       sans-serif until the system happened to have Tajawal installed.
+
+       The dark slab is deliberate and not theme-driven: `bg-neutral-900` with white-alpha
+       text holds in both themes, and the footer reads as the page's floor rather than as a
+       fourth light band after three. That is why the tokens are bypassed here — it is the
+       one surface on the site that does not follow the theme. */
     <footer
       role="contentinfo"
       className="relative overflow-hidden border-t border-white/10 bg-neutral-900 text-white"
-      style={{ fontFamily: "'Tajawal', sans-serif" }}
     >
       {/* Subtle dot pattern — evenly spaced tiny dots at 5% opacity for a gentle premium texture. */}
       <div
@@ -96,7 +111,9 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
                 aria-hidden
                 className="mt-1.5 inline-block h-[1.5px] w-4 shrink-0 rounded-full bg-success"
               />
-              <p className="text-balance text-sm font-bold tracking-wider text-success">
+              {/* `font-boldr` — a typo that silently compiled to nothing, so the tagline has
+                  been rendering at normal weight since it was written. */}
+              <p className="text-balance text-sm font-bold text-success">
                 {footer.tagline}
               </p>
             </div>
@@ -107,9 +124,11 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
 
           {/* COL 2 — EXPLORE */}
           <div>
-            <p className={HEADING_CLS} style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
-              استكشف
-            </p>
+            {/* IBM Plex Mono ships no Arabic glyphs. Every heading here asked for it and got
+                a mid-string fallback instead: the browser substitutes a different face for
+                the Arabic, which drops the letter-joining that makes Arabic readable. The
+                mono face is right for the email address below and wrong for every word. */}
+            <p className={HEADING_CLS}>استكشف</p>
             <ul className="flex flex-col">
               {footerLinks.map((l, i) => (
                 <li key={i}>
@@ -126,9 +145,7 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
 
           {/* COL 3 — CONTACT */}
           <div>
-            <p className={HEADING_CLS} style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
-              تواصل
-            </p>
+            <p className={HEADING_CLS}>تواصل</p>
             <div className="flex flex-col gap-3 items-start">
               <WhatsAppTrackLink
                 href={waLink}
@@ -139,10 +156,14 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
                 <WhatsAppIcon />
                 {WA_LABEL}
               </WhatsAppTrackLink>
+              {/* The one place the mono face belongs: an address the reader may have to copy
+                  character by character, where a fixed pitch makes rn / m and l / 1 distinct.
+                  `dir="ltr"` as an attribute rather than an inline style — an email address
+                  does not mirror, and the attribute is what assistive tech reads. */}
               <a
                 href="mailto:support@jbrseo.com"
-                className="inline-flex min-h-11 items-center gap-2 text-sm text-white/75 transition-colors hover:text-white"
-                style={{ direction: "ltr", fontFamily: "'IBM Plex Mono', monospace" }}
+                dir="ltr"
+                className="font-mono inline-flex min-h-11 items-center gap-2 text-sm text-white/75 transition-colors hover:text-white"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                   <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
@@ -157,9 +178,7 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
           <div>
             {socialLinks.length > 0 && (
               <>
-                <p className={HEADING_CLS} style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
-                  تابعنا
-                </p>
+                <p className={HEADING_CLS}>تابعنا</p>
                 <div className="flex flex-wrap gap-2 mb-6">
                   {socialLinks.map(({ href, label, Icon }) => (
                     <Link
@@ -185,9 +204,7 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
                 aria-label="خدمة مقدّمة من منصة مدونتي"
                 className="inline-flex items-center gap-2 transition-opacity hover:opacity-80"
               >
-                <span className="text-[12px] text-white/70" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
-                  مدعوم بمنصة
-                </span>
+                <span className="text-[12px] text-white/70">مدعوم بمنصة</span>
                 <Image
                   src={MODONTY_LOGO_URL}
                   alt="شعار مدونتي"
@@ -225,8 +242,13 @@ export function Footer({ content, staticLanding, country, basePath }: FooterProp
               unoptimized
             />
             <span className="h-3 w-px bg-white/20" aria-hidden />
-            <p className="text-xs text-white/70" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
-              سجل تجاري ٧٠٤٠٦٠٢٠٩١
+            {/* Read from COMPANY, not typed here. This footer printed ٧٠٤٠٦٠٢٠٩١ while
+                lib/company.ts and the CR certificate itself both say 7036024383 — two
+                different registration numbers under the same label, on the page that is
+                supposed to prove who we are. Latin digits like the identity card in
+                SaudiIdentity: this is a figure people paste into the ministry's portal. */}
+            <p className="text-xs text-white/70">
+              سجل تجاري <span dir="ltr" className="tabular-nums">{COMPANY.unifiedNumber}</span>
             </p>
           </div>
         )}

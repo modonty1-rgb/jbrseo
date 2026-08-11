@@ -33,6 +33,9 @@ const SECTIONS_BY_PAGE = {
   team: ["team"],
   privacy: ["privacy"],
   terms: ["terms"],
+  // /faq renders the same `faq` section the landing teases, so an admin edit to the
+  // questions moves this page's lastModified as well as the landing's.
+  faq: ["faq"],
 } as const;
 
 function newest(dates: readonly (Date | undefined)[]): Date {
@@ -113,6 +116,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: CODE_COPY_UPDATED,
       changeFrequency: "yearly" as const,
       priority: 0.5,
+    },
+    // Four routes that were indexable and undeclared.
+    // Each sets `robots: { index: true }` in its own metadata, so Google was welcome to
+    // index them and had to find them by crawling — while the sitemap, which is the
+    // site's own statement of what exists, said they did not. /faq and /clients in
+    // particular carry structured data (FAQPage, ItemList) that is worth declaring.
+    {
+      url: `${siteUrl}/faq`,
+      lastModified: dateOf("faq"),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+    {
+      // The roster comes from Modonty's API, not from a LandingSection, so there is no
+      // admin edit here for `dateOf` to read.
+      url: `${siteUrl}/clients`,
+      lastModified: CODE_COPY_UPDATED,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${siteUrl}/articles`,
+      lastModified: CODE_COPY_UPDATED,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    },
+    {
+      url: `${siteUrl}/cost-comparison`,
+      lastModified: CODE_COPY_UPDATED,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
     },
   ];
 }

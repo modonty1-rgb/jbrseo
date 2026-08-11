@@ -2,13 +2,7 @@ import type { Metadata } from "next";
 import { LegalMarkdownArticle } from "@/app/(site)/_components/LegalMarkdownArticle";
 import { getStaticLandingWithOverrides } from "@/app/content/landing/get-static-landing";
 import { siteOgImages } from "@/lib/getGlobalSeo";
-import {
-  buildPageJsonLd,
-  DEFAULT_PUBLIC_SITE_ORIGIN,
-  SHARED_OPEN_GRAPH,
-  PUBLIC_INDEX_FOLLOW_ROBOTS,
-  sharedLanguages,
-} from "@/lib/seo-meta";
+import { buildPageJsonLd, DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS, safeJsonLd, SHARED_OPEN_GRAPH, sharedLanguages } from "@/lib/seo-meta";
 import type { LegalSectionBlock } from "@/app/content/landing/types";
 import {
   Shield,
@@ -85,7 +79,7 @@ export default async function PrivacyPage() {
     return (
       <main className="bg-background text-foreground">
         <section className="mx-auto max-w-5xl px-4 py-16 text-center sm:px-6 lg:px-8">
-          <h1 className="text-2xl font-black tracking-tight sm:text-3xl">سياسة الخصوصية</h1>
+          <h1 className="text-2xl font-black sm:text-3xl">سياسة الخصوصية</h1>
           <p className="mt-4 text-sm text-muted-foreground">
             هذه الصفحة قيد التحديث. يرجى المحاولة لاحقاً.
           </p>
@@ -102,7 +96,7 @@ export default async function PrivacyPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
+          __html: safeJsonLd(
             buildPageJsonLd({
               url: `${DEFAULT_PUBLIC_SITE_ORIGIN}/privacy`,
               name: privacyTitleAbsolute,
@@ -119,7 +113,7 @@ export default async function PrivacyPage() {
             <Shield className="w-4 h-4" />
             <span>سياسة الخصوصية</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight tracking-tight text-foreground mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black leading-tight text-foreground mb-4">
             {title}
           </h1>
           {updatedAt && (
@@ -139,7 +133,7 @@ export default async function PrivacyPage() {
           <>
             {/* Table of contents */}
             <nav className="mb-12 rounded-2xl border border-border bg-card p-5">
-              <div className="text-xs font-bold tracking-wide text-muted-foreground mb-3">
+              <div className="text-xs font-bold text-muted-foreground mb-3">
                 محتويات السياسة
               </div>
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -152,7 +146,7 @@ export default async function PrivacyPage() {
                       className="flex min-h-11 items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-muted-foreground hover:bg-success/5 hover:text-foreground transition-colors"
                     >
                       <Icon className="w-4 h-4 shrink-0 text-success/80" />
-                      <span className="truncate">{s.title}</span>
+                      <span className="line-clamp-2">{s.title}</span>
                     </a>
                   );
                 })}

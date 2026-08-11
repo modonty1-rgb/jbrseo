@@ -27,6 +27,17 @@ export const MODONTY_LOGO_URL =
 export const DEFAULT_OG_IMAGE_URL =
   "https://res.cloudinary.com/dfegnpgwx/image/upload/f_png,w_1200,h_630,c_pad,b_white/v1771973886/jbrser_svg_ikxmnn.svg";
 
+/**
+ * The logo as schema.org Organization needs it, which is not the same asset as the header
+ * wordmark.
+ *
+ * `SITE_LOGO_URL` serves at its natural 143×46 — below Google's documented 112px minimum
+ * height for an Organization `logo`, so the property was being published ineligible. This
+ * is the same source through the same padding transform as the OG image, at 1200×630, and
+ * it is rasterised (`f_png`) because Google does not accept SVG here.
+ */
+export const ORGANIZATION_LOGO_URL = DEFAULT_OG_IMAGE_URL;
+
 const FAVICON_BASE =
   "https://res.cloudinary.com/dfegnpgwx/image/upload/f_auto,q_auto/v1773533817/favicon_uzm7lz.webp";
 

@@ -145,6 +145,9 @@ export default async function CountryHome({
         countrySlug={countrySlug}
         siteOrigin={DEFAULT_PUBLIC_SITE_ORIGIN}
         faqs={staticLanding.faq?.faqs ?? []}
+        // The same array `Landing` renders the price cards from — one source, so the
+        // Offer markup and the visible price cannot disagree.
+        plans={plans}
         socialLinks={socialLinks}
         whatsappNumber={content.siteSettings?.whatsappNumber}
       />

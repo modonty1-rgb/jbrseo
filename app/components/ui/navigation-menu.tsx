@@ -102,7 +102,7 @@ export function NavigationMenuTrigger({
       aria-haspopup="menu"
       aria-expanded={isOpen}
       className={cn(
-        "select-none rounded-md border border-[#252b3b] bg-[#13161f] px-3 py-2 text-[9px] font-bold uppercase tracking-[.08em] text-[#4a5070] transition-all duration-75",
+        "select-none rounded-md border border-[#252b3b] bg-[#13161f] px-3 py-2 text-[9px] font-bold uppercase text-[#4a5070] transition-all duration-75",
         className,
       )}
       {...props}

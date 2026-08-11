@@ -78,14 +78,19 @@ export const seo = {
  * يُترك أي حقل فارغاً ⇒ يرث المشترك أعلاه. ويمكن تجاوز أي قيمة من الأدمن لاحقاً عبر
  * `byCountry` في قسم `seo`.
  */
+// Titles trimmed to survive Google's SERP cut-off.
+// «جبر سيو | ظهور أقوى في جوجل والوصول لعملائك في السعودية» rendered at 64 characters
+// once the layout appended " | JBRSEO" — so the brand suffix, and often the country, were
+// the parts truncated away. The country is the keyword worth keeping in a two-market
+// site, so it moves earlier and the padding around it goes.
 export const seoByCountry = {
   sa: {
-    title: "جبر سيو | ظهور أقوى في جوجل والوصول لعملائك في السعودية",
+    title: "خدمات سيو ومحتوى في السعودية | جبر سيو",
     description:
       "نكتب محتوى سيو عربياً يظهر أمام العملاء الجاهزين للشراء في السعودية — مقالات تتصدّر جوجل ونتائج تُقاس شهرياً. اشتراك يبدأ من ٣٩٩ ريالاً.",
   },
   eg: {
-    title: "جبر سيو | ظهور أقوى في جوجل والوصول لعملائك في مصر",
+    title: "خدمات سيو ومحتوى في مصر | جبر سيو",
     description:
       "نكتب محتوى سيو عربياً يظهر أمام العملاء الجاهزين للشراء في مصر — مقالات تتصدّر جوجل ونتائج تُقاس شهرياً. اشتراك يبدأ من ١١٩٩ جنيهاً.",
   },

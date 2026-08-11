@@ -77,7 +77,7 @@ export function ProcessingClient({ countrySlug, order, refShort }: Props) {
           <Loader2 className="h-11 w-11 text-info animate-spin" strokeWidth={2.5} />
         </div>
 
-        <h1 className="mt-6 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+        <h1 className="mt-6 text-2xl font-black text-foreground sm:text-3xl">
           {timedOut ? "لا زلنا نتحقق من دفعك" : "لحظات — نُجهّز حسابك"}
         </h1>
 

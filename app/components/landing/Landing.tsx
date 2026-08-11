@@ -3,18 +3,16 @@ import type { StaticLanding } from "@/app/content/landing/types";
 import type { ModontyTrustBundle } from "@/app/actions/modonty-client-logos";
 import type { ModontyImpactStats, ClientCaseStudyStats } from "@/lib/analytics/ga4";
 import { HeroSection } from "./sections/HeroSection";
-import { ModontyImpactBar } from "./sections/ModontyImpactBar";
 import { GuaranteeSection } from "./sections/GuaranteeSection";
 import { SaudiIdentity } from "./sections/SaudiIdentity";
 import { FeaturesSection } from "./sections/FeaturesSection";
 import { FinalCtaSection } from "./sections/FinalCtaSection";
-import { TeamSection } from "./sections/TeamSection";
 import { VoicesSection } from "./sections/VoicesSection";
 import { PricingSection } from "./sections/PricingSection";
-import { MathCompare } from "./sections/MathCompare";
+import { CostHook } from "./sections/CostHook";
 import { CaseStudiesSlider } from "./sections/CaseStudiesSlider";
 import { FaqSection } from "./sections/FaqSection";
-import { TrustSectionLazy } from "./TrustSectionLazy";
+import { ClientsTeaser } from "./sections/ClientsTeaser";
 import { tamaraIsConfigured } from "@/lib/tamara/client";
 
 type Props = {
@@ -91,21 +89,46 @@ export function Landing(props: Props) {
         whatsappLink={whatsappLink}
       />
 
-      <CaseStudiesSlider caseStats={caseStats} clientsCount={trustBundle.total} />
-
-      {modontyImpact && <ModontyImpactBar impact={modontyImpact} />}
-
-      <GuaranteeSection />
-
-      <SaudiIdentity />
-
-      {trustBundle.logos.length > 0 && (
-        <TrustSectionLazy bundle={trustBundle} ctaLabel={ctaLabel} />
-      )}
-
-      <MathCompare visiblePlans={visiblePlans} currency={currency} />
-
+      {/* WHAT before PROOF.
+          Four proof sections used to run back to back before this one — case studies,
+          live numbers, guarantees, client logos — 2,899px arguing that we succeed, at a
+          reader who did not yet know what the thing is. Read right-to-left in a mirrored
+          F pattern, four blocks carrying the same message scan as one message repeated,
+          and the scan stops. The offer comes first now; the evidence lands on a claim
+          that has already been made. */}
       <FeaturesSection />
+
+      {/* The price of the alternative, immediately after the offer and immediately before
+          the price of ours — the comparison only means something between those two. */}
+      <CostHook visiblePlans={visiblePlans} currency={currency} />
+
+      {/* Client stories and the platform totals, under one heading. They were two
+          sections whose eyebrows both read "Google Analytics" — the same claim at two
+          resolutions, charging the reader twice for one message. */}
+      <CaseStudiesSlider
+        caseStats={caseStats}
+        clientsCount={trustBundle.total}
+        impact={modontyImpact}
+      />
+
+      {/* Registration proof and the team — who we are, in one strip. */}
+      {/* No `teamTotal` any more: the card shows faces instead of a headcount, because a
+          number invites a comparison against agencies that claim a bigger one. */}
+      <SaudiIdentity team={[...coreTeam, ...executionTeam]} />
+
+      {/* Four logos, not thirty.
+          The old section serialised every client's name, sector and URL into this page to
+          render four tiles, and shipped framer-motion plus a Radix Select to filter a
+          roster hidden behind an expand button. Slicing here is what keeps the other
+          twenty-six out of the payload entirely — passing the whole bundle and slicing
+          inside the component would still send it. The roster lives on /clients. */}
+      {trustBundle.logos.length > 0 && (
+        <ClientsTeaser
+          logos={trustBundle.logos.slice(0, 6)}
+          total={trustBundle.total}
+          ctaLabel={ctaLabel}
+        />
+      )}
 
       <PricingSection
         visiblePlans={visiblePlans}
@@ -117,15 +140,26 @@ export function Landing(props: Props) {
         refundNote={refundNote}
       />
 
+      {/* Guarantees follow the price, not precede it. A guarantee removes a risk, and the
+          risk is not felt until the number is seen — above the price it was reassurance
+          about a cost the reader had not yet been asked to bear. */}
+      <GuaranteeSection />
+
       {voices.length > 0 && <VoicesSection voices={voices} socialProofEyebrow={socialProofEyebrow} />}
 
-      {(coreTeam.length > 0 || executionTeam.length > 0) && (
-        <TeamSection coreTeam={coreTeam} executionTeam={executionTeam} />
-      )}
 
-      <FaqSection faqs={faqs} whatsappLink={whatsappLink} />
+      {/* Three questions and a link, not eighteen. The full set — and the FAQPage
+          structured data that belongs with it — lives on /faq. */}
+      <FaqSection faqs={faqs} whatsappLink={whatsappLink} limit={3} moreHref="/faq" />
 
-      <FinalCtaSection finalCtaData={finalCtaData} ctaLabel={ctaLabel} whatsappLink={whatsappLink} />
+      {/* Gated on "sa" exactly as the pricing cards gate it — one refund promise, shown
+          under the same condition in both places it appears. */}
+      <FinalCtaSection
+        finalCtaData={finalCtaData}
+        ctaLabel={ctaLabel}
+        whatsappLink={whatsappLink}
+        refundNote={countrySlug === "sa" ? refundNote : undefined}
+      />
     </>
   );
 }

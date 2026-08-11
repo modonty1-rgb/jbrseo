@@ -7,6 +7,7 @@ import { formatPlanTotalDisplay } from "@/lib/pricing-plan-amounts";
 import { getTurnstileSiteKey } from "@/lib/turnstile";
 import { tamaraIsConfigured } from "@/lib/tamara/client";
 import { CheckoutHeader } from "../_components/CheckoutHeader";
+import { toArabicDigits } from "@/app/components/landing/landing-helpers";
 import { CheckoutSummary } from "../_components/CheckoutSummary";
 import { TamaraForm } from "./_components/TamaraForm";
 
@@ -54,9 +55,14 @@ export default async function TamaraCheckoutPage({ params, searchParams }: Props
     redirect(`/${countrySlug}#pricing`);
   }
 
-  const totalNumber = priceForDuration(plan.priceMonthly, duration).total;
+  // Same breakdown as the card route: the instalment buyer is buying the same term and
+  // the same free months, so this page states them too.
+  const dp = priceForDuration(plan.priceMonthly, duration);
+  const totalNumber = dp.total;
   const totalDisplay = formatPlanTotalDisplay(totalNumber, country);
-  const billingLabel = duration === 12 ? "١٢ شهر" : duration === 6 ? "٦ شهور" : "٣ شهور";
+  // Service months, matching the plan card and the card-checkout route.
+  const serviceMonths = dp.serviceMonths;
+  const billingLabel = `${toArabicDigits(serviceMonths)} ${serviceMonths >= 3 && serviceMonths <= 10 ? "شهور" : "شهر"}`;
 
   return (
     <>
@@ -65,7 +71,7 @@ export default async function TamaraCheckoutPage({ params, searchParams }: Props
       <CheckoutHeader backHref={`/${countrySlug}#pricing`} />
       <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
         <div className="mb-6 text-center sm:mb-8">
-          <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+          <h1 className="text-2xl font-black text-foreground sm:text-3xl">
             قسّط اشتراكك مع تمارا
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -79,6 +85,7 @@ export default async function TamaraCheckoutPage({ params, searchParams }: Props
             planTagline={plan.tagline}
             totalDisplay={totalDisplay}
             billingLabel={billingLabel}
+            freeMonths={dp.freeMonths}
           />
 
           {/* The split itself is deliberately not spelled out here. Tamara decides the

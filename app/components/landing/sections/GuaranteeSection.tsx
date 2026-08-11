@@ -1,27 +1,32 @@
 import { ShieldCheck } from "lucide-react";
 
-/** Activity-based refund pledge. Desktop-only. Static. No state, server-ready. */
+/** Activity-based refund pledge. Static. No state, server-ready. */
 export function GuaranteeSection() {
   return (
     <section
-        className="hidden md:block bg-card border-t border-t-border border-b border-b-border"
+        className="bg-card border-t border-t-border border-b border-b-border"
       >
-        <div className="max-w-230 mx-auto px-7 py-14">
+        <div className="max-w-230 mx-auto px-5 md:px-7 py-6 md:py-10">
           <div className="flex flex-col md:flex-row items-start gap-6 md:gap-8">
             <div className="shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-success/15 flex items-center justify-center mx-auto md:mx-0">
               <ShieldCheck className="w-9 h-9 md:w-11 md:h-11 text-success" strokeWidth={2} aria-hidden />
             </div>
-            <div className="flex-1 text-center md:text-right w-full">
-              <div className="font-mono text-[11px] text-success tracking-[1px] mb-2">تعهّدنا لك</div>
-              <h3 className="text-[22px] md:text-[26px] font-semibold text-foreground tracking-[-.5px] leading-[1.35] mb-4">
+            {/* `text-start`, not `text-right` — the physical property would keep this
+                block right-aligned if the page ever renders LTR. */}
+            <div className="flex-1 text-center md:text-start w-full">
+              <div className="text-[12px] font-semibold text-success mb-2">تعهّدنا لك</div>
+              <h3 className="text-[22px] md:text-[26px] font-semibold text-foreground leading-[1.35] mb-4">
                 نضمن <span className="text-success">الجهد والشفافية</span> — تشوف الأثر بعينك في لوحتك
               </h3>
-              <ul className="space-y-2.5 text-[14.5px] text-foreground leading-[1.7] mb-4 md:pr-1 list-none">
+              <ul className="space-y-2.5 text-[14.5px] text-foreground leading-[1.7] mb-4 md:ps-1 list-none">
+                {/* Two rows, not four. «الالتزام بالنشر» and «الاستجابة» restated what the
+                    pricing cards a screen above already sell — the reader had just read the
+                    article counts. What survives is what the cards do not say: how the article
+                    is checked, and where the numbers come from. The closing line still names
+                    all four, so nothing is lost, only un-repeated. */}
                 {[
-                  { k: "الالتزام بالنشر", v: "عدد مقالاتك الشهرية تُنشر بموعدها — بلا استثناء" },
                   { k: "معيار الجودة", v: "٢٨ فحصاً تلقائياً على كل مقال قبل النشر" },
-                  { k: "الشفافية", v: "تقرير GA4 مباشر من لوحتك — أرقام حقيقية موثّقة من جوجل" },
-                  { k: "الاستجابة", v: "على أي استفسار خلال ٢٤ ساعة كحد أقصى" },
+                  { k: "الشفافية", v: "أرقام زياراتك مباشرة في لوحتك — موثّقة من جوجل نفسه" },
                 ].map((row, i) => (
                   <li key={i} className="flex items-start gap-2.5">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden className="shrink-0 mt-1">

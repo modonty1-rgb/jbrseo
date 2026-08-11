@@ -18,7 +18,17 @@ export const SUPPORTED_COUNTRY_SLUGS: CountrySlug[] = Object.keys(COUNTRY_CONFIG
  * every article Modonty publishes for us. A country prefix would split one article into
  * two competing URLs.
  */
-export const RESERVED_FIRST_SEGMENTS = ["about", "team", "privacy", "terms", "billing-policy", "admin", "features", "preview", "api", "articles"] as const;
+/**
+ * Paths that are NOT a country.
+ *
+ * Anything not listed here gets rewritten to `/{country}{path}`, so a new country-less
+ * page is invisible until its segment is added — the proxy answers 307 to `/sa/faq`,
+ * which does not exist, and the page looks broken for a reason nothing in it explains.
+ * Add the segment in the same commit that adds the route.
+ */
+// `"preview"` removed: no `app/preview` route exists, so reserving the segment only meant
+// /preview 404'd instead of geo-redirecting like any other unknown path.
+export const RESERVED_FIRST_SEGMENTS = ["about", "team", "privacy", "terms", "billing-policy", "admin", "features", "api", "articles", "faq", "cost-comparison", "clients"] as const;
 
 export function getCountrySlugFromParam(param: string | undefined): CountrySlug {
   const slug = param?.toLowerCase();

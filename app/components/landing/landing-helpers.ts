@@ -11,13 +11,34 @@ export function formatNum(n: number): string {
   return n.toLocaleString("en-US");
 }
 
-export function ytEmbed(url?: string): string | null {
-  if (!url) return null;
-  const m = url.match(
-    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{11})/,
-  );
-  return m ? `https://www.youtube.com/embed/${m[1]}` : null;
+/**
+ * A price in Eastern Arabic numerals, grouped in thousands.
+ *
+ * The pricing cards read "٤ مقالات / شهر" above "2,394" — two numeral systems an inch
+ * apart, and the Western one was the figure the whole decision rests on. Every other
+ * number on the page is Eastern, so the price was the odd element, and an odd-looking
+ * price is the last thing a page selling a subscription can afford.
+ *
+ * Grouping first, then transliteration: `toLocaleString` puts the separators in the right
+ * places and the digit swap does not move them. Always render inside `dir="ltr"` — a
+ * number never mirrors, in either script.
+ */
+export function formatPrice(n: number): string {
+  return toArabicDigits(n.toLocaleString("en-US"));
 }
+
+const YT_ID = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([A-Za-z0-9_-]{11})/;
+
+/** The eleven-character video id, or null if this is not a YouTube URL we recognise. */
+export function ytId(url?: string): string | null {
+  if (!url) return null;
+  return url.match(YT_ID)?.[1] ?? null;
+}
+
+// `ytEmbed(url)` lived here and returned the full embed URL. Its one caller — the
+// testimonial iframe — was replaced by VideoFacade, which builds the embed URL itself
+// only after someone presses play, so the helper had no callers left. `ytId` is what
+// both the facade and its poster need.
 
 export function formatMinSec(secs: number): string {
   const m = Math.floor(secs / 60);
@@ -45,7 +66,8 @@ export type CaseStudy = {
 // Fallback values (used if GA4 fetch failed) — real numbers from probe on 2026-07-10.
 const CASE_FALLBACK: Record<string, Omit<CaseStudy, "name" | "industry" | "tag" | "daysActive" | "startDate" | "endDate">> = {
   smileTown: {
-    heroStat: { big: "٣١", label: "ضغطة على «احجز موعد»", sub: "بدون ريال إعلانات · آخر ٩٠ يوم" },
+    // Same correction as the live builder below: Smile Town is Egyptian, so no riyals.
+    heroStat: { big: "٣١", label: "ضغطة على «احجز موعد»", sub: "بدون أي إعلانات مدفوعة · آخر ٩٠ يوم" },
     after: [
       { label: "زوّار من جوجل", value: "٨٣", sub: "عضوي · نية شراء" },
       { label: "مشاهدات صفحات", value: "٣٨٢", sub: "قراءة عميقة" },
@@ -56,7 +78,11 @@ const CASE_FALLBACK: Record<string, Omit<CaseStudy, "name" | "industry" | "tag" 
       { k: "متوسط الجلسة", v: "٢:٥٦", sub: "دقيقة · تصفح جاد" },
       { k: "معدل التفاعل", v: "٧٩٪", sub: "متوسط الصناعة ٥٠٪" },
       { k: "دول وصلها", v: "٥", sub: "مصر · السعودية · الإمارات..." },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "كلها عضوي + شفهي" },
+      // «صفر», not «٠ ر.س». Smile Town is an Egyptian clinic and Kima Zone an Egyptian
+      // factory — neither spends riyals — and the figure means "none at all", which no
+      // currency improves. Spelled out for the same reason the BEFORE column is: a lone
+      // ٠ renders as a speck, and this line is one of the card's strongest facts.
+      { k: "إعلانات مدفوعة", v: "صفر", sub: "كلها عضوي + شفهي" },
     ],
   },
   kimaZone: {
@@ -71,7 +97,7 @@ const CASE_FALLBACK: Record<string, Omit<CaseStudy, "name" | "industry" | "tag" 
       { k: "متوسط الجلسة", v: "٢:٣٢", sub: "دقيقة · قرّاء جادّون" },
       { k: "معدل التفاعل", v: "٨٠٪", sub: "متوسط الصناعة ٥٠٪" },
       { k: "دول وصلها", v: "٤", sub: "مصر · السعودية · الإمارات..." },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "عضوي فقط" },
+      { k: "إعلانات مدفوعة", v: "صفر", sub: "عضوي فقط" },
     ],
   },
   baqatek: {
@@ -86,7 +112,7 @@ const CASE_FALLBACK: Record<string, Omit<CaseStudy, "name" | "industry" | "tag" 
       { k: "متوسط الجلسة", v: "١:٣٧", sub: "دقيقة" },
       { k: "زوّار جدد", v: "٧٣٪", sub: "كلهم أول زيارة" },
       { k: "مقال واحد جذب", v: "٦٦", sub: "زائر عن باقات STC" },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "صفر · عضوي فقط" },
+      { k: "إعلانات مدفوعة", v: "صفر", sub: "عضوي فقط" },
     ],
   },
 };
@@ -94,7 +120,9 @@ const CASE_FALLBACK: Record<string, Omit<CaseStudy, "name" | "industry" | "tag" 
 const CASE_META: Record<string, Pick<CaseStudy, "name" | "industry" | "tag" | "daysActive" | "startDate" | "endDate">> = {
   smileTown: {
     name: "عيادات سمايل تاون",
-    industry: "طب الأسنان · السعودية",
+    // Egypt, not Saudi. This said «السعودية» — a false statement about a named, real
+    // clinic, on the section whose whole claim is that we do not write the numbers.
+    industry: "طب الأسنان · مصر",
     tag: "طب الأسنان",
     daysActive: 90,
     startDate: "قبل الاشتراك",
@@ -125,7 +153,8 @@ function buildSmileTown(s: ClientCaseStudyStats): CaseStudy {
     heroStat: {
       big: toArabicDigits(s.bookingPageViews),
       label: "ضغطة على «احجز موعد»",
-      sub: "بدون ريال إعلانات · آخر ٩٠ يوم",
+      // Not «بدون ريال إعلانات» — this is Smile Town, an Egyptian clinic.
+      sub: "بدون أي إعلانات مدفوعة · آخر ٩٠ يوم",
     },
     after: [
       { label: "زوّار من جوجل", value: toArabicDigits(s.organicSessions), sub: "عضوي · نية شراء" },
@@ -137,7 +166,11 @@ function buildSmileTown(s: ClientCaseStudyStats): CaseStudy {
       { k: "متوسط الجلسة", v: formatMinSec(s.avgSessionSeconds), sub: "دقيقة · تصفح جاد" },
       { k: "معدل التفاعل", v: formatPct(s.engagementRate), sub: "متوسط الصناعة ٥٠٪" },
       { k: "دول وصلها", v: toArabicDigits(s.countriesCount), sub: "مصر · السعودية · الإمارات..." },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "كلها عضوي + شفهي" },
+      // «صفر», not «٠ ر.س». Smile Town is an Egyptian clinic and Kima Zone an Egyptian
+      // factory — neither spends riyals — and the figure means "none at all", which no
+      // currency improves. Spelled out for the same reason the BEFORE column is: a lone
+      // ٠ renders as a speck, and this line is one of the card's strongest facts.
+      { k: "إعلانات مدفوعة", v: "صفر", sub: "كلها عضوي + شفهي" },
     ],
   };
 }
@@ -160,7 +193,7 @@ function buildKimaZone(s: ClientCaseStudyStats): CaseStudy {
       { k: "متوسط الجلسة", v: formatMinSec(s.avgSessionSeconds), sub: "دقيقة · قرّاء جادّون" },
       { k: "معدل التفاعل", v: formatPct(s.engagementRate), sub: "متوسط الصناعة ٥٠٪" },
       { k: "دول وصلها", v: toArabicDigits(s.countriesCount), sub: "مصر · السعودية · الإمارات..." },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "عضوي فقط" },
+      { k: "إعلانات مدفوعة", v: "صفر", sub: "عضوي فقط" },
     ],
   };
 }
@@ -184,7 +217,7 @@ function buildBaqatek(s: ClientCaseStudyStats): CaseStudy {
       { k: "متوسط الجلسة", v: formatMinSec(s.avgSessionSeconds), sub: "دقيقة" },
       { k: "معدل التفاعل", v: formatPct(s.engagementRate), sub: "متوسط الصناعة ٥٠٪" },
       { k: "مقال واحد جذب", v: toArabicDigits(s.topArticleUsers), sub: `عن باقات STC` },
-      { k: "إعلانات مدفوعة", v: "٠ ر.س", sub: "صفر · عضوي فقط" },
+      { k: "إعلانات مدفوعة", v: "صفر", sub: "عضوي فقط" },
     ],
   };
 }

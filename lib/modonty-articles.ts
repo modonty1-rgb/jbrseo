@@ -54,10 +54,16 @@ const REVALIDATE_SECONDS = 3600;
  * file installable by copying it — nothing to set on the server, nothing to forget, and
  * no value that can be right on one machine and missing on the deployed one.
  *
- * ⚠️ The id below is this client's row in Modonty's DEV database. Production has a
- * different id for the same client, and it has to be swapped in when the endpoint goes
- * live — a dev id in production returns 404, which this file turns into an empty list.
+ * The id below is the production one — verified live against api.modonty.com on
+ * 2026-08-11: the list endpoint answers 200 with `client.name` = «شركة جبر سيو» and
+ * `articlesBaseUrl` = "https://www.jbrseo.com/articles", and the sitemap endpoint answers
+ * 200. It is also the id Modonty's own "Pull address" panel publishes for this client.
  *
+ * A warning used to stand here calling it a DEV id that returns 404 in production and has
+ * to be swapped before launch. That was wrong, and it was the kind of wrong that costs
+ * real time: it sent an SEO audit chasing a missing production id that never existed.
+ *
+
  * The override exists for one reason: pointing at a preview or a local console during a
  * test. Production sets nothing.
  */
@@ -113,6 +119,19 @@ function previewHeaders(): Record<string, string> | undefined {
  * an error screen. The failure is logged for us, not shown to them.
  */
 export async function getArticles(): Promise<ModontyArticle[]> {
+  return (await getArticlesResult()).articles;
+}
+
+/**
+ * The same fetch, with the reason for an empty list preserved.
+ *
+ * `getArticles()` flattens "the API failed" and "there are genuinely no articles" into
+ * the same `[]`, which is right for rendering — a reader gets the empty state either way
+ * — and wrong for `robots`. The listing page marks itself `noindex` when the list is
+ * empty, so a single upstream 5xx during an ISR revalidation deindexed a healthy page
+ * for the next hour. Only `ok: true` with zero articles is a real empty listing.
+ */
+export async function getArticlesResult(): Promise<{ ok: boolean; articles: ModontyArticle[] }> {
   try {
     const res = await fetch(`${SITE_ENDPOINT}/articles`, {
       headers: previewHeaders(),
@@ -120,13 +139,13 @@ export async function getArticles(): Promise<ModontyArticle[]> {
     });
     if (!res.ok) {
       console.error("modonty articles: list failed", res.status);
-      return [];
+      return { ok: false, articles: [] };
     }
     const data = (await res.json()) as ListResponse;
-    return data.articles ?? [];
+    return { ok: true, articles: data.articles ?? [] };
   } catch (error) {
     console.error("modonty articles: list threw", error);
-    return [];
+    return { ok: false, articles: [] };
   }
 }
 

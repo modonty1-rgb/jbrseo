@@ -88,29 +88,16 @@ function hashHue(str: string): number {
   return Math.abs(h) % 360;
 }
 
-// Distribute featured clients evenly through the list so the teaser view (top
-// 4) isn't a row of solid gold-star cards. Featured land at positions 0,
-// step, 2·step, … where step = floor(total / featuredCount). Rest fills in.
-function interleaveFeatured<T extends { isFeatured: boolean }>(items: T[]): T[] {
-  const featured = items.filter((x) => x.isFeatured);
-  const regular = items.filter((x) => !x.isFeatured);
-  if (featured.length === 0 || regular.length === 0) return items;
-
-  const total = items.length;
-  const step = Math.max(1, Math.floor(total / featured.length));
-  const result: T[] = [];
-  let fi = 0;
-  let ri = 0;
-  for (let i = 0; i < total; i++) {
-    if (i % step === 0 && fi < featured.length) {
-      result.push(featured[fi++]);
-    } else if (ri < regular.length) {
-      result.push(regular[ri++]);
-    } else if (fi < featured.length) {
-      result.push(featured[fi++]);
-    }
-  }
-  return result;
+// Featured first, then the rest, each half alphabetical.
+//
+// This used to interleave them — featured clients spread evenly through the list so the
+// landing's top four were not a row of gold stars. That made sense when the landing
+// showed a slice of everyone; now it shows a deliberate four and links to the full wall,
+// so those four should be the ones chosen to represent the roster rather than whoever
+// sorted first. The star badge is dropped in the teaser for the same reason: a mark that
+// applies to every tile marks nothing.
+function featuredFirst<T extends { isFeatured: boolean }>(items: T[]): T[] {
+  return [...items.filter((x) => x.isFeatured), ...items.filter((x) => !x.isFeatured)];
 }
 
 async function fetchTrustBundle(): Promise<ModontyTrustBundle> {
@@ -172,10 +159,9 @@ async function fetchTrustBundle(): Promise<ModontyTrustBundle> {
     })
     .sort((a, b) => a.name.localeCompare(b.name, "ar"));
 
-  // Interleave featured through the full list so the teaser "first 4" isn't a
-  // uniform gold-star row. Filtered tabs inherit spread positions from this
-  // order — good enough for the small subsets each tab holds.
-  const logos = interleaveFeatured(alphabetical);
+  // Featured first: the landing takes the first four, and those four are the ones
+  // marked as worth showing.
+  const logos = featuredFirst(alphabetical);
 
   // Step 3: build the tab list — top-N industries sorted by count desc,
   // then "أخرى" at the end if any client folded there.
@@ -205,7 +191,8 @@ async function fetchTrustBundle(): Promise<ModontyTrustBundle> {
 
 const getTrustBundleCached = unstable_cache(
   fetchTrustBundle,
-  ["modonty-trust-bundle-v11-interleaved"],
+  // Bumped with the ordering change — the old key holds the interleaved list.
+  ["modonty-trust-bundle-v12-featured-first"],
   { revalidate: 60, tags: ["modonty-client-logos"] },
 );
 

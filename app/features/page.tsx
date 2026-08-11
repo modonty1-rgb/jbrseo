@@ -123,7 +123,7 @@ export default async function FeaturesPage() {
       <section className="relative overflow-hidden border-b border-border py-14 sm:py-20 text-center">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklch,var(--success)_18%,transparent),transparent_60%)]" />
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <h1 className="mb-4 text-3xl font-black leading-tight tracking-tight sm:text-4xl md:text-5xl">
+          <h1 className="mb-4 text-3xl font-black leading-tight sm:text-4xl md:text-5xl">
             اشتراك واحد <span className="text-success">—</span> منظومة كاملة
           </h1>
           <p className="mx-auto mb-8 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -153,9 +153,9 @@ export default async function FeaturesPage() {
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <FeatureCard icon={LayoutDashboard} title="نظرة عامة سريعة" desc="مقال منشور · مشاهدات · مشتركين — كل شي في السطر الأول." bullets={["هذا الشهر: ٥ مقال · ١٦٦ مشاهدة", "الإحصائيات (٤١ ظهور +٨٪)", "معدل الارتداد (٧.٩٪)"]} />
           <FeatureCard icon={AlertTriangle} title="يحتاج انتباهك" desc="يلفت انتباهك للأمور المنتظرة قرارك — بلا فوت." bullets={["المقالات (موافقات)", "التعليقات (مراجعة)", "الدعم (رسائل)"]} />
-          <FeatureCard icon={TrendingUp} title="الأداء الأسبوعي" desc="٤ مؤشرات موثّقة قدامك مباشرة." bullets={["الإحصائيات (Impressions)", "درجة التفاعل (٣٣/١٠٠)", "التحويلات (١، ٠.٦٪)", "نسبة الارتداد"]} />
+          <FeatureCard icon={TrendingUp} title="الأداء الأسبوعي" desc="٤ مؤشرات موثّقة قدامك مباشرة." bullets={["الإحصائيات — مرات الظهور", "درجة التفاعل (٣٣/١٠٠)", "التحويلات (١، ٠.٦٪)", "نسبة الارتداد"]} />
           <FeatureCard icon={FileText} title="محتواك" desc="كل حاجة تخص محتوى صفحتك — منظّمة." bullets={["بيانات نشاطك (+YMYL)", "معلومات · محتوى الصفحة", "معرض الصور · الملفات", "المقالات · أسئلة الصفحة"]} />
-          <FeatureCard icon={Users} title="عملاءك" desc="كل تفاعل عميل في مكان واحد." bullets={["مشتركو النشرة", "العملاء المحتملون (Leads)", "الحجوزات", "الأسئلة · الآراء · التقييمات"]} />
+          <FeatureCard icon={Users} title="عملاءك" desc="كل تفاعل عميل في مكان واحد." bullets={["مشتركو النشرة", "العملاء المحتملون", "الحجوزات", "الأسئلة · الآراء · التقييمات"]} />
           <FeatureCard icon={ShieldCheck} title="الموثوقية والصحة" desc="مدى جاهزية موقعك." bullets={["صحة موقعك", "الحملات (قريباً)", "YMYL badge"]} />
         </div>
       </FeatureSection>
@@ -175,8 +175,8 @@ export default async function FeaturesPage() {
         />
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <FeatureCard icon={BadgeCheck} title="هوية كاملة + شارة موثّق" desc="لوگو · اسم · تخصص · موقع · شارة موثّق · سنة التأسيس." />
-          <FeatureCard icon={Palette} title="Hero banner برندي" desc="صورة رئيسية احترافية بتصميم يعبّر عن هويّتك." />
-          <FeatureCard icon={Megaphone} title="أزرار CTA بارزة" desc="احجز الآن · متابعة · مشاركة · واتساب عائم." />
+          <FeatureCard icon={Palette} title="بانر رئيسي بهويتك" desc="صورة رئيسية احترافية بتصميم يعبّر عن هويّتك." />
+          <FeatureCard icon={Megaphone} title="أزرار دعوة بارزة" desc="احجز الآن · متابعة · مشاركة · واتساب عائم." />
           <FeatureCard icon={BarChart3} title="الأثر الرقمي من Google" desc="كارت ١٠,٦٨٤ الأثر الرقمي مع شعار G — دليل مصداقية فوري." />
           <FeatureCard icon={Grid3x3} title="٩ أقسام غنية" desc="نظرة عامة · آراء · مقالات · عن الشركة · FAQ · تواصل · ساعات · موثوقية · نشرة." />
           <FeatureCard icon={Search} title="SEO/AEO مدمج" desc="JSON-LD · Sitemap · Open Graph · Structured Data — لِلظهور في جوجل و ChatGPT." />
@@ -186,7 +186,7 @@ export default async function FeaturesPage() {
       {/* SECTION 3 — ARTICLES */}
       <FeatureSection eyebrow="٠٣ · المقالات" title="مقالاتك — محتوى يبيع فعلاً">
         <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-          مقال احترافي مع صور high-res، إحصائيات قراءة، أزرار تفاعل، وشارة العميل الموثّقة — كل شي مصمّم يخلي القارئ ينحوّل لعميل.
+          مقال احترافي مع صور عالية الدقة، إحصائيات قراءة، أزرار تفاعل، وشارة العميل الموثّقة — كل شي مصمّم يخلي القارئ ينحوّل لعميل.
         </p>
         <Screenshot
           badge="مقال حقيقي"
@@ -197,10 +197,10 @@ export default async function FeaturesPage() {
           alt="مقال حقيقي على مدونتي"
         />
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <FeatureCard icon={FileText} title="Header احترافي" desc="عنوان بارز · وصف SEO · تاريخ · اسم المنصة." />
+          <FeatureCard icon={FileText} title="ترويسة احترافية" desc="عنوان بارز · وصف SEO · تاريخ · اسم المنصة." />
           <FeatureCard icon={TrendingUp} title="إحصائيات كاملة" desc="عدد الكلمات · وقت القراءة · مشاهدات · تعليقات." />
           <FeatureCard icon={ImageIcon} title="صور + معرض" desc="Hero image high-quality · صور داخلية · Open Graph لِلمشاركة." />
-          <FeatureCard icon={MessagesSquare} title="Sidebar تفاعل" desc="اشترك · مشاركة · تعليق · حفظ · إعجاب." />
+          <FeatureCard icon={MessagesSquare} title="شريط جانبي تفاعلي" desc="اشترك · مشاركة · تعليق · حفظ · إعجاب." />
           <FeatureCard icon={Handshake} title="شارة العميل الموثّقة" desc="بطاقة العميل مع صورة، تخصص، وموقع — رابط لِصفحته." />
           <FeatureCard icon={Rocket} title="SEO + AEO كامل" desc="JSON-LD · Meta tags · ٢٨ فحص جودة · طلب فهرسة Google." />
         </div>
@@ -221,7 +221,7 @@ export default async function FeaturesPage() {
           <div className="grid gap-3 sm:grid-cols-3">
             <SectorCard icon={Stethoscope} title="القطاع الطبي" desc="عيادات · مستشفيات · أطباء — توثيق كامل + التزام أخلاقيات." />
             <SectorCard icon={Scale} title="القطاع القانوني" desc="محامون · مكاتب قانونية — توثيق التخصص + المرجعية." />
-            <SectorCard icon={Wallet} title="القطاع المالي" desc="استشارات مالية · محاسبة · تأمين — معايير SAMA/ZATCA." />
+            <SectorCard icon={Wallet} title="القطاع المالي" desc="استشارات مالية · محاسبة · تأمين — معايير الهيئات الرقابية السعودية." />
           </div>
         </div>
       </FeatureSection>
@@ -232,9 +232,9 @@ export default async function FeaturesPage() {
           لا تفوت شي. أي حدث مهم — يوصلك على تيليجرام في ثوان.
         </p>
         <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          <AlertCard icon={TrendingUp} title="SEO" desc="ترتيب · impressions · clicks · errors" />
+          <AlertCard icon={TrendingUp} title="السيو" desc="ترتيب · ظهور · نقرات · أخطاء" />
           <AlertCard icon={FileText} title="المحتوى" desc="مقال جاهز · نشر · تحديث" />
-          <AlertCard icon={Users} title="العملاء" desc="Lead جديد · حجز · تقييم" />
+          <AlertCard icon={Users} title="العملاء" desc="عميل محتمل · حجز · تقييم" />
           <AlertCard icon={CreditCard} title="الفوترة" desc="فاتورة · تجديد · ترقية" />
           <AlertCard icon={Bell} title="الأمان" desc="دخول · تغيير · موقع مكسور" />
         </div>
@@ -259,7 +259,7 @@ export default async function FeaturesPage() {
                     >
                       <div className="inline-flex flex-wrap items-center justify-center gap-2">
                         {i === recIdx && (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-success px-2.5 py-1 text-[11px] font-black text-success-foreground shadow-lg shadow-success/25">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-success px-2.5 py-1 text-xs font-black text-success-foreground shadow-lg shadow-success/25">
                             <Flame className="h-3 w-3" strokeWidth={2.5} aria-hidden />
                             الأكثر شيوعاً
                           </span>
@@ -290,7 +290,7 @@ export default async function FeaturesPage() {
                 {rows.map((row, ridx) =>
                   row.category ? (
                     <tr key={ridx}>
-                      <td colSpan={displayPlans.length + 1} className="bg-success/[0.06] p-2.5 text-start text-xs font-extrabold tracking-wide text-success">
+                      <td colSpan={displayPlans.length + 1} className="bg-success/[0.06] p-2.5 text-start text-xs font-extrabold text-success">
                         {row.category}
                       </td>
                     </tr>
@@ -324,10 +324,10 @@ export default async function FeaturesPage() {
 
         <h3 className="mt-11 mb-2 text-center text-xl font-black sm:text-2xl">إيش الفرق فعلاً؟</h3>
         <p className="mb-5 text-center text-sm text-muted-foreground">
-          قارن بين توظيف فريق داخلي vs اشتراك مدونتي.
+          قارن بين توظيف فريق داخلي ومقابله اشتراك مدونتي.
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
-          <CompareCard tone="bad" title="توظّف فريق محتوى داخلي" bullets={["راتب كاتب: ٦-١٠ آلاف ريال/شهر", "راتب مصمم: ٥-٨ آلاف ريال/شهر", "راتب متخصص SEO: ٨-١٥ ألف/شهر", "تجهيزات · تدريب · إدارة", "مسؤولية العمل · الإجازات", "= ٢٠-٣٥ ألف ريال/شهر"]} />
+          <CompareCard tone="bad" title="توظّف فريق محتوى داخلي" bullets={["راتب كاتب: ٦-١٠ آلاف ريال/شهر", "راتب مصمم: ٥-٨ آلاف ريال/شهر", "راتب متخصص سيو: ٨-١٥ ألف/شهر", "تجهيزات · تدريب · إدارة", "مسؤولية العمل · الإجازات", "= ٢٠-٣٥ ألف ريال/شهر"]} />
           <CompareCard tone="good" title="اشتراك واحد — نظام كامل" bullets={["اشتراك سنوي: ٦ أشهر مجاناً", "فريق كامل جاهز", "لوحة تحكم شفافة ٢٤/٧", "تنبيهات فورية · دعم مباشر", "بلا مسؤوليات موظفين", "= توفير ٩٥٪+ من التكلفة"]} />
         </div>
 
@@ -385,10 +385,10 @@ function FeatureSection({
   return (
     <section className="border-t border-border py-14 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-2 font-mono text-xs font-extrabold uppercase tracking-[2px] text-success">
+        <div className="mb-2 text-xs font-extrabold text-success">
           {eyebrow}
         </div>
-        <h2 className="mb-3 text-2xl font-black leading-tight tracking-tight sm:text-3xl md:text-[34px]">
+        <h2 className="mb-3 text-2xl font-black leading-tight sm:text-3xl md:text-[34px]">
           {title}
         </h2>
         {children}
@@ -418,7 +418,7 @@ function Screenshot({
     <div className="rounded-2xl border border-success/20 bg-gradient-to-br from-success/[0.04] to-info/[0.04] p-4 sm:p-5">
       <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
         <div>
-          <span className="mb-1.5 inline-flex items-center gap-1 rounded-md bg-success px-2 py-0.5 text-[11px] font-black uppercase tracking-wide text-success-foreground">
+          <span className="mb-1.5 inline-flex items-center gap-1 rounded-md bg-success px-2 py-0.5 text-xs font-black text-success-foreground">
             <CheckCircle2 className="h-3 w-3" strokeWidth={2.5} aria-hidden />
             {badge}
           </span>
@@ -467,7 +467,7 @@ function FeatureCard({
       <h3 className="mb-1.5 text-[15px] font-extrabold text-foreground">{title}</h3>
       <p className="text-[13px] leading-relaxed text-muted-foreground">{desc}</p>
       {bullets && bullets.length > 0 && (
-        <ul className="mt-2 list-disc space-y-0.5 ps-5 text-xs text-muted-foreground/85">
+        <ul className="mt-2 list-disc space-y-0.5 ps-5 text-xs leading-relaxed text-muted-foreground/85">
           {bullets.map((b) => (
             <li key={b}>{b}</li>
           ))}
@@ -512,7 +512,7 @@ function AlertCard({
         <Icon className="h-4 w-4" strokeWidth={2} aria-hidden />
       </div>
       <h4 className="mb-1 text-[13px] font-extrabold text-foreground">{title}</h4>
-      <p className="text-[11px] leading-relaxed text-muted-foreground">{desc}</p>
+      <p className="text-xs leading-relaxed text-muted-foreground">{desc}</p>
     </div>
   );
 }

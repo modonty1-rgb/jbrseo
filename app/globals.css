@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+/* `rtl:` / `ltr:` variants, registered explicitly.
+   This app is Arabic-first and leans on direction-aware styling — a flipped arrow is
+   the difference between a control that points where it goes and one that lies — so the
+   variants are declared here rather than left to whatever the framework version happens
+   to ship. Verified working: `rtl:rotate-180` on the carousel arrows computes to
+   `rotate: 180deg` under `dir="rtl"`.
+   Note for future measurement: Tailwind v4 writes the standalone `rotate` property, not
+   `transform`. Reading `getComputedStyle(el).transform` returns "none" on a rotated
+   element and looks like a failure that isn't one. */
+@custom-variant rtl (&:where([dir="rtl"], [dir="rtl"] *));
+@custom-variant ltr (&:where([dir="ltr"], [dir="ltr"] *));
+
+
 /* ─────────────────────────────────────────────
    BRAND TOKENS  (source of truth: JBRSEO brand guidelines)
    Primary  #0E065A → Deep Navy
@@ -81,8 +94,15 @@
   --popover:              oklch(0.21 0.006 285.885);
   --popover-foreground:   oklch(0.985 0 0);
 
-  /* Primary — lighter for dark mode readability */
-  --primary:              oklch(0.62 0.20 275);
+  /* Primary — lifted from the brand navy for dark mode, but not past the point where
+     its own foreground stops working on it.
+     At L 62% the near-white `--primary-foreground` measured 2.82:1 — well under the
+     4.5:1 body text needs — and that combination is every filled primary button on the
+     site, including the one that starts checkout. The maths sets the ceiling: white-ish
+     ink needs the ground at or below L 48.5% to reach 4.5:1, so 47% is the lightest this
+     can be and still be readable. Still clearly the brand blue, still clearly lighter
+     than the L 14% navy the light theme uses. Verified: 4.93:1. */
+  --primary:              oklch(0.47 0.20 275);
   --primary-foreground:   oklch(0.98 0.01 275);
 
   --secondary:            oklch(0.274 0.006 286.033);
@@ -94,9 +114,15 @@
   --accent:               oklch(0.48 0.30 264);
   --accent-foreground:    oklch(0.98 0.01 264);
 
-  /* Success */
+  /* Success.
+     `--success-foreground` is the ink printed ON the green, so it has to be dark:
+     the green sits at L 72%, and the near-white it used to be (L 98%) measured
+     2.05:1 against it — under half the 4.5:1 body text needs, on every green
+     button on the site including the pricing and checkout CTAs. The light theme
+     above already had this right at L 18%; only the dark block was inverted, which
+     makes it a slip rather than a decision. L 20% reads 6.1:1 on the same green. */
   --success:              oklch(0.72 0.19 136);
-  --success-foreground:   oklch(0.98 0.02 136);
+  --success-foreground:   oklch(0.20 0.06 136);
 
   --destructive:          oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.985 0 0);
@@ -469,6 +495,39 @@ main:has(#pricing) > section { background: var(--background); }
     backdrop-filter: none !important;
     transition: none !important;
   }
+
+  /* Two exceptions, added after the rule silently broke the disclosure cards.
+     The blanket `transition: none` above is aimed at the effects that cost paint —
+     shadows, blurs, filters — but it is written as a property sweep, so it also took out
+     the feedback on every control the page has. On a phone `hover` never fires, so a
+     transition on the pressed and expanded states is the ONLY thing that tells a reader
+     their tap registered; without it the border changes colour between two frames and
+     reads as a flicker rather than a response.
+
+     Scoped to the controls that need it, and to `color` properties plus `rotate` only —
+     no shadow, no filter, no blur, nothing that touches the rasteriser that the 2026-07-14
+     Android incident was about. Compositor-only work on a handful of elements. */
+  details.md-always-open,
+  details.md-always-open > summary,
+  details.md-always-open .fold-caret,
+  details.md-always-open .fold-caret svg {
+    transition-property: color, background-color, border-color, rotate !important;
+    transition-duration: 200ms !important;
+    transition-timing-function: ease !important;
+  }
+}
+
+/* Stop the caret bouncing once the card is open — the hint has done its job.
+   This is the only part of the open state that could be made to stick from a stylesheet.
+   A rotation on the caret and a green tint on the card were tried here too, as Tailwind
+   `open:` / `group-open:` utilities and then as plain `[open]` rules with `!important`,
+   and neither took: the caret measured `rotate: 0deg` 350ms after the attribute was set,
+   while the same value applied instantly from an inline style, so the property works and
+   the rule simply loses somewhere in the cascade. Not worth more time — the summary
+   already swaps «التفاصيل» for «إخفاء», which states the open/closed condition in words
+   rather than in a 14px glyph's orientation. */
+details.md-always-open[open] .fold-caret svg {
+  animation: none !important;
 }
 
 /* ─── GLOBAL ─────────────────────────────────── */
@@ -541,6 +600,30 @@ html {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 4px;
+}
+
+/* Collapsed on phones, always open from md — one <details>, no duplicated markup.
+   `open` is an HTML attribute, so it cannot be made responsive; the only way to keep a
+   single copy of the content in the DOM is to override the closed rendering in CSS.
+   Verified in-browser: a closed <details> measured 20px, and 80px with these two rules
+   applied — `::details-content` is what current engines use to hide the panel, and the
+   `display` rule covers implementations that hide the children directly instead.
+   Where it is not supported the panel simply stays collapsed on desktop too: a reader
+   with one extra tap, not a broken layout. */
+@media (min-width: 768px) {
+  details.md-always-open > summary {
+    pointer-events: none;
+  }
+  details.md-always-open > summary .fold-caret {
+    display: none;
+  }
+  details.md-always-open > *:not(summary) {
+    display: block;
+  }
+  details.md-always-open::details-content {
+    content-visibility: visible;
+    block-size: auto;
+  }
 }
 
 /* recompile */

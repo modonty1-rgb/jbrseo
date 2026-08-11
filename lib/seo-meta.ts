@@ -11,7 +11,12 @@ export const META_DESCRIPTION_MAX_CHARS = 160;
  * Country landings do NOT use this — they have two real URLs and build their own.
  */
 export function sharedLanguages(canonical: string): Record<string, string> {
-  return { "ar-SA": canonical, "ar-EG": canonical };
+  // `x-default` added. A page that serves both countries from one URL still needs the
+  // fallback entry: without it a visitor whose locale matches neither ar-SA nor ar-EG —
+  // an Arabic speaker in the Gulf, or any en-* browser — has no annotated target, and
+  // Google's own hreflang guidance names x-default as the row that covers exactly that
+  // case. The country landings already emit it; these shared pages did not.
+  return { "ar-SA": canonical, "ar-EG": canonical, "x-default": canonical };
 }
 
 /**
@@ -46,7 +51,12 @@ export function buildPageJsonLd(input: {
             "@type": "ListItem",
             position: 1,
             name: "الرئيسية",
-            item: DEFAULT_PUBLIC_SITE_ORIGIN,
+            // `/sa`, not the bare origin. `proxy.ts` 307-redirects "/" to a country
+            // landing, so position 1 of every breadcrumb on the site pointed at a URL
+            // that does not serve a page. A breadcrumb item is a URL Google follows and
+            // may display; it should resolve 200. `/sa` is also the x-default target, so
+            // the trail and the hreflang cluster now name the same home.
+            item: `${DEFAULT_PUBLIC_SITE_ORIGIN}/sa`,
           },
           { "@type": "ListItem", position: 2, name: input.breadcrumbName, item: input.url },
         ],
@@ -100,16 +110,9 @@ function isAbsoluteHttpUrl(value: string): boolean {
   }
 }
 
-/** Prefer CMS `seo.canonical` when it is a valid absolute http(s) URL; otherwise `fallback`. */
-export function resolveCanonicalForMetadata(seoCanonical: string | undefined, fallback: string): string {
-  const t = (seoCanonical ?? "").trim();
-  if (!t || !isAbsoluteHttpUrl(t)) return ensureWwwJbrseoUrl(fallback);
-  try {
-    return ensureWwwJbrseoUrl(new URL(t).href);
-  } catch {
-    return ensureWwwJbrseoUrl(fallback);
-  }
-}
+// `resolveCanonicalForMetadata` lived here with zero call sites across app/ and lib/. It
+// was the only helper that would have honoured a CMS-stored canonical; every page builds
+// its canonical from its own route instead, which is the safer of the two designs.
 
 /**
  * Site origin for `metadataBase` / OG `siteBase` when CMS stores a full canonical URL;
@@ -127,4 +130,28 @@ export function resolveSiteOriginFromSeoCanonical(
   } catch {
     return base;
   }
+}
+
+/**
+ * JSON-LD serialised safely for `dangerouslySetInnerHTML`.
+ *
+ * `JSON.stringify` escapes what JSON needs and nothing HTML needs. Inside a `<script>`
+ * element the parser is still looking for `</script`, so one such sequence anywhere in
+ * the data closes the tag early: the structured data is destroyed and whatever follows is
+ * parsed as markup. Every string in these graphs comes from somewhere a person can type —
+ * FAQ answers and plan copy from our own admin, client names and article titles from
+ * Modonty's API — so this is reachable, not theoretical.
+ *
+ * `<` and `>` become `\u003c` / `\u003e`, which JSON decodes back to the same characters,
+ * so the data a crawler reads is unchanged. `&` is escaped for the same reason inside
+ * attribute-adjacent contexts. U+2028 and U+2029 are valid in JSON strings but are line
+ * terminators in JavaScript, and this markup ends up inside a `<script>`.
+ */
+export function safeJsonLd(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
 }

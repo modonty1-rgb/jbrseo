@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { PenLine } from "lucide-react";
+import { ArrowRight, PenLine } from "lucide-react";
 
 import { Button } from "@/app/components/ui/button";
-import { getArticles } from "@/lib/modonty-articles";
+import { getArticles, getArticlesResult } from "@/lib/modonty-articles";
 import { siteOgImages } from "@/lib/getGlobalSeo";
-import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS, SHARED_OPEN_GRAPH } from "@/lib/seo-meta";
+import { DEFAULT_PUBLIC_SITE_ORIGIN, PUBLIC_INDEX_FOLLOW_ROBOTS, safeJsonLd, SHARED_OPEN_GRAPH, sharedLanguages } from "@/lib/seo-meta";
 
 export const revalidate = 3600;
 
@@ -19,21 +19,29 @@ export async function generateMetadata(): Promise<Metadata> {
   // cached response and this is free; while it is failing nothing is cached, so the
   // build logs the extra attempt. That is the cheap half of the trade — the alternative
   // is a page whose <meta robots> cannot know whether the page has anything on it.
-  const [images, articles] = await Promise.all([siteOgImages(), getArticles()]);
+  const [images, result] = await Promise.all([siteOgImages(), getArticlesResult()]);
 
   return {
+    // «المقالات» alone was seventeen characters including the appended suffix — the
+    // thinnest title on the site, and the one page whose whole job is to rank for
+    // content-marketing queries. Named for what the articles are about.
     // No "| JBRSEO" — the root layout's template appends it.
-    title: "المقالات",
+    title: "مقالات السيو وتسويق المحتوى",
     description: DESCRIPTION,
     // An empty listing is a thin page. Asking Google to index a panel that says "nothing
     // here yet" spends crawl budget to earn a low-quality URL, and the impression it
     // leaves outlives the emptiness. `follow` stays on so the links out still count, and
     // the moment the first article lands this flips back to index on its own.
-    robots: articles.length === 0 ? { index: false, follow: true } : PUBLIC_INDEX_FOLLOW_ROBOTS,
-    alternates: { canonical: CANONICAL },
+    //
+    // `result.ok` guards it: the list also comes back empty when Modonty's API is down,
+    // and a transient 5xx during revalidation must not deindex a page that has content.
+    robots: result.ok && result.articles.length === 0
+      ? { index: false, follow: true }
+      : PUBLIC_INDEX_FOLLOW_ROBOTS,
+    alternates: { canonical: CANONICAL, languages: sharedLanguages(CANONICAL) },
     openGraph: {
       ...SHARED_OPEN_GRAPH,
-      title: "المقالات",
+      title: "مقالات السيو وتسويق المحتوى",
       description: DESCRIPTION,
       url: CANONICAL,
       images,
@@ -87,7 +95,7 @@ export default async function ArticlesPage() {
         "@type": "BreadcrumbList",
         "@id": `${CANONICAL}#breadcrumb`,
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "الرئيسية", item: DEFAULT_PUBLIC_SITE_ORIGIN },
+          { "@type": "ListItem", position: 1, name: "الرئيسية", item: `${DEFAULT_PUBLIC_SITE_ORIGIN}/sa` },
           { "@type": "ListItem", position: 2, name: "المقالات", item: CANONICAL },
         ],
       },
@@ -98,8 +106,19 @@ export default async function ArticlesPage() {
     <div className="mx-auto max-w-5xl px-4 py-10 md:py-14">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLd) }}
       />
+
+      {/* The list is reachable from the header nav, so a reader lands here from the landing
+          page and then has no marked way back to it — the header link for «المقالات» is the
+          page they are on. This is the return trip. */}
+      <Link
+        href="/"
+        className="mb-6 inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-card px-3.5 text-sm font-semibold text-foreground no-underline transition-colors hover:bg-muted"
+      >
+        <ArrowRight className="size-4 shrink-0" strokeWidth={2.5} aria-hidden />
+        الرئيسية
+      </Link>
 
       <header className="space-y-3">
         <h1 className="text-2xl font-bold md:text-3xl">المقالات</h1>
