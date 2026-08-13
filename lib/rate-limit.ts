@@ -50,8 +50,17 @@ function build(prefix: string, limit: number, windowSec: number): {
   };
 }
 
-// Public browsing — generous (unchanged from old in-memory limiter)
-export const landingLimiter  = build("landing",  30, 60);   // 30 req / 60s / IP
+// Public browsing.
+//
+// Was 30/60s and it fired on ordinary use (2026-08-13): a single visit costs more than one
+// request — the proxy redirects `/` → `/sa` and every non-country path too, App Router sends
+// a separate RSC request per client navigation, and a shared office or mobile-carrier IP puts
+// several people behind one address. Thirty was a scraping limit applied to humans.
+//
+// 120/60s still stops bulk scraping (a scraper wants thousands of pages, not two per second)
+// while leaving normal browsing far below the ceiling. The high-value endpoints keep their own
+// strict limits below — those are the ones that actually need to be tight.
+export const landingLimiter  = build("landing",  120, 60);  // 120 req / 60s / IP
 
 // Checkout page submit — stricter (payment page = high-value target)
 export const checkoutLimiter = build("checkout", 5,  600);  // 5 req / 10min / IP

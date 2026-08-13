@@ -12,6 +12,12 @@ function copySearchParams(from: URL, to: URL) {
 
 // Skip rate-limiting for static assets + framework internals to avoid
 // wasting Upstash quota on non-user-driven requests (chunks, images, RSC).
+// Search-engine crawlers. A 429 to Googlebot is not a defended site — it is a page dropped
+// from the index, on a site whose entire purpose is ranking. Crawlers are not the abuse vector
+// the landing limiter exists for; checkout and order creation keep their own strict limits,
+// and those are never crawled. A spoofed user-agent gains only public marketing pages.
+const CRAWLER_UA = /(googlebot|bingbot|slurp|duckduckbot|baiduspider|yandex|applebot|petalbot|ahrefsbot|semrushbot|gptbot|oai-searchbot|perplexitybot|claudebot)/i;
+
 function shouldSkipRateLimit(pathname: string): boolean {
   return (
     pathname.startsWith("/_next/") ||
@@ -39,16 +45,52 @@ export async function proxy(request: NextRequest) {
     request.headers.get("x-real-ip") ??
     "127.0.0.1";
 
-  // Landing-tier rate limit — 30 req / 60s / IP (Upstash Redis, shared across
-  // serverless instances so it actually works). Stricter tiers for /checkout
-  // submit + N-Genius order creation live inside their respective API routes.
-  if (!shouldSkipRateLimit(request.nextUrl.pathname)) {
+  // Landing-tier rate limit (Upstash Redis, shared across serverless instances so it actually
+  // works). Stricter tiers for /checkout submit + N-Genius order creation live inside their
+  // respective API routes — those are the ones that must stay tight.
+  const userAgent = request.headers.get("user-agent") ?? "";
+  // An RSC payload is the second half of a navigation the visitor already paid for, and a
+  // prefetch is a request they never consciously made — charging for either is what made an
+  // ordinary browse hit the ceiling.
+  //
+  // `RSC` and `Next-Router-Prefetch` are the headers Next.js itself keys on: it lists both in
+  // the Vary header it sets for App Router responses (next/src/server/base-server.ts). The
+  // `_rsc` query parameter is only a cache-buster, so it is checked last, not first.
+  const isRscRequest =
+    request.headers.get("rsc") === "1" ||
+    request.headers.get("next-router-prefetch") === "1" ||
+    request.nextUrl.searchParams.has("_rsc");
+
+  if (
+    !shouldSkipRateLimit(request.nextUrl.pathname) &&
+    !isRscRequest &&
+    !CRAWLER_UA.test(userAgent)
+  ) {
     const { success, reset } = await landingLimiter.limit(ip);
     if (!success) {
       const retryAfter = Math.max(1, Math.ceil((reset - Date.now()) / 1000));
+      const headers = { "Retry-After": String(retryAfter) };
+
+      // A visitor must never meet a raw JSON error. Serve a readable page to browsers and
+      // keep the JSON body for fetch/API callers, which read the field.
+      if (request.headers.get("accept")?.includes("text/html")) {
+        return new NextResponse(
+          `<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>لحظة من فضلك</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b1220;color:#e8eefc;font-family:system-ui,"Segoe UI",Tahoma,sans-serif;text-align:center;padding:24px}
+h1{font-size:20px;margin:0 0 8px}p{margin:0;color:#a9b6d1;line-height:1.9;font-size:14px}</style></head>
+<body><main><h1>لحظة من فضلك</h1>
+<p>وصلتنا طلبات كثيرة من اتّصالك خلال وقت قصير.<br>انتظر ${retryAfter} ثانية ثم حدّث الصفحة.</p></main>
+<script>setTimeout(function(){location.reload()},${retryAfter * 1000});</script></body></html>`,
+          { status: 429, headers: { ...headers, "Content-Type": "text/html; charset=utf-8" } },
+        );
+      }
+
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
-        { status: 429, headers: { "Retry-After": String(retryAfter) } },
+        { status: 429, headers },
       );
     }
   }

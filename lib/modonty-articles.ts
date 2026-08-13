@@ -43,8 +43,19 @@ interface ListResponse {
   articles: ModontyArticle[];
 }
 
-/** One hour. Their editor's change appears here within the hour without a deploy. */
-const REVALIDATE_SECONDS = 3600;
+/**
+ * One minute. An editor publishes at Modonty and the article is here on the next visit.
+ *
+ * It was 3600, and an hour is the wrong unit for publishing: the writer hits publish, checks
+ * the site, sees nothing, and has no way to hurry it. A minute costs almost nothing extra —
+ * Modonty's API answers a repeat question with an ETag, so an unchanged list comes back as a
+ * 304 with no body at all. We pay for one tiny conditional request per minute, not for
+ * re-downloading the articles.
+ *
+ * A minute was chosen over an instant push-on-publish: the push needs a shared secret and a
+ * caller on the Modonty side, and a minute already answers the complaint it was built for.
+ */
+const REVALIDATE_SECONDS = 60;
 
 /**
  * Our address at Modonty — a constant, not configuration.
